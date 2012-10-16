@@ -18,6 +18,7 @@ namespace Smrf.NodeXL.UnitTests
 //*****************************************************************************
 
 [TestClassAttribute]
+[DeploymentItemAttribute("..\\..\\..\\..\\Algorithms\\SnapGraphMetricCalculatorForCliquesOnly.exe")]
 
 public class MotifCalculatorTest : Object
 {
@@ -94,7 +95,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.Fan | Motifs.DParallel, 2, 2, null,
+            m_oGraph, Motifs.Fan | Motifs.DParallel | Motifs.Clique, 2, 2, 4, 4, null,
             out oMotifs) );
 
         Assert.AreEqual(0, oMotifs.Count);
@@ -147,7 +148,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.Fan, 2, 2, null, out oMotifs) );
+            m_oGraph, Motifs.Fan, 2, 2, 4, 4, null, out oMotifs) );
 
         Assert.AreEqual(2, oMotifs.Count);
 
@@ -192,7 +193,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.Fan, 2, 2, null, out oMotifs) );
+            m_oGraph, Motifs.Fan, 2, 2, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(1, oMotifs.Count);
 
@@ -256,7 +257,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, 2, null, out oMotifs) );
+            m_oGraph, Motifs.DParallel, 2, 2, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(2, oMotifs.Count);
 
@@ -368,7 +369,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, null, out oMotifs));
+            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(3, oMotifs.Count);
 
@@ -418,7 +419,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, 2, null, out oMotifs) );
+            m_oGraph, Motifs.DParallel, 2, 2, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(1, oMotifs.Count);
 
@@ -503,7 +504,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, null, out oMotifs));
+            m_oGraph, Motifs.DParallel, 2, 4, 4, Int32.MaxValue, null, out oMotifs));
 
         Assert.AreEqual(2, oMotifs.Count);
 
@@ -554,7 +555,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, 2, null, out oMotifs) );
+            m_oGraph, Motifs.DParallel, 2, 2, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(1, oMotifs.Count);
 
@@ -648,7 +649,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, int.MaxValue, null, out oMotifs));
+            m_oGraph, Motifs.DParallel, 2, int.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(2, oMotifs.Count);
 
@@ -761,7 +762,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, int.MaxValue, null, out oMotifs));
+            m_oGraph, Motifs.DParallel, 2, int.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(2, oMotifs.Count);
 
@@ -816,7 +817,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, null, out oMotifs));
+            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(1, oMotifs.Count);
 
@@ -863,7 +864,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, null, out oMotifs));
+            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(1, oMotifs.Count);
 
@@ -909,7 +910,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, 2, null, out oMotifs) );
+            m_oGraph, Motifs.DParallel, 2, 2, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(1, oMotifs.Count);
 
@@ -955,7 +956,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, null, out oMotifs));
+            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(1, oMotifs.Count);
 
@@ -1006,7 +1007,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.Fan | Motifs.DParallel, 2, 2, null,
+            m_oGraph, Motifs.Fan | Motifs.DParallel, 2, 2, 4, 4, null,
             out oMotifs) );
 
         Assert.AreEqual(2, oMotifs.Count);
@@ -1055,7 +1056,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.Fan | Motifs.DParallel, 2, Int32.MaxValue, null, out oMotifs));
+            m_oGraph, Motifs.Fan | Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(2, oMotifs.Count);
 
@@ -1106,7 +1107,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.Fan, 2, 2, null, out oMotifs) );
+            m_oGraph, Motifs.Fan, 2, 2, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(1, oMotifs.Count);
 
@@ -1158,7 +1159,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.Fan, 2, 3, null, out oMotifs));
+            m_oGraph, Motifs.Fan, 2, 3, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(1, oMotifs.Count);
 
@@ -1206,7 +1207,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, 2, null, out oMotifs) );
+            m_oGraph, Motifs.DParallel, 2, 2, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(1, oMotifs.Count);
 
@@ -1259,7 +1260,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, null, out oMotifs));
+            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(1, oMotifs.Count);
 
@@ -1308,7 +1309,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.Fan | Motifs.DParallel, 2, 2, null,
+            m_oGraph, Motifs.Fan | Motifs.DParallel, 2, 2, 4, 4, null,
             out oMotifs) );
 
         Assert.AreEqual(2, oMotifs.Count);
@@ -1364,7 +1365,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.Fan | Motifs.DParallel, 2, Int32.MaxValue, null, out oMotifs));
+            m_oGraph, Motifs.Fan | Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(2, oMotifs.Count);
 
@@ -1439,7 +1440,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.Fan, 2, 2, null, out oMotifs) );
+            m_oGraph, Motifs.Fan, 2, 2, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(4, oMotifs.Count);
 
@@ -1543,7 +1544,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, 2, null, out oMotifs) );
+            m_oGraph, Motifs.DParallel, 2, 2, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(4, oMotifs.Count);
 
@@ -1644,7 +1645,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, null, out oMotifs));
+            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(4, oMotifs.Count);
 
@@ -1776,7 +1777,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, null, out oMotifs));
+            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(4, oMotifs.Count);
 
@@ -1905,7 +1906,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, null, out oMotifs));
+            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(4, oMotifs.Count);
 
@@ -1974,7 +1975,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, null, out oMotifs));
+            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(2, oMotifs.Count);
 
@@ -1984,6 +1985,297 @@ public class MotifCalculatorTest : Object
         VerifyDParallelMotif(oMotifs, new List<IVertex>() { oVertexG, oVertexH, oVertexA }, 0.0,
             oVertexI, oVertexJ);
     }
+
+    //*************************************************************************
+    //  Method: TestCalculateMotifs29()
+    //
+    /// <summary>
+    /// Tests the CalculateMotifs() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestCalculateMotifs29()
+    {
+        // Two disjoint cliques [a,b,c,d,e] and [f,g,h,i] connected by a_alt-f_alt
+        string graphAsTextEdgeList =
+            @"
+                a-b
+                a-c
+                a-d
+                a-e
+                b-c
+                b-d
+                b-e
+                c-d
+                c-e
+                d-e
+                a-a_alt
+                a_alt-f_alt
+                f_alt-f
+                f-g
+                f-h
+                f-i
+                g-h
+                g-i
+                h-i            
+            ";
+
+        Dictionary<string, IVertex> v = BuildGraphFromText(graphAsTextEdgeList);
+
+        ICollection<Motif> oMotifs;
+
+        Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
+            m_oGraph, Motifs.Clique, 2, Int32.MaxValue, 4, Int32.MaxValue, null, out oMotifs));
+
+        Assert.AreEqual(2, oMotifs.Count);
+
+        VerifyCliqueMotif(oMotifs, new List<IVertex>() { v["a"], v["b"], v["c"], v["d"], v["e"] }, 1.0);
+        
+        VerifyCliqueMotif(oMotifs, new List<IVertex>() { v["f"], v["g"], v["h"], v["i"] }, 0.0);
+    }
+
+    //*************************************************************************
+    //  Method: TestCalculateMotifs30()
+    //
+    /// <summary>
+    /// Tests the CalculateMotifs() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestCalculateMotifs30()
+    {
+        // Two overlapping cliques [a,b,c,d] [a,b,c,e] and a disjoint clique [f,g,h,i] connected by a_alt-f_alt
+        string graphAsTextEdgeList =
+            @"
+                a-b
+                a-c
+                a-d
+                a-e
+                b-c
+                b-d
+                b-e
+                c-d
+                c-e
+                a-a_alt
+                a_alt-f_alt
+                f_alt-f
+                f-g
+                f-h
+                f-i
+                g-h
+                g-i
+                h-i            
+            ";
+
+        Dictionary<string, IVertex> v = BuildGraphFromText(graphAsTextEdgeList);
+
+        ICollection<Motif> oMotifs;
+
+        Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
+            m_oGraph, Motifs.Clique, 2, Int32.MaxValue, 4, Int32.MaxValue, null, out oMotifs));
+
+        Assert.AreEqual(2, oMotifs.Count);
+
+        VerifyCliqueMotif(oMotifs, new List<IVertex>() { v["a"], v["b"], v["c"], v["d"] }, 0.5);
+
+        VerifyCliqueMotif(oMotifs, new List<IVertex>() { v["f"], v["g"], v["h"], v["i"] }, 0.5);
+    }
+
+    //*************************************************************************
+    //  Method: TestCalculateMotifs31()
+    //
+    /// <summary>
+    /// Tests the CalculateMotifs() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestCalculateMotifs31()
+    {
+        // Two overlapping cliques [a,b,c,d,e] [e,f,g,h,i]
+        string graphAsTextEdgeList =
+            @"
+                a-b
+                a-c
+                a-d
+                a-e
+                b-c
+                b-d
+                b-e
+                c-d
+                c-e
+                d-e
+                e-f
+                e-g
+                e-h
+                e-i
+                f-g
+                f-h
+                f-i
+                g-i
+                g-h
+                g-i
+                h-i
+            ";
+
+        Dictionary<string, IVertex> v = BuildGraphFromText(graphAsTextEdgeList);
+
+        ICollection<Motif> oMotifs;
+
+        Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
+            m_oGraph, Motifs.Clique, 2, Int32.MaxValue, 4, Int32.MaxValue, null, out oMotifs));
+
+        Assert.AreEqual(2, oMotifs.Count);
+
+        VerifyCliqueMotif(oMotifs, new List<IVertex>() { v["a"], v["b"], v["c"], v["d"], v["e"] }, 1.0);
+
+        VerifyCliqueMotif(oMotifs, new List<IVertex>() { v["f"], v["g"], v["h"], v["i"] }, 0.0);
+    }
+
+    //*************************************************************************
+    //  Method: TestCalculateMotifs32()
+    //
+    /// <summary>
+    /// Tests the CalculateMotifs() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestCalculateMotifs32()
+    {
+
+        // Add a clique motif [a,b,c,d,e]
+        string graphAsTextEdgeList =
+            @"
+                a-b
+                a-c
+                a-d
+                a-e
+                b-c
+                b-d
+                b-e
+                c-d
+                c-e
+                d-e
+            ";
+
+        // Add an overlapping 2-parallel with 4 span vertices (e,f)<g,h,i,j>
+        graphAsTextEdgeList +=
+            @"
+                e-g
+                e-h
+                e-i
+                e-j
+                f-g
+                f-h
+                f-i
+                f-j
+            ";
+
+        // Add an overlapping fan motif a<k,l,m
+        graphAsTextEdgeList +=
+            @"
+                a-k
+                a-l
+                a-m
+            ";
+
+        Dictionary<string, IVertex> v = BuildGraphFromText(graphAsTextEdgeList);
+
+        ICollection<Motif> oMotifs;
+
+
+        Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
+            m_oGraph, Motifs.Fan | Motifs.DParallel | Motifs.Clique, 2, Int32.MaxValue, 4, Int32.MaxValue, null, out oMotifs));
+
+        Assert.AreEqual(3, oMotifs.Count);
+
+        VerifyCliqueMotif(oMotifs, new List<IVertex>() { v["a"], v["b"], v["c"], v["d"], v["e"] }, 0.5);
+
+        VerifyDParallelMotif(oMotifs, new List<IVertex>() { v["e"], v["f"] }, 0.5, v["g"], v["h"], v["i"], v["j"] );
+
+        VerifyFanMotif(oMotifs, v["a"], 0.5, v["k"], v["l"], v["m"]);
+    }
+
+    //*************************************************************************
+    //  Method: TestCalculateMotifs33()
+    //
+    /// <summary>
+    /// Tests the CalculateMotifs() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestCalculateMotifs33()
+    {
+
+        // Add a clique motif [a,b,c,d,e]
+        string graphAsTextEdgeList =
+            @"
+                a-b
+                a-c
+                a-d
+                a-e
+                b-c
+                b-d
+                b-e
+                c-d
+                c-e
+                d-e
+            ";
+
+        // Add a highly overlapping 4-parallel motif with 2 span vertices (a,b,c,d)<e,f>
+        graphAsTextEdgeList +=
+            @"
+                a-f
+                b-f
+                c-f
+                d-f
+            ";
+
+        Dictionary<string, IVertex> v = BuildGraphFromText(graphAsTextEdgeList);
+
+        ICollection<Motif> oMotifs;
+
+
+        Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
+            m_oGraph, Motifs.Fan | Motifs.DParallel | Motifs.Clique, 2, Int32.MaxValue, 4, Int32.MaxValue, null, out oMotifs));
+
+        Assert.AreEqual(2, oMotifs.Count);
+
+        VerifyCliqueMotif(oMotifs, new List<IVertex>() { v["a"], v["b"], v["c"], v["d"] }, 0.5);
+
+        VerifyDParallelMotif(oMotifs, new List<IVertex>() { v["a"], v["b"], v["c"], v["d"] }, 0.5, v["e"], v["f"] );
+    }
+
+
+    private string VertexCollToNames
+    (
+        ICollection<IVertex> collection
+    )
+    {
+        string ret = "";
+        bool first = false;
+        foreach (IVertex v in collection)
+        {
+            ret += (first ? "" : ", ") + v.Name;
+            first = false;
+        }
+        return ret;
+    }
+
 
     //*************************************************************************
     //  Method: TestDParallelSelfLoops()
@@ -2013,7 +2305,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, null, out oMotifs));
+            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(0, oMotifs.Count);
     }
@@ -2111,19 +2403,29 @@ public class MotifCalculatorTest : Object
                 oExpectedAnchorVertices)
             );
 
-        Assert.IsTrue(DParallelMotifHasExpectedAnchors((DParallelMotif)oDParallelMotif,
-                oExpectedAnchorVertices));
-
         Assert.AreEqual(dExpectedSpanScale, oDParallelMotif.SpanScale);
 
-        Assert.AreEqual(aoExpectedSpanVertices.Length,
-            oDParallelMotif.SpanVertices.Count);
+        Assert.IsTrue(UnsortedEquality<IVertex>(aoExpectedSpanVertices, oDParallelMotif.SpanVertices));
+    }
 
-        foreach (IVertex oExpectedSpanVertex in aoExpectedSpanVertices)
-        {
-            IVertex oSpanVertex = oDParallelMotif.SpanVertices.Single(
-                oVertex => (oVertex == oExpectedSpanVertex));
-        }
+    protected void
+    VerifyCliqueMotif
+    (
+        ICollection<Motif> oMotifs,
+        List<IVertex> oExpectedMemberVertices,
+        Double dExpectedCliqueScale
+    )
+    {
+        CliqueMotif oCliqueMotif = (CliqueMotif)oMotifs.Single(
+            oMotif =>
+            oMotif is CliqueMotif
+            &&
+            CliqueMotifHasExpectedMembers((CliqueMotif)oMotif,
+                oExpectedMemberVertices)
+            );
+
+        Assert.AreEqual(dExpectedCliqueScale, oCliqueMotif.CliqueScale);
+
     }
 
     //*************************************************************************
@@ -2133,11 +2435,11 @@ public class MotifCalculatorTest : Object
     /// Tests whether a D-parallel motif has the expected anchors.
     /// </summary>
     ///
-    /// <param name="oDParallelMotif>
+    /// <param name="oDParallelMotif">
     /// The motif to test.
     /// </param>
     ///
-    /// <param name="oExpectedAnchorVertices>
+    /// <param name="oExpectedAnchorVertices">
     /// The anchor vertices of the expected D-parallel motif.
     /// </param>
     ///
@@ -2154,6 +2456,36 @@ public class MotifCalculatorTest : Object
     )
     {
         return UnsortedEquality<IVertex>(oExpectedAnchorVertices, oDParallelMotif.AnchorVertices);
+    }
+
+    //*************************************************************************
+    //  Method: CliqueMotifHasExpectedMembers()
+    //
+    /// <summary>
+    /// Tests whether a clique motif has the expected members.
+    /// </summary>
+    ///
+    /// <param name="oCliqueMotif">
+    /// The motif to test.
+    /// </param>
+    ///
+    /// <param name="oExpectedMemberVertices">
+    /// The member vertices of the expected clique motif.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the specified motif has the expected members.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    CliqueMotifHasExpectedMembers
+    (
+        CliqueMotif oCliqueMotif,
+        List<IVertex> oExpectedMemberVertices
+    )
+    {
+        return UnsortedEquality<IVertex>(oExpectedMemberVertices, oCliqueMotif.MemberVertices);
     }
 
     protected Boolean
@@ -2201,6 +2533,72 @@ public class MotifCalculatorTest : Object
         }
 
         return true;
+    }
+
+
+    //*************************************************************************
+    //  Method: BuildGraphFromText()
+    //
+    /// <summary>
+    /// Builds a graph from a text edge list.
+    /// </summary>
+    ///
+    /// <param name="graphAsTextEdgeList">
+    /// The text edge list to build, with each edge on a new line. Each edge
+    /// consists of the text source vertex name and the text target vertex
+    /// name separated by a hyphen.
+    /// </param>
+    /// 
+    /// <returns>
+    /// A Dictionary of string labels to only the added vertices
+    /// </returns>
+    //*************************************************************************
+
+    private Dictionary<string, IVertex>
+    BuildGraphFromText
+    (
+        string graphAsTextEdgeList
+    )
+    {
+        Dictionary<string, IVertex> vertices = new Dictionary<string, IVertex>();
+
+        string[] graphAsTextEdgeArray = graphAsTextEdgeList.Split('\n');
+        foreach (string textEdge in graphAsTextEdgeArray)
+        {
+            string trimmedTextEdge = textEdge.Trim();
+            if (trimmedTextEdge.Length > 0)
+            {
+                string[] srcAndTar = trimmedTextEdge.Split('-');
+                if (srcAndTar.Length != 2)
+                {
+                    throw new ArgumentException("Invalid text for edge: " + textEdge);
+                }
+
+                string
+                    srcText = srcAndTar[0].Trim(),
+                    tarText = srcAndTar[1].Trim();
+
+                IVertex src, tar;
+                if (!m_oVertices.Find(srcText, out src))
+                {
+                    src = m_oVertices.Add();
+                    src.Name = srcText;
+                    vertices.Add(srcText, src);
+                }
+
+                if (!m_oVertices.Find(tarText, out tar))
+                {
+                    tar = m_oVertices.Add();
+                    tar.Name = tarText;
+                    vertices.Add(tarText, tar);
+                }
+
+                m_oEdges.Add(src, tar);
+
+            }
+        }
+
+        return vertices;
     }
 
 

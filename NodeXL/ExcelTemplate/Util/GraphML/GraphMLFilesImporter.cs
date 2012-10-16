@@ -281,7 +281,8 @@ public class GraphMLFilesImporter : Object
             try
             {
                 GraphMLToNodeXLWorkbookConverter.SaveGraphToNodeXLWorkbook(
-                    oGraphMLDocument, sNodeXLWorkbookPath, null, false);
+                    oGraphMLDocument, sGraphMLFilePath, sNodeXLWorkbookPath,
+                    null, false);
             }
             catch (XmlException oXmlException)
             {

@@ -41,7 +41,7 @@ public partial class YouTubeGetVideoNetworkDialog :
 
         // m_sSearchTerm
         // m_bIncludeSharedCommenterEdges
-        // m_bIncludeSharedTagEdges
+        // m_bIncludeSharedCategoryEdges
         // m_bIncludeSharedVideoResponderEdges
         // m_iMaximumVideos
 
@@ -119,7 +119,8 @@ public partial class YouTubeGetVideoNetworkDialog :
             m_bIncludeSharedCommenterEdges =
                 chkIncludeSharedCommenterEdges.Checked;
 
-            m_bIncludeSharedTagEdges = chkIncludeSharedTagEdges.Checked;
+            m_bIncludeSharedCategoryEdges =
+                chkIncludeSharedCategoryEdges.Checked;
 
             m_bIncludeSharedVideoResponderEdges =
                 chkIncludeSharedVideoResponderEdges.Checked;
@@ -133,7 +134,8 @@ public partial class YouTubeGetVideoNetworkDialog :
             chkIncludeSharedCommenterEdges.Checked =
                 m_bIncludeSharedCommenterEdges;
 
-            chkIncludeSharedTagEdges.Checked = m_bIncludeSharedTagEdges;
+            chkIncludeSharedCategoryEdges.Checked =
+                m_bIncludeSharedCategoryEdges;
 
             chkIncludeSharedVideoResponderEdges.Checked =
                 m_bIncludeSharedVideoResponderEdges;
@@ -173,8 +175,9 @@ public partial class YouTubeGetVideoNetworkDialog :
                 YouTubeVideoNetworkAnalyzer.WhatToInclude.SharedCommenterEdges
                 : 0)
             |
-            (m_bIncludeSharedTagEdges ?
-                YouTubeVideoNetworkAnalyzer.WhatToInclude.SharedTagEdges : 0)
+            (m_bIncludeSharedCategoryEdges ?
+                YouTubeVideoNetworkAnalyzer.WhatToInclude.SharedCategoryEdges
+                : 0)
             |
             (m_bIncludeSharedVideoResponderEdges ?
                 YouTubeVideoNetworkAnalyzer.WhatToInclude.
@@ -269,7 +272,7 @@ public partial class YouTubeGetVideoNetworkDialog :
 
         Debug.Assert(m_sSearchTerm != null);
         // m_bIncludeSharedCommenterEdges
-        // m_bIncludeSharedTagEdges
+        // m_bIncludeSharedCategoryEdges
         // m_bIncludeSharedVideoResponderEdges
         Debug.Assert(m_iMaximumVideos > 0);
     }
@@ -294,9 +297,9 @@ public partial class YouTubeGetVideoNetworkDialog :
     protected static Boolean m_bIncludeSharedCommenterEdges = false;
 
     /// true to include an edge for each pair of videos that share the same
-    /// tag.
+    /// category.
 
-    protected static Boolean m_bIncludeSharedTagEdges = true;
+    protected static Boolean m_bIncludeSharedCategoryEdges = true;
 
     /// true to include an edge for each pair of videos for which the same
     /// person responded with a video.

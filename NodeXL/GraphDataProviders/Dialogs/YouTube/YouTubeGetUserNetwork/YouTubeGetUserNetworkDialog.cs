@@ -143,7 +143,7 @@ public partial class YouTubeGetUserNetworkDialog :
             {
                 if (m_bIncludeSubscriptionVertices)
                 {
-                    radIncludeFollowedAndFollower.Checked = true;
+                    radIncludeFriendAndSubscriptionVertices.Checked = true;
                 }
                 else
                 {
@@ -356,11 +356,11 @@ public partial class YouTubeGetUserNetworkDialog :
 
     /// true to include a vertex for each of the user's friends.
 
-    protected static Boolean m_bIncludeFriendVertices = true;
+    protected static Boolean m_bIncludeFriendVertices = false;
 
     /// true to include a vertex for each person subscribed to by the user.
 
-    protected static Boolean m_bIncludeSubscriptionVertices = false;
+    protected static Boolean m_bIncludeSubscriptionVertices = true;
 
     /// Network level to include.
 

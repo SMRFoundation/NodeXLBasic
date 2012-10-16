@@ -33,6 +33,11 @@ public class GraphMLToNodeXLWorkbookConverter
     /// The XML document containing GraphML.
     /// </param>
     ///
+    /// <param name="graphMLFilePath">
+    /// Path to the file that contained the GraphML, or null if the GraphML
+    /// didn't come from a file.
+    /// </param>
+    ///
     /// <param name="nodeXLWorkbookPath">
     /// The path where the NodeXL workbook should be saved, or null.  If null,
     /// the workbook is left open and is not saved.
@@ -57,6 +62,7 @@ public class GraphMLToNodeXLWorkbookConverter
     SaveGraphToNodeXLWorkbook
     (
         XmlDocument graphMLDocument,
+        String graphMLFilePath,
         String nodeXLWorkbookPath,
         String nodeXLWorkbookSettingsFilePath,
         Boolean setAutomateTasksOnOpen
@@ -92,9 +98,9 @@ public class GraphMLToNodeXLWorkbookConverter
 
         try
         {
-            SaveGraphToNodeXLWorkbook(graphMLDocument, nodeXLWorkbookPath,
-                nodeXLWorkbookSettingsFilePath, setAutomateTasksOnOpen,
-                oExcelApplication);
+            SaveGraphToNodeXLWorkbook(graphMLDocument, graphMLFilePath,
+                nodeXLWorkbookPath, nodeXLWorkbookSettingsFilePath,
+                setAutomateTasksOnOpen, oExcelApplication);
         }
         finally
         {
@@ -173,6 +179,11 @@ public class GraphMLToNodeXLWorkbookConverter
     /// The XML document containing GraphML.
     /// </param>
     ///
+    /// <param name="sGraphMLFilePath">
+    /// Path to the file that contained the GraphML, or null if the GraphML
+    /// didn't come from a file.
+    /// </param>
+    ///
     /// <param name="sNodeXLWorkbookPath">
     /// The path where the NodeXL workbook should be saved, or null.  If null,
     /// the workbook is left open and is not saved.
@@ -201,6 +212,7 @@ public class GraphMLToNodeXLWorkbookConverter
     SaveGraphToNodeXLWorkbook
     (
         XmlDocument oGraphMLDocument,
+        String sGraphMLFilePath,
         String sNodeXLWorkbookPath,
         String sNodeXLWorkbookSettingsFilePath,
         Boolean bSetAutomateTasksOnOpen,
@@ -280,9 +292,7 @@ public class GraphMLToNodeXLWorkbookConverter
             // ImportGraph method to determine which columns need to be added
             // to the edge and vertex worksheets.
 
-            GraphImporter oGraphImporter = new GraphImporter();
-
-            oGraphImporter.ImportGraph(oGraph,
+            GraphImporter.ImportGraph(oGraph,
 
                 ( String[] )oGraph.GetRequiredValue(
                     ReservedMetadataKeys.AllEdgeMetadataKeys,
@@ -306,6 +316,16 @@ public class GraphMLToNodeXLWorkbookConverter
                 oPerWorkbookSettings.WorkbookSettings = sWorkbookSettings;
             }
 
+            if ( !String.IsNullOrEmpty(sGraphMLFilePath) )
+            {
+                GraphImporter.UpdateGraphHistoryAfterImport(oNodeXLWorkbook,
+
+                    GraphImporter.GetImportedGraphMLFileDescription(
+                        sGraphMLFilePath, oGraph),
+
+                    null);
+            }
+
             if (bSetAutomateTasksOnOpen)
             {
                 // Store an "automate tasks on open" flag in the workbook,
@@ -315,7 +335,6 @@ public class GraphMLToNodeXLWorkbookConverter
 
                 oPerWorkbookSettings.AutomateTasksOnOpen = true;
             }
-
         }
         catch (Exception oException)
         {

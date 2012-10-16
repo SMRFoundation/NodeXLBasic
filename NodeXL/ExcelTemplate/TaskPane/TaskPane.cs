@@ -1535,6 +1535,50 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
+        ExportToNodeXLGraphGalleryOrEmail(
+            new ExportToNodeXLGraphGalleryDialog(m_oWorkbook, oNodeXLControl)
+            );
+    }
+
+    //*************************************************************************
+    //  Method: ExportToEmail()
+    //
+    /// <summary>
+    /// Exports the graph to email.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    ExportToEmail()
+    {
+        AssertValid();
+
+        ExportToNodeXLGraphGalleryOrEmail(
+            new ExportToEmailDialog(m_oWorkbook, oNodeXLControl)
+            );
+    }
+
+    //*************************************************************************
+    //  Method: ExportToNodeXLGraphGalleryOrEmail()
+    //
+    /// <summary>
+    /// Exports the graph to the NodeXL Graph Gallery or email.
+    /// </summary>
+    ///
+    /// <param name="oExportDialog">
+    /// The dialog that does most of the work.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    ExportToNodeXLGraphGalleryOrEmail
+    (
+        Form oExportDialog
+    )
+    {
+        Debug.Assert(oExportDialog != null);
+        AssertValid();
+
         if (oNodeXLControl.IsLayingOutGraph)
         {
             return;
@@ -1543,33 +1587,30 @@ public partial class TaskPane : UserControl
         if (!this.NonEmptyWorkbookRead)
         {
             FormUtil.ShowWarning(
-                "The graph can be exported to the NodeXL Graph Gallery only"
-                + " after it has been shown.  "
+                "The graph can be exported only after it has been shown.  "
                 + HowToShowGraphMessage
                 );
 
             return;
         }
 
-        if (oNodeXLControl.ActualWidth <
-            NodeXLGraphGalleryExporter.MinimumNodeXLControlWidth ||
+        if (
+            oNodeXLControl.ActualWidth <
+                GraphExporterUtil.MinimumNodeXLControlWidth
+            ||
             oNodeXLControl.ActualHeight <
-                NodeXLGraphGalleryExporter.MinimumNodeXLControlHeight)
+                GraphExporterUtil.MinimumNodeXLControlHeight
+            )
         {
             FormUtil.ShowWarning(
                 "The graph pane is too small.  It needs to be enlarged before"
-                + " you can export the graph to the NodeXL Graph Gallery."
+                + " you can export the graph."
                 );
 
             return;
         }
 
-        // The ExportToNodeXLGraphGalleryDialog does all the work.
-
-        ExportToNodeXLGraphGalleryDialog oExportToNodeXLGraphGalleryDialog =
-            new ExportToNodeXLGraphGalleryDialog(m_oWorkbook, oNodeXLControl);
-
-        oExportToNodeXLGraphGalleryDialog.ShowDialog();
+        oExportDialog.ShowDialog();
     }
 
     //*************************************************************************
@@ -4201,6 +4242,11 @@ public partial class TaskPane : UserControl
                 case NoParamCommand.ExportToNodeXLGraphGallery:
 
                     ExportToNodeXLGraphGallery();
+                    break;
+
+                case NoParamCommand.ExportToEmail:
+
+                    ExportToEmail();
                     break;
 
                 case NoParamCommand.LoadUserSettings:

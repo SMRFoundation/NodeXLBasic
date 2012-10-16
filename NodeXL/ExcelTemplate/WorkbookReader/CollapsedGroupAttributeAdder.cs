@@ -240,6 +240,8 @@ public static class CollapsedGroupAttributeAdder
                 sType == CollapsedGroupAttributeValues.FanMotifType
                 ||
                 sType == CollapsedGroupAttributeValues.DParallelMotifType
+                ||
+                sType == CollapsedGroupAttributeValues.CliqueMotifType
                 )
             {
                 AddVertexColorAttributeToMotif(oGroup, sType,
@@ -278,8 +280,8 @@ public static class CollapsedGroupAttributeAdder
     //  Method: AddVertexColorAttributeToMotif()
     //
     /// <summary>
-    /// Adds a collapsed group attribute for vertex color to one fan or
-    /// D-parallel motif.
+    /// Adds a collapsed group attribute for vertex color to one fan,
+    /// D-parallel, or clique motif.
     /// </summary>
     ///
     /// <param name="oGroup">
@@ -726,25 +728,12 @@ public static class CollapsedGroupAttributeAdder
 
         switch (sType)
         {
+            // Fan, Parallel, and Clique fall through as each includes the proper vertices
             case CollapsedGroupAttributeValues.FanMotifType:
 
-                // The motif's leaf vertices should be included, but not the
-                // head vertex.
-
-                String sHeadVertexName;
-
-                if ( oCollapsedGroupAttributes.TryGetValue(
-                        CollapsedGroupAttributeKeys.HeadVertexName,
-                        out sHeadVertexName)
-                    )
-                {
-                    oVerticesToAverage = oGroup.Vertices.Where(
-                        oVertex => oVertex.Name != sHeadVertexName);
-                }
-
-                break;
-
             case CollapsedGroupAttributeValues.DParallelMotifType:
+
+            case CollapsedGroupAttributeValues.CliqueMotifType:
 
                 // All of the motif's vertices should be included.
 

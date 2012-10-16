@@ -11,10 +11,14 @@ namespace Smrf.NodeXL.Adapters
 //  Class: GraphMLAttribute
 //
 /// <summary>
-/// Represents a GraphML vertex or edge attribute.
+/// Represents a GraphML vertex or edge attribute parsed from a GraphML file.
 /// </summary>
 ///
 /// <remarks>
+/// This class is used by <see cref="GraphMLGraphAdapter" /> while it is
+/// parsing a GraphML file.
+///
+/// <para>
 /// In GraphML, a "key" XML node defines an edge or vertex attribute, which
 /// GraphML calls a "Graph-ML attribute," and a "data" XML node specifies the
 /// GraphML-attribute's value for a specific vertex or edge.  The <see
@@ -22,6 +26,7 @@ namespace Smrf.NodeXL.Adapters
 /// <see cref="GetAttributeValue" /> parses a "data" XML node.  <see
 /// cref="TryGetDefaultAttributeValue" /> provides a default value for the
 /// GraphML-attribute, if one was specified.
+/// </para>
 ///
 /// <para>
 /// NodeXL doesn't support the for="graph" or for="all" attribute values

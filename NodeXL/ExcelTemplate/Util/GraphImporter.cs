@@ -21,33 +21,18 @@ namespace Smrf.NodeXL.ExcelTemplate
 /// NodeXL workbook.  The caller should first read the file into a NodeXL graph
 /// using one of the graph adapter classes, then call the <see
 /// cref="ImportGraph" /> method in this class to import the edges and vertices
-/// from the graph to a NodeXL workbook.
+/// from the graph into a NodeXL workbook.
 /// </remarks>
 //*****************************************************************************
 
-public class GraphImporter : Object
+public static class GraphImporter : Object
 {
-    //*************************************************************************
-    //  Constructor: GraphImporter()
-    //
-    /// <summary>
-    /// Initializes a new instance of the <see cref="GraphImporter" /> class.
-    /// </summary>
-    //*************************************************************************
-
-    public GraphImporter()
-    {
-        // (Do nothing.)
-
-        AssertValid();
-    }
-
     //*************************************************************************
     //  Method: ImportGraph()
     //
     /// <summary>
     /// Imports edges and vertices from a graph to the edge and vertex
-    /// worksheets.
+    /// worksheets of a NodeXL workbook.
     /// </summary>
     ///
     /// <param name="sourceGraph">
@@ -70,7 +55,7 @@ public class GraphImporter : Object
     /// </param>
     ///
     /// <param name="destinationNodeXLWorkbook">
-    /// NodeXL workbook the edges and vertices will be imported to.
+    /// NodeXL workbook the edges and vertices will be imported into.
     /// </param>
     ///
     /// <remarks>
@@ -96,7 +81,7 @@ public class GraphImporter : Object
     /// </remarks>
     //*************************************************************************
 
-    public void
+    public static void
     ImportGraph
     (
         IGraph sourceGraph,
@@ -108,7 +93,6 @@ public class GraphImporter : Object
     {
         Debug.Assert(sourceGraph != null);
         Debug.Assert(destinationNodeXLWorkbook != null);
-        AssertValid();
 
         if (clearTablesFirst)
         {
@@ -178,10 +162,166 @@ public class GraphImporter : Object
     }
 
     //*************************************************************************
+    //  Method: GetImportedFileDescription()
+    //
+    /// <summary>
+    /// Gets a string that describes how the graph was imported from a file.
+    /// </summary>
+    ///
+    /// <param name="fileType">
+    /// Type of the file that was imported.  Sample: "Pajek file".
+    /// </param>
+    ///
+    /// <param name="fileName">
+    /// Name of the file that was imported.
+    /// </param>
+    ///
+    /// <returns>
+    /// A description of how the graph was imported from a file.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// The returned string can be used as the importDescription argument to
+    /// <see cref="UpdateGraphHistoryAfterImport" />, for example.
+    /// </remarks>
+    //*************************************************************************
+
+    public static String
+    GetImportedFileDescription
+    (
+        String fileType,
+        String fileName
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(fileType) );
+        Debug.Assert( !String.IsNullOrEmpty(fileName) );
+
+        return ( String.Format(
+
+            "The graph was imported from the {0} \"{1}\"."
+            ,
+            fileType,
+            fileName
+            ) );
+    }
+
+    //*************************************************************************
+    //  Method: GetImportedGraphMLFileDescription()
+    //
+    /// <summary>
+    /// Gets a string that describes how the graph was imported from a GraphML
+    /// file.
+    /// </summary>
+    ///
+    /// <param name="graphMLFileName">
+    /// Name of the GraphML file that was imported.
+    /// </param>
+    ///
+    /// <param name="graph">
+    /// Graph into which the GraphML file was imported.
+    /// </param>
+    ///
+    /// <returns>
+    /// A description of how the graph was imported from a GraphML file.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// The returned string can be used as the importDescription argument to
+    /// <see cref="UpdateGraphHistoryAfterImport" />, for example.
+    /// </remarks>
+    //*************************************************************************
+
+    public static String
+    GetImportedGraphMLFileDescription
+    (
+        String graphMLFileName,
+        IGraph graph
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(graphMLFileName) );
+        Debug.Assert(graph != null);
+
+        // If the graph already has a description, use it.
+        //
+        // This can occur, for example, if the GraphML was imported from a file
+        // created by the NetworkServer command line program, which stores a
+        // description in the GraphML.
+
+        String sImportedGraphMLFileDescription = (String)graph.GetValue(
+            ReservedMetadataKeys.GraphDescription, typeof(String) );
+
+        if ( String.IsNullOrEmpty(sImportedGraphMLFileDescription) )
+        {
+            sImportedGraphMLFileDescription = GetImportedFileDescription(
+                "GraphML file", graphMLFileName);
+        }
+
+        return (sImportedGraphMLFileDescription);
+    }
+
+    //*************************************************************************
+    //  Method: UpdateGraphHistoryAfterImport()
+    //
+    /// <summary>
+    /// Updates the graph's history with details about how the graph was
+    /// imported into a NodeXL workbook, if permitted by the user.
+    /// </summary>
+    ///
+    /// <param name="destinationNodeXLWorkbook">
+    /// NodeXL workbook the edges and vertices were imported to.
+    /// </param>
+    ///
+    /// <param name="importDescription">
+    /// Description of the technique that was used to import the graph.  Can be
+    /// empty or null.
+    /// </param>
+    ///
+    /// <param name="suggestedFileNameNoExtension">
+    /// File name suggested for the NodeXL workbook, without a path or
+    /// extension.  Can be empty or null.
+    /// </param>
+    //*************************************************************************
+
+    public static void
+    UpdateGraphHistoryAfterImport
+    (
+        Microsoft.Office.Interop.Excel.Workbook destinationNodeXLWorkbook,
+        String importDescription,
+        String suggestedFileNameNoExtension
+    )
+    {
+        Debug.Assert(destinationNodeXLWorkbook != null);
+
+        Boolean bSaveImportDescription =
+            ( new ImportDataUserSettings() ).SaveImportDescription;
+
+        if (importDescription == null || !bSaveImportDescription)
+        {
+            importDescription = String.Empty;
+        }
+
+        if (suggestedFileNameNoExtension == null || !bSaveImportDescription)
+        {
+            suggestedFileNameNoExtension = String.Empty;
+        }
+
+        PerWorkbookSettings oPerWorkbookSettings = new PerWorkbookSettings(
+            destinationNodeXLWorkbook);
+
+        oPerWorkbookSettings.SetGraphHistoryValue(
+            GraphHistoryKeys.ImportDescription, importDescription);
+
+        oPerWorkbookSettings.SetGraphHistoryValue(
+            GraphHistoryKeys.ImportSuggestedFileNameNoExtension,
+            suggestedFileNameNoExtension);
+    }
+
+    //*************************************************************************
     //  Method: ImportEdges()
     //
     /// <summary>
-    /// Imports edges and their attributes from a graph to the edge worksheet.
+    /// Imports edges and their attributes from a graph into the edge
+    /// worksheet.
     /// </summary>
     ///
     /// <param name="oSourceGraph">
@@ -211,7 +351,7 @@ public class GraphImporter : Object
     /// </param>
     //*************************************************************************
 
-    protected void
+    private static void
     ImportEdges
     (
         IGraph oSourceGraph,
@@ -226,7 +366,6 @@ public class GraphImporter : Object
         Debug.Assert(oEdgeTable != null);
         Debug.Assert(oVertex1NameColumnData != null);
         Debug.Assert(oVertex2NameColumnData != null);
-        AssertValid();
 
         Int32 iRowOffsetToWriteTo = 0;
 
@@ -328,7 +467,7 @@ public class GraphImporter : Object
     //  Method: ImportVertices()
     //
     /// <summary>
-    /// Imports vertices and their attributes from a graph to the vertex
+    /// Imports vertices and their attributes from a graph into the vertex
     /// worksheet.
     /// </summary>
     ///
@@ -354,7 +493,7 @@ public class GraphImporter : Object
     /// </param>
     //*************************************************************************
 
-    protected void
+    private static void
     ImportVertices
     (
         IGraph oSourceGraph,
@@ -368,7 +507,6 @@ public class GraphImporter : Object
         Debug.Assert(oVertexTable != null);
         Debug.Assert(oVertexNameColumnData != null);
         Debug.Assert(oVisibilityColumnData != null);
-        AssertValid();
 
         // Create a dictionary that maps vertex names to row numbers in the
         // vertex worksheet.
@@ -482,7 +620,7 @@ public class GraphImporter : Object
     /// </param>
     //*************************************************************************
 
-    protected void
+    private static void
     ImportVertexAttributes
     (
         IGraph oSourceGraph,
@@ -495,7 +633,6 @@ public class GraphImporter : Object
         Debug.Assert(asVertexAttributes != null);
         Debug.Assert(oVertexDictionary != null);
         Debug.Assert(oVertexTable != null);
-        AssertValid();
 
         // Create vertex attribute arrays that will be written to the vertex
         // table.
@@ -585,7 +722,7 @@ public class GraphImporter : Object
     /// </remarks>
     //*************************************************************************
 
-    protected void
+    private static void
     GetAttributeColumn
     (
         ListObject oTable,
@@ -596,7 +733,6 @@ public class GraphImporter : Object
     {
         Debug.Assert(oTable != null);
         Debug.Assert( !String.IsNullOrEmpty(sAttribute) );
-        AssertValid();
 
         if ( !ExcelTableUtil.TryGetTableColumn(oTable, sAttribute,
             out oAttributeColumn) )
@@ -648,7 +784,7 @@ public class GraphImporter : Object
     /// </returns>
     //*************************************************************************
 
-    protected Object
+    private static Object
     CleanUpAttributeValue
     (
         Object value
@@ -691,7 +827,7 @@ public class GraphImporter : Object
     /// </remarks>
     //*************************************************************************
 
-    protected void
+    private static void
     SetRangeValues
     (
         Range oUpperLeftCornerMarker,
@@ -722,30 +858,6 @@ public class GraphImporter : Object
 
         oActualRange.WrapText = false;
     }
-
-
-    //*************************************************************************
-    //  Method: AssertValid()
-    //
-    /// <summary>
-    /// Asserts if the object is in an invalid state.  Debug-only.
-    /// </summary>
-    //*************************************************************************
-
-    [Conditional("DEBUG")]
-
-    public void
-    AssertValid()
-    {
-        // (Do nothing.)
-    }
-
-
-    //*************************************************************************
-    //  Protected fields
-    //*************************************************************************
-
-    // (None.)
 }
 
 }

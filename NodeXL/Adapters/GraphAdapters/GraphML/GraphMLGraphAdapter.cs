@@ -832,13 +832,10 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
         GraphMLXmlDocument oGraphMLXmlDocument = new GraphMLXmlDocument(
             graph.Directedness == GraphDirectedness.Directed);
 
-        String [] asEdgeAttributeNames = ( String[] )graph.GetRequiredValue(
-            ReservedMetadataKeys.AllEdgeMetadataKeys, typeof( String[] ) );
+        String [] asEdgeAttributeNames = GetAttributeNames(graph, false);
+        String [] asVertexAttributeNames = GetAttributeNames(graph, true);
 
-        String [] asVertexAttributeNames = ( String[] )graph.GetRequiredValue(
-            ReservedMetadataKeys.AllVertexMetadataKeys, typeof( String[] ) );
-
-        // Define the Graph-ML attributes.
+        // Define the GraphML-attributes.
 
         const String VertexAttributeIDPrefix = "V-";
         const String EdgeAttributeIDPrefix = "E-";
@@ -857,7 +854,7 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
                 sEdgeAttributeName, "string", null);
         }
 
-        // Add the vertices and their Graph-ML attribute values.
+        // Add the vertices and their GraphML-attribute values.
 
         foreach (IVertex oVertex in graph.Vertices)
         {
@@ -869,7 +866,7 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
                 VertexAttributeIDPrefix);
         }
 
-        // Add the edges and their Graph-ML attribute values.
+        // Add the edges and their GraphML-attribute values.
 
         foreach (IEdge oEdge in graph.Edges)
         {
@@ -889,7 +886,7 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
     //  Method: AppendGraphMLAttributeValues()
     //
     /// <summary>
-    /// Appends Graph-ML attribute values to a vertex or edge XML node while
+    /// Appends GraphML-attribute values to a vertex or edge XML node while
     /// saving a graph.
     /// </summary>
     ///
@@ -907,11 +904,11 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
     /// </param>
     ///
     /// <param name="asAttributeNames">
-    /// Array of all possible Graph-ML attribute names for the edge or vertex.
+    /// Array of all possible GraphML-attribute names for the edge or vertex.
     /// </param>
     ///
     /// <param name="AttributeIDPrefix">
-    /// The prefix to use for each Graph-ML attribute ID.
+    /// The prefix to use for each GraphML-attribute ID.
     /// </param>
     //*************************************************************************
 

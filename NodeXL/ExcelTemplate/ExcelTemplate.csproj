@@ -22,7 +22,7 @@
     <InstallUrl>
     </InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.1.224</ApplicationVersion>
+    <ApplicationVersion>1.0.1.226</ApplicationVersion>
     <AutoIncrementApplicationRevision>false</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>0</UpdateInterval>
@@ -109,6 +109,10 @@
     <Reference Include="Microsoft.VisualStudio.Tools.Applications.Runtime.v9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Ionic.Zip.Reduced, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>References\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.Tools.Applications.ServerDocument.v9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
@@ -253,6 +257,9 @@
     <Compile Include="..\..\Common\Win32Window.cs">
       <Link>Util\Win32Window.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\ZipUtil.cs">
+      <Link>Util\GraphExporters\ZipUtil.cs</Link>
+    </Compile>
     <Compile Include="..\Common\Controls\RegisterUser\RegisterUserControl.cs">
       <Link>Controls\RegisterUser\RegisterUserControl.cs</Link>
       <SubType>UserControl</SubType>
@@ -275,6 +282,18 @@
     </Compile>
     <Compile Include="Controls\ColumnComboBoxes\VertexColumnComboBox.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ExportedFilesDescription\ExportedFilesDescriptionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ExportedFilesDescription\ExportedFilesDescriptionControl.designer.cs">
+      <DependentUpon>ExportedFilesDescriptionControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ExportedFiles\ExportedFilesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ExportedFiles\ExportedFilesControl.designer.cs">
+      <DependentUpon>ExportedFilesControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\HeaderFooter\HeaderFooterControl.cs">
       <SubType>UserControl</SubType>
@@ -422,6 +441,12 @@
     <Compile Include="Dialogs\ExcelTemplateForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Dialogs\ExportToEmail\ExportToEmailDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ExportToEmail\ExportToEmailDialog.designer.cs">
+      <DependentUpon>ExportToEmailDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\ExportToNodeXLGraphGallery\ExportToNodeXLGraphGalleryDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -548,6 +573,7 @@
     <Compile Include="Dialogs\RegisterUser\RegisterUserDialog.designer.cs">
       <DependentUpon>RegisterUserDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\SaveGexfFile\SaveGexfFileDialog.cs" />
     <Compile Include="Dialogs\SaveGraphFile\SaveGraphFileDialog.cs" />
     <Compile Include="Dialogs\SaveGraphImageFile\SaveGraphImageFileDialog.cs" />
     <Compile Include="Dialogs\SaveGraphMLFile\SaveGraphMLFileDialog.cs" />
@@ -845,6 +871,10 @@
     <Compile Include="Util\DynamicFilters\RangeFilterParameters.cs" />
     <Compile Include="Util\ErrorUtil.cs" />
     <Compile Include="Util\ExcelObjectNames.cs" />
+    <Compile Include="Util\GraphExporters\EmailExporter.cs" />
+    <Compile Include="Util\GraphExporters\GraphExporterUtil.cs" />
+    <Compile Include="Util\GraphExporters\NodeXLGraphGalleryExporter.cs" />
+    <Compile Include="Util\GraphExporters\NodeXLGraphGalleryService.cs" />
     <Compile Include="Util\GraphHistory.cs" />
     <Compile Include="Util\GraphImageCompositor.cs" />
     <Compile Include="Util\GraphImporter.cs" />
@@ -860,8 +890,6 @@
     <Compile Include="Util\Groups\GroupManager.cs" />
     <Compile Include="Util\Groups\VertexAttributeGrouper.cs" />
     <Compile Include="Util\NodeXLControlUtil.cs" />
-    <Compile Include="Util\NodeXLGraphGalleryExporter.cs" />
-    <Compile Include="Util\NodeXLGraphGalleryService.cs" />
     <Compile Include="Util\NodeXLWorkbookConverter.cs" />
     <Compile Include="Util\NodeXLWorkbookUpdater.cs" />
     <Compile Include="Util\NodeXLWorkbookUtil.cs" />
@@ -985,6 +1013,12 @@
       <Link>Controls\RegisterUser\RegisterUserControl.resx</Link>
       <DependentUpon>RegisterUserControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ExportedFilesDescription\ExportedFilesDescriptionControl.resx">
+      <DependentUpon>ExportedFilesDescriptionControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ExportedFiles\ExportedFilesControl.resx">
+      <DependentUpon>ExportedFilesControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\HeaderFooter\HeaderFooterControl.resx">
       <DependentUpon>HeaderFooterControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -1034,6 +1068,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\EdgeWidth\EdgeWidthDialog.resx">
       <DependentUpon>EdgeWidthDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ExportToEmail\ExportToEmailDialog.resx">
+      <DependentUpon>ExportToEmailDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\ExportToNodeXLGraphGallery\ExportToNodeXLGraphGalleryDialog.resx">
       <DependentUpon>ExportToNodeXLGraphGalleryDialog.cs</DependentUpon>

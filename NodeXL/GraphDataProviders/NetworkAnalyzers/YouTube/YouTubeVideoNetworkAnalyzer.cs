@@ -72,10 +72,11 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         SharedCommenterEdges = 1,
 
         /// <summary>
-        /// Include an edge for each pair of videos that share the same tag.
+        /// Include an edge for each pair of videos that share the same
+        /// category.
         /// </summary>
 
-        SharedTagEdges = 2,
+        SharedCategoryEdges = 2,
 
         /// <summary>
         /// Include an edge for each pair of videos for which the same person
@@ -257,26 +258,26 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         // First, add a vertex for each video matching the search term.
 
         HashSet<String> oVideoIDs;
-        Dictionary< String, LinkedList<String> > oTagDictionary;
+        Dictionary< String, LinkedList<String> > oCategoryDictionary;
 
         AppendVertexXmlNodes(sSearchTerm, eWhatToInclude, iMaximumVideos,
             oGraphMLXmlDocument, oRequestStatistics, out oVideoIDs,
-            out oTagDictionary);
+            out oCategoryDictionary);
 
         // Now add whatever edges were requested.
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.SharedTagEdges) )
+            WhatToInclude.SharedCategoryEdges) )
         {
-            Debug.Assert(oTagDictionary != null);
+            Debug.Assert(oCategoryDictionary != null);
 
-            ReportProgress("Adding edges for shared tags.");
+            ReportProgress("Adding edges for shared categories.");
 
-            AppendEdgesFromDictionary(oTagDictionary, oGraphMLXmlDocument,
-                "Shared tag", SharedTagID);
+            AppendEdgesFromDictionary(oCategoryDictionary, oGraphMLXmlDocument,
+                "Shared category", SharedCategoryID);
         }
 
-        oTagDictionary = null;
+        oCategoryDictionary = null;
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.SharedCommenterEdges) )
@@ -328,10 +329,10 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         DefineRelationshipGraphMLAttribute(oGraphMLXmlDocument);
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.SharedTagEdges) )
+            WhatToInclude.SharedCategoryEdges) )
         {
-            oGraphMLXmlDocument.DefineGraphMLAttribute(true, SharedTagID,
-                "Shared Tag", "string", null);
+            oGraphMLXmlDocument.DefineGraphMLAttribute(true, SharedCategoryID,
+                "Shared Category", "string", null);
         }
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
@@ -409,11 +410,11 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
     /// Where the set of unique video IDs gets stored.
     /// </param>
     ///
-    /// <param name="oTagDictionary">
+    /// <param name="oCategoryDictionary">
     /// If an edge should be included for each pair of videos that share the
-    /// same tag, this gets set to a Dictionary for which the key is a
-    /// lower-case tag and the value is a LinkedList of the video IDs that have
-    /// the tag.  Otherwise, it gets set to null.
+    /// same category, this gets set to a Dictionary for which the key is a
+    /// lower-case category and the value is a LinkedList of the video IDs that
+    /// have the category.  Otherwise, it gets set to null.
     /// </param>
     //*************************************************************************
 
@@ -426,7 +427,7 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         GraphMLXmlDocument oGraphMLXmlDocument,
         RequestStatistics oRequestStatistics,
         out HashSet<String> oVideoIDs,
-        out Dictionary< String, LinkedList<String> > oTagDictionary
+        out Dictionary< String, LinkedList<String> > oCategoryDictionary
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
@@ -444,17 +445,18 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         oVideoIDs = new HashSet<String>();
 
         // If an edge should be included for each pair of videos that share the
-        // same tag, the key is a lower-case tag and the value is a LinkedList
-        // of the video IDs that have the tag.
+        // same category, the key is a lower-case category and the value is a
+        // LinkedList of the video IDs that have the category.
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.SharedTagEdges) )
+            WhatToInclude.SharedCategoryEdges) )
         {
-            oTagDictionary = new Dictionary< String, LinkedList<String> >();
+            oCategoryDictionary =
+                new Dictionary< String, LinkedList<String> >();
         }
         else
         {
-            oTagDictionary = null;
+            oCategoryDictionary = null;
         }
 
         String sUrl = String.Format(
@@ -533,10 +535,10 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
                     MenuTextID, "Play Video in Browser");
             }
 
-            if (oTagDictionary != null)
+            if (oCategoryDictionary != null)
             {
-                CollectTags(oEntryXmlNode, sVideoID, oXmlNamespaceManager,
-                    oTagDictionary);
+                CollectCategories(oEntryXmlNode, sVideoID,
+                    oXmlNamespaceManager, oCategoryDictionary);
             }
         }
     }
@@ -660,10 +662,10 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: CollectTags()
+    //  Method: CollectCategories()
     //
     /// <summary>
-    /// Collects tags for a YouTube video.
+    /// Collects categories for a YouTube video.
     /// </summary>
     ///
     /// <param name="oEntryXmlNode">
@@ -678,38 +680,38 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
     /// NamespaceManager to use, or null to not use one.
     /// </param>
     ///
-    /// <param name="oTagDictionary">
-    /// The key is a lower-case tag and the value is a LinkedList of the video
-    /// IDs that have the tag.
+    /// <param name="oCategoryDictionary">
+    /// The key is a lower-case category and the value is a LinkedList of the
+    /// video IDs that have the category.
     /// </param>
     //*************************************************************************
 
     protected void
-    CollectTags
+    CollectCategories
     (
         XmlNode oEntryXmlNode,
         String sVideoID,
         XmlNamespaceManager oXmlNamespaceManager,
-        Dictionary< String, LinkedList<String> > oTagDictionary
+        Dictionary< String, LinkedList<String> > oCategoryDictionary
     )
     {
         Debug.Assert(oEntryXmlNode != null);
         Debug.Assert( !String.IsNullOrEmpty(sVideoID) );
         Debug.Assert(oXmlNamespaceManager != null);
-        Debug.Assert(oTagDictionary != null);
+        Debug.Assert(oCategoryDictionary != null);
         AssertValid();
 
         foreach ( XmlAttribute oXmlAttribute in oEntryXmlNode.SelectNodes(
 
             "a:category[@scheme='http://gdata.youtube.com/schemas/2007/"
-            + "keywords.cat']/@term",
+            + "categories.cat']/@term",
 
             oXmlNamespaceManager) )
         {
             if ( !String.IsNullOrEmpty(oXmlAttribute.Value) )
             {
                 AddVideoIDToDictionary(oXmlAttribute.Value.ToLower(), sVideoID,
-                    oTagDictionary);
+                    oCategoryDictionary);
             }
         }
     }
@@ -931,11 +933,11 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         oNetworkDescriber.AddNetworkTime();
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.SharedTagEdges) )
+            WhatToInclude.SharedCategoryEdges) )
         {
             oNetworkDescriber.AddSentence(
-                "There is an edge for each pair of videos tagged with the same"
-                + " keyword."
+                "There is an edge for each pair of videos that have the same"
+                + " category."
                 );
         }
 
@@ -1030,7 +1032,7 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
 
     /// GraphML-attribute IDs for edges.
 
-    protected const String SharedTagID = "SharedTag";
+    protected const String SharedCategoryID = "SharedCategory";
     ///
     protected const String SharedCommenterID = "SharedCommenter";
     ///

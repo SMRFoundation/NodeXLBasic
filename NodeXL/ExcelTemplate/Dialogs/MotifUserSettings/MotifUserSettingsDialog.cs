@@ -128,18 +128,59 @@ public partial class MotifUserSettingsDialog : ExcelTemplateForm
                 }
             }
 
+            if (chkClique.Checked)
+            {
+                eMotifsToCalculate |= Motifs.Clique;
+
+                Int32 iCliqueMinimumMemberVertices,
+                    iCliqueMaximumMemberVertices;
+
+                if (
+                    !ValidateNumericUpDown(nudCliqueMinimumMemberVertices,
+                        "the minimum number of member vertices",
+                        out iCliqueMinimumMemberVertices)
+                    ||
+                    !ValidateNumericUpDown(nudCliqueMaximumMemberVertices,
+                        "the maximum number of member vertices",
+                        out iCliqueMaximumMemberVertices)
+                    )
+                {
+                    return (false);
+                }
+                else
+                {
+                    // Don't require the minimum and maximum to be in the
+                    // typical order.
+
+                    m_oMotifUserSettings.CliqueMinimumMemberVertices =
+                        Math.Min(iCliqueMinimumMemberVertices,
+                            iCliqueMaximumMemberVertices);
+
+                    m_oMotifUserSettings.CliqueMaximumMemberVertices =
+                        Math.Max(iCliqueMinimumMemberVertices,
+                            iCliqueMaximumMemberVertices);
+                }
+            }
+
             m_oMotifUserSettings.MotifsToCalculate = eMotifsToCalculate;
         }
         else
         {
             chkFan.Checked = ShouldGroupByMotif(Motifs.Fan);
             chkDParallel.Checked = ShouldGroupByMotif(Motifs.DParallel);
+            chkClique.Checked = ShouldGroupByMotif(Motifs.Clique);
 
             nudDParallelMinimumAnchorVertices.Value =
                 m_oMotifUserSettings.DParallelMinimumAnchorVertices;
 
             nudDParallelMaximumAnchorVertices.Value =
                 m_oMotifUserSettings.DParallelMaximumAnchorVertices;
+
+            nudCliqueMinimumMemberVertices.Value =
+                m_oMotifUserSettings.CliqueMinimumMemberVertices;
+
+            nudCliqueMaximumMemberVertices.Value =
+                m_oMotifUserSettings.CliqueMaximumMemberVertices;
 
             EnableControls();
         }
@@ -190,6 +231,12 @@ public partial class MotifUserSettingsDialog : ExcelTemplateForm
             nudDParallelMinimumAnchorVertices,
             nudDParallelMaximumAnchorVertices
             );
+
+        EnableControls(chkClique.Checked,
+            nudCliqueMinimumMemberVertices,
+            nudCliqueMaximumMemberVertices
+    );
+
     }
 
     //*************************************************************************

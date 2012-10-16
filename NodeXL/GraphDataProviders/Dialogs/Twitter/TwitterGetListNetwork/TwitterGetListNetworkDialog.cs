@@ -147,7 +147,7 @@ public partial class TwitterGetListNetworkDialog
             {
                 const String ScreenNamesMessage =
                     "Enter a set of Twitter usernames separated with spaces,"
-                    + " commas or line breaks."
+                    + " commas or returns."
                     ;
 
                 if ( !ValidateRequiredTextBox(txbScreenNames,

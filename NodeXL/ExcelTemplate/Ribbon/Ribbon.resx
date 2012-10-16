@@ -117,16 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="btnMergeDuplicateEdges.SuperTip" xml:space="preserve">
-    <value>Count edges that are duplicates, merge them, or both.  You can specify how NodeXL determines whether two edges are duplicates.</value>
-  </data>
-  <data name="btnPopulateVertexWorksheet.SuperTip" xml:space="preserve">
-    <value>Copy each unique vertex name from the Edges worksheet to the Vertices worksheet.
-
-This occurs automatically when you refresh the graph, but you can click this to copy the vertex names at any time.
-
-Vertex names that are already in the Vertices worksheet do not get overwritten.</value>
-  </data>
   <data name="btnImportFromGraphMLFile.SuperTip" xml:space="preserve">
     <value>Optionally clear the NodeXL workbook, then import edges and vertices from a GraphML file.
 
@@ -146,6 +136,13 @@ Excel can read comma-delimited, tab-delimited, and various other file formats, s
     <value>Optionally clear the NodeXL workbook, then analyze the relationships between the people in my email network.
 
 If your computer has Windows Desktop Search and you use Outlook, Outlook Express, or Windows Mail, you can use this feature to analyze the relationships between the people you communicate with via email.  (Windows Desktop Search is included with Windows 7 and Vista.  It can also be downloaded and installed on Windows XP.)</value>
+  </data>
+  <data name="btnPopulateVertexWorksheet.SuperTip" xml:space="preserve">
+    <value>Copy each unique vertex name from the Edges worksheet to the Vertices worksheet.
+
+This occurs automatically when you refresh the graph, but you can click this to copy the vertex names at any time.
+
+Vertex names that are already in the Vertices worksheet do not get overwritten.</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="btnReadWorkbook.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

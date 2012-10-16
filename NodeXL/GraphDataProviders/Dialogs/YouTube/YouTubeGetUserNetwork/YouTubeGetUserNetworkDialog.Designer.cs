@@ -36,7 +36,7 @@ namespace Smrf.NodeXL.GraphDataProviders.YouTube
             this.usrLimitToN = new Smrf.NodeXL.GraphDataProviders.LimitToNControl();
             this.chkIncludeAllStatistics = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.radIncludeFollowedAndFollower = new System.Windows.Forms.RadioButton();
+            this.radIncludeFriendAndSubscriptionVertices = new System.Windows.Forms.RadioButton();
             this.radIncludeSubscriptionVertices = new System.Windows.Forms.RadioButton();
             this.radIncludeFriendVertices = new System.Windows.Forms.RadioButton();
             this.txbUserName = new System.Windows.Forms.TextBox();
@@ -85,6 +85,7 @@ namespace Smrf.NodeXL.GraphDataProviders.YouTube
             // usrLimitToN
             // 
             this.usrLimitToN.Location = new System.Drawing.Point(129, 192);
+            this.usrLimitToN.MaximumN = 9999;
             this.usrLimitToN.N = 2147483647;
             this.usrLimitToN.Name = "usrLimitToN";
             this.usrLimitToN.ObjectName = "people";
@@ -102,7 +103,7 @@ namespace Smrf.NodeXL.GraphDataProviders.YouTube
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.radIncludeFollowedAndFollower);
+            this.groupBox1.Controls.Add(this.radIncludeFriendAndSubscriptionVertices);
             this.groupBox1.Controls.Add(this.radIncludeSubscriptionVertices);
             this.groupBox1.Controls.Add(this.radIncludeFriendVertices);
             this.groupBox1.Location = new System.Drawing.Point(0, 45);
@@ -112,37 +113,39 @@ namespace Smrf.NodeXL.GraphDataProviders.YouTube
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Add a vertex for each";
             // 
-            // radIncludeFollowedAndFollower
+            // radIncludeFriendAndSubscriptionVertices
             // 
-            this.radIncludeFollowedAndFollower.AutoSize = true;
-            this.radIncludeFollowedAndFollower.Location = new System.Drawing.Point(15, 60);
-            this.radIncludeFollowedAndFollower.Name = "radIncludeFollowedAndFollower";
-            this.radIncludeFollowedAndFollower.Size = new System.Drawing.Size(47, 17);
-            this.radIncludeFollowedAndFollower.TabIndex = 2;
-            this.radIncludeFollowedAndFollower.TabStop = true;
-            this.radIncludeFollowedAndFollower.Text = "&Both";
-            this.radIncludeFollowedAndFollower.UseVisualStyleBackColor = true;
+            this.radIncludeFriendAndSubscriptionVertices.AutoSize = true;
+            this.radIncludeFriendAndSubscriptionVertices.Enabled = false;
+            this.radIncludeFriendAndSubscriptionVertices.Location = new System.Drawing.Point(15, 60);
+            this.radIncludeFriendAndSubscriptionVertices.Name = "radIncludeFriendAndSubscriptionVertices";
+            this.radIncludeFriendAndSubscriptionVertices.Size = new System.Drawing.Size(47, 17);
+            this.radIncludeFriendAndSubscriptionVertices.TabIndex = 2;
+            this.radIncludeFriendAndSubscriptionVertices.TabStop = true;
+            this.radIncludeFriendAndSubscriptionVertices.Text = "&Both";
+            this.radIncludeFriendAndSubscriptionVertices.UseVisualStyleBackColor = true;
             // 
             // radIncludeSubscriptionVertices
             // 
             this.radIncludeSubscriptionVertices.AutoSize = true;
             this.radIncludeSubscriptionVertices.Location = new System.Drawing.Point(15, 40);
             this.radIncludeSubscriptionVertices.Name = "radIncludeSubscriptionVertices";
-            this.radIncludeSubscriptionVertices.Size = new System.Drawing.Size(179, 17);
+            this.radIncludeSubscriptionVertices.Size = new System.Drawing.Size(232, 17);
             this.radIncludeSubscriptionVertices.TabIndex = 1;
-            this.radIncludeSubscriptionVertices.Text = "Person &subscribed to by the user";
+            this.radIncludeSubscriptionVertices.Text = "Person or channel &subscribed to by the user";
             this.radIncludeSubscriptionVertices.UseVisualStyleBackColor = true;
             // 
             // radIncludeFriendVertices
             // 
             this.radIncludeFriendVertices.AutoSize = true;
             this.radIncludeFriendVertices.Checked = true;
+            this.radIncludeFriendVertices.Enabled = false;
             this.radIncludeFriendVertices.Location = new System.Drawing.Point(15, 20);
             this.radIncludeFriendVertices.Name = "radIncludeFriendVertices";
-            this.radIncludeFriendVertices.Size = new System.Drawing.Size(107, 17);
+            this.radIncludeFriendVertices.Size = new System.Drawing.Size(258, 17);
             this.radIncludeFriendVertices.TabIndex = 0;
             this.radIncludeFriendVertices.TabStop = true;
-            this.radIncludeFriendVertices.Text = "&Friend of the user";
+            this.radIncludeFriendVertices.Text = "&Friend of the user (currently blocked by YouTube)";
             this.radIncludeFriendVertices.UseVisualStyleBackColor = true;
             // 
             // txbUserName
@@ -221,7 +224,7 @@ namespace Smrf.NodeXL.GraphDataProviders.YouTube
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Panel pnlUserInputs;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.RadioButton radIncludeFollowedAndFollower;
+        private System.Windows.Forms.RadioButton radIncludeFriendAndSubscriptionVertices;
         private System.Windows.Forms.RadioButton radIncludeSubscriptionVertices;
         private System.Windows.Forms.RadioButton radIncludeFriendVertices;
         private System.Windows.Forms.TextBox txbUserName;

@@ -36,7 +36,7 @@ namespace Smrf.NodeXL.GraphDataProviders.YouTube
             this.usrLimitToN = new Smrf.NodeXL.GraphDataProviders.LimitToNControl();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.chkIncludeSharedVideoResponderEdges = new System.Windows.Forms.CheckBox();
-            this.chkIncludeSharedTagEdges = new System.Windows.Forms.CheckBox();
+            this.chkIncludeSharedCategoryEdges = new System.Windows.Forms.CheckBox();
             this.chkIncludeSharedCommenterEdges = new System.Windows.Forms.CheckBox();
             this.txbSearchTerm = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -90,7 +90,7 @@ namespace Smrf.NodeXL.GraphDataProviders.YouTube
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.chkIncludeSharedVideoResponderEdges);
-            this.groupBox2.Controls.Add(this.chkIncludeSharedTagEdges);
+            this.groupBox2.Controls.Add(this.chkIncludeSharedCategoryEdges);
             this.groupBox2.Controls.Add(this.chkIncludeSharedCommenterEdges);
             this.groupBox2.Location = new System.Drawing.Point(0, 60);
             this.groupBox2.Name = "groupBox2";
@@ -110,15 +110,15 @@ namespace Smrf.NodeXL.GraphDataProviders.YouTube
             this.chkIncludeSharedVideoResponderEdges.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.chkIncludeSharedVideoResponderEdges.UseVisualStyleBackColor = true;
             // 
-            // chkIncludeSharedTagEdges
+            // chkIncludeSharedCategoryEdges
             // 
-            this.chkIncludeSharedTagEdges.AutoSize = true;
-            this.chkIncludeSharedTagEdges.Location = new System.Drawing.Point(15, 20);
-            this.chkIncludeSharedTagEdges.Name = "chkIncludeSharedTagEdges";
-            this.chkIncludeSharedTagEdges.Size = new System.Drawing.Size(237, 17);
-            this.chkIncludeSharedTagEdges.TabIndex = 0;
-            this.chkIncludeSharedTagEdges.Text = "Pair &of videos tagged with the same keyword";
-            this.chkIncludeSharedTagEdges.UseVisualStyleBackColor = true;
+            this.chkIncludeSharedCategoryEdges.AutoSize = true;
+            this.chkIncludeSharedCategoryEdges.Location = new System.Drawing.Point(15, 20);
+            this.chkIncludeSharedCategoryEdges.Name = "chkIncludeSharedCategoryEdges";
+            this.chkIncludeSharedCategoryEdges.Size = new System.Drawing.Size(237, 17);
+            this.chkIncludeSharedCategoryEdges.TabIndex = 0;
+            this.chkIncludeSharedCategoryEdges.Text = "Pair &of videos that have the same category";
+            this.chkIncludeSharedCategoryEdges.UseVisualStyleBackColor = true;
             // 
             // chkIncludeSharedCommenterEdges
             // 
@@ -204,7 +204,7 @@ namespace Smrf.NodeXL.GraphDataProviders.YouTube
         private System.Windows.Forms.ToolStripStatusLabel slStatusLabel;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.CheckBox chkIncludeSharedVideoResponderEdges;
-        private System.Windows.Forms.CheckBox chkIncludeSharedTagEdges;
+        private System.Windows.Forms.CheckBox chkIncludeSharedCategoryEdges;
         private System.Windows.Forms.CheckBox chkIncludeSharedCommenterEdges;
     }
 }

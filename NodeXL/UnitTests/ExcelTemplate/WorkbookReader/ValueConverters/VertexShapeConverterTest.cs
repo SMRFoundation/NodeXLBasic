@@ -473,12 +473,12 @@ public class VertexShapeConverterTest : Object
     public void
     VerifyUpToDate()
     {
-        // Note: As of March 2012, the VertexShape.SolidTaperedDiamond shape is
-        // used only for collapsed D-parallel motifs and cannot be selected as
-        // a vertex shape in the workbook.  Therefore, there are 12 shapes, but
-        // only 11 of them are tested by this class.
+        // Note: As of October 2012, the VertexShape.SolidTaperedDiamond and
+        // SolidTaperedSquare shapes are used only for collapsed motifs and
+        // cannot be selected as a vertex shape in the workbook.  Therefore,
+        // there are 13 shapes, but only 11 of them are tested by this class.
 
-        Assert.AreEqual(12, Enum.GetValues( typeof(VertexShape) ).Length);
+        Assert.AreEqual(13, Enum.GetValues( typeof(VertexShape) ).Length);
     }
 
 

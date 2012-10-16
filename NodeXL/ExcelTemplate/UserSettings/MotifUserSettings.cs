@@ -43,12 +43,12 @@ public class MotifUserSettings : NodeXLApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-    /// The motifs to calculate.  The default value is Fan|DParallel.
+    /// The motifs to calculate.  The default value is Fan|DParallel|Clique.
     /// </value>
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("Fan, DParallel") ]
+    [ DefaultSettingValueAttribute("Fan, DParallel, Clique") ]
 
     public Motifs
     MotifsToCalculate
@@ -138,6 +138,74 @@ public class MotifUserSettings : NodeXLApplicationSettingsBase
 
 
     //*************************************************************************
+    //  Property: CliqueMinimumMemberVertices
+    //
+    /// <summary>
+    /// Gets or sets the minimum number of member vertices when grouping the
+    /// graph's vertices by clique motifs.
+    /// </summary>
+    ///
+    /// <value>
+    /// The minimum number of member vertices.  The default value is 4.
+    /// </value>
+    //*************************************************************************
+
+    [UserScopedSettingAttribute()]
+    [DefaultSettingValueAttribute("4")]
+
+    public Int32
+    CliqueMinimumMemberVertices
+    {
+        get
+        {
+            AssertValid();
+
+            return ((Int32)this[CliqueMinimumMemberVerticesKey]);
+        }
+
+        set
+        {
+            this[CliqueMinimumMemberVerticesKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: CliqueMaximumMemberVertices
+    //
+    /// <summary>
+    /// Gets or sets the maximum number of member vertices when grouping the
+    /// graph's vertices by clique motifs.
+    /// </summary>
+    ///
+    /// <value>
+    /// The maximum number of member vertices.  The default value is 9999.
+    /// </value>
+    //*************************************************************************
+
+    [UserScopedSettingAttribute()]
+    [DefaultSettingValueAttribute("9999")]
+
+    public Int32
+    CliqueMaximumMemberVertices
+    {
+        get
+        {
+            AssertValid();
+
+            return ((Int32)this[CliqueMaximumMemberVerticesKey]);
+        }
+
+        set
+        {
+            this[CliqueMaximumMemberVerticesKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Method: AssertValid()
     //
     /// <summary>
@@ -177,7 +245,17 @@ public class MotifUserSettings : NodeXLApplicationSettingsBase
     protected const String DParallelMaximumAnchorVerticesKey =
         "DParallelMaximumAnchorVertices";
 
+    /// Name of the settings key for the CliqueMinimumMemberVertices
+    /// property.
 
+    protected const String CliqueMinimumMemberVerticesKey =
+        "CliqueMinimumMemberVertices";
+
+    /// Name of the settings key for the CliqueMaximumMemberVertices
+    /// property.
+
+    protected const String CliqueMaximumMemberVerticesKey =
+        "CliqueMaximumMemberVertices";
 
     //*************************************************************************
     //  Protected fields

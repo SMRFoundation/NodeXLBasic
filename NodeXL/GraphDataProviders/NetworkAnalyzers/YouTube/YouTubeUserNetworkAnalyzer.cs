@@ -712,7 +712,8 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
             WhatToInclude.SubscriptionVertices) )
         {
             oNetworkDescriber.AddSentence(
-                "There is a vertex for each person subscribed to by the user."
+                "There is a vertex for each person or channel subscribed to by"
+                + " the user."
                 );
         }
 
@@ -793,7 +794,7 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
 
             "Getting {0} \"{1}\"."
             ,
-            bFriends ? "friends of" : "people subscribed to by",
+            bFriends ? "friends of" : "people and channels subscribed to by",
             sUserName
             ) );
     }

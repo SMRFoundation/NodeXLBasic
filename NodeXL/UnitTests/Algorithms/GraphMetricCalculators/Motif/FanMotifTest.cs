@@ -113,10 +113,9 @@ public class FanMotifTest : Object
 
         IVertex[] aoVerticesInMotif = oFanMotif.VerticesInMotif;
 
-        Assert.AreEqual(3, aoVerticesInMotif.Length);
+        Assert.AreEqual(2, aoVerticesInMotif.Length);
 
-        Assert.AreEqual( oHeadVertex, aoVerticesInMotif.Single(
-            oVertex => oVertex == oHeadVertex) );
+        Assert.AreEqual( oHeadVertex, oFanMotif.HeadVertex);
 
         Assert.AreEqual( oLeafVertex1, aoVerticesInMotif.Single(
             oVertex => oVertex == oLeafVertex1) );

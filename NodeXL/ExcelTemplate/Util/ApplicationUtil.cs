@@ -156,7 +156,7 @@ public static class ApplicationUtil
         try
         {
             GraphMLToNodeXLWorkbookConverter.SaveGraphToNodeXLWorkbook(
-                oGraphMLDocument, null, null, false);
+                oGraphMLDocument, null, null, null, false);
         }
         catch (ConvertGraphMLToNodeXLWorkbookException
             oConvertGraphMLToNodeXLWorkbookException)

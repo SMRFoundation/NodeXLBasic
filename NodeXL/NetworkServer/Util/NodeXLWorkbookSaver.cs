@@ -91,8 +91,8 @@ class NodeXLWorkbookSaver
         try
         {
             GraphMLToNodeXLWorkbookConverter.SaveGraphToNodeXLWorkbook(
-                xmlDocument, sWorkbookPath, nodeXLWorkbookSettingsFilePath,
-                automate);
+                xmlDocument, null, sWorkbookPath,
+                nodeXLWorkbookSettingsFilePath, automate);
         }
         catch (ConvertGraphMLToNodeXLWorkbookException
             oConvertGraphMLToNodeXLWorkbookException)

@@ -295,8 +295,8 @@ public static class CollapsedGroupAttributeKeys
     public const String Type = "Type";
 
     /// <summary>
-    /// The color of the vertex used to represent a collapsed fan or D-parallel
-    /// motif.
+    /// The color of the vertex used to represent a collapsed fan, D-parallel,
+    /// or clique motif.
     /// </summary>
 
     public const String VertexColor = "VertexColor";
@@ -365,6 +365,18 @@ public static class CollapsedGroupAttributeKeys
 
     public const String AnchorVertex2EdgeWidth = "AnchorVertex2EdgeWidth";
 
+    /// <summary>
+    /// The number of member vertices in a clique motif.
+    /// </summary>
+
+    public const String CliqueVertices = "CliqueVertices";
+
+    /// <summary>
+    /// The clique scale in a collapsed clique motif.
+    /// </summary>
+
+    public const String CliqueScale = "CliqueScale";
+
 
     //*************************************************************************
     //  Private constants
@@ -423,6 +435,13 @@ public static class CollapsedGroupAttributeValues
     /// </summary>
 
     public const String DParallelMotifType = "DParallelMotif";
+
+    /// <summary>
+    /// Value of the <see cref="CollapsedGroupAttributeKeys.Type" /> key for a
+    /// collapsed clique motif.
+    /// </summary>
+
+    public const String CliqueMotifType = "CliqueMotif";
 }
 
 }

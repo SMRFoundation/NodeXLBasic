@@ -38,6 +38,8 @@ public class MotifCalculator2 : GraphMetricCalculatorBase2
         m_eMotifsToCalculate = Motifs.None;
         m_iDParallelMinimumAnchorVertices = 2;
         m_iDParallelMaximumAnchorVertices = 2;
+        m_iCliqueMinimumMemberVertices = 4;
+        m_iCliqueMaximumMemberVertices = 9999;
 
         AssertValid();
     }
@@ -138,6 +140,70 @@ public class MotifCalculator2 : GraphMetricCalculatorBase2
     }
 
     //*************************************************************************
+    //  Property: CliqueMinimumMemberVertices
+    //
+    /// <summary>
+    /// Gets or sets the minimum number of member vertices when grouping the
+    /// graph's vertices by clique motifs.
+    /// </summary>
+    ///
+    /// <value>
+    /// The minimum number of member vertices. The
+    /// default value is 4.
+    /// </value>
+    //*************************************************************************
+
+    public Int32
+    CliqueMinimumMemberVertices
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_iCliqueMinimumMemberVertices);
+        }
+
+        set
+        {
+            m_iCliqueMinimumMemberVertices = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: CliqueMaximumMemberVertices
+    //
+    /// <summary>
+    /// Gets or sets the maximum number of member vertices when grouping the
+    /// graph's vertices by clique motifs.
+    /// </summary>
+    ///
+    /// <value>
+    /// The maximum number of member vertices. The
+    /// default value is 9999.
+    /// </value>
+    //*************************************************************************
+
+    public Int32
+    CliqueMaximumMemberVertices
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_iCliqueMaximumMemberVertices);
+        }
+
+        set
+        {
+            m_iCliqueMaximumMemberVertices = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Method: TryCalculateGraphMetrics()
     //
     /// <summary>
@@ -208,6 +274,7 @@ public class MotifCalculator2 : GraphMetricCalculatorBase2
         if ( !oMotifCalculator.TryCalculateMotifs(graph,
             m_eMotifsToCalculate, m_iDParallelMinimumAnchorVertices,
             m_iDParallelMaximumAnchorVertices,
+            m_iCliqueMinimumMemberVertices, m_iCliqueMaximumMemberVertices,
             calculateGraphMetricsContext.BackgroundWorker, out oMotifs) )
         {
             // The user cancelled.
@@ -295,6 +362,33 @@ public class MotifCalculator2 : GraphMetricCalculatorBase2
             return ( oGroupName.ToString() );
         }
 
+        if (oMotif is CliqueMotif)
+        {
+            // Sample:
+            //
+            // Clique motif: "HeadVertexName"
+
+            StringBuilder oGroupName = new StringBuilder();
+
+            oGroupName.Append("Clique motif: ");
+            Boolean bAppendComma = false;
+
+            foreach (IVertex oMemberVertex in
+                ((CliqueMotif)oMotif).MemberVertices)
+            {
+                oGroupName.AppendFormat(
+                    "{0}\"{1}\""
+                    ,
+                    bAppendComma ? ", " : String.Empty,
+                    oMemberVertex.Name
+                    );
+
+                bAppendComma = true;
+            }
+
+            return (oGroupName.ToString());
+        }
+
         return ("Unknown motif");
     }
 
@@ -335,6 +429,14 @@ public class MotifCalculator2 : GraphMetricCalculatorBase2
     /// The maximum number of anchor vertices.
 
     protected Int32 m_iDParallelMaximumAnchorVertices;
+
+    /// The minimum number of clique members.
+    
+    protected Int32 m_iCliqueMinimumMemberVertices;
+
+    /// The maximum number of clique members.
+    
+    protected Int32 m_iCliqueMaximumMemberVertices;
 }
 
 }

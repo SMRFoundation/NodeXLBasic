@@ -1,10 +1,8 @@
 ﻿
 using System;
-using System.Windows.Forms;
 using System.Diagnostics;
 using Smrf.NodeXL.Core;
 using Smrf.NodeXL.Adapters;
-using Smrf.AppLib;
 
 namespace Smrf.NodeXL.ExcelTemplate
 {

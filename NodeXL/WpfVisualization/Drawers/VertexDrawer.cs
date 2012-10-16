@@ -797,6 +797,19 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
             oVertexBounds = WpfPathGeometryUtil.GetTaperedDiamond(
                 oVertexLocation, dRadius).Bounds;
         }
+        else if (eShape == VertexShape.SolidTaperedSquare)
+        {
+            // Note that the bounds of a tapered square can't be calculated
+            // using simple equations.  Instead, create the tapered square and
+            // let WPF compute the bounds.
+            //
+            // There is some inefficiency here, because the tapered square
+            // gets created again before it is drawn, in its possibly-moved
+            // location.
+
+            oVertexBounds = WpfPathGeometryUtil.GetTaperedSquare(
+                oVertexLocation, dRadius).Bounds;
+        }
         else
         {
             oVertexBounds = WpfGraphicsUtil.SquareFromCenterAndHalfWidth(
@@ -965,6 +978,30 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
 
                 oVertexDrawingHistory =
                     new SolidTaperedDiamondVertexDrawingHistory(
+                        oVertex, oDrawingVisual, bDrawAsSelected, dRadius);
+
+                break;
+
+            case VertexShape.SolidTaperedSquare:
+
+                Geometry oTaperedSquare =
+                    WpfPathGeometryUtil.GetTaperedSquare(
+                        oVertexLocation, dRadius);
+
+                // Note that as of August 2012, the tapered square shape is
+                // used only for collapsed clique motifs.  Collapsed motifs
+                // have an outline, so draw an outline here.
+
+                oDrawingContext.DrawGeometry(GetBrush(oColor),
+
+                    GetPen(CollapsedGroupDrawingManager
+                        .GetCollapsedMotifOutlineColor(oColor.A),
+                        DefaultPenThickness),
+
+                    oTaperedSquare);
+
+                oVertexDrawingHistory =
+                    new SolidTaperedSquareVertexDrawingHistory(
                         oVertex, oDrawingVisual, bDrawAsSelected, dRadius);
 
                 break;
@@ -2270,6 +2307,13 @@ VertexShape
     /// </summary>
 
     SolidTaperedDiamond = 11,
+
+    /// <summary>
+    /// The vertex is drawn as a solid square with edges that are tapered
+    /// inward.
+    /// </summary>
+
+    SolidTaperedSquare = 12,
 
 
     // If a new shape is added, the following must be done:

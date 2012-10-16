@@ -968,7 +968,8 @@ public partial class ThisWorkbook
 
             ImportGraphWithEdgeWeight(oImportFromMatrixWorkbookDialog.Graph,
 
-                GetImportFromFileDescription("open matrix workbook",
+                GraphImporter.GetImportedFileDescription(
+                    "open matrix workbook",
                     oImportFromMatrixWorkbookDialog.SourceWorkbookName),
 
                 null
@@ -1026,7 +1027,7 @@ public partial class ThisWorkbook
                     ReservedMetadataKeys.AllVertexMetadataKeys,
                     typeof( String[] ) ),
 
-                GetImportFromFileDescription("open workbook",
+                GraphImporter.GetImportedFileDescription("open workbook",
                     oImportFromWorkbookDialog.SourceWorkbookName),
 
                 null
@@ -1092,6 +1093,36 @@ public partial class ThisWorkbook
             new SaveGraphMLFileDialog(String.Empty, String.Empty);
 
         ExportToFile(oReadWorkbookContext, oSaveGraphMLFileDialog);
+    }
+
+    //*************************************************************************
+    //  Method: ExportToGexfFile()
+    //
+    /// <summary>
+    /// Exports the edge and vertex tables to a new GEXF file.
+    /// </summary>
+    //*************************************************************************
+
+    private void
+    ExportToGexfFile()
+    {
+        Debug.Assert( this.ExcelApplicationIsReady(false) );
+        AssertValid();
+
+        if ( !MergeIsApproved(
+                "add an Edge Weight column, and export the edges and vertices"
+                + " to a new GEXF file.") )
+        {
+            return;
+        }
+
+        ReadWorkbookContext oReadWorkbookContext = new ReadWorkbookContext();
+        oReadWorkbookContext.ReadAllEdgeAndVertexColumns = true;
+
+        SaveGexfFileDialog oSaveGexfFileDialog =
+            new SaveGexfFileDialog(String.Empty, String.Empty);
+
+        ExportToFile(oReadWorkbookContext, oSaveGexfFileDialog);
     }
 
     //*************************************************************************
@@ -1490,7 +1521,7 @@ public partial class ThisWorkbook
 
         if (oAnalyzeEmailNetworkDialog.ShowDialog() == DialogResult.OK)
         {
-            UpdateGraphHistoryAfterImport(
+            GraphImporter.UpdateGraphHistoryAfterImport(this.InnerObject,
                 "The graph was obtained by analyzing an email network.",
                 null
                 );
@@ -1529,7 +1560,7 @@ public partial class ThisWorkbook
         {
             ImportGraphWithEdgeWeight(oOpenUcinetFileDialog.Graph,
 
-                GetImportFromFileDescription("UCINET file",
+                GraphImporter.GetImportedFileDescription("UCINET file",
                     oOpenUcinetFileDialog.FileName),
 
                 null
@@ -1561,7 +1592,10 @@ public partial class ThisWorkbook
             // Import the graph's edges and vertices into the workbook.
 
             ImportGraphWithEdgeWeight(oGraph, 
-                GetImportFromFileDescription("Pajek file", oDialog.FileName),
+
+                GraphImporter.GetImportedFileDescription(
+                    "Pajek file", oDialog.FileName),
+
                 null
                 );
         }
@@ -1601,7 +1635,9 @@ public partial class ThisWorkbook
                     ReservedMetadataKeys.AllVertexMetadataKeys,
                     typeof( String[] ) ),
 
-                GetImportFromFileDescription("GraphML file", oDialog.FileName),
+                GraphImporter.GetImportedGraphMLFileDescription(
+                    oDialog.FileName, oGraph),
+
                 null
                 );
         }
@@ -1745,8 +1781,8 @@ public partial class ThisWorkbook
     /// empty or null.
     /// </param>
     ///
-    /// <param name="sImportSuggestedFileNameNoExtension">
-    /// File name suggested for the imported graph, without a path or
+    /// <param name="sSuggestedFileNameNoExtension">
+    /// File name suggested for the NodeXL workbook, without a path or
     /// extension.  Can be empty or null.
     /// </param>
     ///
@@ -1762,7 +1798,7 @@ public partial class ThisWorkbook
     (
         IGraph oGraph,
         String sImportDescription,
-        String sImportSuggestedFileNameNoExtension
+        String sSuggestedFileNameNoExtension
     )
     {
         Debug.Assert(oGraph != null);
@@ -1787,7 +1823,7 @@ public partial class ThisWorkbook
 
         ImportGraph(oGraph,
             new String[] {EdgeTableColumnNames.EdgeWeight}, null,
-            sImportDescription, sImportSuggestedFileNameNoExtension);
+            sImportDescription, sSuggestedFileNameNoExtension);
     }
 
     //*************************************************************************
@@ -1816,8 +1852,8 @@ public partial class ThisWorkbook
     /// empty or null.
     /// </param>
     ///
-    /// <param name="sImportSuggestedFileNameNoExtension">
-    /// File name suggested for the imported graph, without a path or
+    /// <param name="sSuggestedFileNameNoExtension">
+    /// File name suggested for the NodeXL workbook, without a path or
     /// extension.  Can be empty or null.
     /// </param>
     //*************************************************************************
@@ -1829,7 +1865,7 @@ public partial class ThisWorkbook
         String [] oEdgeAttributes,
         String [] oVertexAttributes,
         String sImportDescription,
-        String sImportSuggestedFileNameNoExtension
+        String sSuggestedFileNameNoExtension
     )
     {
         Debug.Assert(oGraph != null);
@@ -1843,13 +1879,11 @@ public partial class ThisWorkbook
             return;
         }
 
-        GraphImporter oGraphImporter = new GraphImporter();
-
         this.ScreenUpdating = false;
 
         try
         {
-            oGraphImporter.ImportGraph(oGraph, oEdgeAttributes,
+            GraphImporter.ImportGraph(oGraph, oEdgeAttributes,
                 oVertexAttributes,
                 ( new ImportDataUserSettings() ).ClearTablesBeforeImport,
                 this.InnerObject);
@@ -1896,101 +1930,13 @@ public partial class ThisWorkbook
                 break;
         }
 
-        UpdateGraphHistoryAfterImport(sImportDescription,
-            sImportSuggestedFileNameNoExtension);
+        GraphImporter.UpdateGraphHistoryAfterImport(this.InnerObject,
+            sImportDescription, sSuggestedFileNameNoExtension);
 
         this.GraphDirectedness = eGraphDirectedness;
         this.Ribbon.GraphDirectedness = eGraphDirectedness;
 
         AutomateTasksAfterImport();
-    }
-
-    //*************************************************************************
-    //  Method: GetImportFromFileDescription()
-    //
-    /// <summary>
-    /// Gets a string that describes how the graph was imported from a file.
-    /// </summary>
-    ///
-    /// <param name="sFileType">
-    /// Type of the file that was imported.  Sample: "Pajek file".
-    /// </param>
-    ///
-    /// <param name="sFileName">
-    /// Name of the file that was imported.
-    /// </param>
-    //*************************************************************************
-
-    private String
-    GetImportFromFileDescription
-    (
-        String sFileType,
-        String sFileName
-    )
-    {
-        Debug.Assert( !String.IsNullOrEmpty(sFileType) );
-        Debug.Assert( !String.IsNullOrEmpty(sFileName) );
-        AssertValid();
-
-        return ( String.Format(
-
-            "The graph was imported from the {0} \"{1}\"."
-            ,
-            sFileType,
-            sFileName
-            ) );
-    }
-
-    //*************************************************************************
-    //  Method: UpdateGraphHistoryAfterImport()
-    //
-    /// <summary>
-    /// Updates the graph's history with details about the import, if permitted
-    /// by the user.
-    /// </summary>
-    ///
-    /// <param name="sImportDescription">
-    /// Description of the technique that was used to import the graph.  Can be
-    /// empty or null.
-    /// </param>
-    ///
-    /// <param name="sImportSuggestedFileNameNoExtension">
-    /// File name suggested for the imported graph, without a path or
-    /// extension.  Can be empty or null.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    UpdateGraphHistoryAfterImport
-    (
-        String sImportDescription,
-        String sImportSuggestedFileNameNoExtension
-    )
-    {
-        AssertValid();
-
-        Boolean bSaveImportDescription =
-            ( new ImportDataUserSettings() ).SaveImportDescription;
-
-        if (sImportDescription == null || !bSaveImportDescription)
-        {
-            sImportDescription = String.Empty;
-        }
-
-        if (sImportSuggestedFileNameNoExtension == null ||
-            !bSaveImportDescription)
-        {
-            sImportSuggestedFileNameNoExtension = String.Empty;
-        }
-
-        PerWorkbookSettings oPerWorkbookSettings = this.PerWorkbookSettings;
-
-        oPerWorkbookSettings.SetGraphHistoryValue(
-            GraphHistoryKeys.ImportDescription, sImportDescription);
-
-        oPerWorkbookSettings.SetGraphHistoryValue(
-            GraphHistoryKeys.ImportSuggestedFileNameNoExtension,
-            sImportSuggestedFileNameNoExtension);
     }
 
     //*************************************************************************
@@ -2260,6 +2206,12 @@ public partial class ThisWorkbook
             oMotifCalculator2.DParallelMaximumAnchorVertices =
                 oMotifUserSettings.DParallelMaximumAnchorVertices;
 
+            oMotifCalculator2.CliqueMaximumMemberVertices =
+                oMotifUserSettings.CliqueMaximumMemberVertices;
+
+            oMotifCalculator2.CliqueMinimumMemberVertices =
+                oMotifUserSettings.CliqueMinimumMemberVertices;
+
             String sGroupingDescription = null;
 
             switch (eMotifsToCalculate)
@@ -2274,6 +2226,11 @@ public partial class ThisWorkbook
                     sGroupingDescription = "by D-parallel motif";
                     break;
 
+                case Motifs.Clique:
+
+                    sGroupingDescription = "by clique motif";
+                    break;
+
                 case Motifs.Fan | Motifs.DParallel:
 
                     sGroupingDescription =
@@ -2281,6 +2238,26 @@ public partial class ThisWorkbook
 
                     break;
 
+                case Motifs.Fan | Motifs.Clique:
+
+                    sGroupingDescription =
+                        "by fan and clique motifs";
+
+                    break;
+
+                case Motifs.DParallel | Motifs.Clique:
+
+                    sGroupingDescription =
+                        "by D-parallel and clique motifs";
+
+                    break;
+
+                case Motifs.Fan | Motifs.DParallel | Motifs.Clique:
+
+                    sGroupingDescription =
+                        "by fan, D-parallel, and clique motifs";
+
+                    break;
 
                 default:
 
@@ -2979,6 +2956,11 @@ public partial class ThisWorkbook
                 case NoParamCommand.ExportToGraphMLFile:
 
                     ExportToGraphMLFile();
+                    break;
+
+                case NoParamCommand.ExportToGexfFile:
+
+                    ExportToGexfFile();
                     break;
 
                 case NoParamCommand.ExportToPajekFile:

@@ -488,6 +488,11 @@ public class CollapsedGroupDrawingManager : VisualizationBase
                 SetCollapsedDParallelMotifAttributes();
                 break;
 
+            case CollapsedGroupAttributeValues.CliqueMotifType:
+
+                SetCollapsedCliqueMotifAttributes();
+                break;
+
             default:
 
                 // Behave gracefully.  The collapsed group vertex will be
@@ -496,6 +501,75 @@ public class CollapsedGroupDrawingManager : VisualizationBase
                 break;
         }
     }
+
+    //*************************************************************************
+    //  Method: SetCollapsedCliqueMotifAttributes()
+    //
+    /// <summary>
+    /// Sets attributes on the vertex that represents a collapsed clique motif.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    SetCollapsedCliqueMotifAttributes()
+    {
+        Debug.Assert(m_oCollapsedGroup != null);
+        Debug.Assert(m_oCollapsedGroupVertex != null);
+        Debug.Assert(m_oCollapsedGroupAttributes != null);
+        AssertValid();
+
+        // Get the vertices that were collapsed into the collapsed group
+        // vertex.
+
+        ICollection<IVertex> oCollapsedVertices = m_oCollapsedGroup.Vertices;
+
+        Debug.Assert(oCollapsedVertices != null);
+        Debug.Assert(oCollapsedVertices.Count > 0);
+
+        // Use a tapered square for the collapsed group vertex.
+
+        m_oCollapsedGroupVertex.SetValue(ReservedMetadataKeys.PerVertexShape,
+            VertexShape.SolidTaperedSquare);
+
+        // Use the color specified in the collapsed attributes.
+
+        SetVertexColorFromCollapsedGroupAttributes(
+            ReservedMetadataKeys.PerColor);
+
+        Int32 iCliqueVertices;
+        Double dCliqueScale;
+
+        if (
+            !m_oCollapsedGroupAttributes.TryGetValue(
+                CollapsedGroupAttributeKeys.CliqueVertices,
+                out iCliqueVertices)
+            ||
+            !m_oCollapsedGroupAttributes.TryGetValue(
+                CollapsedGroupAttributeKeys.CliqueScale, out dCliqueScale)
+            )
+        {
+            return;
+        }
+
+        // Scale the size by a scale factor stored in the collapsed group
+        // attributes.  The scale factor ranges from 0 to 1.0.
+
+        Single fRadius = MathUtil.TransformValueToRange(
+            (Single)dCliqueScale,
+            0, 1.0F,
+            (Single)MinimumCliqueRadius,
+            (Single)MaximumCliqueRadius
+            );
+
+        m_oCollapsedGroupVertex.SetValue(
+            ReservedMetadataKeys.PerVertexRadius, fRadius);
+
+        m_oCollapsedGroupVertex.SetValue(
+            ReservedMetadataKeys.PerVertexToolTip,
+            GetCollapsedCliqueMotifToolTip(iCliqueVertices)
+            );
+    }
+
 
     //*************************************************************************
     //  Method: SetCollapsedFanMotifAttributes()
@@ -534,44 +608,8 @@ public class CollapsedGroupDrawingManager : VisualizationBase
             return;
         }
 
-        IVertex oHeadVertex = null;
-
-        try
-        {
-            oHeadVertex = m_oCollapsedGroup.Vertices.Single(
-                oVertex => oVertex.Name == sHeadVertexName);
-        }
-        catch (InvalidOperationException)
-        {
-            // The head vertex wasn't found.
-
-            return;
-        }
-
-        // Copy the drawing-related metadata from the head vertex to the
-        // collapsed group vertex.
-
-        foreach (String sKey in new String [] {
-
-            ReservedMetadataKeys.PerAlpha,
-            ReservedMetadataKeys.PerColor,
-
-            ReservedMetadataKeys.PerVertexImage,
-            ReservedMetadataKeys.PerVertexLabel,
-            ReservedMetadataKeys.PerVertexLabelFillColor, 
-            ReservedMetadataKeys.PerVertexLabelFontSize,
-            ReservedMetadataKeys.PerVertexLabelPosition,
-            ReservedMetadataKeys.PerVertexRadius,
-            ReservedMetadataKeys.PerVertexShape,
-            } )
-        {
-            Object oValue;
-
-            if ( oHeadVertex.TryGetValue(sKey, out oValue) )
-            {
-                m_oCollapsedGroupVertex.SetValue(sKey, oValue);
-            }
-        }
+        Single radius = 0.1f;
+        m_oCollapsedGroupVertex.SetValue(ReservedMetadataKeys.PerVertexRadius, radius);
 
         // The head part of the collapsed group vertex should have the same
         // color as the head vertex.  That color was just copied to the
@@ -992,6 +1030,47 @@ public class CollapsedGroupDrawingManager : VisualizationBase
     }
 
     //*************************************************************************
+    //  Method: GetCollapsedCliqueMotifToolTip()
+    //
+    /// <summary>
+    /// Gets the tooltip to use on the vertex that represents a collapsed
+    /// clique motif
+    /// </summary>
+    ///
+    /// <param name="iCliqueVertices">
+    /// Number of clique vertices in the motif.
+    /// </param>
+    ///
+    /// <remarks>
+    /// The tooltip to use.
+    /// </remarks>
+    //*************************************************************************
+
+    protected String
+    GetCollapsedCliqueMotifToolTip
+    (
+        Int32 iCliqueVertices
+    )
+    {
+        Debug.Assert(iCliqueVertices >= 0);
+        AssertValid();
+
+        // Sample tooltip:
+        //
+        // Clique motif: 5 member vertices
+
+        StringBuilder oToolTip = new StringBuilder();
+
+        oToolTip.AppendFormat(
+            "Clique motif: {0} member vertices"
+            ,
+            iCliqueVertices
+            );
+
+        return (oToolTip.ToString());
+    }
+
+    //*************************************************************************
     //  Method: SetVertexColorFromCollapsedGroupAttributes()
     //
     /// <summary>
@@ -1402,6 +1481,14 @@ public class CollapsedGroupDrawingManager : VisualizationBase
     /// Maximum radius of a D-parallel motif's span, in WPF units.
 
     protected Double MaximumDParallelRadius = 60.0;
+
+    /// Minimum radius of a clique motif's tapered square, in WPF units.
+
+    protected Double MinimumCliqueRadius = 30.0;
+
+    /// Maximum radius of a clique motif's tapered square, in WPF units.
+
+    protected Double MaximumCliqueRadius = 60.0;
 
 
     //*************************************************************************

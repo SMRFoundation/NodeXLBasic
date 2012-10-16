@@ -68,6 +68,14 @@ public class MotifCalculator : GraphMetricCalculatorBase
     /// The maximum number of anchor vertices (dimension) of D-parallel motif to find.
     /// </param>
     /// 
+    /// <param name="nMinimum">
+    /// The minimum number of member vertices of clique motif to find.
+    /// </param>
+    /// 
+    /// <param name="nMaximum">
+    /// The maximum number of member vertices of clique motif to find.
+    /// </param>
+    /// 
     /// <param name="backgroundWorker">
     /// The BackgroundWorker whose thread is calling this method, or null if
     /// the method is being called by some other thread.
@@ -90,6 +98,8 @@ public class MotifCalculator : GraphMetricCalculatorBase
         Motifs motifsToCalculate,
         Int32 dMinimum,
         Int32 dMaximum,
+        Int32 nMinimum,
+        Int32 nMaximum,
         BackgroundWorker backgroundWorker,
         out ICollection<Motif> motifs
     )
@@ -123,6 +133,19 @@ public class MotifCalculator : GraphMetricCalculatorBase
             }
 
             oMotifs.AddRange(oDParallelMotifs);
+        }
+
+        if ((motifsToCalculate & Motifs.Clique) != 0)
+        {
+            ICollection<Motif> oCliqueMotifs;
+
+            if (!TryCalculateCliqueMotifs(graph, nMinimum, nMaximum, backgroundWorker,
+                oMotifs, out oCliqueMotifs))
+            {
+                return (false);
+            }
+
+            oMotifs.AddRange(oCliqueMotifs);
         }
 
         return (true);
@@ -690,6 +713,198 @@ public class MotifCalculator : GraphMetricCalculatorBase
             }
 
             oDParallelMotif.SpanScale = fSpanScale;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: TryCalculateCliqueMotifs()
+    //
+    /// <summary>
+    /// Attempts to calculate a set of clique motifs.
+    /// </summary>
+    ///
+    /// <param name="oGraph">
+    /// Graph to calculate the motifs for.
+    /// </param>
+    ///
+    /// <param name="iNMinimum">
+    /// The minimum number of member vertices of clique motif to find.
+    /// </param>
+    /// 
+    /// <param name="iNMaximum">
+    /// The maximum number of member vertices of clique motif to find.
+    /// </param>
+    /// 
+    /// <param name="oBackgroundWorker">
+    /// The BackgroundWorker whose thread is calling this method, or null if
+    /// the method is being called by some other thread.
+    /// </param>
+    ///
+    /// <param name="oExistingMotifs">
+    /// Existing motifs to avoid overlap with (null if none exist)
+    /// </param>
+    /// 
+    /// <param name="oMotifs">
+    /// Where a collection of zero or more <see cref="CliqueMotif" />
+    /// objects gets stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// True if the motifs were calculated, false if the user wants to cancel.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    TryCalculateCliqueMotifs
+    (
+        IGraph oGraph,
+        Int32 iNMinimum,
+        Int32 iNMaximum,
+        BackgroundWorker oBackgroundWorker,
+        ICollection<Motif> oExistingMotifs,
+        out ICollection<Motif> oMotifs
+    )
+    {
+        Debug.Assert(oGraph != null);
+
+        oMotifs = null;
+
+        ClusterCalculator clusterCalculator = new ClusterCalculator();
+        clusterCalculator.Algorithm = ClusterAlgorithm.Clique;
+        ICollection<Community> communities;
+         
+        if ( clusterCalculator.TryCalculateGraphMetrics(oGraph, oBackgroundWorker,
+            out communities) )
+        {
+
+
+            Int32 iTotalOperations = communities.Count;
+            Int32 iCalculationsSoFar = 0;
+
+            HashSet<Motif> currentCliqueMotifs = new HashSet<Motif>();
+
+            Dictionary<IVertex, Motif> verticesAlreadyInMotifs =
+                new Dictionary<IVertex, Motif>();
+
+            // Don't consider any vertices used by other motifs
+            if (oExistingMotifs != null)
+            {
+                iTotalOperations += oExistingMotifs.Count;
+
+                foreach (Motif existingMotif in oExistingMotifs)
+                {
+                    if (!ReportProgressIfNecessary(iCalculationsSoFar, iTotalOperations,
+                        oBackgroundWorker))
+                    {
+                        return (false);
+                    }
+
+                    // We don't need to consider fan motifs because they cannot overlap
+                    if (!(existingMotif is FanMotif))
+                    {
+                        foreach (IVertex existingVertex in existingMotif.VerticesInMotif)
+                        {
+                            verticesAlreadyInMotifs.Add(existingVertex, existingMotif);
+                        }
+                    }
+                }
+            }
+
+            // Sort the found cliques by the number of vertices
+            IOrderedEnumerable<Community> sortedCommunities = 
+                communities.OrderByDescending(c => c.Vertices.Count);
+
+            // Select the cliques in the order of their original size
+            foreach (Community community in sortedCommunities)
+            {
+                if (!ReportProgressIfNecessary(iCalculationsSoFar, iTotalOperations,
+                    oBackgroundWorker))
+                {
+                    return (false);
+                }
+
+                // Remove any overlapping vertices before considering the clique
+                List<IVertex> availableVertices = community.Vertices.Where(
+                    v => !verticesAlreadyInMotifs.ContainsKey(v)).ToList();
+                // Ensure the clique passes our criteria
+                if (availableVertices.Count >= iNMinimum && 
+                    availableVertices.Count <= iNMaximum)
+                {
+                    CliqueMotif trimmedCliqueMotif = new CliqueMotif(availableVertices);
+                    currentCliqueMotifs.Add(trimmedCliqueMotif);
+
+                    foreach (IVertex cliqueVertex in trimmedCliqueMotif.VerticesInMotif)
+                    {
+                        verticesAlreadyInMotifs.Add(cliqueVertex, trimmedCliqueMotif);
+                    }
+                }
+            }
+
+            SetCliqueMotifScale(currentCliqueMotifs);
+
+            oMotifs = currentCliqueMotifs;
+        }
+
+        return (true);
+    }
+
+    //*************************************************************************
+    //  Method: SetCliqueMotifScale()
+    //
+    /// <summary>
+    /// Sets the <see cref="CliqueMotif.CliqueScale" /> property on each clique motif.
+    /// </summary>
+    ///
+    /// <param name="oCliqueMotifs">
+    /// A collection of zero or more <see cref="CliqueMotif" /> objects.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    SetCliqueMotifScale
+    (
+        ICollection<Motif> oCliqueMotifs
+    )
+    {
+        Debug.Assert(oCliqueMotifs != null);
+
+        // The ArcScale property is the CliqueMotif's member count scaled between 0
+        // and 1.0, based on the minimum and maximum CliqueMotif counts among all
+        // CliqueMotifs.
+
+        Int32 iMinimumMemberCount = 0;
+        Int32 iMaximumMemberCount = 0;
+
+        if (oCliqueMotifs.Count > 0)
+        {
+            iMinimumMemberCount = oCliqueMotifs.Min(
+                oMotif => ((CliqueMotif)oMotif).MemberVertices.Count);
+
+            iMaximumMemberCount = oCliqueMotifs.Max(
+                oMotif => ((CliqueMotif)oMotif).MemberVertices.Count);
+        }
+
+        foreach (CliqueMotif oCliqueMotif in oCliqueMotifs)
+        {
+            Single fCliqueScale;
+
+            if (iMinimumMemberCount == iMaximumMemberCount)
+            {
+                // All the member counts are the same.  Arbitrarily set the
+                // CliqueScale property to the center of the range.
+
+                fCliqueScale = 0.5F;
+            }
+            else
+            {
+                fCliqueScale = MathUtil.TransformValueToRange(
+                    oCliqueMotif.MemberVertices.Count,
+                    iMinimumMemberCount, iMaximumMemberCount,
+                    0F, 1.0F
+                    );
+            }
+
+            oCliqueMotif.CliqueScale = fCliqueScale;
         }
     }
 

@@ -101,6 +101,7 @@
     <Compile Include="GraphMetricCalculators\GraphMetricException.cs" />
     <Compile Include="GraphMetricCalculators\IGraphMetricCalculator.cs" />
     <Compile Include="GraphMetricCalculators\IntergroupEdgeCalculator.cs" />
+    <Compile Include="GraphMetricCalculators\Motif\CliqueMotif.cs" />
     <Compile Include="GraphMetricCalculators\Motif\DParallelMotif.cs" />
     <Compile Include="GraphMetricCalculators\Motif\FanMotif.cs" />
     <Compile Include="GraphMetricCalculators\Motif\Motif.cs" />

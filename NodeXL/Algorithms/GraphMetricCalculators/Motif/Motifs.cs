@@ -45,6 +45,12 @@ Motifs
     /// </summary>
 
     DParallel = 2,
+
+    /// <summary>
+    /// A clique motif consists of a maximum set of vertices who have all
+    /// possible ties present among themselves.
+    /// </summary>
+    Clique = 4,
 }
 
 }

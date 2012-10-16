@@ -90,7 +90,7 @@ public static class TaskAutomator : Object
         Debug.Assert(thisWorkbook != null);
         Debug.Assert(ribbon != null);
 
-        CheckTasksToRunArgument(tasksToRun);
+        CheckTasksToRunArgument(ref tasksToRun);
 
         Microsoft.Office.Interop.Excel.Workbook oWorkbook =
             thisWorkbook.InnerObject;
@@ -374,29 +374,26 @@ public static class TaskAutomator : Object
     /// </param>
     ///
     /// <remarks>
-    /// An ArgumentException is thrown if the tasks are invalid.
+    /// <paramref name="eTasksToRun" /> gets modified if necessary to guarantee
+    /// backward compatibility.
     /// </remarks>
     //*************************************************************************
 
     private static void
     CheckTasksToRunArgument
     (
-        AutomationTasks eTasksToRun
+        ref AutomationTasks eTasksToRun
     )
     {
         if ( ShouldRunTask(eTasksToRun, AutomationTasks.SaveGraphImageFile) )
         {
-            if
-            (
-                !ShouldRunTask(eTasksToRun,
-                    AutomationTasks.ReadWorkbook)
-                ||
-                !ShouldRunTask(eTasksToRun,
-                    AutomationTasks.SaveWorkbookIfNeverSaved)
-            )
-            {
-                throw new ArgumentException("Invalid AutomationTasks flags.");
-            }
+            // The SaveWorkbookIfNeverSaved flag was introduced after the
+            // SaveGraphImageFile flag, so it's possible to have an older
+            // workbook that has SaveGraphImageFile set without the necessary
+            // SaveWorkbookIfNeverSaved flag.  Fix this.
+
+            eTasksToRun |= (AutomationTasks.ReadWorkbook
+                | AutomationTasks.SaveWorkbookIfNeverSaved);
         }
     }
 

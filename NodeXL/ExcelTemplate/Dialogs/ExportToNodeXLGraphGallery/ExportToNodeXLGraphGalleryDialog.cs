@@ -60,6 +60,8 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
 
         lnkNodeXLGraphGallery.Tag = ProjectInformation.NodeXLGraphGalleryUrl;
 
+        usrExportedFilesDescription.Workbook = workbook;
+
         lnkCreateAccount.Tag =
             ProjectInformation.NodeXLGraphGalleryCreateAccountUrl;
 
@@ -100,12 +102,7 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
     {
         if (bFromControls)
         {
-            String sTitle;
-
-            if (
-                !ValidateRequiredTextBox(txbTitle,
-                    "Enter a title for the graph.", out sTitle)
-                )
+            if ( !usrExportedFilesDescription.Validate() )
             {
                 return (false);
             }
@@ -139,54 +136,54 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
                 }
             }
 
-            m_oExportToNodeXLGraphGalleryDialogUserSettings.Title = sTitle;
+            if ( !usrExportedFiles.Validate() )
+            {
+                return (false);
+            }
+
+            m_oExportToNodeXLGraphGalleryDialogUserSettings.Title =
+                usrExportedFilesDescription.Title;
 
             m_oExportToNodeXLGraphGalleryDialogUserSettings.Description =
-                txbDescription.Text.Trim();
+                usrExportedFilesDescription.Description;
 
             m_oExportToNodeXLGraphGalleryDialogUserSettings.SpaceDelimitedTags =
                 txbSpaceDelimitedTags.Text.Trim();
 
             m_oExportToNodeXLGraphGalleryDialogUserSettings.
                 ExportWorkbookAndSettings =
-                chkExportWorkbookAndSettings.Checked;
+                usrExportedFiles.ExportWorkbookAndSettings;
 
             m_oExportToNodeXLGraphGalleryDialogUserSettings.ExportGraphML =
-                chkExportGraphML.Checked;
+                usrExportedFiles.ExportGraphML;
 
             m_oExportToNodeXLGraphGalleryDialogUserSettings
-                .UseFixedAspectRatio = radUseFixedAspectRatio.Checked;
+                .UseFixedAspectRatio = usrExportedFiles.UseFixedAspectRatio;
 
             m_oExportToNodeXLGraphGalleryDialogUserSettings.Author = sAuthor;
         }
         else
         {
-            txbTitle.Text =
+            usrExportedFilesDescription.Title =
                 m_oExportToNodeXLGraphGalleryDialogUserSettings.Title;
 
-            txbDescription.Text =
+            usrExportedFilesDescription.Description =
                 m_oExportToNodeXLGraphGalleryDialogUserSettings.Description;
 
             txbSpaceDelimitedTags.Text =
                 m_oExportToNodeXLGraphGalleryDialogUserSettings.
                 SpaceDelimitedTags;
 
-            chkExportWorkbookAndSettings.Checked =
+            usrExportedFiles.ExportWorkbookAndSettings =
                 m_oExportToNodeXLGraphGalleryDialogUserSettings.
                 ExportWorkbookAndSettings;
 
-            chkExportGraphML.Checked =
+            usrExportedFiles.ExportGraphML =
                 m_oExportToNodeXLGraphGalleryDialogUserSettings.ExportGraphML;
 
-            if (m_oExportToNodeXLGraphGalleryDialogUserSettings
-                .UseFixedAspectRatio)
-            {
-                radUseFixedAspectRatio.Checked = true;
-            }
-            else
-            {
-                radUseGraphPaneAspectRatio.Checked = true;
-            }
+            usrExportedFiles.UseFixedAspectRatio = 
+                m_oExportToNodeXLGraphGalleryDialogUserSettings
+                .UseFixedAspectRatio;
 
             if (m_oExportToNodeXLGraphGalleryDialogUserSettings.UseCredentials)
             {
@@ -258,60 +255,6 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
         AssertValid();
 
         EnableControls();
-    }
-
-    //*************************************************************************
-    //  Method: btnInsertGraphSummary_Click()
-    //
-    /// <summary>
-    /// Handles the Click event on the btnInsertGraphSummary button.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    btnInsertGraphSummary_Click
-    (
-        object sender,
-        EventArgs e
-    )
-    {
-        AssertValid();
-
-        PerWorkbookSettings oPerWorkbookSettings =
-            new PerWorkbookSettings(m_oWorkbook);
-
-        OverallMetrics oOverallMetrics;
-
-        ( new OverallMetricsReader() ).TryReadMetrics(
-            m_oWorkbook, out oOverallMetrics);
-
-        String sTopNByMetrics;
-
-        ( new TopNByMetricsReader() ).TryReadMetrics(
-            m_oWorkbook, out sTopNByMetrics);
-
-        String sTwitterSearchNetworkTopItems;
-
-        ( new TwitterSearchNetworkTopItemsReader() ).TryReadMetrics(
-            m_oWorkbook, out sTwitterSearchNetworkTopItems);
-
-        String sGraphSummary;
-
-        if ( GraphSummarizer.TrySummarizeGraph(
-            oPerWorkbookSettings.GraphHistory,
-            oPerWorkbookSettings.AutoFillWorkbookResults, oOverallMetrics,
-            sTopNByMetrics, sTwitterSearchNetworkTopItems, out sGraphSummary) )
-        {
-            txbDescription.SelectedText = sGraphSummary;
-        }
     }
 
     //*************************************************************************

@@ -70,6 +70,7 @@
     </Compile>
     <Compile Include="Drawers\DrawerBase.cs" />
     <Compile Include="Drawers\DrawingHistories\CircleVertexDrawingHistory.cs" />
+    <Compile Include="Drawers\DrawingHistories\SolidTaperedSquareDrawingHistory.cs" />
     <Compile Include="Drawers\DrawingHistories\DiamondVertexDrawingHistory.cs" />
     <Compile Include="Drawers\DrawingHistories\DiskVertexDrawingHistory.cs" />
     <Compile Include="Drawers\DrawingHistories\DrawingHistory.cs" />

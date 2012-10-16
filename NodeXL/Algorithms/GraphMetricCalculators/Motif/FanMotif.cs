@@ -155,12 +155,7 @@ public class FanMotif : Motif
         {
             AssertValid();
 
-            Int32 iFanVertices = m_aoLeafVertices.Length;
-            IVertex [] aoVerticesInMotif = new IVertex[1 + iFanVertices];
-            aoVerticesInMotif[0] = m_oHeadVertex;
-            Array.Copy(m_aoLeafVertices, 0, aoVerticesInMotif, 1, iFanVertices);
-
-            return (aoVerticesInMotif);
+            return m_aoLeafVertices;
         }
     }
 

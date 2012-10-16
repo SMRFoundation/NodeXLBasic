@@ -46,6 +46,7 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adapters\GraphAdapters\GexfGraphAdapterTest.cs" />
     <Compile Include="Adapters\GraphAdapters\GraphML\GraphMLAttributeTest.cs" />
     <Compile Include="Adapters\GraphAdapters\GraphML\GraphMLGraphAdapterTest.cs" />
     <Compile Include="Adapters\GraphAdapters\Pajek\PajekGraphAdapterTest.cs" />

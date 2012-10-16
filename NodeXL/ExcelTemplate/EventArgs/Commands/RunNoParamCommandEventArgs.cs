@@ -171,6 +171,12 @@ NoParamCommand
     ExportToNodeXLGraphGallery,
 
     /// <summary>
+    /// Export the graph to email.
+    /// </summary>
+
+    ExportToEmail,
+
+    /// <summary>
     /// Open the application's home page in a browser window.
     /// </summary>
 
@@ -298,6 +304,12 @@ NoParamCommand
     /// </summary>
 
     ExportToGraphMLFile,
+
+    /// <summary>
+    /// Export the edge and vertex tables to a new GEXF file.
+    /// </summary>
+
+    ExportToGexfFile,
 
     /// <summary>
     /// Export the edge and vertex tables to a new Pajek text file.

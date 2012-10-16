@@ -44,6 +44,14 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.chkClique = new System.Windows.Forms.CheckBox();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.nudCliqueMinimumMemberVertices = new System.Windows.Forms.NumericUpDown();
+            this.label5 = new System.Windows.Forms.Label();
+            this.nudCliqueMaximumMemberVertices = new System.Windows.Forms.NumericUpDown();
+            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudDParallelMinimumAnchorVertices)).BeginInit();
@@ -51,14 +59,19 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.flowLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            this.flowLayoutPanel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCliqueMinimumMemberVertices)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCliqueMaximumMemberVertices)).BeginInit();
             this.SuspendLayout();
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(319, 250);
+            this.btnOK.Location = new System.Drawing.Point(319, 366);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
-            this.btnOK.TabIndex = 2;
+            this.btnOK.TabIndex = 3;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -66,10 +79,10 @@ namespace Smrf.NodeXL.ExcelTemplate
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(404, 250);
+            this.btnCancel.Location = new System.Drawing.Point(404, 366);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
-            this.btnCancel.TabIndex = 3;
+            this.btnCancel.TabIndex = 4;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -163,7 +176,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.nudDParallelMaximumAnchorVertices.TabIndex = 2;
             this.nudDParallelMaximumAnchorVertices.ThousandsSeparator = true;
             this.nudDParallelMaximumAnchorVertices.Value = new decimal(new int[] {
-            2,
+            9999,
             0,
             0,
             0});
@@ -221,13 +234,122 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.groupBox2.TabIndex = 0;
             this.groupBox2.TabStop = false;
             // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.pictureBox3);
+            this.groupBox3.Controls.Add(this.chkClique);
+            this.groupBox3.Controls.Add(this.flowLayoutPanel2);
+            this.groupBox3.Location = new System.Drawing.Point(12, 246);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(472, 111);
+            this.groupBox3.TabIndex = 2;
+            this.groupBox3.TabStop = false;
+            // 
+            // pictureBox3
+            // 
+            this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
+            this.pictureBox3.Location = new System.Drawing.Point(10, 19);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(176, 75);
+            this.pictureBox3.TabIndex = 7;
+            this.pictureBox3.TabStop = false;
+            // 
+            // chkClique
+            // 
+            this.chkClique.AutoSize = true;
+            this.chkClique.Location = new System.Drawing.Point(198, 25);
+            this.chkClique.Name = "chkClique";
+            this.chkClique.Size = new System.Drawing.Size(222, 17);
+            this.chkClique.TabIndex = 0;
+            this.chkClique.Text = "Group by &clique motifs that have between";
+            this.chkClique.UseVisualStyleBackColor = true;
+            this.chkClique.CheckedChanged += new System.EventHandler(this.OnEventThatRequiresControlEnabling);
+            // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.Controls.Add(this.nudCliqueMinimumMemberVertices);
+            this.flowLayoutPanel2.Controls.Add(this.label5);
+            this.flowLayoutPanel2.Controls.Add(this.nudCliqueMaximumMemberVertices);
+            this.flowLayoutPanel2.Controls.Add(this.label6);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(215, 46);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(243, 33);
+            this.flowLayoutPanel2.TabIndex = 1;
+            // 
+            // nudCliqueMinimumMemberVertices
+            // 
+            this.nudCliqueMinimumMemberVertices.Location = new System.Drawing.Point(3, 3);
+            this.nudCliqueMinimumMemberVertices.Maximum = new decimal(new int[] {
+            9999,
+            0,
+            0,
+            0});
+            this.nudCliqueMinimumMemberVertices.Minimum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            this.nudCliqueMinimumMemberVertices.Name = "nudCliqueMinimumMemberVertices";
+            this.nudCliqueMinimumMemberVertices.Size = new System.Drawing.Size(52, 20);
+            this.nudCliqueMinimumMemberVertices.TabIndex = 0;
+            this.nudCliqueMinimumMemberVertices.ThousandsSeparator = true;
+            this.nudCliqueMinimumMemberVertices.Value = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(61, 5);
+            this.label5.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(25, 13);
+            this.label5.TabIndex = 1;
+            this.label5.Text = "and";
+            // 
+            // nudCliqueMaximumMemberVertices
+            // 
+            this.nudCliqueMaximumMemberVertices.Location = new System.Drawing.Point(92, 3);
+            this.nudCliqueMaximumMemberVertices.Maximum = new decimal(new int[] {
+            9999,
+            0,
+            0,
+            0});
+            this.nudCliqueMaximumMemberVertices.Minimum = new decimal(new int[] {
+            4,
+            0,
+            0,
+            0});
+            this.nudCliqueMaximumMemberVertices.Name = "nudCliqueMaximumMemberVertices";
+            this.nudCliqueMaximumMemberVertices.Size = new System.Drawing.Size(52, 20);
+            this.nudCliqueMaximumMemberVertices.TabIndex = 2;
+            this.nudCliqueMaximumMemberVertices.ThousandsSeparator = true;
+            this.nudCliqueMaximumMemberVertices.Value = new decimal(new int[] {
+            9999,
+            0,
+            0,
+            0});
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(150, 5);
+            this.label6.Margin = new System.Windows.Forms.Padding(3, 5, 3, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(84, 13);
+            this.label6.TabIndex = 3;
+            this.label6.Text = "member vertices";
+            // 
             // MotifUserSettingsDialog
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(500, 289);
+            this.ClientSize = new System.Drawing.Size(500, 400);
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnCancel);
@@ -247,6 +369,13 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            this.flowLayoutPanel2.ResumeLayout(false);
+            this.flowLayoutPanel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCliqueMinimumMemberVertices)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudCliqueMaximumMemberVertices)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -267,5 +396,13 @@ namespace Smrf.NodeXL.ExcelTemplate
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.CheckBox chkClique;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.NumericUpDown nudCliqueMinimumMemberVertices;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown nudCliqueMaximumMemberVertices;
+        private System.Windows.Forms.Label label6;
     }
 }

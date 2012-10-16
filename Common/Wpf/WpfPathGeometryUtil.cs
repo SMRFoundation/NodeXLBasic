@@ -191,7 +191,7 @@ public static class WpfPathGeometryUtil
     public static PathGeometry
     GetTaperedDiamond
     (
-        System.Windows.Point center,
+        Point center,
         Double halfWidth
     )
     {
@@ -276,6 +276,50 @@ public static class WpfPathGeometryUtil
                 oLeft, true
                 )
             ) );
+    }
+
+
+    //*************************************************************************
+    //  Method: GetTaperedSquare()
+    //
+    /// <summary>
+    /// Creates a PathGeometry that represents a square with inward-tapered
+    /// edges, centered on a specified point.
+    /// </summary>
+    ///
+    /// <param name="center">
+    /// The tapered square's center.
+    /// </param>
+    ///
+    /// <param name="halfWidth">
+    /// One half the width of the tapered square.
+    /// </param>
+    ///
+    /// <returns>
+    /// A PathGeometry that represents the specified tapered square.  The
+    /// PathGeometry is frozen.
+    /// </returns>
+    //*************************************************************************
+
+    public static PathGeometry
+    GetTaperedSquare
+    (
+        Point center,
+        Double halfWidth
+    )
+    {
+        Debug.Assert(halfWidth >= 0);
+
+
+        PathGeometry taperedDiamond = GetTaperedDiamond(center, halfWidth);
+        PathGeometry taperedDiamondClone = taperedDiamond.Clone();
+        taperedDiamondClone.Transform = new RotateTransform(45, center.X, center.Y);
+
+        PathGeometry taperedSquare = taperedDiamondClone;
+
+        WpfGraphicsUtil.FreezeIfFreezable(taperedSquare);
+
+        return taperedSquare;
     }
 
     //*************************************************************************

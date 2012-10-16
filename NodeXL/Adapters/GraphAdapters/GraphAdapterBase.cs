@@ -596,6 +596,47 @@ public abstract class GraphAdapterBase : AdapterBase, IGraphAdapter
     }
 
     //*************************************************************************
+    //  Method: GetAttributeNames()
+    //
+    /// <summary>
+    /// Gets the names of the graph's vertex or edge attributes.
+    /// </summary>
+    ///
+    /// <param name="graph">
+    /// Graph to save.
+    /// </param>
+    ///
+    /// <param name="forVertices">
+    /// true to get the vertex attribute names, false to get the edge attribute
+    /// names.
+    /// </param>
+    ///
+    /// <returns>
+    /// An array of zero or more attribute names.
+    /// </returns>
+    //*************************************************************************
+
+    protected String []
+    GetAttributeNames
+    (
+        IGraph graph,
+        Boolean forVertices
+    )
+    {
+        Debug.Assert(graph != null);
+        AssertValid();
+
+        return ( ( String[] )graph.GetRequiredValue(
+
+            forVertices ?
+            ReservedMetadataKeys.AllVertexMetadataKeys
+            :
+            ReservedMetadataKeys.AllEdgeMetadataKeys,
+            
+            typeof( String[] ) ) );
+    }
+
+    //*************************************************************************
     //  Method: OnLoadFormatError()
     //
     /// <overloads>
