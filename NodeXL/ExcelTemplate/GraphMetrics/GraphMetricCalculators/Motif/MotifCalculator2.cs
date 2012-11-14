@@ -343,18 +343,18 @@ public class MotifCalculator2 : GraphMetricCalculatorBase2
 
             StringBuilder oGroupName = new StringBuilder();
 
-            List<IVertex> dConnectorMotifAnchorVerticies = ((DConnectorMotif)oMotif ).AnchorVertices;
+            List<IVertex> dConnectorMotifAnchorVertices = ((DConnectorMotif)oMotif ).AnchorVertices;
             
             oGroupName.AppendFormat(
                 "{0}-connector motif: ",
-                dConnectorMotifAnchorVerticies.Count);
+                dConnectorMotifAnchorVertices.Count);
 
             Boolean bAppendComma = false;
 
             int addedVertices = 0;
-            foreach (IVertex oAnchorVertex in dConnectorMotifAnchorVerticies)
+            foreach (IVertex oAnchorVertex in dConnectorMotifAnchorVertices)
             {
-                // Only add three anchor verticies for a connector to prevent the name from growing too large
+                // Only add three anchor vertices for a connector to prevent the name from growing too large
                 addedVertices++;
                 if (addedVertices > 3)
                 {
@@ -383,16 +383,16 @@ public class MotifCalculator2 : GraphMetricCalculatorBase2
 
             StringBuilder oGroupName = new StringBuilder();
 
-            List<IVertex> dCliqueMotifMemberVerticies = ((CliqueMotif)oMotif).MemberVertices;
+            List<IVertex> dCliqueMotifMemberVertices = ((CliqueMotif)oMotif).MemberVertices;
 
             oGroupName.AppendFormat(
                 "{0}-clique motif: ",
-                dCliqueMotifMemberVerticies.Count);
+                dCliqueMotifMemberVertices.Count);
 
             Boolean bAppendComma = false;
 
             int addedVertices = 0;
-            foreach (IVertex oMemberVertex in dCliqueMotifMemberVerticies)
+            foreach (IVertex oMemberVertex in dCliqueMotifMemberVertices)
             {
                 // Only add three vertices for a clique to prevent the name from growing too large
                 addedVertices++;

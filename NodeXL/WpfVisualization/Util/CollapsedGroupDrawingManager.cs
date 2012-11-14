@@ -1017,7 +1017,7 @@ public class CollapsedGroupDrawingManager : VisualizationBase
         foreach ( String sAnchorVertexName in
             GetAnchorVertexNames(iAnchorVertices) )
         {
-            // Only add three anchor verticies for a connector to prevent the name from growing too large
+            // Only add three anchor vertices for a connector to prevent the name from growing too large
             addedVertices++;
             if (addedVertices > 3)
             {
