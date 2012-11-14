@@ -1,6 +1,9 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{20E561E3-F0D9-4C35-9390-8FEC1A8B97BA}"
+	ProjectSection(SolutionItems) = preProject
+		NodeXL.vsmdi = NodeXL.vsmdi
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{8BA6250F-0771-43A0-8EE7-EBD24FB1ECCE}"
 EndProject
@@ -44,6 +47,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestGraphDataProviders", "TestGraphDataProviders\TestGraphDataProviders.csproj", "{40E9844B-8CF9-4D85-9B5D-CD5A78B019C9}"
 EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = NodeXL.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
