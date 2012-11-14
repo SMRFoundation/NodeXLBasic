@@ -73,6 +73,18 @@ AutomationTasks
     /// </summary>
 
     SaveGraphImageFile = 128,
+
+    /// <summary>
+    /// Export the graph to the NodeXL Graph Gallery.
+    /// </summary>
+
+    ExportToNodeXLGraphGallery = 256,
+
+    /// <summary>
+    /// Export the graph to email.
+    /// </summary>
+
+    ExportToEmail = 512,
 }
 
 }

@@ -399,7 +399,7 @@ public partial class GraphMetricWriter : Object
     ///
     /// <remarks>
     /// true if <paramref name="sWorksheetName" /> is included at least once in
-    /// <paramref name="aoGraphMetricColumns" />.
+    /// <paramref name="oGraphMetricColumns" />.
     /// </remarks>
     //*************************************************************************
 
@@ -1104,13 +1104,14 @@ public partial class GraphMetricWriter : Object
             oColumn1HeaderCell.set_Value(Missing.Value,
                 oGraphMetricColumn.ColumnName);
 
-            oColumn1HeaderCell.EntireColumn.AutoFit();
-
             Range oTableRange = oColumn1HeaderCell;
             ExcelUtil.ResizeRange(ref oTableRange, 2, 1);
 
             oStackedTable = ExcelTableUtil.AddTable(oWorksheet, oTableRange,
                 oGraphMetricColumn.TableName, TableStyleNames.NodeXLTable);
+
+            ExcelTableUtil.SetColumnWidth(oColumn1HeaderCell,
+                oGraphMetricColumn.ColumnWidthChars);
         }
         catch (System.Runtime.InteropServices.COMException)
         {

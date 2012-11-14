@@ -517,9 +517,10 @@ public class NodeXLApplicationSettingsBase : ApplicationSettingsBase
         Debug.Assert( !String.IsNullOrEmpty(sDestinationSettings) );
         AssertValid();
 
-        // We don't want to modify the user's notification and dialog position
-        // settings that are stored in the destination.  Use XmlDocuments to
-        // copy only the other settings from the source to the destination.
+        // We don't want to modify the user's notification, dialog position,
+        // or password settings that are stored in the destination.  Use
+        // XmlDocuments to copy only the other settings from the source to the
+        // destination.
 
         XmlDocument oSourceDocument = new XmlDocument();
         oSourceDocument.LoadXml(sSourceSettings);
@@ -554,10 +555,20 @@ public class NodeXLApplicationSettingsBase : ApplicationSettingsBase
         foreach (XmlNode oSourceUserSettingsChildNode in
             oSourceUserSettingsNode.ChildNodes)
         {
+            // Work item:
+            //
+            // Figure out a more robust scheme that doesn't use hard-coded
+            // class names.
+
             String sChildName = oSourceUserSettingsChildNode.Name;
 
-            if (sChildName.IndexOf("Dialog") >= 0 ||
-                sChildName.IndexOf("NotificationUserSettings") >= 0)
+            if (
+                sChildName.IndexOf("Dialog") >= 0
+                ||
+                sChildName.IndexOf("NotificationUserSettings") >= 0
+                ||
+                sChildName.IndexOf("PasswordUserSettings") >= 0
+                )
             {
                 continue;
             }

@@ -319,14 +319,11 @@ public class VertexRadiusConverterTest : Object
 
         Single fRadiusWorkbook = VertexRadiusConverter.MinimumRadiusWorkbook;
 
-        Single fExpectedLongerImageDimension =
-            VertexRadiusConverter.MinimumLongerImageDimension;
-
         Single fLongerImageDimension =
             m_oVertexRadiusConverter.WorkbookToLongerImageDimension(
                 fRadiusWorkbook);
 
-        Assert.AreEqual(fExpectedLongerImageDimension,
+        Assert.AreEqual(GetExpectedLongerImageDimension(fRadiusWorkbook),
             fLongerImageDimension);
     }
 
@@ -347,14 +344,11 @@ public class VertexRadiusConverterTest : Object
 
         Single fRadiusWorkbook = VertexRadiusConverter.MaximumRadiusWorkbook;
 
-        Single fExpectedLongerImageDimension =
-            VertexRadiusConverter.MaximumLongerImageDimension;
-
         Single fLongerImageDimension =
             m_oVertexRadiusConverter.WorkbookToLongerImageDimension(
                 fRadiusWorkbook);
 
-        Assert.AreEqual(fExpectedLongerImageDimension,
+        Assert.AreEqual(GetExpectedLongerImageDimension(fRadiusWorkbook),
             fLongerImageDimension);
     }
 
@@ -377,16 +371,11 @@ public class VertexRadiusConverterTest : Object
             + (VertexRadiusConverter.MaximumRadiusWorkbook -
                 VertexRadiusConverter.MinimumRadiusWorkbook) / 2F;
 
-        Single fExpectedLongerImageDimension =
-            VertexRadiusConverter.MinimumLongerImageDimension
-            + (VertexRadiusConverter.MaximumLongerImageDimension -
-                VertexRadiusConverter.MinimumLongerImageDimension) / 2F;
-
         Single fLongerImageDimension =
             m_oVertexRadiusConverter.WorkbookToLongerImageDimension(
                 fRadiusWorkbook);
 
-        Assert.AreEqual(fExpectedLongerImageDimension,
+        Assert.AreEqual(GetExpectedLongerImageDimension(fRadiusWorkbook),
             fLongerImageDimension);
     }
 
@@ -408,14 +397,11 @@ public class VertexRadiusConverterTest : Object
         Single fRadiusWorkbook =
             VertexRadiusConverter.MinimumRadiusWorkbook - 1F;
 
-        Single fExpectedLongerImageDimension =
-            VertexRadiusConverter.MinimumLongerImageDimension;
-
         Single fLongerImageDimension =
             m_oVertexRadiusConverter.WorkbookToLongerImageDimension(
                 fRadiusWorkbook);
 
-        Assert.AreEqual(fExpectedLongerImageDimension,
+        Assert.AreEqual(GetExpectedLongerImageDimension(fRadiusWorkbook),
             fLongerImageDimension);
     }
 
@@ -437,14 +423,11 @@ public class VertexRadiusConverterTest : Object
         Single fRadiusWorkbook =
             VertexRadiusConverter.MaximumRadiusWorkbook + 1F;
 
-        Single fExpectedLongerImageDimension =
-            VertexRadiusConverter.MaximumLongerImageDimension;
-
         Single fLongerImageDimension =
             m_oVertexRadiusConverter.WorkbookToLongerImageDimension(
                 fRadiusWorkbook);
 
-        Assert.AreEqual(fExpectedLongerImageDimension,
+        Assert.AreEqual(GetExpectedLongerImageDimension(fRadiusWorkbook),
             fLongerImageDimension);
     }
 
@@ -582,6 +565,29 @@ public class VertexRadiusConverterTest : Object
             m_oVertexRadiusConverter.WorkbookToLabelFontSize(fRadiusWorkbook);
 
         Assert.AreEqual(fExpectedLabelFontSize, fLabelFontSize);
+    }
+
+    //*************************************************************************
+    //  Method: GetExpectedLongerImageDimension()
+    //
+    /// <summary>
+    /// Gets the expected return value from the
+    /// WorkbookToLongerImageDimension() method.
+    /// </summary>
+    ///
+    /// <param name="fRadiusWorkbook">
+    /// The workbook value.
+    /// </param>
+    //*************************************************************************
+
+    protected Single
+    GetExpectedLongerImageDimension
+    (
+        Single fRadiusWorkbook
+    )
+    {
+        return ( 2.0F *
+            m_oVertexRadiusConverter.WorkbookToGraph(fRadiusWorkbook) );
     }
 
 

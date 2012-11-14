@@ -19,8 +19,21 @@ namespace Smrf.NodeXL.ExcelTemplate
 /// </summary>
 ///
 /// <remarks>
+/// This dialog lets the user specify export settings.  It saves the settings
+/// in an <see cref="ExportToEmailUserSettings" /> object.  If the <see
+/// cref="DialogMode" /> argument to the constructor is <see
+/// cref="DialogMode.Normal" />, it also exports the graph.
+///
+/// <para>
+/// If the user edits and saves the settings, <see cref="Form.ShowDialog()" />
+/// returns DialogResult.OK.  Otherwise, it returns DialogResult.Cancel.
+/// </para>
+///
+/// <para>
 /// Most of the work is done by an internal <see cref="EmailExporter" />
 /// object.
+/// </para>
+///
 /// </remarks>
 //*****************************************************************************
 
@@ -34,28 +47,42 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
     /// class.
     /// </summary>
     ///
+    /// <param name="mode">
+    /// Indicates the mode in which the dialog is being used.
+    /// </param>
+    ///
     /// <param name="workbook">
     /// Workbook containing the graph data.
     /// </param>
     ///
     /// <param name="nodeXLControl">
-    /// NodeXLControl containing the graph.
+    /// NodeXLControl containing the graph.  This can be null if <paramref
+    /// name="mode" /> is <see cref="DialogMode.EditOnly" />.
     /// </param>
     //*************************************************************************
 
     public ExportToEmailDialog
     (
+        DialogMode mode,
         Microsoft.Office.Interop.Excel.Workbook workbook,
         NodeXLControl nodeXLControl
     )
     {
         Debug.Assert(workbook != null);
-        Debug.Assert(nodeXLControl != null);
+        Debug.Assert(nodeXLControl != null || mode == DialogMode.EditOnly);
 
+        m_eMode = mode;
         m_oWorkbook = workbook;
         m_oNodeXLControl = nodeXLControl;
+        m_oExportToEmailUserSettings = new ExportToEmailUserSettings();
+        m_oPasswordUserSettings = new PasswordUserSettings();
 
         InitializeComponent();
+
+        if (m_eMode == DialogMode.EditOnly)
+        {
+            InitializeForEditOnly();
+        }
 
         usrExportedFilesDescription.Workbook = workbook;
 
@@ -69,6 +96,50 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
         DoDataExchange(false);
 
         AssertValid();
+    }
+
+    //*************************************************************************
+    //  Enum: DialogMode
+    //
+    /// <summary>
+    /// Indicates the mode in which the dialog is being used.
+    /// </summary>
+    //*************************************************************************
+
+    public enum
+    DialogMode
+    {
+        /// The user can edit the dialog settings and then export the graph.
+
+        Normal,
+
+        /// The user can edit the dialog settings but cannot export the graph.
+
+        EditOnly,
+    }
+
+    //*************************************************************************
+    //  Method: InitializeForEditOnly()
+    //
+    /// <summary>
+    /// Initializes controls when the dialog mode is <see
+    /// cref="DialogMode.EditOnly" />.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    InitializeForEditOnly()
+    {
+        this.Text += " Options";
+        lblDialogDescription.Enabled = false;
+
+        usrExportedFilesDescription.Title =
+            "[The file name will be used as the subject.]";
+
+        usrExportedFilesDescription.Description =
+            "[The graph summary will be used as the message.]";
+
+        usrExportedFilesDescription.Enabled = false;
     }
 
     //*************************************************************************
@@ -140,72 +211,77 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
                 return (false);
             }
 
-            m_oExportToEmailDialogUserSettings.SpaceDelimitedToAddresses =
+            m_oExportToEmailUserSettings.SpaceDelimitedToAddresses =
                 String.Join( " ", StringUtil.SplitOnCommonDelimiters(
                     sToAddresses) );
 
-            m_oExportToEmailDialogUserSettings.FromAddress = sFromAddress;
+            m_oExportToEmailUserSettings.FromAddress = sFromAddress;
 
-            m_oExportToEmailDialogUserSettings.Subject =
-                usrExportedFilesDescription.Title;
+            if (m_eMode == DialogMode.Normal)
+            {
+                m_oExportToEmailUserSettings.Subject =
+                    usrExportedFilesDescription.Title;
 
-            m_oExportToEmailDialogUserSettings.MessageBody =
-                usrExportedFilesDescription.Description;
+                m_oExportToEmailUserSettings.MessageBody =
+                    usrExportedFilesDescription.Description;
+            }
 
-            m_oExportToEmailDialogUserSettings.SmtpHost = sSmtpHost;
-            m_oExportToEmailDialogUserSettings.SmtpPort = iSmtpPort;
+            m_oExportToEmailUserSettings.SmtpHost = sSmtpHost;
+            m_oExportToEmailUserSettings.SmtpPort = iSmtpPort;
 
-            m_oExportToEmailDialogUserSettings.UseSslForSmtp =
+            m_oExportToEmailUserSettings.UseSslForSmtp =
                 chkUseSslForSmtp.Checked;
 
-            m_oExportToEmailDialogUserSettings.SmtpUserName = sSmtpUserName;
-            m_sSmtpPassword = sSmtpPassword;
+            m_oExportToEmailUserSettings.SmtpUserName = sSmtpUserName;
+            m_oPasswordUserSettings.SmtpPassword = sSmtpPassword;
 
-            m_oExportToEmailDialogUserSettings.ExportWorkbookAndSettings =
+            m_oExportToEmailUserSettings.ExportWorkbookAndSettings =
                 usrExportedFiles.ExportWorkbookAndSettings;
 
-            m_oExportToEmailDialogUserSettings.ExportGraphML =
+            m_oExportToEmailUserSettings.ExportGraphML =
                 usrExportedFiles.ExportGraphML;
 
-            m_oExportToEmailDialogUserSettings.UseFixedAspectRatio =
+            m_oExportToEmailUserSettings.UseFixedAspectRatio =
                 usrExportedFiles.UseFixedAspectRatio;
         }
         else
         {
             txbToAddresses.Text =
-                m_oExportToEmailDialogUserSettings.SpaceDelimitedToAddresses;
+                m_oExportToEmailUserSettings.SpaceDelimitedToAddresses;
 
-            txbFromAddress.Text =
-                m_oExportToEmailDialogUserSettings.FromAddress;
+            txbFromAddress.Text = m_oExportToEmailUserSettings.FromAddress;
 
-            usrExportedFilesDescription.Title =
-                m_oExportToEmailDialogUserSettings.Subject;
+            if (m_eMode == DialogMode.Normal)
+            {
+                usrExportedFilesDescription.Title =
+                    m_oExportToEmailUserSettings.Subject;
 
-            usrExportedFilesDescription.Description =
-                m_oExportToEmailDialogUserSettings.MessageBody;
+                usrExportedFilesDescription.Description =
+                    m_oExportToEmailUserSettings.MessageBody;
+            }
 
-            txbSmtpHost.Text = m_oExportToEmailDialogUserSettings.SmtpHost;
+            txbSmtpHost.Text = m_oExportToEmailUserSettings.SmtpHost;
 
             txbSmtpPort.Text =
-                m_oExportToEmailDialogUserSettings.SmtpPort.ToString(
+                m_oExportToEmailUserSettings.SmtpPort.ToString(
                     CultureInfo.InvariantCulture);
 
             chkUseSslForSmtp.Checked =
-                m_oExportToEmailDialogUserSettings.UseSslForSmtp;
+                m_oExportToEmailUserSettings.UseSslForSmtp;
 
             txbSmtpUserName.Text =
-                m_oExportToEmailDialogUserSettings.SmtpUserName;
+                m_oExportToEmailUserSettings.SmtpUserName;
 
-            txbSmtpPassword.Text = m_sSmtpPassword;
+            txbSmtpPassword.Text = m_oPasswordUserSettings.SmtpPassword;
 
             usrExportedFiles.ExportWorkbookAndSettings =
-                m_oExportToEmailDialogUserSettings.ExportWorkbookAndSettings;
+                m_oExportToEmailUserSettings.ExportWorkbookAndSettings;
 
             usrExportedFiles.ExportGraphML =
-                m_oExportToEmailDialogUserSettings.ExportGraphML;
+                m_oExportToEmailUserSettings.ExportGraphML;
 
             usrExportedFiles.UseFixedAspectRatio = 
-                m_oExportToEmailDialogUserSettings.UseFixedAspectRatio;
+                m_oExportToEmailUserSettings.UseFixedAspectRatio;
         }
 
         return (true);
@@ -241,44 +317,81 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
             return;
         }
 
-        this.Cursor = Cursors.WaitCursor;
-
-        try
+        if (m_eMode == DialogMode.Normal)
         {
-            ( new EmailExporter() ).ExportToEmail(
-                m_oWorkbook,
-                m_oNodeXLControl,
+            this.Cursor = Cursors.WaitCursor;
 
-                m_oExportToEmailDialogUserSettings
-                    .SpaceDelimitedToAddresses.Split(' '),
+            try
+            {
+                ( new EmailExporter() ).ExportToEmail(
+                    m_oWorkbook,
+                    m_oNodeXLControl,
 
-                m_oExportToEmailDialogUserSettings.FromAddress,
-                m_oExportToEmailDialogUserSettings.Subject,
-                m_oExportToEmailDialogUserSettings.MessageBody,
-                m_oExportToEmailDialogUserSettings.SmtpHost,
-                m_oExportToEmailDialogUserSettings.SmtpPort,
-                m_oExportToEmailDialogUserSettings.UseSslForSmtp,
-                m_oExportToEmailDialogUserSettings.SmtpUserName,
-                m_sSmtpPassword,
-                m_oExportToEmailDialogUserSettings.ExportWorkbookAndSettings,
-                m_oExportToEmailDialogUserSettings.ExportGraphML,
-                m_oExportToEmailDialogUserSettings.UseFixedAspectRatio
-                );
-        }
-        catch (SmtpException oSmtpException)
-        {
-            this.ShowWarning(
-                "A problem occurred while sending the email.  Details:"
-                + "\r\n\r\n"
-                + oSmtpException
-                );
+                    m_oExportToEmailUserSettings
+                        .SpaceDelimitedToAddresses.Split(' '),
 
-            return;
+                    m_oExportToEmailUserSettings.FromAddress,
+                    m_oExportToEmailUserSettings.Subject,
+                    m_oExportToEmailUserSettings.MessageBody,
+                    m_oExportToEmailUserSettings.SmtpHost,
+                    m_oExportToEmailUserSettings.SmtpPort,
+                    m_oExportToEmailUserSettings.UseSslForSmtp,
+                    m_oExportToEmailUserSettings.SmtpUserName,
+                    m_oPasswordUserSettings.SmtpPassword,
+                    m_oExportToEmailUserSettings.ExportWorkbookAndSettings,
+                    m_oExportToEmailUserSettings.ExportGraphML,
+                    m_oExportToEmailUserSettings.UseFixedAspectRatio
+                    );
+            }
+            catch (Exception oException)
+            {
+                String sMessage;
+
+                if ( EmailExceptionHandler
+                    .TryGetMessageForRecognizedException(oException,
+                        out sMessage) )
+                {
+                    if (oException is EmailAddressFormatException)
+                    {
+                        switch ( ( (EmailAddressFormatException)oException )
+                            .EmailAddressType)
+                        {
+                            case EmailAddressType.To:
+
+                                OnInvalidTextBox(txbToAddresses, sMessage);
+                                break;
+
+                            case EmailAddressType.From:
+
+                                OnInvalidTextBox(txbFromAddress, sMessage);
+                                break;
+
+                            default:
+
+                                Debug.Assert(false);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        this.ShowWarning(sMessage);
+                    }
+                }
+                else
+                {
+                    ErrorUtil.OnException(oException);
+                }
+
+                return;
+            }
+            finally
+            {
+                this.Cursor = Cursors.Default;
+            }
         }
-        finally
-        {
-            this.Cursor = Cursors.Default;
-        }
+
+        m_oExportToEmailUserSettings.Save();
+        m_oPasswordUserSettings.Save();
 
         this.DialogResult = DialogResult.OK;
         this.Close();
@@ -300,9 +413,15 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
     {
         base.AssertValid();
 
-        Debug.Assert(m_oExportToEmailDialogUserSettings != null);
+        // m_eMode
         Debug.Assert(m_oWorkbook != null);
-        Debug.Assert(m_oNodeXLControl != null);
+
+        Debug.Assert(m_oNodeXLControl != null
+            || m_eMode == DialogMode.EditOnly);
+
+        Debug.Assert(m_oExportToEmailUserSettings != null);
+        Debug.Assert(m_oPasswordUserSettings != null);
+        Debug.Assert(m_oExportToEmailDialogUserSettings != null);
     }
 
 
@@ -310,10 +429,9 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
     //  Protected fields
     //*************************************************************************
 
-    /// User settings for this dialog.
+    /// Indicates the mode in which the dialog is being used.
 
-    protected ExportToEmailDialogUserSettings
-        m_oExportToEmailDialogUserSettings;
+    protected DialogMode m_eMode;
 
     /// Workbook containing the graph data.
 
@@ -323,10 +441,18 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
 
     protected NodeXLControl m_oNodeXLControl;
 
-    /// This is static so that the password is retained while Excel is open.
-    /// The password isn't saved in the user's settings.
+    /// User settings for exporting the graph to email.
 
-    protected static String m_sSmtpPassword = String.Empty;
+    protected ExportToEmailUserSettings m_oExportToEmailUserSettings;
+
+    /// Password user settings.
+
+    protected PasswordUserSettings m_oPasswordUserSettings;
+
+    /// User settings for this dialog.
+
+    protected ExportToEmailDialogUserSettings
+        m_oExportToEmailDialogUserSettings;
 }
 
 
@@ -372,374 +498,6 @@ public class ExportToEmailDialogUserSettings : FormSettings
         AssertValid();
     }
 
-    //*************************************************************************
-    //  Property: SpaceDelimitedToAddresses
-    //
-    /// <summary>
-    /// Gets or sets a space-delimited set of "to" email addresses.
-    /// </summary>
-    ///
-    /// <value>
-    /// A space-delimited set of "to" email addresses.  The default value is
-    /// String.Empty.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("") ]
-
-    public String
-    SpaceDelimitedToAddresses
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (String)this[SpaceDelimitedToAddressesKey] );
-        }
-
-        set
-        {
-            this[SpaceDelimitedToAddressesKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: FromAddress
-    //
-    /// <summary>
-    /// Gets or sets the "from" email address.
-    /// </summary>
-    ///
-    /// <value>
-    /// The "from" email address.  The default value is String.Empty.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("") ]
-
-    public String
-    FromAddress
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (String)this[FromAddressKey] );
-        }
-
-        set
-        {
-            this[FromAddressKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: Subject
-    //
-    /// <summary>
-    /// Gets or sets the email subject.
-    /// </summary>
-    ///
-    /// <value>
-    /// The email subject.  The default value is String.Empty.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("") ]
-
-    public String
-    Subject
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (String)this[SubjectKey] );
-        }
-
-        set
-        {
-            this[SubjectKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: MessageBody
-    //
-    /// <summary>
-    /// Gets or sets the email's message body.
-    /// </summary>
-    ///
-    /// <value>
-    /// The message body subject.  The default value is String.Empty.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("") ]
-
-    public String
-    MessageBody
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (String)this[MessageBodyKey] );
-        }
-
-        set
-        {
-            this[MessageBodyKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: SmtpHost
-    //
-    /// <summary>
-    /// Gets or sets the SMTP host name.
-    /// </summary>
-    ///
-    /// <value>
-    /// The SMTP host name.  The default value is String.Empty.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("") ]
-
-    public String
-    SmtpHost
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (String)this[SmtpHostKey] );
-        }
-
-        set
-        {
-            this[SmtpHostKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: SmtpPort
-    //
-    /// <summary>
-    /// Gets or sets the SMTP port.
-    /// </summary>
-    ///
-    /// <value>
-    /// The SMTP port.  The default value is 587.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("587") ]
-
-    public Int32
-    SmtpPort
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Int32)this[SmtpPortKey] );
-        }
-
-        set
-        {
-            this[SmtpPortKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: UseSslForSmtp
-    //
-    /// <summary>
-    /// Gets or sets a flag specifying whether SSL should be used.
-    /// </summary>
-    ///
-    /// <value>
-    /// true to use SSL.  The default value is true.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("true") ]
-
-    public Boolean
-    UseSslForSmtp
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Boolean)this[UseSslForSmtpKey] );
-        }
-
-        set
-        {
-            this[UseSslForSmtpKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: SmtpUserName
-    //
-    /// <summary>
-    /// Gets or sets the SMTP user name.
-    /// </summary>
-    ///
-    /// <value>
-    /// The SMTP user name.  The default value is String.Empty.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("") ]
-
-    public String
-    SmtpUserName
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (String)this[SmtpUserNameKey] );
-        }
-
-        set
-        {
-            this[SmtpUserNameKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: ExportWorkbookAndSettings
-    //
-    /// <summary>
-    /// Gets or sets a flag indicating whether the workbook and its settings
-    /// should be exported.
-    /// </summary>
-    ///
-    /// <value>
-    /// true to export the workbook and its settings.  The default value is
-    /// false.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false") ]
-
-    public Boolean
-    ExportWorkbookAndSettings
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Boolean)this[ExportWorkbookAndSettingsKey] );
-        }
-
-        set
-        {
-            this[ExportWorkbookAndSettingsKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: ExportGraphML
-    //
-    /// <summary>
-    /// Gets or sets a flag indicating whether GraphML should be exported.
-    /// </summary>
-    ///
-    /// <value>
-    /// true to export GraphML.  The default value is false.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false") ]
-
-    public Boolean
-    ExportGraphML
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Boolean)this[ExportGraphMLKey] );
-        }
-
-        set
-        {
-            this[ExportGraphMLKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: UseFixedAspectRatio
-    //
-    /// <summary>
-    /// Gets or sets a flag indicating whether the exported image should have
-    /// a fixed aspect ratio.
-    /// </summary>
-    ///
-    /// <value>
-    /// true to use a fixed aspect ratio, false to use the aspect ratio of the
-    /// graph pane.  The default value is false.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false") ]
-
-    public Boolean
-    UseFixedAspectRatio
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Boolean)this[UseFixedAspectRatioKey] );
-        }
-
-        set
-        {
-            this[UseFixedAspectRatioKey] = value;
-
-            AssertValid();
-        }
-    }
-
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -758,65 +516,5 @@ public class ExportToEmailDialogUserSettings : FormSettings
 
         // (Do nothing else.)
     }
-
-
-    //*************************************************************************
-    //  Protected fields
-    //*************************************************************************
-
-    /// Name of the settings key for the SpaceDelimitedToAddresses property.
-
-    protected const String SpaceDelimitedToAddressesKey =
-        "SpaceDelimitedToAddresses";
-
-    /// Name of the settings key for the FromAddress property.
-
-    protected const String FromAddressKey =
-        "FromAddress";
-
-    /// Name of the settings key for the Subject property.
-
-    protected const String SubjectKey =
-        "Subject";
-
-    /// Name of the settings key for the MessageBody property.
-
-    protected const String MessageBodyKey =
-        "MessageBody";
-
-    /// Name of the settings key for the SmtpHost property.
-
-    protected const String SmtpHostKey =
-        "SmtpHost";
-
-    /// Name of the settings key for the SmtpPort property.
-
-    protected const String SmtpPortKey =
-        "SmtpPort";
-
-    /// Name of the settings key for the UseSslForSmtp property.
-
-    protected const String UseSslForSmtpKey =
-        "UseSslForSmtp";
-
-    /// Name of the settings key for the SmtpUserName property.
-
-    protected const String SmtpUserNameKey =
-        "SmtpUserName";
-
-    /// Name of the settings key for the ExportWorkbookAndSettings property.
-
-    protected const String ExportWorkbookAndSettingsKey =
-        "ExportWorkbookAndSettings";
-
-    /// Name of the settings key for the ExportGraphML property.
-
-    protected const String ExportGraphMLKey =
-        "ExportGraphML";
-
-    /// Name of the settings key for the UseFixedAspectRatio property.
-
-    protected const String UseFixedAspectRatioKey =
-        "UseFixedAspectRatio";
 }
 }

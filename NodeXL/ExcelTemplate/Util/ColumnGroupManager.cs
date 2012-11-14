@@ -292,8 +292,8 @@ public static class ColumnGroupManager
     /// </param>
     ///
     /// <param name="columnGroups">
-    /// The column groups to show or hide, as an ORed combination of <paramref
-    /// name="ColumnGroups" /> flags.  Column groups that aren't specified are
+    /// The column groups to show or hide, as an ORed combination of <see
+    /// cref="ColumnGroups" /> flags.  Column groups that aren't specified are
     /// not modified.
     /// </param>
     ///
@@ -371,8 +371,7 @@ public static class ColumnGroupManager
     ///
     /// <param name="eColumnGroup">
     /// The group of columns to show or hide.  This must be a single value in
-    /// the <paramref name="ColumnGroups" /> enumeration, not an ORed
-    /// combination.
+    /// the <see cref="ColumnGroups" /> enumeration, not an ORed combination.
     /// </param>
     ///
     /// <param name="bShow">

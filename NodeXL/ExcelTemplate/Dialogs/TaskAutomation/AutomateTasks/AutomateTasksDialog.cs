@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using Smrf.NodeXL.Algorithms;
+using Smrf.NodeXL.Visualization.Wpf;
 using Smrf.AppLib;
 
 namespace Smrf.NodeXL.ExcelTemplate
@@ -51,9 +52,9 @@ public partial class AutomateTasksDialog : ExcelTemplateForm
     /// Workbook containing the graph contents.
     /// </param>
     ///
-    /// <param name="ribbon">
-    /// The application's Ribbon.  Can be null if <paramref name="mode" /> is
-    /// <see cref="DialogMode.EditOnly" />.
+    /// <param name="nodeXLControl">
+    /// The NodeXLControl object.  This can be null if <paramref name="mode" />
+    /// is <see cref="DialogMode.EditOnly" />.
     /// </param>
     //*************************************************************************
 
@@ -61,16 +62,16 @@ public partial class AutomateTasksDialog : ExcelTemplateForm
     (
         DialogMode mode,
         ThisWorkbook thisWorkbook,
-        Ribbon ribbon
+        NodeXLControl nodeXLControl
     )
     {
         Debug.Assert(thisWorkbook != null);
-        Debug.Assert(mode == DialogMode.EditOnly || ribbon != null);
+        Debug.Assert(nodeXLControl != null || mode == DialogMode.EditOnly);
 
         m_eMode = mode;
         m_oAutomateTasksUserSettings = new AutomateTasksUserSettings();
         m_oThisWorkbook = thisWorkbook;
-        m_oRibbon = ribbon;
+        m_oNodeXLControl = nodeXLControl;
         m_bIgnoreItemCheckEvents = false;
 
         InitializeComponent();
@@ -154,7 +155,13 @@ public partial class AutomateTasksDialog : ExcelTemplateForm
             "Save workbook to a new file if it has never been saved",
 
             AutomationTasks.SaveGraphImageFile, 
-            "Save image to file"
+            "Save image to file",
+
+            AutomationTasks.ExportToNodeXLGraphGallery, 
+            "Export graph to NodeXL Graph Gallery",
+
+            AutomationTasks.ExportToEmail, 
+            "Export graph to email"
             );
     }
 
@@ -482,6 +489,8 @@ public partial class AutomateTasksDialog : ExcelTemplateForm
             switch ( ItemToAutomationTask( clbTasksToRun.Items[e.Index] ) )
             {
                 case AutomationTasks.SaveGraphImageFile:
+                case AutomationTasks.ExportToNodeXLGraphGallery:
+                case AutomationTasks.ExportToEmail:
 
                     if (bItemChecked)
                     {
@@ -499,7 +508,13 @@ public partial class AutomateTasksDialog : ExcelTemplateForm
 
                     if (!bItemChecked)
                     {
-                        eTasksToRun &= ~AutomationTasks.SaveGraphImageFile;
+                        eTasksToRun &= ~(
+                            AutomationTasks.SaveGraphImageFile
+                            |
+                            AutomationTasks.ExportToNodeXLGraphGallery
+                            |
+                            AutomationTasks.ExportToEmail
+                            );
                     }
 
                     break;
@@ -619,6 +634,22 @@ public partial class AutomateTasksDialog : ExcelTemplateForm
 
                 break;
 
+            case AutomationTasks.ExportToNodeXLGraphGallery:
+
+                ( new ExportToNodeXLGraphGalleryDialog(
+                    ExportToNodeXLGraphGalleryDialog.DialogMode.EditOnly,
+                    m_oThisWorkbook.InnerObject, null) ).ShowDialog();
+
+                break;
+
+            case AutomationTasks.ExportToEmail:
+
+                ( new ExportToEmailDialog(
+                    ExportToEmailDialog.DialogMode.EditOnly,
+                    m_oThisWorkbook.InnerObject, null) ).ShowDialog();
+
+                break;
+
             default:
 
                 Debug.Assert(false);
@@ -674,12 +705,11 @@ public partial class AutomateTasksDialog : ExcelTemplateForm
             }
             else if (m_oAutomateTasksUserSettings.AutomateThisWorkbookOnly)
             {
-                Debug.Assert(m_oRibbon != null);
+                Debug.Assert(m_oNodeXLControl != null);
 
                 TaskAutomator.AutomateOneWorkbook(m_oThisWorkbook,
-                    m_oAutomateTasksUserSettings.TasksToRun,
-                    m_oAutomateTasksUserSettings.FolderToSaveWorkbookTo,
-                    m_oRibbon);
+                    m_oNodeXLControl, m_oAutomateTasksUserSettings.TasksToRun,
+                    m_oAutomateTasksUserSettings.FolderToSaveWorkbookTo);
             }
             else
             {
@@ -739,7 +769,10 @@ public partial class AutomateTasksDialog : ExcelTemplateForm
         // m_eMode
         Debug.Assert(m_oAutomateTasksUserSettings != null);
         Debug.Assert(m_oThisWorkbook != null);
-        Debug.Assert(m_eMode == DialogMode.EditOnly || m_oRibbon != null);
+
+        Debug.Assert(m_oNodeXLControl != null ||
+            m_eMode == DialogMode.EditOnly);
+
         // m_bIgnoreItemCheckEvents
         Debug.Assert(m_oAutomateTasksDialogUserSettings != null);
     }
@@ -761,9 +794,9 @@ public partial class AutomateTasksDialog : ExcelTemplateForm
 
     protected ThisWorkbook m_oThisWorkbook;
 
-    /// The application's Ribbon, or null.
+    /// The NodeXLControl object.  Can be null if m_eMode is EditOnly.
 
-    protected Ribbon m_oRibbon;
+    protected NodeXLControl m_oNodeXLControl;
 
     /// true to ignore clbTasksToRun_ItemCheck events.
 

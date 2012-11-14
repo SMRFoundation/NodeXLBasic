@@ -237,32 +237,6 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
-    //  Method: ShowGraph()
-    //
-    /// <summary>
-    /// Shows the NodeXL graph.
-    /// </summary>
-    ///
-    /// <returns>
-    /// true if the graph was shown, false if the application isn't ready.
-    /// </returns>
-    //*************************************************************************
-
-    public Boolean
-    ShowGraph()
-    {
-        AssertValid();
-
-        if ( !this.ExcelApplicationIsReady(true) )
-        {
-            return (false);
-        }
-
-        this.GraphVisibility = true;
-        return (true);
-    }
-
-    //*************************************************************************
     //  Method: AutomateTasksOnOpen()
     //
     /// <summary>
@@ -275,18 +249,24 @@ public partial class ThisWorkbook
     {
         AssertValid();
 
-        AutomateTasksUserSettings oAutomateTasksUserSettings =
-            new AutomateTasksUserSettings();
+        // Reset the flag before the workbook is automated.  The workbook may
+        // get exported during automation, and the exported workbook shouldn't
+        // have the flag set.
+
+        this.PerWorkbookSettings.AutomateTasksOnOpen = false;
 
         try
         {
-            AutomateTasksInternal(oAutomateTasksUserSettings);
+            AutomateThisWorkbook();
         }
         catch (Exception oException)
         {
             ErrorUtil.OnException(oException);
             return;
         }
+
+        AutomateTasksUserSettings oAutomateTasksUserSettings =
+            new AutomateTasksUserSettings();
 
         if ( (oAutomateTasksUserSettings.TasksToRun &
             AutomationTasks.ReadWorkbook) != 0 )
@@ -300,8 +280,7 @@ public partial class ThisWorkbook
             oGraphLaidOutEventHandler =
                 delegate(Object sender, GraphLaidOutEventArgs e)
             {
-                // In case something went wrong while automating this workbook,
-                // prevent this delegate from being called again.
+                // Prevent this delegate from being called again.
 
                 this.GraphLaidOut -= oGraphLaidOutEventHandler;
 
@@ -487,7 +466,7 @@ public partial class ThisWorkbook
 
         m_oAutoFillWorkbookDialog.WorkbookAutoFilled += delegate
         {
-            this.Ribbon.OnWorkbookAutoFilled(
+            OnWorkbookAutoFilled(
                 ( new GeneralUserSettings() ).AutoReadWorkbook );
         };
 
@@ -527,6 +506,41 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
+    //  Method: OnWorkbookAutoFilled()
+    //
+    /// <summary>
+    /// Performs tasks required after the workbook is autofilled.
+    /// </summary>
+    ///
+    /// <param name="readWorkbook">
+    /// true to read the workbook.
+    /// </param>
+    //*************************************************************************
+
+    public void
+    OnWorkbookAutoFilled
+    (
+        Boolean readWorkbook
+    )
+    {
+        AssertValid();
+
+        if (this.PerWorkbookSettings.AutoFillWorkbookResults.VertexXResults
+            .ColumnAutoFilled )
+        {
+            // When the X and Y columns are autofilled, the graph shouldn't be
+            // laid out again.
+
+            this.Ribbon.Layout = LayoutType.Null;
+        }
+
+        if (readWorkbook)
+        {
+            ShowGraphAndReadWorkbook();
+        }
+    }
+
+    //*************************************************************************
     //  Method: ShowOrHideColumnGroups()
     //
     /// <summary>
@@ -534,8 +548,8 @@ public partial class ThisWorkbook
     /// </summary>
     ///
     /// <param name="columnGroups">
-    /// The column groups to show or hide, as an ORed combination of <paramref
-    /// name="ColumnGroups" /> flags.  Column groups that aren't specified are
+    /// The column groups to show or hide, as an ORed combination of <see
+    /// cref="ColumnGroups" /> flags.  Column groups that aren't specified are
     /// not modified.
     /// </param>
     ///
@@ -918,6 +932,32 @@ public partial class ThisWorkbook
 
             AssertValid();
         }
+    }
+
+    //*************************************************************************
+    //  Method: ShowGraph()
+    //
+    /// <summary>
+    /// Shows the graph pane.
+    /// </summary>
+    ///
+    /// <returns>
+    /// true if the graph pane was shown, false if the application isn't ready.
+    /// </returns>
+    //*************************************************************************
+
+    private Boolean
+    ShowGraph()
+    {
+        AssertValid();
+
+        if ( !this.ExcelApplicationIsReady(true) )
+        {
+            return (false);
+        }
+
+        this.GraphVisibility = true;
+        return (true);
     }
 
     //*************************************************************************
@@ -1388,24 +1428,6 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
-    //  Method: AutomateTasks()
-    //
-    /// <summary>
-    /// Opens a dialog box that lets the user run multiple tasks.
-    /// </summary>
-    //*************************************************************************
-
-    private void
-    AutomateTasks()
-    {
-        Debug.Assert( this.ExcelApplicationIsReady(false) );
-        AssertValid();
-
-        ( new AutomateTasksDialog(AutomateTasksDialog.DialogMode.Normal,
-            this, this.Ribbon) ).ShowDialog();
-    }
-
-    //*************************************************************************
     //  Method: AutomateTasksAfterImport()
     //
     /// <summary>
@@ -1423,12 +1445,35 @@ public partial class ThisWorkbook
         {
             try
             {
-                AutomateTasksInternal( new AutomateTasksUserSettings() );
+                AutomateThisWorkbook();
             }
             catch (Exception oException)
             {
                 ErrorUtil.OnException(oException);
             }
+        }
+    }
+
+    //*************************************************************************
+    //  Method: ShowGraphAndReadWorkbook()
+    //
+    /// <summary>
+    /// Shows the graph pane and reads the workbook.
+    /// </summary>
+    //*************************************************************************
+
+    private void
+    ShowGraphAndReadWorkbook()
+    {
+        AssertValid();
+
+        // Make sure the graph is showing, then tell the TaskPane to read the
+        // workbook.
+
+        if ( this.ShowGraph() )
+        {
+            CommandDispatcher.SendNoParamCommand(this,
+                NoParamCommand.ReadWorkbook);
         }
     }
 
@@ -1940,29 +1985,23 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
-    //  Method: AutomateTasksInternal()
+    //  Method: AutomateThisWorkbook()
     //
     /// <summary>
     /// Runs task automation on the workbook.
     /// </summary>
-    ///
-    /// <param name="oAutomateTasksUserSettings">
-    /// Stores the user's settings for task automation.
-    /// </param>
     //*************************************************************************
 
     private void
-    AutomateTasksInternal
-    (
-        AutomateTasksUserSettings oAutomateTasksUserSettings
-    )
+    AutomateThisWorkbook()
     {
-        Debug.Assert(oAutomateTasksUserSettings != null);
         AssertValid();
 
-        TaskAutomator.AutomateOneWorkbook(this,
-            oAutomateTasksUserSettings.TasksToRun,
-            oAutomateTasksUserSettings.FolderToSaveWorkbookTo, this.Ribbon);
+        // The TaskPane does the work, because it has access to the
+        // NodeXLControl needed for some automation tasks.
+
+        CommandDispatcher.SendNoParamCommand(this,
+            NoParamCommand.AutomateThisWorkbook);
     }
 
     //*************************************************************************
@@ -2482,11 +2521,11 @@ public partial class ThisWorkbook
     {
         AssertValid();
 
-        // Prevent the workbook from being automated the next time it is
+        // Make sure the workbook won't be automated again the next time it is
         // opened.
 
-        PerWorkbookSettings oPerWorkbookSettings = this.PerWorkbookSettings;
-        oPerWorkbookSettings.AutomateTasksOnOpen = false;
+        Debug.Assert(!this.PerWorkbookSettings.AutomateTasksOnOpen);
+
         this.Save();
 
         // The workbook and Excel need to be closed.  If this method is being
@@ -2802,9 +2841,8 @@ public partial class ThisWorkbook
 
         if (!this.PerWorkbookSettings.AutomateTasksOnOpen)
         {
-            CommandDispatcher.SendCommand( this,
-                new RunNoParamCommandEventArgs(
-                    NoParamCommand.SaveUserSettings) );
+            CommandDispatcher.SendNoParamCommand(this,
+                NoParamCommand.SaveUserSettings);
         }
     }
 
@@ -2978,11 +3016,6 @@ public partial class ThisWorkbook
                     AggregateGraphMetrics();
                     break;
 
-                case NoParamCommand.AutomateTasks:
-
-                    AutomateTasks();
-                    break;
-
                 case NoParamCommand.DeleteSubgraphThumbnails:
 
                     DeleteSubgraphThumbnails();
@@ -3021,6 +3054,11 @@ public partial class ThisWorkbook
                 case NoParamCommand.RegisterUser:
 
                     RegisterUser();
+                    break;
+
+                case NoParamCommand.ShowGraphAndReadWorkbook:
+
+                    ShowGraphAndReadWorkbook();
                     break;
 
                 case NoParamCommand.ShowGraphMetrics:

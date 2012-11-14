@@ -2285,8 +2285,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// </param>
     ///
     /// <param name="bIncludeNonRepliesToNonMentionsEdges">
-    /// true to append edges for tweets that don't reply to or mention anyone
-    /// in <paramref name="oScreenNameDictionary" />.
+    /// true to append edges for tweets that don't reply to or mention anyone.
     /// </param>
     ///
     /// <param name="bIncludeStatuses">
@@ -2359,8 +2358,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// </param>
     ///
     /// <param name="bIncludeNonRepliesToNonMentionsEdges">
-    /// true to append edges for tweets that don't reply to or mention anyone
-    /// in <paramref name="oScreenNameDictionary" />.
+    /// true to append edges for tweets that don't reply to or mention anyone.
     /// </param>
     ///
     /// <param name="sScreenName">

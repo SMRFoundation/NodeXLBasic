@@ -839,12 +839,13 @@ public class GeneralUserSettings : NodeXLApplicationSettingsBase
     /// The size of vertices drawn as images, as a Nullable&lt;Single&gt;, or a
     /// Nullable with no value to use the actual image sizes.  Must be between
     /// VertexRadiusConverter.MinimumRadiusWorkbook and
-    /// VertexRadiusConverter.MaximumRadiusWorkbook.  The default value is 3.0.
+    /// VertexRadiusConverter.MaximumRadiusWorkbook.  The default value is
+    /// 100.0.
     /// </value>
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("3.0") ]
+    [ DefaultSettingValueAttribute("100.0") ]
 
     public Nullable<Single>
     VertexImageSize

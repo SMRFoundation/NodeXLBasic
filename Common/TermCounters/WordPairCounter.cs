@@ -162,8 +162,8 @@ public class WordPairCounter : TermCounterBase<CountedWordPair>
     /// For each term found in <paramref name="oWords" />, this method
     /// increments the term's count in <paramref name="oCountedTerms" /> if the
     /// term was previously counted, or adds a key/value pair to <paramref
-    /// name="CountedTerms" /> with a count of 1 if the term was not previously
-    /// counted.  It also adds the key to <paramref
+    /// name="oCountedTerms" /> with a count of 1 if the term was not
+    /// previously counted.  It also adds the key to <paramref
     /// name="oKeysCountedInThisCall" />.
     /// </remarks>
     //*************************************************************************

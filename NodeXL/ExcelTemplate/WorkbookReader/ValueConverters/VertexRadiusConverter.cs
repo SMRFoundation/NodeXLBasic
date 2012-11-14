@@ -131,7 +131,9 @@ public class VertexRadiusConverter : Object, INumericValueConverter
     /// </param>
     ///
     /// <returns>
-    /// The maximum width or height a vertex image can have.
+    /// The longer image dimension to use for a vertex image.  This should be
+    /// applied to either the width or the height of the image, whichever is
+    /// longer.
     /// </returns>
     //*************************************************************************
 
@@ -143,9 +145,7 @@ public class VertexRadiusConverter : Object, INumericValueConverter
     {
         AssertValid();
 
-        return ( MathUtil.TransformValueToRange(valueWorkbook,
-            MinimumRadiusWorkbook, MaximumRadiusWorkbook,
-            MinimumLongerImageDimension, MaximumLongerImageDimension) );
+        return ( 2.0F * WorkbookToGraph(valueWorkbook) );
     }
 
     //*************************************************************************
@@ -224,20 +224,6 @@ public class VertexRadiusConverter : Object, INumericValueConverter
     /// </summary>
 
     public static readonly Single MaximumRadiusWorkbook = 100F;
-
-    /// <summary>
-    /// The vertex image width or height (whichever is larger) that corresponds
-    /// to MinimumRadiusWorkbook, in WPF units.
-    /// </summary>
-
-    public static readonly Single MinimumLongerImageDimension = 10F;
-
-    /// <summary>
-    /// The vertex image width or height (whichever is larger) that corresponds
-    /// to MaximumRadiusWorkbook, in WPF units.
-    /// </summary>
-
-    public static readonly Single MaximumLongerImageDimension = 2100F;
 
     /// <summary>
     /// The vertex label font size that corresponds to MinimumRadiusWorkbook,

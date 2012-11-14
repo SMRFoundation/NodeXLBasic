@@ -20,8 +20,21 @@ namespace Smrf.NodeXL.ExcelTemplate
 /// </summary>
 ///
 /// <remarks>
+/// This dialog lets the user specify export settings.  It saves the settings
+/// in an <see cref="ExportToNodeXLGraphGalleryUserSettings" /> object.  If
+/// the <see cref="DialogMode" /> argument to the constructor is <see
+/// cref="DialogMode.Normal" />, it also exports the graph.
+///
+/// <para>
+/// If the user edits and saves the settings, <see cref="Form.ShowDialog()" />
+/// returns DialogResult.OK.  Otherwise, it returns DialogResult.Cancel.
+/// </para>
+///
+/// <para>
 /// Most of the work is done by an internal <see
 /// cref="NodeXLGraphGalleryExporter" /> object.
+/// </para>
+///
 /// </remarks>
 //*****************************************************************************
 
@@ -35,28 +48,45 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
     /// cref="ExportToNodeXLGraphGalleryDialog" /> class.
     /// </summary>
     ///
+    /// <param name="mode">
+    /// Indicates the mode in which the dialog is being used.
+    /// </param>
+    ///
     /// <param name="workbook">
     /// Workbook containing the graph data.
     /// </param>
     ///
     /// <param name="nodeXLControl">
-    /// NodeXLControl containing the graph.
+    /// NodeXLControl containing the graph.  This can be null if <paramref
+    /// name="mode" /> is <see cref="DialogMode.EditOnly" />.
     /// </param>
     //*************************************************************************
 
     public ExportToNodeXLGraphGalleryDialog
     (
+        DialogMode mode,
         Microsoft.Office.Interop.Excel.Workbook workbook,
         NodeXLControl nodeXLControl
     )
     {
         Debug.Assert(workbook != null);
-        Debug.Assert(nodeXLControl != null);
+        Debug.Assert(nodeXLControl != null || mode == DialogMode.EditOnly);
 
+        m_eMode = mode;
         m_oWorkbook = workbook;
         m_oNodeXLControl = nodeXLControl;
 
+        m_oExportToNodeXLGraphGalleryUserSettings =
+            new ExportToNodeXLGraphGalleryUserSettings();
+
+        m_oPasswordUserSettings = new PasswordUserSettings();
+
         InitializeComponent();
+
+        if (m_eMode == DialogMode.EditOnly)
+        {
+            InitializeForEditOnly();
+        }
 
         lnkNodeXLGraphGallery.Tag = ProjectInformation.NodeXLGraphGalleryUrl;
 
@@ -65,7 +95,7 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
         lnkCreateAccount.Tag =
             ProjectInformation.NodeXLGraphGalleryCreateAccountUrl;
 
-        // Instantiate an object that saves and retrieves the user settings for
+        // Instantiate an object that saves and retrieves the position of
         // this dialog.  Note that the object automatically saves the settings
         // when the form closes.
 
@@ -75,6 +105,50 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
         DoDataExchange(false);
 
         AssertValid();
+    }
+
+    //*************************************************************************
+    //  Enum: DialogMode
+    //
+    /// <summary>
+    /// Indicates the mode in which the dialog is being used.
+    /// </summary>
+    //*************************************************************************
+
+    public enum
+    DialogMode
+    {
+        /// The user can edit the dialog settings and then export the graph.
+
+        Normal,
+
+        /// The user can edit the dialog settings but cannot export the graph.
+
+        EditOnly,
+    }
+
+    //*************************************************************************
+    //  Method: InitializeForEditOnly()
+    //
+    /// <summary>
+    /// Initializes controls when the dialog mode is <see
+    /// cref="DialogMode.EditOnly" />.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    InitializeForEditOnly()
+    {
+        this.Text += " Options";
+        lnkNodeXLGraphGallery.Enabled = false;
+
+        usrExportedFilesDescription.Title =
+            "[The file name will be used as the title.]";
+
+        usrExportedFilesDescription.Description =
+            "[The graph summary will be used as the description.]";
+
+        usrExportedFilesDescription.Enabled = false;
     }
 
     //*************************************************************************
@@ -107,19 +181,20 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
                 return (false);
             }
 
-            m_oExportToNodeXLGraphGalleryDialogUserSettings.UseCredentials =
+            m_oExportToNodeXLGraphGalleryUserSettings.UseCredentials =
                 radUseCredentials.Checked;
 
-            String sAuthor;
+            String sAuthor = null;
+            String sPassword = null;
 
-            if (m_oExportToNodeXLGraphGalleryDialogUserSettings.UseCredentials)
+            if (m_oExportToNodeXLGraphGalleryUserSettings.UseCredentials)
             {
                 if (
                     !ValidateRequiredTextBox(txbAuthor,
                         "Enter a user name.", out sAuthor)
                     ||
                     !ValidateRequiredTextBox(txbPassword,
-                        "Enter a password.", out m_sPassword)
+                        "Enter a password.", out sPassword)
                     )
                 {
                     return (false);
@@ -141,65 +216,75 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
                 return (false);
             }
 
-            m_oExportToNodeXLGraphGalleryDialogUserSettings.Title =
-                usrExportedFilesDescription.Title;
+            if (m_eMode == DialogMode.Normal)
+            {
+                m_oExportToNodeXLGraphGalleryUserSettings.Title =
+                    usrExportedFilesDescription.Title;
 
-            m_oExportToNodeXLGraphGalleryDialogUserSettings.Description =
-                usrExportedFilesDescription.Description;
+                m_oExportToNodeXLGraphGalleryUserSettings.Description =
+                    usrExportedFilesDescription.Description;
+            }
 
-            m_oExportToNodeXLGraphGalleryDialogUserSettings.SpaceDelimitedTags =
+            m_oExportToNodeXLGraphGalleryUserSettings.SpaceDelimitedTags =
                 txbSpaceDelimitedTags.Text.Trim();
 
-            m_oExportToNodeXLGraphGalleryDialogUserSettings.
+            m_oExportToNodeXLGraphGalleryUserSettings.
                 ExportWorkbookAndSettings =
                 usrExportedFiles.ExportWorkbookAndSettings;
 
-            m_oExportToNodeXLGraphGalleryDialogUserSettings.ExportGraphML =
+            m_oExportToNodeXLGraphGalleryUserSettings.ExportGraphML =
                 usrExportedFiles.ExportGraphML;
 
-            m_oExportToNodeXLGraphGalleryDialogUserSettings
+            m_oExportToNodeXLGraphGalleryUserSettings
                 .UseFixedAspectRatio = usrExportedFiles.UseFixedAspectRatio;
 
-            m_oExportToNodeXLGraphGalleryDialogUserSettings.Author = sAuthor;
+            m_oExportToNodeXLGraphGalleryUserSettings.Author = sAuthor;
+
+            m_oPasswordUserSettings.NodeXLGraphGalleryPassword =
+                sPassword;
         }
         else
         {
-            usrExportedFilesDescription.Title =
-                m_oExportToNodeXLGraphGalleryDialogUserSettings.Title;
+            if (m_eMode == DialogMode.Normal)
+            {
+                usrExportedFilesDescription.Title =
+                    m_oExportToNodeXLGraphGalleryUserSettings.Title;
 
-            usrExportedFilesDescription.Description =
-                m_oExportToNodeXLGraphGalleryDialogUserSettings.Description;
+                usrExportedFilesDescription.Description =
+                    m_oExportToNodeXLGraphGalleryUserSettings.Description;
+            }
 
             txbSpaceDelimitedTags.Text =
-                m_oExportToNodeXLGraphGalleryDialogUserSettings.
+                m_oExportToNodeXLGraphGalleryUserSettings.
                 SpaceDelimitedTags;
 
             usrExportedFiles.ExportWorkbookAndSettings =
-                m_oExportToNodeXLGraphGalleryDialogUserSettings.
+                m_oExportToNodeXLGraphGalleryUserSettings.
                 ExportWorkbookAndSettings;
 
             usrExportedFiles.ExportGraphML =
-                m_oExportToNodeXLGraphGalleryDialogUserSettings.ExportGraphML;
+                m_oExportToNodeXLGraphGalleryUserSettings.ExportGraphML;
 
             usrExportedFiles.UseFixedAspectRatio = 
-                m_oExportToNodeXLGraphGalleryDialogUserSettings
+                m_oExportToNodeXLGraphGalleryUserSettings
                 .UseFixedAspectRatio;
 
-            if (m_oExportToNodeXLGraphGalleryDialogUserSettings.UseCredentials)
+            if (m_oExportToNodeXLGraphGalleryUserSettings.UseCredentials)
             {
                 radUseCredentials.Checked = true;
 
                 txbAuthor.Text =
-                    m_oExportToNodeXLGraphGalleryDialogUserSettings.Author;
+                    m_oExportToNodeXLGraphGalleryUserSettings.Author;
 
-                txbPassword.Text = m_sPassword;
+                txbPassword.Text =
+                    m_oPasswordUserSettings.NodeXLGraphGalleryPassword;
             }
             else
             {
                 radAsGuest.Checked = true;
 
                 txbGuestName.Text =
-                    m_oExportToNodeXLGraphGalleryDialogUserSettings.Author;
+                    m_oExportToNodeXLGraphGalleryUserSettings.Author;
             }
 
             EnableControls();
@@ -287,90 +372,67 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
             return;
         }
 
-        const String NotReachableMessage =
-            "The NodeXL Graph Gallery couldn't be reached.  ";
-
-        const String TryAgainMessage = "Try again later.";
-
-        NodeXLGraphGalleryExporter oNodeXLGraphGalleryExporter =
-            new NodeXLGraphGalleryExporter();
-
-        this.Cursor = Cursors.WaitCursor;
-
-        try
+        if (m_eMode == DialogMode.Normal)
         {
-            oNodeXLGraphGalleryExporter.ExportToNodeXLGraphGallery(
+            NodeXLGraphGalleryExporter oNodeXLGraphGalleryExporter =
+                new NodeXLGraphGalleryExporter();
 
-                m_oWorkbook, m_oNodeXLControl,
-                m_oExportToNodeXLGraphGalleryDialogUserSettings.Title,
-                m_oExportToNodeXLGraphGalleryDialogUserSettings.Description,
+            this.Cursor = Cursors.WaitCursor;
 
-                m_oExportToNodeXLGraphGalleryDialogUserSettings.
-                    SpaceDelimitedTags,
+            try
+            {
+                Debug.Assert(m_oNodeXLControl != null);
 
-                m_oExportToNodeXLGraphGalleryDialogUserSettings.Author,
+                oNodeXLGraphGalleryExporter.ExportToNodeXLGraphGallery(
 
-                m_oExportToNodeXLGraphGalleryDialogUserSettings.UseCredentials
-                    ? m_sPassword : null,
+                    m_oWorkbook, m_oNodeXLControl,
+                    m_oExportToNodeXLGraphGalleryUserSettings.Title,
+                    m_oExportToNodeXLGraphGalleryUserSettings.Description,
 
-                m_oExportToNodeXLGraphGalleryDialogUserSettings.
-                    ExportWorkbookAndSettings,
+                    m_oExportToNodeXLGraphGalleryUserSettings.
+                        SpaceDelimitedTags,
 
-                m_oExportToNodeXLGraphGalleryDialogUserSettings.ExportGraphML,
+                    m_oExportToNodeXLGraphGalleryUserSettings.Author,
 
-                m_oExportToNodeXLGraphGalleryDialogUserSettings
-                    .UseFixedAspectRatio
-                );
+                    m_oExportToNodeXLGraphGalleryUserSettings.UseCredentials
+                        ? m_oPasswordUserSettings.NodeXLGraphGalleryPassword
+                        : null,
+
+                    m_oExportToNodeXLGraphGalleryUserSettings.
+                        ExportWorkbookAndSettings,
+
+                    m_oExportToNodeXLGraphGalleryUserSettings.ExportGraphML,
+
+                    m_oExportToNodeXLGraphGalleryUserSettings
+                        .UseFixedAspectRatio
+                    );
+            }
+            catch (Exception oException)
+            {
+                String sMessage;
+
+                if (NodeXLGraphGalleryExceptionHandler
+                    .TryGetMessageForRecognizedException(oException,
+                        out sMessage)
+                    )
+                {
+                    this.ShowWarning(sMessage);
+                }
+                else
+                {
+                    ErrorUtil.OnException(oException);
+                }
+
+                return;
+            }
+            finally
+            {
+                this.Cursor = Cursors.Default;
+            }
         }
-        catch (GraphTooLargeException)
-        {
-            this.ShowWarning(
-                "The graph is too large to export.  Uncheck the"
-                + " \"Also export the workbook and its options\" or"
-                + " \"Also export the graph data as GraphML\" checkboxes and"
-                + " try again."
-                );
 
-            return;
-        }
-        catch (FaultException<String> oFaultException)
-        {
-            // The GraphDataSource.AddGraph() method throws a
-            // FaultException<String> with a friendly error message when the
-            // graph can't be added for a known reason, such as an invalid
-            // author.
-
-            this.ShowWarning(oFaultException.Detail);
-            txbAuthor.Focus();
-            return;
-        }
-        catch (FaultException)
-        {
-            // This is an unexpected error.
-
-            this.ShowWarning(
-                "A problem occurred within the NodeXL Graph Gallery.  "
-                + TryAgainMessage);
-        }
-        catch (TimeoutException)
-        {
-            this.ShowWarning(
-                NotReachableMessage + TryAgainMessage);
-        }
-        catch (CommunicationException)
-        {
-            this.ShowWarning(
-                NotReachableMessage + TryAgainMessage);
-        }
-        catch (Exception oException)
-        {
-            ErrorUtil.OnException(oException);
-            return;
-        }
-        finally
-        {
-            this.Cursor = Cursors.Default;
-        }
+        m_oExportToNodeXLGraphGalleryUserSettings.Save();
+        m_oPasswordUserSettings.Save();
 
         this.DialogResult = DialogResult.OK;
         this.Close();
@@ -391,9 +453,15 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
     {
         base.AssertValid();
 
-        Debug.Assert(m_oExportToNodeXLGraphGalleryDialogUserSettings != null);
+        // m_eMode
         Debug.Assert(m_oWorkbook != null);
-        Debug.Assert(m_oNodeXLControl != null);
+
+        Debug.Assert(m_oNodeXLControl != null
+            || m_eMode == DialogMode.EditOnly);
+
+        Debug.Assert(m_oExportToNodeXLGraphGalleryUserSettings != null);
+        Debug.Assert(m_oExportToNodeXLGraphGalleryDialogUserSettings != null);
+        Debug.Assert(m_oPasswordUserSettings != null);
     }
 
 
@@ -401,23 +469,31 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
     //  Protected fields
     //*************************************************************************
 
-    /// User settings for this dialog.
+    /// Indicates the mode in which the dialog is being used.
 
-    protected ExportToNodeXLGraphGalleryDialogUserSettings
-        m_oExportToNodeXLGraphGalleryDialogUserSettings;
+    protected DialogMode m_eMode;
 
     /// Workbook containing the graph data.
 
     protected Microsoft.Office.Interop.Excel.Workbook m_oWorkbook;
 
-    /// NodeXLControl containing the graph.
+    /// NodeXLControl containing the graph, or null.
 
     protected NodeXLControl m_oNodeXLControl;
 
-    /// This is static so that the password is retained while Excel is open.
-    /// The password isn't saved in the user's settings.
+    /// User settings for exporting the graph to the NodeXL Graph Gallery.
 
-    protected static String m_sPassword = String.Empty;
+    protected ExportToNodeXLGraphGalleryUserSettings
+        m_oExportToNodeXLGraphGalleryUserSettings;
+
+    /// Password user settings.
+
+    protected PasswordUserSettings m_oPasswordUserSettings;
+
+    /// User settings for this dialog.
+
+    protected ExportToNodeXLGraphGalleryDialogUserSettings
+        m_oExportToNodeXLGraphGalleryDialogUserSettings;
 }
 
 
@@ -464,275 +540,6 @@ public class ExportToNodeXLGraphGalleryDialogUserSettings : FormSettings
         AssertValid();
     }
 
-    //*************************************************************************
-    //  Property: Title
-    //
-    /// <summary>
-    /// Gets or sets the graph's title.
-    /// </summary>
-    ///
-    /// <value>
-    /// The graph's title.  The default value is String.Empty.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("") ]
-
-    public String
-    Title
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (String)this[TitleKey] );
-        }
-
-        set
-        {
-            this[TitleKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: Description
-    //
-    /// <summary>
-    /// Gets or sets the graph's description.
-    /// </summary>
-    ///
-    /// <value>
-    /// The graph's description.  The default value is String.Empty.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("") ]
-
-    public String
-    Description
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (String)this[DescriptionKey] );
-        }
-
-        set
-        {
-            this[DescriptionKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: SpaceDelimitedTags
-    //
-    /// <summary>
-    /// Gets or sets the graph's space-delimited tags.
-    /// </summary>
-    ///
-    /// <value>
-    /// The graph's space-delimited tags.  The default value is String.Empty.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("") ]
-
-    public String
-    SpaceDelimitedTags
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (String)this[SpaceDelimitedTagsKey] );
-        }
-
-        set
-        {
-            this[SpaceDelimitedTagsKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: Author
-    //
-    /// <summary>
-    /// Gets or sets the graph's author.
-    /// </summary>
-    ///
-    /// <value>
-    /// The graph's author.  The default value is String.Empty.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("") ]
-
-    public String
-    Author
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (String)this[AuthorKey] );
-        }
-
-        set
-        {
-            this[AuthorKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: UseCredentials
-    //
-    /// <summary>
-    /// Gets or sets a flag indicating whether the user has credentials for the
-    /// NodeXL Graph Gallery.
-    /// </summary>
-    ///
-    /// <value>
-    /// true if the user has credentials.  The default value is false.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false") ]
-
-    public Boolean
-    UseCredentials
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Boolean)this[UseCredentialsKey] );
-        }
-
-        set
-        {
-            this[UseCredentialsKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: ExportWorkbookAndSettings
-    //
-    /// <summary>
-    /// Gets or sets a flag indicating whether the workbook and its settings
-    /// should be exported.
-    /// </summary>
-    ///
-    /// <value>
-    /// true to export the workbook and its settings.  The default value is
-    /// false.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false") ]
-
-    public Boolean
-    ExportWorkbookAndSettings
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Boolean)this[ExportWorkbookAndSettingsKey] );
-        }
-
-        set
-        {
-            this[ExportWorkbookAndSettingsKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: ExportGraphML
-    //
-    /// <summary>
-    /// Gets or sets a flag indicating whether GraphML should be exported.
-    /// </summary>
-    ///
-    /// <value>
-    /// true to export GraphML.  The default value is false.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false") ]
-
-    public Boolean
-    ExportGraphML
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Boolean)this[ExportGraphMLKey] );
-        }
-
-        set
-        {
-            this[ExportGraphMLKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: UseFixedAspectRatio
-    //
-    /// <summary>
-    /// Gets or sets a flag indicating whether the exported image should have
-    /// a fixed aspect ratio.
-    /// </summary>
-    ///
-    /// <value>
-    /// true to use a fixed aspect ratio, false to use the aspect ratio of the
-    /// graph pane.  The default value is false.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("false") ]
-
-    public Boolean
-    UseFixedAspectRatio
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (Boolean)this[UseFixedAspectRatioKey] );
-        }
-
-        set
-        {
-            this[UseFixedAspectRatioKey] = value;
-
-            AssertValid();
-        }
-    }
-
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -751,50 +558,5 @@ public class ExportToNodeXLGraphGalleryDialogUserSettings : FormSettings
 
         // (Do nothing else.)
     }
-
-
-    //*************************************************************************
-    //  Protected fields
-    //*************************************************************************
-
-    /// Name of the settings key for the Title property.
-
-    protected const String TitleKey =
-        "Title";
-
-    /// Name of the settings key for the Description property.
-
-    protected const String DescriptionKey =
-        "Description";
-
-    /// Name of the settings key for the SpaceDelimitedTags property.
-
-    protected const String SpaceDelimitedTagsKey =
-        "SpaceDelimitedTags";
-
-    /// Name of the settings key for the Author property.
-
-    protected const String AuthorKey =
-        "Author";
-
-    /// Name of the settings key for the ExportWorkbookAndSettings property.
-
-    protected const String ExportWorkbookAndSettingsKey =
-        "ExportWorkbookAndSettings";
-
-    /// Name of the settings key for the ExportGraphML property.
-
-    protected const String ExportGraphMLKey =
-        "ExportGraphML";
-
-    /// Name of the settings key for the UseFixedAspectRatio property.
-
-    protected const String UseFixedAspectRatioKey =
-        "UseFixedAspectRatio";
-
-    /// Name of the settings key for the UseCredentials property.
-
-    protected const String UseCredentialsKey =
-        "UseCredentials";
 }
 }

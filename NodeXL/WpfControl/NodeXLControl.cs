@@ -3938,8 +3938,8 @@ public partial class NodeXLControl : FrameworkElement
     /// </param>
     ///
     /// <param name="oVerticesToCollapse">
-    /// The vertices represented by <paramref name="oGroupVertex" />.  It's
-    /// assumed that the collection is not empty.
+    /// The vertices represented by <paramref name="oCollapsedGroupVertex" />.
+    /// It's assumed that the collection is not empty.
     /// </param>
     ///
     /// <remarks>

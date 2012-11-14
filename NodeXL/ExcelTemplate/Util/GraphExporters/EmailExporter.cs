@@ -299,28 +299,79 @@ public class EmailExporter : Object
 
         oMailMessage.Subject = sSubject;
         oMailMessage.Body = sMessageBody;
-        oMailMessage.From = new MailAddress(sFromAddress);
+        SetAddresses(oMailMessage, asToAddresses, sFromAddress);
 
-        foreach (String sToAddress in asToAddresses)
-        {
-            oMailMessage.To.Add(sToAddress);
-        }
-
-        AddAttachments(oMailMessage, oWorkbook, oNodeXLControl,
+        AddAttachmentsAndAlternateHtml(oMailMessage, oWorkbook, oNodeXLControl,
             bExportWorkbookAndSettings, bExportGraphML, bUseFixedAspectRatio);
 
         return (oMailMessage);
     }
 
     //*************************************************************************
-    //  Method: AddAttachments()
+    //  Method: SetAddresses()
     //
     /// <summary>
-    /// Adds attachments to a MailMessage.
+    /// Sets the addresses on a MailMessage object.
     /// </summary>
     ///
     /// <param name="oMailMessage">
-    /// The message to add attachments to.
+    /// The message to set the addresses on.
+    /// </param>
+    ///
+    /// <param name="asToAddresses">
+    /// Array of one or more email addresses to export the graph to.
+    /// </param>
+    ///
+    /// <param name="sFromAddress">
+    /// "From" email address.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    SetAddresses
+    (
+        MailMessage oMailMessage,
+        String [] asToAddresses,
+        String sFromAddress
+    )
+    {
+        Debug.Assert(oMailMessage != null);
+        Debug.Assert(asToAddresses != null);
+        Debug.Assert(asToAddresses.Length > 0);
+        Debug.Assert( !String.IsNullOrEmpty(sFromAddress) );
+        AssertValid();
+
+        try
+        {
+            foreach (String sToAddress in asToAddresses)
+            {
+                oMailMessage.To.Add(sToAddress);
+            }
+        }
+        catch (FormatException)
+        {
+            throw new EmailAddressFormatException(EmailAddressType.To);
+        }
+
+        try
+        {
+            oMailMessage.From = new MailAddress(sFromAddress);
+        }
+        catch (FormatException)
+        {
+            throw new EmailAddressFormatException(EmailAddressType.From);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: AddAttachmentsAndAlternateHtml()
+    //
+    /// <summary>
+    /// Adds attachments and an alternate HTML view to a MailMessage.
+    /// </summary>
+    ///
+    /// <param name="oMailMessage">
+    /// The message to add attachments and HTML to.
     /// </param>
     ///
     /// <param name="oWorkbook">
@@ -346,7 +397,7 @@ public class EmailExporter : Object
     //*************************************************************************
 
     protected void
-    AddAttachments
+    AddAttachmentsAndAlternateHtml
     (
         MailMessage oMailMessage,
         Microsoft.Office.Interop.Excel.Workbook oWorkbook,
@@ -386,7 +437,67 @@ public class EmailExporter : Object
             out abtWorkbookContents, out sWorkbookSettings,
             out abtGraphMLZipped);
 
-        AddAttachment(oMailMessage, abtFullSizeImage, "image/png",
+        AddAttachments(oMailMessage, sSuggestedFileNameNoExtension,
+            sGraphMLFileNameNoExtension, abtFullSizeImage, abtWorkbookContents,
+            sWorkbookSettings, abtGraphMLZipped);
+
+        AddAlternateHtml(oMailMessage, abtFullSizeImage);
+    }
+
+    //*************************************************************************
+    //  Method: AddAttachments()
+    //
+    /// <summary>
+    /// Adds attachments to a MailMessage.
+    /// </summary>
+    ///
+    /// <param name="oMailMessage">
+    /// The message to add attachments to.
+    /// </param>
+    ///
+    /// <param name="sSuggestedFileNameNoExtension">
+    /// The suggested file name for each attachment, without an extension.
+    /// </param>
+    ///
+    /// <param name="sGraphMLFileNameNoExtension">
+    /// The file name for the GraphML, without an extension.
+    /// </param>
+    ///
+    /// <param name="abtFullSizeImage">
+    /// The full-size PNG image.
+    /// </param>
+    ///
+    /// <param name="abtWorkbookContents">
+    /// The workbook contents.  Can be null.
+    /// </param>
+    ///
+    /// <param name="sWorkbookSettings">
+    /// The workbook settings.  Can be null or empty.
+    /// </param>
+    ///
+    /// <param name="abtGraphMLZipped">
+    /// The GraphML.  Can be null.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AddAttachments
+    (
+        MailMessage oMailMessage,
+        String sSuggestedFileNameNoExtension,
+        String sGraphMLFileNameNoExtension,
+        Byte [] abtFullSizeImage,
+        Byte [] abtWorkbookContents,
+        String sWorkbookSettings,
+        Byte [] abtGraphMLZipped
+    )
+    {
+        Debug.Assert(oMailMessage != null);
+        Debug.Assert( !String.IsNullOrEmpty(sSuggestedFileNameNoExtension) );
+        Debug.Assert( !String.IsNullOrEmpty(sGraphMLFileNameNoExtension) );
+        AssertValid();
+
+        AddAttachment(oMailMessage, abtFullSizeImage, PngContentType,
             sSuggestedFileNameNoExtension, "png");
 
         if (abtWorkbookContents != null)
@@ -410,10 +521,82 @@ public class EmailExporter : Object
     }
 
     //*************************************************************************
+    //  Method: AddAlternateHtml()
+    //
+    /// <summary>
+    /// Adds an alternate HTML view to a MailMessage.
+    /// </summary>
+    ///
+    /// <param name="oMailMessage">
+    /// The message to add alternate HTML to.  If the MessageBody property is
+    /// set, this is used as the HTML's text.
+    /// </param>
+    ///
+    /// <param name="abtFullSizeImage">
+    /// The full-size PNG image.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AddAlternateHtml
+    (
+        MailMessage oMailMessage,
+        Byte [] abtFullSizeImage
+    )
+    {
+        Debug.Assert(oMailMessage != null);
+        Debug.Assert(abtFullSizeImage != null);
+        AssertValid();
+
+        // Always include the full-size image.
+
+        String sHtml =
+            "<html>"
+            +     "<head>"
+            +     "</head>"
+            +     "<body>"
+            +         "<div style=\"margin-bottom:1em;\">"
+            +             "<img src=cid:fullSizeImage"
+            +                 " style=\"border:1px solid #000000;\" />"
+            +         "</div>"
+            ; 
+
+        // Add the plain-text message body if there is one.
+
+        String sMessageBody = oMailMessage.Body;
+
+        if ( !String.IsNullOrEmpty(sMessageBody) )
+        {
+            sHtml +=
+                      "<div>"
+                +          sMessageBody.Replace("\r\n", "<br />")
+                +     "</div>"
+                ;
+        }
+
+        sHtml +=
+                  "</body>"
+            + "</html>"
+            ;
+
+        LinkedResource oFullSizeImageResource = new LinkedResource(
+            new MemoryStream(abtFullSizeImage), PngContentType);
+
+        oFullSizeImageResource.ContentId = "fullSizeImage";
+
+        AlternateView oHtmlView = AlternateView.CreateAlternateViewFromString(
+            sHtml, null, "text/html");
+
+        oHtmlView.LinkedResources.Add(oFullSizeImageResource);
+
+        oMailMessage.AlternateViews.Add(oHtmlView);
+    }
+
+    //*************************************************************************
     //  Method: AddAttachment()
     //
     /// <summary>
-    /// Adds an attachment to a MailMessage.
+    /// Adds a string attachment to a MailMessage.
     /// </summary>
     ///
     /// <param name="oMailMessage">
@@ -463,7 +646,7 @@ public class EmailExporter : Object
     //  Method: AddAttachment()
     //
     /// <summary>
-    /// Adds an attachment to a MailMessage.
+    /// Adds a binary attachment to a MailMessage.
     /// </summary>
     ///
     /// <param name="oMailMessage">
@@ -579,6 +762,10 @@ public class EmailExporter : Object
     /// XML content type.
 
     protected const String XmlContentType = "text/xml";
+
+    /// PNG content type.
+
+    protected const String PngContentType = "image/png";
 
 
     //*************************************************************************

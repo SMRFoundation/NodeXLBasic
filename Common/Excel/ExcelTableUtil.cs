@@ -2596,14 +2596,7 @@ public static class ExcelTableUtil
 
         Range oColumnRange = listColumn.Range;
 
-        if (columnWidthChars == AutoColumnWidth)
-        {
-            oColumnRange.EntireColumn.AutoFit();
-        }
-        else
-        {
-            oColumnRange.ColumnWidth = columnWidthChars;
-        }
+        SetColumnWidth(oColumnRange, columnWidthChars);
 
         oColumnRange.Validation.Delete();
 
@@ -2622,6 +2615,47 @@ public static class ExcelTableUtil
         }
 
         return (true);
+    }
+
+    //*************************************************************************
+    //  Method: SetColumnWidth()
+    //
+    /// <summary>
+    /// Sets the width of a column.
+    /// </summary>
+    ///
+    /// <param name="rangeInColumn">
+    /// One or more cells in the column.
+    /// </param>
+    ///
+    /// <param name="columnWidthChars">
+    /// Width of the new column, in characters, or <see
+    /// cref="AutoColumnWidth" /> to set the width automatically.
+    /// </param>
+    //*************************************************************************
+
+    public static void
+    SetColumnWidth
+    (
+        Range rangeInColumn,
+        Double columnWidthChars
+    )
+    {
+        Debug.Assert(rangeInColumn!= null);
+
+        Debug.Assert(columnWidthChars == AutoColumnWidth ||
+            columnWidthChars >= 0);
+
+        Range oEntireColumn = rangeInColumn.EntireColumn;
+
+        if (columnWidthChars == AutoColumnWidth)
+        {
+            oEntireColumn.AutoFit();
+        }
+        else
+        {
+            oEntireColumn.ColumnWidth = columnWidthChars;
+        }
     }
 
 

@@ -22,7 +22,7 @@
     <InstallUrl>
     </InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.1.226</ApplicationVersion>
+    <ApplicationVersion>1.0.1.227</ApplicationVersion>
     <AutoIncrementApplicationRevision>false</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>0</UpdateInterval>
@@ -654,6 +654,7 @@
     <Compile Include="EventArgs\RequestVertexCommandEnableEventArgs.cs" />
     <Compile Include="EventArgs\VerticesMovedEventArgs2.cs" />
     <Compile Include="Exceptions\ConvertGraphMLToNodeXLWorkbookException.cs" />
+    <Compile Include="Exceptions\EmailAddressFormatException.cs" />
     <Compile Include="Exceptions\ExportWorkbookException.cs" />
     <Compile Include="Exceptions\GraphTooLargeException.cs" />
     <Compile Include="Exceptions\ImportWorkbookException.cs" />
@@ -832,6 +833,10 @@
     <Compile Include="UserSettings\ClusterUserSettings.cs" />
     <Compile Include="UserSettings\ColumnGroupUserSettings.cs" />
     <Compile Include="UserSettings\DynamicFiltersUserSettings.cs" />
+    <Compile Include="UserSettings\ExportToEmailUserSettings.cs">
+    </Compile>
+    <Compile Include="UserSettings\ExportToNodeXLGraphGalleryUserSettings.cs">
+    </Compile>
     <Compile Include="UserSettings\GeneralUserSettings.cs" />
     <Compile Include="UserSettings\GraphImageUserSettings.cs" />
     <Compile Include="UserSettings\GraphImageUserSettingsBase.cs" />
@@ -845,6 +850,8 @@
     <Compile Include="UserSettings\MotifUserSettings.cs" />
     <Compile Include="UserSettings\NodeXLApplicationSettingsBase.cs" />
     <Compile Include="UserSettings\NotificationUserSettings.cs" />
+    <Compile Include="UserSettings\PasswordUserSettings.cs">
+    </Compile>
     <Compile Include="UserSettings\ReadabilityMetricUserSettings.cs" />
     <Compile Include="UserSettings\TaskAutomation\AutomatedGraphImageUserSettings.cs" />
     <Compile Include="UserSettings\TaskAutomation\AutomateTasksUserSettings.cs" />
@@ -871,8 +878,11 @@
     <Compile Include="Util\DynamicFilters\RangeFilterParameters.cs" />
     <Compile Include="Util\ErrorUtil.cs" />
     <Compile Include="Util\ExcelObjectNames.cs" />
+    <Compile Include="Util\GraphExporters\EmailExceptionHandler.cs" />
     <Compile Include="Util\GraphExporters\EmailExporter.cs" />
     <Compile Include="Util\GraphExporters\GraphExporterUtil.cs" />
+    <Compile Include="Util\GraphExporters\NodeXLGraphGalleryExceptionHandler.cs">
+    </Compile>
     <Compile Include="Util\GraphExporters\NodeXLGraphGalleryExporter.cs" />
     <Compile Include="Util\GraphExporters\NodeXLGraphGalleryService.cs" />
     <Compile Include="Util\GraphHistory.cs" />

@@ -63,6 +63,7 @@ public partial class TaskPane : UserControl
         InitializeComponent();
         InitializeSplashScreen();
 
+        m_oThisWorkbook = thisWorkbook;
         m_oWorkbook = thisWorkbook.InnerObject;
         m_oRibbon = ribbon;
 
@@ -892,6 +893,48 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
+    //  Method: AutomateTasks()
+    //
+    /// <summary>
+    /// Opens a dialog that lets the user run multiple tasks.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    AutomateTasks()
+    {
+        AssertValid();
+
+        ( new AutomateTasksDialog(AutomateTasksDialog.DialogMode.Normal,
+            m_oThisWorkbook, oNodeXLControl) ).ShowDialog();
+    }
+
+    //*************************************************************************
+    //  Method: AutomateThisWorkbook()
+    //
+    /// <summary>
+    /// Immediately runs task automation on the workbook.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The task automation dialog box is not shown.
+    /// </remarks>
+    //*************************************************************************
+
+    protected void
+    AutomateThisWorkbook()
+    {
+        AssertValid();
+
+        AutomateTasksUserSettings oAutomateTasksUserSettings =
+            new AutomateTasksUserSettings();
+
+        TaskAutomator.AutomateOneWorkbook(m_oThisWorkbook, oNodeXLControl,
+            oAutomateTasksUserSettings.TasksToRun,
+            oAutomateTasksUserSettings.FolderToSaveWorkbookTo);
+    }
+
+    //*************************************************************************
     //  Method: GetGroupNamesToCollapse()
     //
     /// <summary>
@@ -1536,8 +1579,9 @@ public partial class TaskPane : UserControl
         AssertValid();
 
         ExportToNodeXLGraphGalleryOrEmail(
-            new ExportToNodeXLGraphGalleryDialog(m_oWorkbook, oNodeXLControl)
-            );
+            new ExportToNodeXLGraphGalleryDialog(
+                ExportToNodeXLGraphGalleryDialog.DialogMode.Normal,
+                m_oWorkbook, oNodeXLControl) );
     }
 
     //*************************************************************************
@@ -1554,8 +1598,8 @@ public partial class TaskPane : UserControl
         AssertValid();
 
         ExportToNodeXLGraphGalleryOrEmail(
-            new ExportToEmailDialog(m_oWorkbook, oNodeXLControl)
-            );
+            new ExportToEmailDialog(ExportToEmailDialog.DialogMode.Normal,
+            m_oWorkbook, oNodeXLControl) );
     }
 
     //*************************************************************************
@@ -4210,7 +4254,11 @@ public partial class TaskPane : UserControl
         Debug.Assert(e != null);
         AssertValid();
 
-        if (oNodeXLControl.IsLayingOutGraph)
+        if (
+            oNodeXLControl.IsLayingOutGraph
+            ||
+            !m_oThisWorkbook.ExcelApplicationIsReady(false)
+            )
         {
             return;
         }
@@ -4282,6 +4330,16 @@ public partial class TaskPane : UserControl
                 case NoParamCommand.UpdateLayout:
 
                     OnLayoutChanged(m_oRibbon.Layout);
+                    break;
+
+                case NoParamCommand.AutomateTasks:
+
+                    AutomateTasks();
+                    break;
+
+                case NoParamCommand.AutomateThisWorkbook:
+
+                    AutomateThisWorkbook();
                     break;
 
                 default:
@@ -6379,6 +6437,7 @@ public partial class TaskPane : UserControl
     {
         Debug.Assert(oNodeXLControl != null);
         Debug.Assert(m_oNodeXLWithAxesControl != null);
+        Debug.Assert(m_oThisWorkbook != null);
         Debug.Assert(m_oWorkbook != null);
         Debug.Assert(m_oRibbon != null);
         Debug.Assert(m_iTemplateVersion > 0);
@@ -6431,6 +6490,10 @@ public partial class TaskPane : UserControl
     /// The parent of oNodeXLControl.
 
     protected NodeXLWithAxesControl m_oNodeXLWithAxesControl;
+
+    /// The workbook attached to this TaskPane.
+
+    protected ThisWorkbook m_oThisWorkbook;
 
     /// The workbook attached to this TaskPane.
 

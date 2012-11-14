@@ -564,8 +564,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnReadWorkbook.OfficeImageId = "ChartRadarChart";
             this.btnReadWorkbook.ScreenTip = "Show/Refresh Graph";
             this.btnReadWorkbook.ShowImage = true;
+            this.btnReadWorkbook.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ShowGraphAndReadWorkbook;
             this.btnReadWorkbook.SuperTip = resources.GetString("btnReadWorkbook.SuperTip");
-            this.btnReadWorkbook.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnReadWorkbook_Click);
+            this.btnReadWorkbook.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
             // 
             // btnShowGraphSummary
             // 

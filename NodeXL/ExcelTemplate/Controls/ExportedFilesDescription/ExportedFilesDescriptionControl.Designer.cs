@@ -50,7 +50,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             // 
             this.txbDescription.AcceptsReturn = true;
             this.txbDescription.Location = new System.Drawing.Point(158, 28);
-            this.txbDescription.MaxLength = 8000;
+            this.txbDescription.MaxLength = 80000;
             this.txbDescription.Multiline = true;
             this.txbDescription.Name = "txbDescription";
             this.txbDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;

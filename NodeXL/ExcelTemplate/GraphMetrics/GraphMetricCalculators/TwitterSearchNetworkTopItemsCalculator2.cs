@@ -142,12 +142,7 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
             GroupEdgeSorter.SortGroupEdges(oGraph, Int32.MaxValue, true,
                 false);
 
-        // Add the columns for the top replied-to and top mentioned.
-
         Int32 iTableIndex = 1;
-
-        AddColumnsForRepliesToAndMentions(ref iTableIndex, oAllGroupEdgeInfos,
-            oGraphMetricColumns);
 
         // Add the columns for the top URLs, domains and hashtags.
 
@@ -173,11 +168,16 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
             return (false);
         }
 
-        oAllGroupEdgeInfos = null;
+        // Add the columns for the top replied-to and top mentioned.
+
+        AddColumnsForRepliesToAndMentions(ref iTableIndex, oAllGroupEdgeInfos,
+            oGraphMetricColumns);
 
         // Add the columns for the top tweeters.
 
         AddColumnsForTweeters(ref iTableIndex, oGraph, oGraphMetricColumns);
+
+        AdjustColumnWidths(oGraphMetricColumns, oAllGroupEdgeInfos);
 
         return (true);
     }
@@ -294,6 +294,7 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
                     out sGraphMetricColumn1Name, out sGraphMetricColumn2Name);
 
                 // Add a pair of columns for the Twitter search network top
+                // items worksheet.
 
                 AddGraphMetricColumnPair(sTableName, sGraphMetricColumn1Name,
                     sGraphMetricColumn2Name, oTopStrings, oTopStringCounts,
@@ -684,6 +685,118 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
             GroupTableColumnNames.TopTweeters,
             ExcelTableUtil.AutoColumnWidth, null, null,
             oTopTweetersForGroupWorksheet.ToArray() ) );
+    }
+
+    //*************************************************************************
+    //  Method: AdjustColumnWidths()
+    //
+    /// <summary>
+    /// Adjusts the width of the columns on the Twitter search network top
+    /// items worksheet.
+    /// </summary>
+    ///
+    /// <param name="oGraphMetricColumns">
+    /// Complete collection of GraphMetricColumn objects.
+    /// </param>
+    ///
+    /// <param name="oAllGroupEdgeInfos">
+    /// A List of GroupEdgeInfo objects, one for each of the graph's groups,
+    /// where the groups are sorted by descending vertex count.  This includes
+    /// a "dummy" group for the entire graph.
+    /// </param>
+    ///
+    /// <remarks>
+    /// This method forces each column in the Twitter search network top items
+    /// worksheet to be the width of the longest column name in that column.
+    ///
+    /// <para>
+    /// <see cref="GraphMetricWriter" /> "stacks" the tables created by this
+    /// class on top of each other in the Twitter search network top items
+    /// worksheet, so that the "Top URLs in Tweet in Entire Graph", "Top
+    /// Domains in Tweet in Entire Graph", and "Top Hashtags in Tweet in Entire
+    /// Graph" graph metric columns all end up in Excel column A, for example.
+    /// The graph metric column widths specified by this class are all
+    /// ExcelTableUtil.AutoColumnWidth, which would result in the Excel column
+    /// having the width of the widest cell in the column.  Because the cells
+    /// can contain long text, like URLs, the Excel column would often end up
+    /// being too wide.  This method fixes that problem by changing all the
+    /// graph metric column widths from AutoColumnWidth to the longest column
+    /// name in the column.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
+
+    protected void
+    AdjustColumnWidths
+    (
+        List<GraphMetricColumn> oGraphMetricColumns,
+        List<GroupEdgeInfo> oAllGroupEdgeInfos
+    )
+    {
+        Debug.Assert(oGraphMetricColumns != null);
+        Debug.Assert(oAllGroupEdgeInfos != null);
+        AssertValid();
+
+        // Sample top group names: "Entire Graph", "G1", "G2", ..., "G10".
+
+        var oTopGroupNames =
+            (from oGroupEdgeInfo in oAllGroupEdgeInfos
+                select GetGroupName(oGroupEdgeInfo) ?? EntireGraphGroupName
+            ).Take(MaximumTopGroups + 1);
+
+        // The columns in oGraphMetricColumns are not assumed to be in any
+        // order.
+        //
+        // The first pass through the following loop selects only those columns
+        // that involve the entire graph. For example:
+        //
+        //  "Top URLs in Tweet in Entire Graph"
+        //  "Top Domains in Tweet in Entire Graph"
+        //  "Top Hashtags in Tweet in Entire Graph"
+        //  ...
+        //
+        // The second pass selects only those columns that involve the first
+        // real group.  For example:
+        //
+        //  "Top URLs in Tweet in G1"
+        //  "Top Domains in Tweet in G1"
+        //  "Top Hashtags in Tweet in G1"
+        //  ...
+        //
+        // ...and so on through all the top groups.
+
+        foreach (String sGroupName in oTopGroupNames)
+        {
+            var oColumnsForGroup =
+
+                from oGraphMetricColumn in oGraphMetricColumns
+
+                where
+                (
+                    oGraphMetricColumn.TableName.StartsWith(
+                        TableNames.TwitterSearchNetworkTopItemsRoot)
+                    &&
+                    oGraphMetricColumn.ColumnName.StartsWith("Top ")
+                    &&
+                    oGraphMetricColumn.ColumnName.EndsWith("in " + sGroupName)
+                )
+                select oGraphMetricColumn
+                ;
+
+            if (oColumnsForGroup.Count() > 0)
+            {
+                Double dMaximumColumnWidthChars = oColumnsForGroup.Max(
+                    oGraphMetricColumn => oGraphMetricColumn.ColumnName.Length);
+
+                foreach (GraphMetricColumn oGraphMetricColumn in
+                    oColumnsForGroup)
+                {
+                    oGraphMetricColumn.ColumnWidthChars =
+                        dMaximumColumnWidthChars;
+                }
+            }
+        }
     }
 
     //*************************************************************************
@@ -1488,11 +1601,11 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
             "Top {0} in {1}"
             ,
             sTableDescription,
-            bEntireGraph ? "Entire Graph" : sGroupName
+            bEntireGraph ? EntireGraphGroupName : sGroupName
             );
 
-        sGraphMetricColumn2Name = bEntireGraph ?
-            "Entire Graph Count" : (sGroupName + " Count");
+        sGraphMetricColumn2Name =
+            (bEntireGraph ? EntireGraphGroupName : sGroupName) + " Count";
     }
 
     //*************************************************************************
@@ -1839,6 +1952,10 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
     /// Column names on the vertex table.
 
     protected const String TweetsColumnName = "Tweets";
+
+    /// Display text for the dummy group that represents the entire graph.
+
+    protected const String EntireGraphGroupName = "Entire Graph";
 
 
     //*************************************************************************

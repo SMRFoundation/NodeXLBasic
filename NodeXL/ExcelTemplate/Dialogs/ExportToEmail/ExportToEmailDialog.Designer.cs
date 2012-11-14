@@ -34,7 +34,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.usrExportedFiles = new Smrf.NodeXL.ExcelTemplate.ExportedFilesControl();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblDialogDescription = new System.Windows.Forms.Label();
             this.usrExportedFilesDescription = new Smrf.NodeXL.ExcelTemplate.ExportedFilesDescriptionControl();
             this.label2 = new System.Windows.Forms.Label();
             this.txbToAddresses = new System.Windows.Forms.TextBox();
@@ -84,14 +84,14 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.usrExportedFiles.TabIndex = 7;
             this.usrExportedFiles.UseFixedAspectRatio = false;
             // 
-            // label1
+            // lblDialogDescription
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(322, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "This exports an image of the graph to one or more email addresses.";
+            this.lblDialogDescription.AutoSize = true;
+            this.lblDialogDescription.Location = new System.Drawing.Point(12, 9);
+            this.lblDialogDescription.Name = "lblDialogDescription";
+            this.lblDialogDescription.Size = new System.Drawing.Size(322, 13);
+            this.lblDialogDescription.TabIndex = 0;
+            this.lblDialogDescription.Text = "This exports an image of the graph to one or more email addresses.";
             // 
             // usrExportedFilesDescription
             // 
@@ -258,7 +258,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.Controls.Add(this.txbToAddresses);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.usrExportedFilesDescription);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lblDialogDescription);
             this.Controls.Add(this.usrExportedFiles);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
@@ -279,7 +279,7 @@ namespace Smrf.NodeXL.ExcelTemplate
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
         private ExportedFilesControl usrExportedFiles;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblDialogDescription;
         private ExportedFilesDescriptionControl usrExportedFilesDescription;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txbToAddresses;

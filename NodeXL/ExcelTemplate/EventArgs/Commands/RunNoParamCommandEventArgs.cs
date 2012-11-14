@@ -153,6 +153,12 @@ NoParamCommand
     ReadWorkbook,
 
     /// <summary>
+    /// Show the graph pane, then read the workbook into the graph pane.
+    /// </summary>
+
+    ShowGraphAndReadWorkbook,
+
+    /// <summary>
     /// Let the user edit the layout settings.
     /// </summary>
 
@@ -330,10 +336,17 @@ NoParamCommand
     AggregateGraphMetrics,
 
     /// <summary>
-    /// Open a dialog box that lets the user run multiple tasks.
+    /// Open a dialog that lets the user run multiple tasks.
     /// </summary>
 
     AutomateTasks,
+
+    /// <summary>
+    /// Immediately run multiple tasks on this workbook.  The task automation
+    /// dialog is not shown.
+    /// </summary>
+
+    AutomateThisWorkbook,
 
     /// <summary>
     /// Delete any subgraph image thumbnails in the vertex worksheet.

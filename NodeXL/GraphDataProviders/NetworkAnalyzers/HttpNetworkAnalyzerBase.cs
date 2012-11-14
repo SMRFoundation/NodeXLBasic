@@ -1361,7 +1361,7 @@ public abstract class HttpNetworkAnalyzerBase : Object
     ///
     /// <remarks>
     /// This method adds <paramref name="sNetworkDescription" /> to the
-    /// <paramref name="GraphMLXmlDocument" />.  Then, if the entire network
+    /// <paramref name="oGraphMLXmlDocument" />.  Then, if the entire network
     /// has been obtained, it simply returns.  Otherwise, it throws a 
     /// PartialNetworkException.
     /// </remarks>

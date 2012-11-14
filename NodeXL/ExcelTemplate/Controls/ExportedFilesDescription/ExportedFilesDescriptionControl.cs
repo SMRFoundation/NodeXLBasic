@@ -321,30 +321,10 @@ public partial class ExportedFilesDescriptionControl : UserControl
         Debug.Assert(m_oWorkbook != null);
         AssertValid();
 
-        PerWorkbookSettings oPerWorkbookSettings =
-            new PerWorkbookSettings(m_oWorkbook);
-
-        OverallMetrics oOverallMetrics;
-
-        ( new OverallMetricsReader() ).TryReadMetrics(
-            m_oWorkbook, out oOverallMetrics);
-
-        String sTopNByMetrics;
-
-        ( new TopNByMetricsReader() ).TryReadMetrics(
-            m_oWorkbook, out sTopNByMetrics);
-
-        String sTwitterSearchNetworkTopItems;
-
-        ( new TwitterSearchNetworkTopItemsReader() ).TryReadMetrics(
-            m_oWorkbook, out sTwitterSearchNetworkTopItems);
-
         String sGraphSummary;
 
-        if ( GraphSummarizer.TrySummarizeGraph(
-            oPerWorkbookSettings.GraphHistory,
-            oPerWorkbookSettings.AutoFillWorkbookResults, oOverallMetrics,
-            sTopNByMetrics, sTwitterSearchNetworkTopItems, out sGraphSummary) )
+        if ( GraphSummarizer.TrySummarizeGraph(m_oWorkbook,
+            out sGraphSummary) )
         {
             txbDescription.SelectedText = sGraphSummary;
         }

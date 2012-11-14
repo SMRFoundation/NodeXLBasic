@@ -451,68 +451,6 @@ public partial class Ribbon : OfficeRibbon
     }
 
     //*************************************************************************
-    //  Method: OnReadWorkbookClick()
-    //
-    /// <summary>
-    /// Handles the Click event on the btnReadWorkbook button.
-    /// </summary>
-    ///
-    /// <remarks>
-    /// This method can be called from outside the class to simulate a button
-    /// click.
-    /// </remarks>
-    //*************************************************************************
-
-    public void
-    OnReadWorkbookClick()
-    {
-        AssertValid();
-
-        // Make sure the graph is showing, then tell the TaskPane to read the
-        // workbook.
-
-        if ( this.ThisWorkbook.ShowGraph() )
-        {
-            SendNoParamCommand(NoParamCommand.ReadWorkbook);
-        }
-    }
-
-    //*************************************************************************
-    //  Method: OnWorkbookAutoFilled()
-    //
-    /// <summary>
-    /// Performs tasks required after the workbook is autofilled.
-    /// </summary>
-    ///
-    /// <param name="readWorkbook">
-    /// true to read the workbook.
-    /// </param>
-    //*************************************************************************
-
-    public void
-    OnWorkbookAutoFilled
-    (
-        Boolean readWorkbook
-    )
-    {
-        AssertValid();
-
-        if (GetPerWorkbookSettings().AutoFillWorkbookResults.VertexXResults
-            .ColumnAutoFilled )
-        {
-            // When the X and Y columns are autofilled, the graph shouldn't be
-            // laid out again.
-
-            this.Layout = LayoutType.Null;
-        }
-
-        if (readWorkbook)
-        {
-            OnReadWorkbookClick();
-        }
-    }
-
-    //*************************************************************************
     //  Method: OnWorkbookSettingsReplaced()
     //
     /// <summary>
@@ -694,7 +632,7 @@ public partial class Ribbon : OfficeRibbon
     {
         AssertValid();
 
-        SendCommand( new RunNoParamCommandEventArgs(eNoParamCommand) );
+        CommandDispatcher.SendNoParamCommand(this, eNoParamCommand);
     }
 
     //*************************************************************************
@@ -799,7 +737,7 @@ public partial class Ribbon : OfficeRibbon
             // Unfortunately, there is no way to programatically click a
             // RibbonButton.  Simulate a click.
 
-            OnReadWorkbookClick();
+            SendNoParamCommand(NoParamCommand.ShowGraphAndReadWorkbook);
         }
 
         // Should task automation be run on the workbook when it is opened?
@@ -1242,34 +1180,6 @@ public partial class Ribbon : OfficeRibbon
         {
             SendNoParamCommand(NoParamCommand.ShowReadabilityMetrics);
         }
-    }
-
-    //*************************************************************************
-    //  Method: btnReadWorkbook_Click()
-    //
-    /// <summary>
-    /// Handles the Click event on the btnReadWorkbook button.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    btnReadWorkbook_Click
-    (
-        object sender,
-        RibbonControlEventArgs e
-    )
-    {
-        AssertValid();
-
-        OnReadWorkbookClick();
     }
 
     //*************************************************************************

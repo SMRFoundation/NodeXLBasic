@@ -92,22 +92,22 @@ namespace Smrf.NodeXL.ExcelTemplate
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 159);
+            this.label3.Location = new System.Drawing.Point(12, 212);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(42, 13);
-            this.label3.TabIndex = 8;
+            this.label3.TabIndex = 10;
             this.label3.Text = "&Layout:";
             // 
             // txbLayoutAlgorithm
             // 
             this.txbLayoutAlgorithm.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.txbLayoutAlgorithm.Location = new System.Drawing.Point(112, 159);
+            this.txbLayoutAlgorithm.Location = new System.Drawing.Point(112, 212);
             this.txbLayoutAlgorithm.Multiline = true;
             this.txbLayoutAlgorithm.Name = "txbLayoutAlgorithm";
             this.txbLayoutAlgorithm.ReadOnly = true;
             this.txbLayoutAlgorithm.Size = new System.Drawing.Size(346, 44);
-            this.txbLayoutAlgorithm.TabIndex = 9;
+            this.txbLayoutAlgorithm.TabIndex = 11;
             // 
             // label4
             // 
@@ -131,44 +131,44 @@ namespace Smrf.NodeXL.ExcelTemplate
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 429);
+            this.label5.Location = new System.Drawing.Point(12, 159);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(44, 13);
-            this.label5.TabIndex = 18;
+            this.label5.TabIndex = 8;
             this.label5.Text = "&Groups:";
             // 
             // txbGroupingDescription
             // 
             this.txbGroupingDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.txbGroupingDescription.Location = new System.Drawing.Point(113, 429);
+            this.txbGroupingDescription.Location = new System.Drawing.Point(112, 159);
             this.txbGroupingDescription.Multiline = true;
             this.txbGroupingDescription.Name = "txbGroupingDescription";
             this.txbGroupingDescription.ReadOnly = true;
             this.txbGroupingDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txbGroupingDescription.Size = new System.Drawing.Size(346, 44);
-            this.txbGroupingDescription.TabIndex = 19;
+            this.txbGroupingDescription.TabIndex = 9;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 213);
+            this.label6.Location = new System.Drawing.Point(12, 266);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(83, 13);
-            this.label6.TabIndex = 10;
+            this.label6.TabIndex = 12;
             this.label6.Text = "&Autofill columns:";
             // 
             // txbAutoFillWorkbookResults
             // 
             this.txbAutoFillWorkbookResults.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.txbAutoFillWorkbookResults.Location = new System.Drawing.Point(112, 213);
+            this.txbAutoFillWorkbookResults.Location = new System.Drawing.Point(112, 266);
             this.txbAutoFillWorkbookResults.Multiline = true;
             this.txbAutoFillWorkbookResults.Name = "txbAutoFillWorkbookResults";
             this.txbAutoFillWorkbookResults.ReadOnly = true;
             this.txbAutoFillWorkbookResults.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txbAutoFillWorkbookResults.Size = new System.Drawing.Size(346, 44);
-            this.txbAutoFillWorkbookResults.TabIndex = 11;
+            this.txbAutoFillWorkbookResults.TabIndex = 13;
             // 
             // btnCancel
             // 
@@ -250,44 +250,44 @@ namespace Smrf.NodeXL.ExcelTemplate
             // 
             // label8
             // 
-            this.label8.Location = new System.Drawing.Point(12, 267);
+            this.label8.Location = new System.Drawing.Point(12, 320);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(94, 44);
-            this.label8.TabIndex = 12;
+            this.label8.TabIndex = 14;
             this.label8.Text = "&Overall graph metrics:";
             // 
             // txbOverallMetrics
             // 
             this.txbOverallMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.txbOverallMetrics.Location = new System.Drawing.Point(112, 267);
+            this.txbOverallMetrics.Location = new System.Drawing.Point(112, 320);
             this.txbOverallMetrics.Multiline = true;
             this.txbOverallMetrics.Name = "txbOverallMetrics";
             this.txbOverallMetrics.ReadOnly = true;
             this.txbOverallMetrics.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txbOverallMetrics.Size = new System.Drawing.Size(346, 44);
-            this.txbOverallMetrics.TabIndex = 13;
+            this.txbOverallMetrics.TabIndex = 15;
             // 
             // txbTopNByMetrics
             // 
             this.txbTopNByMetrics.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
             this.txbTopNByMetrics.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.txbTopNByMetrics.Location = new System.Drawing.Point(112, 321);
+            this.txbTopNByMetrics.Location = new System.Drawing.Point(112, 374);
             this.txbTopNByMetrics.Multiline = true;
             this.txbTopNByMetrics.Name = "txbTopNByMetrics";
             this.txbTopNByMetrics.ReadOnly = true;
             this.txbTopNByMetrics.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txbTopNByMetrics.Size = new System.Drawing.Size(346, 44);
-            this.txbTopNByMetrics.TabIndex = 15;
+            this.txbTopNByMetrics.TabIndex = 17;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(12, 321);
+            this.label9.Location = new System.Drawing.Point(12, 374);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(56, 13);
-            this.label9.TabIndex = 14;
+            this.label9.TabIndex = 16;
             this.label9.Text = "Top &items:";
             // 
             // txbTwitterSearchNetworkTopItems
@@ -295,20 +295,20 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.txbTwitterSearchNetworkTopItems.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
             this.txbTwitterSearchNetworkTopItems.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.txbTwitterSearchNetworkTopItems.Location = new System.Drawing.Point(112, 375);
+            this.txbTwitterSearchNetworkTopItems.Location = new System.Drawing.Point(112, 428);
             this.txbTwitterSearchNetworkTopItems.Multiline = true;
             this.txbTwitterSearchNetworkTopItems.Name = "txbTwitterSearchNetworkTopItems";
             this.txbTwitterSearchNetworkTopItems.ReadOnly = true;
             this.txbTwitterSearchNetworkTopItems.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txbTwitterSearchNetworkTopItems.Size = new System.Drawing.Size(346, 44);
-            this.txbTwitterSearchNetworkTopItems.TabIndex = 17;
+            this.txbTwitterSearchNetworkTopItems.TabIndex = 19;
             // 
             // label10
             // 
-            this.label10.Location = new System.Drawing.Point(12, 376);
+            this.label10.Location = new System.Drawing.Point(12, 429);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(83, 43);
-            this.label10.TabIndex = 16;
+            this.label10.TabIndex = 18;
             this.label10.Text = "Twitter &search network top items:";
             // 
             // GraphSummaryDialog

@@ -47,9 +47,9 @@ public class AttributesEditedEventArgs : EventArgs
     /// </param>
     ///
     /// <remarks>
-    /// If edge attributes were edited, <paramref name="edgeID" /> and
+    /// If edge attributes were edited, <paramref name="edgeIDs" /> and
     /// <paramref name="editedEdgeAttributes" /> should be non-null.  If vertex
-    /// attributes were edited, <paramref name="vertexID" /> and <paramref
+    /// attributes were edited, <paramref name="vertexIDs" /> and <paramref
     /// name="editedVertexAttributes" /> should be non-null.
     /// </remarks>
     //*************************************************************************
