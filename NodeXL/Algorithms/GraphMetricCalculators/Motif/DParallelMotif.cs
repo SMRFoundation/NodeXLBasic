@@ -7,22 +7,22 @@ using Smrf.NodeXL.Core;
 namespace Smrf.NodeXL.Algorithms
 {
 //*****************************************************************************
-//  Class: DParallelMotif
+//  Class: DConnectorMotif
 //
 /// <summary>
-/// Represents a D-parallel motif.
+/// Represents a D-connector motif.
 /// </summary>
 ///
 /// <remarks>
 /// See the <see cref="Motifs" /> enumeration for the definition of a
-/// D-parallel motif.  Note that a D-parallel motif includes only its <see
+/// D-connector motif.  Note that a D-connector motif includes only its <see
 /// cref="SpanVertices" />.  The <see cref="AnchorVertices" /> are provided by
 /// this class, but they are not actually a part of the motif.
 ///
 /// <para>
-/// This class is optimized for use by the algorithm that finds D-parallel
+/// This class is optimized for use by the algorithm that finds D-connector
 /// motifs.  Because of that, it's possible to create an instance of this class
-/// that isn't actually a valid D-parallel motif.  Specifically, it's up to
+/// that isn't actually a valid D-connector motif.  Specifically, it's up to
 /// the caller to populate the <see cref="SpanVertices" /> collection, which
 /// starts out empty, with at least two span vertices.
 /// </para>
@@ -30,13 +30,13 @@ namespace Smrf.NodeXL.Algorithms
 /// </remarks>
 //*****************************************************************************
 
-public class DParallelMotif : Motif
+public class DConnectorMotif : Motif
 {
     //*************************************************************************
-    //  Constructor: DParallelMotif()
+    //  Constructor: DConnectorMotif()
     //
     /// <summary>
-    /// Initializes a new instance of the <see cref="DParallelMotif" />
+    /// Initializes a new instance of the <see cref="DConnectorMotif" />
     /// class.
     /// </summary>
     ///
@@ -45,7 +45,7 @@ public class DParallelMotif : Motif
     /// </param>
     //*************************************************************************
 
-    public DParallelMotif
+    public DConnectorMotif
     (
         List<IVertex> anchorVertices
     )
@@ -202,7 +202,7 @@ public class DParallelMotif : Motif
                 new CollapsedGroupAttributes();
 
             oCollapsedGroupAttributes.Add(CollapsedGroupAttributeKeys.Type,
-                CollapsedGroupAttributeValues.DParallelMotifType);
+                CollapsedGroupAttributeValues.DConnectorMotifType);
 
             Int32 iAnchorVertices = m_oAnchorVertices.Count;
 

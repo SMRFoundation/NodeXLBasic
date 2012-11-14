@@ -2239,11 +2239,11 @@ public partial class ThisWorkbook
             Motifs eMotifsToCalculate = oMotifUserSettings.MotifsToCalculate;
             oMotifCalculator2.MotifsToCalculate = eMotifsToCalculate;
 
-            oMotifCalculator2.DParallelMinimumAnchorVertices =
-                oMotifUserSettings.DParallelMinimumAnchorVertices;
+            oMotifCalculator2.DConnectorMinimumAnchorVertices =
+                oMotifUserSettings.DConnectorMinimumAnchorVertices;
 
-            oMotifCalculator2.DParallelMaximumAnchorVertices =
-                oMotifUserSettings.DParallelMaximumAnchorVertices;
+            oMotifCalculator2.DConnectorMaximumAnchorVertices =
+                oMotifUserSettings.DConnectorMaximumAnchorVertices;
 
             oMotifCalculator2.CliqueMaximumMemberVertices =
                 oMotifUserSettings.CliqueMaximumMemberVertices;
@@ -2260,9 +2260,9 @@ public partial class ThisWorkbook
                     sGroupingDescription = "by fan motif";
                     break;
 
-                case Motifs.DParallel:
+                case Motifs.DConnector:
 
-                    sGroupingDescription = "by D-parallel motif";
+                    sGroupingDescription = "by D-connector motif";
                     break;
 
                 case Motifs.Clique:
@@ -2270,10 +2270,10 @@ public partial class ThisWorkbook
                     sGroupingDescription = "by clique motif";
                     break;
 
-                case Motifs.Fan | Motifs.DParallel:
+                case Motifs.Fan | Motifs.DConnector:
 
                     sGroupingDescription =
-                        "by fan and D-parallel motifs";
+                        "by fan and D-connector motifs";
 
                     break;
 
@@ -2284,17 +2284,17 @@ public partial class ThisWorkbook
 
                     break;
 
-                case Motifs.DParallel | Motifs.Clique:
+                case Motifs.DConnector | Motifs.Clique:
 
                     sGroupingDescription =
-                        "by D-parallel and clique motifs";
+                        "by D-connector and clique motifs";
 
                     break;
 
-                case Motifs.Fan | Motifs.DParallel | Motifs.Clique:
+                case Motifs.Fan | Motifs.DConnector | Motifs.Clique:
 
                     sGroupingDescription =
-                        "by fan, D-parallel, and clique motifs";
+                        "by fan, D-connector, and clique motifs";
 
                     break;
 

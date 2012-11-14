@@ -36,8 +36,8 @@ public class MotifCalculator2 : GraphMetricCalculatorBase2
     public MotifCalculator2()
     {
         m_eMotifsToCalculate = Motifs.None;
-        m_iDParallelMinimumAnchorVertices = 2;
-        m_iDParallelMaximumAnchorVertices = 2;
+        m_iDConnectorMinimumAnchorVertices = 2;
+        m_iDConnectorMaximumAnchorVertices = 2;
         m_iCliqueMinimumMemberVertices = 4;
         m_iCliqueMaximumMemberVertices = 9999;
 
@@ -76,11 +76,11 @@ public class MotifCalculator2 : GraphMetricCalculatorBase2
     }
 
     //*************************************************************************
-    //  Property: DParallelMinimumAnchorVertices
+    //  Property: DConnectorMinimumAnchorVertices
     //
     /// <summary>
     /// Gets or sets the minimum number of anchor vertices when grouping the
-    /// graph's vertices by D-parallel motifs.
+    /// graph's vertices by D-connector motifs.
     /// </summary>
     ///
     /// <value>
@@ -90,29 +90,29 @@ public class MotifCalculator2 : GraphMetricCalculatorBase2
     //*************************************************************************
 
     public Int32
-    DParallelMinimumAnchorVertices
+    DConnectorMinimumAnchorVertices
     {
         get
         {
             AssertValid();
 
-            return (m_iDParallelMinimumAnchorVertices);
+            return (m_iDConnectorMinimumAnchorVertices);
         }
 
         set
         {
-            m_iDParallelMinimumAnchorVertices = value;
+            m_iDConnectorMinimumAnchorVertices = value;
 
             AssertValid();
         }
     }
 
     //*************************************************************************
-    //  Property: DParallelMaximumAnchorVertices
+    //  Property: DConnectorMaximumAnchorVertices
     //
     /// <summary>
     /// Gets or sets the maximum number of anchor vertices when grouping the
-    /// graph's vertices by D-parallel motifs.
+    /// graph's vertices by D-connector motifs.
     /// </summary>
     ///
     /// <value>
@@ -122,18 +122,18 @@ public class MotifCalculator2 : GraphMetricCalculatorBase2
     //*************************************************************************
 
     public Int32
-    DParallelMaximumAnchorVertices
+    DConnectorMaximumAnchorVertices
     {
         get
         {
             AssertValid();
 
-            return (m_iDParallelMaximumAnchorVertices);
+            return (m_iDConnectorMaximumAnchorVertices);
         }
 
         set
         {
-            m_iDParallelMaximumAnchorVertices = value;
+            m_iDConnectorMaximumAnchorVertices = value;
 
             AssertValid();
         }
@@ -272,8 +272,8 @@ public class MotifCalculator2 : GraphMetricCalculatorBase2
         ICollection<Motif> oMotifs;
 
         if ( !oMotifCalculator.TryCalculateMotifs(graph,
-            m_eMotifsToCalculate, m_iDParallelMinimumAnchorVertices,
-            m_iDParallelMaximumAnchorVertices,
+            m_eMotifsToCalculate, m_iDConnectorMinimumAnchorVertices,
+            m_iDConnectorMaximumAnchorVertices,
             m_iCliqueMinimumMemberVertices, m_iCliqueMaximumMemberVertices,
             calculateGraphMetricsContext.BackgroundWorker, out oMotifs) )
         {
@@ -334,21 +334,34 @@ public class MotifCalculator2 : GraphMetricCalculatorBase2
                 ) );
         }
 
-        if (oMotif is DParallelMotif)
+        if (oMotif is DConnectorMotif)
         {
             // Sample:
             //
-            // D-parallel motif: "AnchorVertex1Name", "AnchorVertex2Name",
-            // "AnchorVertex3Name"
+            // 4-connector motif: "AnchorVertex1Name", "AnchorVertex2Name",
+            // "AnchorVertex3Name", ...
 
             StringBuilder oGroupName = new StringBuilder();
 
-            oGroupName.Append("D-parallel motif: ");
+            List<IVertex> dConnectorMotifAnchorVerticies = ((DConnectorMotif)oMotif ).AnchorVertices;
+            
+            oGroupName.AppendFormat(
+                "{0}-connector motif: ",
+                dConnectorMotifAnchorVerticies.Count);
+
             Boolean bAppendComma = false;
 
-            foreach (IVertex oAnchorVertex in
-                ( (DParallelMotif)oMotif ).AnchorVertices)
+            int addedVertices = 0;
+            foreach (IVertex oAnchorVertex in dConnectorMotifAnchorVerticies)
             {
+                // Only add three anchor verticies for a connector to prevent the name from growing too large
+                addedVertices++;
+                if (addedVertices > 3)
+                {
+                    oGroupName.Append(", ...");
+                    break;
+                }
+
                 oGroupName.AppendFormat(
                     "{0}\"{1}\""
                     ,
@@ -366,16 +379,29 @@ public class MotifCalculator2 : GraphMetricCalculatorBase2
         {
             // Sample:
             //
-            // Clique motif: "HeadVertexName"
+            // 5-clique motif: "MemberVertex1Name", "MemberVertex2Name", "MemberVertex3Name", ...
 
             StringBuilder oGroupName = new StringBuilder();
 
-            oGroupName.Append("Clique motif: ");
+            List<IVertex> dCliqueMotifMemberVerticies = ((CliqueMotif)oMotif).MemberVertices;
+
+            oGroupName.AppendFormat(
+                "{0}-clique motif: ",
+                dCliqueMotifMemberVerticies.Count);
+
             Boolean bAppendComma = false;
 
-            foreach (IVertex oMemberVertex in
-                ((CliqueMotif)oMotif).MemberVertices)
+            int addedVertices = 0;
+            foreach (IVertex oMemberVertex in dCliqueMotifMemberVerticies)
             {
+                // Only add three vertices for a clique to prevent the name from growing too large
+                addedVertices++;
+                if (addedVertices > 3)
+                {
+                    oGroupName.Append(", ...");
+                    break;
+                }
+
                 oGroupName.AppendFormat(
                     "{0}\"{1}\""
                     ,
@@ -409,8 +435,8 @@ public class MotifCalculator2 : GraphMetricCalculatorBase2
         base.AssertValid();
 
         // m_eMotifsToCalculate
-        Debug.Assert(m_iDParallelMinimumAnchorVertices >= 2);
-        Debug.Assert(m_iDParallelMaximumAnchorVertices >= 2);
+        Debug.Assert(m_iDConnectorMinimumAnchorVertices >= 2);
+        Debug.Assert(m_iDConnectorMaximumAnchorVertices >= 2);
     }
 
 
@@ -424,11 +450,11 @@ public class MotifCalculator2 : GraphMetricCalculatorBase2
 
     /// The minimum number of anchor vertices.
 
-    protected Int32 m_iDParallelMinimumAnchorVertices;
+    protected Int32 m_iDConnectorMinimumAnchorVertices;
 
     /// The maximum number of anchor vertices.
 
-    protected Int32 m_iDParallelMaximumAnchorVertices;
+    protected Int32 m_iDConnectorMaximumAnchorVertices;
 
     /// The minimum number of clique members.
     

@@ -61,11 +61,11 @@ public class MotifCalculator : GraphMetricCalculatorBase
     /// </param>
     ///
     /// <param name="dMinimum">
-    /// The minimum number of anchor vertices (dimension) of D-parallel motif to find.
+    /// The minimum number of anchor vertices (dimension) of D-connector motif to find.
     /// </param>
     /// 
     /// <param name="dMaximum">
-    /// The maximum number of anchor vertices (dimension) of D-parallel motif to find.
+    /// The maximum number of anchor vertices (dimension) of D-connector motif to find.
     /// </param>
     /// 
     /// <param name="nMinimum">
@@ -122,17 +122,17 @@ public class MotifCalculator : GraphMetricCalculatorBase
             oMotifs.AddRange(oFanMotifs);
         }
 
-        if ((motifsToCalculate & Motifs.DParallel) != 0)
+        if ((motifsToCalculate & Motifs.DConnector) != 0)
         {
-            ICollection<Motif> oDParallelMotifs;
+            ICollection<Motif> oDConnectorMotifs;
 
-            if (!TryCalculateDParallelMotifs(graph, dMinimum, dMaximum, backgroundWorker,
-                out oDParallelMotifs))
+            if (!TryCalculateDConnectorMotifs(graph, dMinimum, dMaximum, backgroundWorker,
+                out oDConnectorMotifs))
             {
                 return (false);
             }
 
-            oMotifs.AddRange(oDParallelMotifs);
+            oMotifs.AddRange(oDConnectorMotifs);
         }
 
         if ((motifsToCalculate & Motifs.Clique) != 0)
@@ -298,10 +298,10 @@ public class MotifCalculator : GraphMetricCalculatorBase
     }
 
     //*************************************************************************
-    //  Method: TryCalculateDParallelMotifs()
+    //  Method: TryCalculateDConnectorMotifs()
     //
     /// <summary>
-    /// Attempts to calculate a set of D-parallel motifs.
+    /// Attempts to calculate a set of D-connector motifs.
     /// </summary>
     ///
     /// <param name="oGraph">
@@ -309,11 +309,11 @@ public class MotifCalculator : GraphMetricCalculatorBase
     /// </param>
     ///
     /// <param name="iDMinimum">
-    /// The minimum number of anchor vertices (dimension) of D-parallel motif to find.
+    /// The minimum number of anchor vertices (dimension) of D-connector motif to find.
     /// </param>
     /// 
     /// <param name="iDMaximum">
-    /// The maximum number of anchor vertices (dimension) of D-parallel motif to find.
+    /// The maximum number of anchor vertices (dimension) of D-connector motif to find.
     /// </param>
     /// 
     /// <param name="oBackgroundWorker">
@@ -322,7 +322,7 @@ public class MotifCalculator : GraphMetricCalculatorBase
     /// </param>
     ///
     /// <param name="oMotifs">
-    /// Where a collection of zero or more <see cref="DParallelMotif" />
+    /// Where a collection of zero or more <see cref="DConnectorMotif" />
     /// objects gets stored if true is returned.
     /// </param>
     ///
@@ -332,7 +332,7 @@ public class MotifCalculator : GraphMetricCalculatorBase
     //*************************************************************************
 
     protected Boolean
-    TryCalculateDParallelMotifs
+    TryCalculateDConnectorMotifs
     (
         IGraph oGraph,
         Int32 iDMinimum,
@@ -351,10 +351,10 @@ public class MotifCalculator : GraphMetricCalculatorBase
 
         // The key is an ordered combination of the vertex IDs of the potential
         // motif's D anchor vertices, and the value is the corresponding
-        // potential DParallelMotif object.
+        // potential DConnectorMotif object.
 
-        Dictionary<string, DParallelMotif> oPotentialDParallelMotifs =
-            new Dictionary<string, DParallelMotif>();
+        Dictionary<string, DConnectorMotif> oPotentialDConnectorMotifs =
+            new Dictionary<string, DConnectorMotif>();
 
         foreach (IVertex oPotentialSpanVertex in oVertices)
         {
@@ -371,22 +371,22 @@ public class MotifCalculator : GraphMetricCalculatorBase
 
             if ( DVerticesMightBeAnchors(oPotentialAnchorVertices, iDMinimum, iDMaximum) )
             {
-                AddSpanVertexToPotentialDParallelMotifs(
+                AddSpanVertexToPotentialDConnectorMotifs(
                     oPotentialSpanVertex, oPotentialAnchorVertices,
-                    oPotentialDParallelMotifs);
+                    oPotentialDConnectorMotifs);
             }
 
             iCalculationsSoFar++;
         }
 
-        // Filter the potential D-parallel motifs and add the real ones to
+        // Filter the potential D-connector motifs and add the real ones to
         // the collection of motifs.
 
-        oMotifs = FilterDParallelMotifs(oPotentialDParallelMotifs);
+        oMotifs = FilterDConnectorMotifs(oPotentialDConnectorMotifs);
 
-        // Set the SpanScale property on each DParallelMotif object.
+        // Set the SpanScale property on each DConnectorMotif object.
 
-        SetDParallelMotifSpanScale(oMotifs);
+        SetDConnectorMotifSpanScale(oMotifs);
 
         return (true);
     }
@@ -396,7 +396,7 @@ public class MotifCalculator : GraphMetricCalculatorBase
     //
     /// <summary>
     /// Determines whether a collection of vertices might be anchor vertices in
-    /// a D-parallel motif.
+    /// a D-connector motif.
     /// </summary>
     ///
     /// <param name="oVertices">
@@ -404,11 +404,11 @@ public class MotifCalculator : GraphMetricCalculatorBase
     /// </param>
     ///
     /// <param name="iDMinimum">
-    /// The minimum number of anchor vertices (dimension) of D-parallel motif to find.
+    /// The minimum number of anchor vertices (dimension) of D-connector motif to find.
     /// </param>
     /// 
     /// <param name="iDMaximum">
-    /// The maximum number of anchor vertices (dimension) of D-parallel motif to find.
+    /// The maximum number of anchor vertices (dimension) of D-connector motif to find.
     /// </param>
     ///
     /// <returns>
@@ -440,10 +440,10 @@ public class MotifCalculator : GraphMetricCalculatorBase
     }
 
     //*************************************************************************
-    //  Method: AddSpanVertexToPotentialDParallelMotifs()
+    //  Method: AddSpanVertexToPotentialDConnectorMotifs()
     //
     /// <summary>
-    /// Adds a potential span vertex to a dictionary of potential D-parallel
+    /// Adds a potential span vertex to a dictionary of potential D-connector
     /// motifs.
     /// </summary>
     ///
@@ -456,111 +456,111 @@ public class MotifCalculator : GraphMetricCalculatorBase
     /// name="oPotentialSpanVertex" />.
     /// </param>
     ///
-    /// <param name="oPotentialDParallelMotifs">
+    /// <param name="oPotentialDConnectorMotifs">
     /// The key is an ordered combination of the vertex IDs of the potential
     /// motif's D anchor vertices, and the value is the corresponding
-    /// potential DParallelMotif object.
+    /// potential DConnectorMotif object.
     /// </param>
     //*************************************************************************
 
     protected void
-    AddSpanVertexToPotentialDParallelMotifs
+    AddSpanVertexToPotentialDConnectorMotifs
     (
         IVertex oPotentialSpanVertex,
         ICollection<IVertex> oDPotentialAnchorVertices,
-        Dictionary<string, DParallelMotif> oPotentialDParallelMotifs
+        Dictionary<string, DConnectorMotif> oPotentialDConnectorMotifs
     )
     {
         Debug.Assert(oPotentialSpanVertex != null);
         Debug.Assert(oDPotentialAnchorVertices != null);
         Debug.Assert(oDPotentialAnchorVertices.Count >= 2);
-        Debug.Assert(oPotentialDParallelMotifs != null);
+        Debug.Assert(oPotentialDConnectorMotifs != null);
 
-        // Is there already a DParallelMotif object for this set of
+        // Is there already a DConnectorMotif object for this set of
         // potential anchor vertices?
         
         IOrderedEnumerable<IVertex> oOrderedDPotentialAnchorVertices = oDPotentialAnchorVertices.OrderBy(v => v.ID);           
         string stringKey = string.Join(",", oOrderedDPotentialAnchorVertices.Select(v => v.ID.ToString()).ToArray());
 
-        DParallelMotif oPotentialDParallelMotif;
+        DConnectorMotif oPotentialDConnectorMotif;
 
-        if (!oPotentialDParallelMotifs.TryGetValue(
-            stringKey, out oPotentialDParallelMotif))
+        if (!oPotentialDConnectorMotifs.TryGetValue(
+            stringKey, out oPotentialDConnectorMotif))
         {
             // No.  Create one.
 
-            oPotentialDParallelMotif = new DParallelMotif(new List<IVertex>(oDPotentialAnchorVertices));
+            oPotentialDConnectorMotif = new DConnectorMotif(new List<IVertex>(oDPotentialAnchorVertices));
 
-            oPotentialDParallelMotifs.Add(stringKey,
-                oPotentialDParallelMotif);
+            oPotentialDConnectorMotifs.Add(stringKey,
+                oPotentialDConnectorMotif);
         }
 
-        oPotentialDParallelMotif.SpanVertices.Add(oPotentialSpanVertex);
+        oPotentialDConnectorMotif.SpanVertices.Add(oPotentialSpanVertex);
     }
 
 
     //*************************************************************************
-    //  Method: FilterDParallelMotifs()
+    //  Method: FilterDConnectorMotifs()
     //
     /// <summary>
-    /// Filters a collection of potential D-parallel motifs and adds the real
+    /// Filters a collection of potential D-connector motifs and adds the real
     /// or more favorable overlapping ones to a new collection.
     /// </summary>
     ///
-    /// <param name="oPotentialDParallelMotifs">
+    /// <param name="oPotentialDConnectorMotifs">
     /// The key is an ordered combination of the vertex IDs of the potential
     /// motif's D anchor vertices, and the value is the corresponding
-    /// potential DParallelMotif object.
+    /// potential DConnectorMotif object.
     /// </param>
     ///
     /// <returns>
-    /// A new collection of zero or more <see cref="DParallelMotif" />
+    /// A new collection of zero or more <see cref="DConnectorMotif" />
     /// objects.
     /// </returns>
     //*************************************************************************
 
     protected ICollection<Motif>
-    FilterDParallelMotifs
+    FilterDConnectorMotifs
     (
-        Dictionary<string, DParallelMotif> oPotentialDParallelMotifs
+        Dictionary<string, DConnectorMotif> oPotentialDConnectorMotifs
     )
     {
-        Debug.Assert(oPotentialDParallelMotifs != null);
+        Debug.Assert(oPotentialDConnectorMotifs != null);
 
-        HashSet<Motif> currentDParallelMotifs = new HashSet<Motif>();
+        HashSet<Motif> currentDConnectorMotifs = new HashSet<Motif>();
 
-        Dictionary<IVertex, DParallelMotif> verticesAlreadyInDParallelMotifs =
-            new Dictionary<IVertex, DParallelMotif>();
+        Dictionary<IVertex, DConnectorMotif> verticesAlreadyInDConnectorMotifs =
+            new Dictionary<IVertex, DConnectorMotif>();
 
-        // Select only those potential D-parallel motifs that have at least
+        // Select only those potential D-connector motifs that have at least
         // two span vertices.
 
-        foreach (DParallelMotif potentialMotif in
-            oPotentialDParallelMotifs.Values.Where(
-                oPotentialDParallelMotif =>
-                oPotentialDParallelMotif.SpanVertices.Count >= 2)
+        foreach (DConnectorMotif potentialMotif in
+            oPotentialDConnectorMotifs.Values.Where(
+                oPotentialDConnectorMotif =>
+                oPotentialDConnectorMotif.SpanVertices.Count >= 2)
             )
         {
             // If any of the motif's span vertices are included in another
-            // D-parallel motif we need to pick the motif to keep
+            // D-connector motif we need to pick the motif to keep
             //
             // If this weren't done, for example, the following ring of vertices 
-            // would result in two redundant two-parallel motifs:
+            // would result in two redundant two-connector motifs:
             //
             // A-B-C-D-A
 
-            List<DParallelMotif> overlappingMotifs = 
+            List<DConnectorMotif> overlappingMotifs = 
                 (from spanVertex in potentialMotif.SpanVertices
-                 where verticesAlreadyInDParallelMotifs.ContainsKey(spanVertex)
-                 select verticesAlreadyInDParallelMotifs[spanVertex])
-                 .Distinct<DParallelMotif>().ToList<DParallelMotif>();
+                 where verticesAlreadyInDConnectorMotifs.ContainsKey(spanVertex)
+                 select verticesAlreadyInDConnectorMotifs[spanVertex])
+                 .Distinct<DConnectorMotif>().ToList<DConnectorMotif>();
 
             if (overlappingMotifs.Count > 0) 
             {
                 // Our bookkeeping should prevent more than one overlap
                 Debug.Assert(overlappingMotifs.Count == 1);
 
-                DParallelMotif existingMotif = overlappingMotifs[0];
+                DConnectorMotif existingMotif = overlappingMotifs[0];
                 
                 int potAnchors = potentialMotif.AnchorVertices.Count, 
                     potSpanners = potentialMotif.SpanVertices.Count,
@@ -578,20 +578,20 @@ public class MotifCalculator : GraphMetricCalculatorBase
                 {
                     
                     // Remove the existing motif from the list of motifs and the dictionary entries for its vertices
-                    currentDParallelMotifs.Remove(existingMotif);
+                    currentDConnectorMotifs.Remove(existingMotif);
 
                     foreach (IVertex existingSpanVertex in existingMotif.SpanVertices)
                     {
-                        verticesAlreadyInDParallelMotifs.Remove(existingSpanVertex);
+                        verticesAlreadyInDConnectorMotifs.Remove(existingSpanVertex);
                     }
 
                     foreach (IVertex existingAnchorVertex in existingMotif.AnchorVertices)
                     {
-                        verticesAlreadyInDParallelMotifs.Remove(existingAnchorVertex);
+                        verticesAlreadyInDConnectorMotifs.Remove(existingAnchorVertex);
                     }
 
-                    // Add the potential DParallelMotif and record its vertices
-                    AddDParallelMotif(currentDParallelMotifs, verticesAlreadyInDParallelMotifs, potentialMotif);
+                    // Add the potential DConnectorMotif and record its vertices
+                    AddDConnectorMotif(currentDConnectorMotifs, verticesAlreadyInDConnectorMotifs, potentialMotif);
                 }
                 else
                 {
@@ -599,100 +599,100 @@ public class MotifCalculator : GraphMetricCalculatorBase
                 }
                 
             }
-            // If all of the motifs span vertices are not included in others, add the DParallelMotif and record its vertices
+            // If all of the motifs span vertices are not included in others, add the DConnectorMotif and record its vertices
             else 
             {
-                AddDParallelMotif(currentDParallelMotifs, verticesAlreadyInDParallelMotifs, potentialMotif);
+                AddDConnectorMotif(currentDConnectorMotifs, verticesAlreadyInDConnectorMotifs, potentialMotif);
             }
         }
 
-        return currentDParallelMotifs;
+        return currentDConnectorMotifs;
     }
 
     //*************************************************************************
-    //  Method: AddDParallelMotif()
+    //  Method: AddDConnectorMotif()
     //
     /// <summary>
-    /// Adds a new DParallelMotif to the collections and creates mappings from
+    /// Adds a new DConnectorMotif to the collections and creates mappings from
     /// its vertices to it
     /// </summary>
     /// 
-    /// <param name="currentDParallelMotifs">
-    /// The current DParallelMotif collection to add to
+    /// <param name="currentDConnectorMotifs">
+    /// The current DConnectorMotif collection to add to
     /// </param>
     /// 
-    /// <param name="verticesAlreadyInDParallelMotifs">
-    /// The mapping between seen vertices and their associated DParallelMotifs
+    /// <param name="verticesAlreadyInDConnectorMotifs">
+    /// The mapping between seen vertices and their associated DConnectorMotifs
     /// </param>
     /// 
-    /// <param name="parallelMotifToAdd">
-    /// The DParallelMotif to add to the collections
+    /// <param name="connectorMotifToAdd">
+    /// The DConnectorMotif to add to the collections
     /// </param>
     //*************************************************************************
 
     private static void
-    AddDParallelMotif
+    AddDConnectorMotif
     (
-        HashSet<Motif> currentDParallelMotifs,
-        Dictionary<IVertex, DParallelMotif> verticesAlreadyInDParallelMotifs,
-        DParallelMotif parallelMotifToAdd)
+        HashSet<Motif> currentDConnectorMotifs,
+        Dictionary<IVertex, DConnectorMotif> verticesAlreadyInDConnectorMotifs,
+        DConnectorMotif connectorMotifToAdd)
     {
         // Assert that there are no shared anchor and span vertices
-        Debug.Assert(parallelMotifToAdd.SpanVertices.Intersect<IVertex>(parallelMotifToAdd.AnchorVertices).Count<IVertex>() == 0);
+        Debug.Assert(connectorMotifToAdd.SpanVertices.Intersect<IVertex>(connectorMotifToAdd.AnchorVertices).Count<IVertex>() == 0);
 
-        currentDParallelMotifs.Add(parallelMotifToAdd);
+        currentDConnectorMotifs.Add(connectorMotifToAdd);
 
-        foreach (IVertex oVertex in parallelMotifToAdd.SpanVertices)
+        foreach (IVertex oVertex in connectorMotifToAdd.SpanVertices)
         {
             // We do not allow overlapping span vertices so we use .Add
-            verticesAlreadyInDParallelMotifs.Add(oVertex, parallelMotifToAdd);
+            verticesAlreadyInDConnectorMotifs.Add(oVertex, connectorMotifToAdd);
         }
 
-        foreach (IVertex oVertex in parallelMotifToAdd.AnchorVertices)
+        foreach (IVertex oVertex in connectorMotifToAdd.AnchorVertices)
         {
             // We allow overlapping anchor vertices so we use =
-            verticesAlreadyInDParallelMotifs[oVertex] = parallelMotifToAdd;
+            verticesAlreadyInDConnectorMotifs[oVertex] = connectorMotifToAdd;
         }
     }
 
     //*************************************************************************
-    //  Method: SetDParallelMotifSpanScale()
+    //  Method: SetDConnectorMotifSpanScale()
     //
     /// <summary>
-    /// Sets the <see cref="DParallelMotif.SpanScale" /> property on each
-    /// D-parallel motif.
+    /// Sets the <see cref="DConnectorMotif.SpanScale" /> property on each
+    /// D-connector motif.
     /// </summary>
     ///
-    /// <param name="oDParallelMotifs">
-    /// A collection of zero or more <see cref="DParallelMotif" /> objects.
+    /// <param name="oDConnectorMotifs">
+    /// A collection of zero or more <see cref="DConnectorMotif" /> objects.
     /// </param>
     //*************************************************************************
 
     protected void
-    SetDParallelMotifSpanScale
+    SetDConnectorMotifSpanScale
     (
-        ICollection<Motif> oDParallelMotifs
+        ICollection<Motif> oDConnectorMotifs
     )
     {
-        Debug.Assert(oDParallelMotifs != null);
+        Debug.Assert(oDConnectorMotifs != null);
 
-        // The SpanScale property is the DParallelMotif's span count scaled
+        // The SpanScale property is the DConnectorMotif's span count scaled
         // between 0 and 1.0, based on the minimum and maximum span counts
-        // among all DParallelMotifs.
+        // among all DConnectorMotifs.
 
         Int32 iMinimumSpanCount = 0;
         Int32 iMaximumSpanCount = 0;
 
-        if (oDParallelMotifs.Count > 0)
+        if (oDConnectorMotifs.Count > 0)
         {
-            iMinimumSpanCount = oDParallelMotifs.Min(
-                oMotif => ((DParallelMotif)oMotif).SpanVertices.Count);
+            iMinimumSpanCount = oDConnectorMotifs.Min(
+                oMotif => ((DConnectorMotif)oMotif).SpanVertices.Count);
 
-            iMaximumSpanCount = oDParallelMotifs.Max(
-                oMotif => ((DParallelMotif)oMotif).SpanVertices.Count);
+            iMaximumSpanCount = oDConnectorMotifs.Max(
+                oMotif => ((DConnectorMotif)oMotif).SpanVertices.Count);
         }
 
-        foreach (DParallelMotif oDParallelMotif in oDParallelMotifs)
+        foreach (DConnectorMotif oDConnectorMotif in oDConnectorMotifs)
         {
             Single fSpanScale;
 
@@ -706,13 +706,13 @@ public class MotifCalculator : GraphMetricCalculatorBase
             else
             {
                 fSpanScale = MathUtil.TransformValueToRange(
-                    oDParallelMotif.SpanVertices.Count,
+                    oDConnectorMotif.SpanVertices.Count,
                     iMinimumSpanCount, iMaximumSpanCount,
                     0F, 1.0F
                     );
             }
 
-            oDParallelMotif.SpanScale = fSpanScale;
+            oDConnectorMotif.SpanScale = fSpanScale;
         }
     }
 

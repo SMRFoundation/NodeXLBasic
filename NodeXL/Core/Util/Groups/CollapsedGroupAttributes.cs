@@ -167,7 +167,7 @@ public static class CollapsedGroupAttributeKeys
     //  Method: GetAnchorVertexNameKey()
     //
     /// <summary>
-    /// Gets the key for the name of a specified anchor vertex in a D-parallel
+    /// Gets the key for the name of a specified anchor vertex in a D-connector
     /// motif.
     /// </summary>
     ///
@@ -196,7 +196,7 @@ public static class CollapsedGroupAttributeKeys
     //
     /// <summary>
     /// Gets the key for the color of the edges connecting the vertex used to
-    /// represent a collapsed D-parallel motif with one of its anchor vertices.
+    /// represent a collapsed D-connector motif with one of its anchor vertices.
     /// </summary>
     ///
     /// <param name="anchorVertexIndex">
@@ -225,7 +225,7 @@ public static class CollapsedGroupAttributeKeys
     //
     /// <summary>
     /// Gets the key for the width of the edges connecting the vertex used to
-    /// represent a collapsed D-parallel motif with one of its anchor vertices.
+    /// represent a collapsed D-connector motif with one of its anchor vertices.
     /// </summary>
     ///
     /// <param name="anchorVertexIndex">
@@ -253,7 +253,7 @@ public static class CollapsedGroupAttributeKeys
     //  Method: GetAnchorVertexKey()
     //
     /// <summary>
-    /// Gets a key for a specified anchor vertex in a D-parallel motif.
+    /// Gets a key for a specified anchor vertex in a D-connector motif.
     /// </summary>
     ///
     /// <param name="sKeyBase">
@@ -295,7 +295,7 @@ public static class CollapsedGroupAttributeKeys
     public const String Type = "Type";
 
     /// <summary>
-    /// The color of the vertex used to represent a collapsed fan, D-parallel,
+    /// The color of the vertex used to represent a collapsed fan, D-connector,
     /// or clique motif.
     /// </summary>
 
@@ -320,47 +320,47 @@ public static class CollapsedGroupAttributeKeys
     public const String ArcScale = "ArcScale";
 
     /// <summary>
-    /// The number of anchor vertices in a D-parallel motif.
+    /// The number of anchor vertices in a D-connector motif.
     /// </summary>
 
     public const String AnchorVertices = "AnchorVertices";
 
     /// <summary>
-    /// The number of span vertices in a D-parallel motif.
+    /// The number of span vertices in a D-connector motif.
     /// </summary>
 
     public const String SpanVertices = "SpanVertices";
 
     /// <summary>
-    /// The span scale in a collapsed D-parallel motif.
+    /// The span scale in a collapsed D-connector motif.
     /// </summary>
 
     public const String SpanScale = "SpanScale";
 
     /// <summary>
     /// The color of the edges connecting the vertex used to represent a
-    /// collapsed D-parallel motif with its first anchor vertex.
+    /// collapsed D-connector motif with its first anchor vertex.
     /// </summary>
 
     public const String AnchorVertex1EdgeColor = "AnchorVertex1EdgeColor";
 
     /// <summary>
     /// The color of the edges connecting the vertex used to represent a
-    /// collapsed D-parallel motif with its second anchor vertex.
+    /// collapsed D-connector motif with its second anchor vertex.
     /// </summary>
 
     public const String AnchorVertex2EdgeColor = "AnchorVertex2EdgeColor";
 
     /// <summary>
     /// The width of the edges connecting the vertex used to represent a
-    /// collapsed D-parallel motif with its first anchor vertex.
+    /// collapsed D-connector motif with its first anchor vertex.
     /// </summary>
 
     public const String AnchorVertex1EdgeWidth = "AnchorVertex1EdgeWidth";
 
     /// <summary>
     /// The width of the edges connecting the vertex used to represent a
-    /// collapsed D-parallel motif with its second anchor vertex.
+    /// collapsed D-connector motif with its second anchor vertex.
     /// </summary>
 
     public const String AnchorVertex2EdgeWidth = "AnchorVertex2EdgeWidth";
@@ -383,7 +383,7 @@ public static class CollapsedGroupAttributeKeys
     //*************************************************************************
 
     /// <summary>
-    /// The base used for the name of an anchor vertex in a D-parallel motif.
+    /// The base used for the name of an anchor vertex in a D-connector motif.
     /// The full key is AnchorVertexNameBase with an appended zero-based anchor
     /// vertex index: "AnchorVertexName0" and "AnchorVertexName1", for example.
     /// </summary>
@@ -392,14 +392,14 @@ public static class CollapsedGroupAttributeKeys
 
     /// <summary>
     /// The base used for the color of the edges connecting the vertex used to
-    /// represent a collapsed D-parallel motif with one of its anchor vertices.
+    /// represent a collapsed D-connector motif with one of its anchor vertices.
     /// </summary>
 
     private const String AnchorVertexEdgeColorBase = "AnchorVertexEdgeColor";
 
     /// <summary>
     /// The base used for the width of the edges connecting the vertex used to
-    /// represent a collapsed D-parallel motif with one of its anchor vertices.
+    /// represent a collapsed D-connector motif with one of its anchor vertices.
     /// </summary>
 
     private const String AnchorVertexEdgeWidthBase = "AnchorVertexEdgeWidth";
@@ -431,10 +431,10 @@ public static class CollapsedGroupAttributeValues
 
     /// <summary>
     /// Value of the <see cref="CollapsedGroupAttributeKeys.Type" /> key for a
-    /// collapsed D-parallel motif.
+    /// collapsed D-connector motif.
     /// </summary>
 
-    public const String DParallelMotifType = "DParallelMotif";
+    public const String DConnectorMotifType = "DConnectorMotif";
 
     /// <summary>
     /// Value of the <see cref="CollapsedGroupAttributeKeys.Type" /> key for a

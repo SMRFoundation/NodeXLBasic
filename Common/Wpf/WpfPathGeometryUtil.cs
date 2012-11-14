@@ -280,29 +280,29 @@ public static class WpfPathGeometryUtil
 
 
     //*************************************************************************
-    //  Method: GetTaperedSquare()
+    //  Method: GetRoundedX()
     //
     /// <summary>
-    /// Creates a PathGeometry that represents a square with inward-tapered
+    /// Creates a PathGeometry that represents an X with outward-tapered
     /// edges, centered on a specified point.
     /// </summary>
     ///
     /// <param name="center">
-    /// The tapered square's center.
+    /// The rounded X's center.
     /// </param>
     ///
     /// <param name="halfWidth">
-    /// One half the width of the tapered square.
+    /// One half the width of the rounded X.
     /// </param>
     ///
     /// <returns>
-    /// A PathGeometry that represents the specified tapered square.  The
+    /// A PathGeometry that represents the specified rounded X.  The
     /// PathGeometry is frozen.
     /// </returns>
     //*************************************************************************
 
     public static PathGeometry
-    GetTaperedSquare
+    GetRoundedX
     (
         Point center,
         Double halfWidth
@@ -310,16 +310,155 @@ public static class WpfPathGeometryUtil
     {
         Debug.Assert(halfWidth >= 0);
 
+        Double dCenterX = center.X;
+        Double dCenterY = center.Y;
 
-        PathGeometry taperedDiamond = GetTaperedDiamond(center, halfWidth);
-        PathGeometry taperedDiamondClone = taperedDiamond.Clone();
-        taperedDiamondClone.Transform = new RotateTransform(45, center.X, center.Y);
+        Point
+            topLeft = new Point(dCenterX - halfWidth, dCenterY - halfWidth),
+            topRight = new Point(dCenterX + halfWidth, dCenterY - halfWidth),
+            bottomRight = new Point(dCenterX + halfWidth, dCenterY + halfWidth),
+            bottomLeft = new Point(dCenterX - halfWidth, dCenterY + halfWidth);
 
-        PathGeometry taperedSquare = taperedDiamondClone;
+        Double middleOffset = .75 * halfWidth;
 
-        WpfGraphicsUtil.FreezeIfFreezable(taperedSquare);
+        Point
+           topMiddle = new Point(dCenterX, dCenterY - middleOffset),
+           rightMiddle = new Point(dCenterX + middleOffset, dCenterY),
+           bottomMiddle = new Point(dCenterX, dCenterY + middleOffset),
+           leftMiddle = new Point(dCenterX - middleOffset, dCenterY);
 
-        return taperedSquare;
+        // The control points for the Bezier segments were determined
+        // experimentally.
+
+        Double dSmallControlPointOffset = halfWidth * 0.25;
+        Double dLargeControlPointOffset = halfWidth * 0.45;
+
+        return (GetPathGeometryFromPathSegments(topLeft, true,
+
+            new BezierSegment(
+
+                new Point(
+                    topLeft.X + dSmallControlPointOffset,
+                    topMiddle.Y - dLargeControlPointOffset
+                    ),
+
+                new Point(
+                    topLeft.X + dLargeControlPointOffset,
+                    topMiddle.Y - dSmallControlPointOffset
+                    ),
+
+                topMiddle, true
+                ),
+
+            new BezierSegment(
+
+                new Point(
+                    topRight.X - dLargeControlPointOffset,
+                    topMiddle.Y - dSmallControlPointOffset
+                    ),
+
+                new Point(
+                    topRight.X - dSmallControlPointOffset,
+                    topMiddle.Y - dLargeControlPointOffset
+                    ),
+
+                topRight, true
+                ),
+
+            new BezierSegment(
+
+                new Point(
+                    rightMiddle.X + dLargeControlPointOffset,
+                    topRight.Y + dSmallControlPointOffset
+                    ),
+
+                new Point(
+                    rightMiddle.X + dSmallControlPointOffset,
+                    topRight.Y + dLargeControlPointOffset
+                    ),
+
+                rightMiddle, true
+                ),
+
+            new BezierSegment(
+
+                new Point(
+                    rightMiddle.X + dSmallControlPointOffset,
+                    bottomRight.Y - dLargeControlPointOffset
+                ),
+
+                new Point(
+                    rightMiddle.X + dLargeControlPointOffset,
+                    bottomRight.Y - dSmallControlPointOffset
+                ),
+
+                bottomRight, true
+                ),
+
+        
+            new BezierSegment(
+
+                new Point(
+                    bottomRight.X - dSmallControlPointOffset,
+                    bottomMiddle.Y + dLargeControlPointOffset
+                ),
+
+                new Point(
+                    bottomRight.X - dLargeControlPointOffset,
+                    bottomMiddle.Y + dSmallControlPointOffset
+                ),
+
+                bottomMiddle, true
+                ),
+
+        
+            new BezierSegment(
+
+                new Point(
+                    bottomLeft.X + dLargeControlPointOffset,
+                    bottomMiddle.Y + dSmallControlPointOffset
+                ),
+
+                new Point(
+                    bottomLeft.X + dSmallControlPointOffset,
+                    bottomMiddle.Y + dLargeControlPointOffset
+                ),
+
+                bottomLeft, true
+                ),
+
+        
+            new BezierSegment(
+
+                new Point(
+                    leftMiddle.X - dLargeControlPointOffset,
+                    bottomLeft.Y - dSmallControlPointOffset
+                ),
+
+                new Point(
+                    leftMiddle.X - dSmallControlPointOffset,
+                    bottomLeft.Y - dLargeControlPointOffset
+                ),
+
+                leftMiddle, true
+                ),
+
+        
+            new BezierSegment(
+
+                new Point(
+                    leftMiddle.X - dSmallControlPointOffset,
+                    topLeft.Y + dLargeControlPointOffset
+                ),
+
+                new Point(
+                    leftMiddle.X - dLargeControlPointOffset,
+                    topLeft.Y + dSmallControlPointOffset
+                ),
+
+                topLeft, true
+                )
+            ));
     }
 
     //*************************************************************************
@@ -737,6 +876,14 @@ public static class WpfPathGeometryUtil
 
         return (oPathGeometry);
     }
+
+    //*************************************************************************
+    //  Public fields
+    //*************************************************************************
+
+    /// Used in clover width calculations.
+
+    public static Double SqrtOf2 = Math.Sqrt(2);
 }
 
 }

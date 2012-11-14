@@ -37,14 +37,14 @@ Motifs
     Fan = 1,
 
     /// <summary>
-    /// A D-Parallel motif consists of D anchor vertices, each connected to a
+    /// A D-connector motif consists of D anchor vertices, each connected to a
     /// set of N>=2 span vertices by span edges. The span vertices have exactly
     /// D adjacent vertices, which are the anchor vertices. The anchor
     /// vertices have at least N adjacent vertices, N of which are the span
     /// vertices.
     /// </summary>
 
-    DParallel = 2,
+    DConnector = 2,
 
     /// <summary>
     /// A clique motif consists of a maximum set of vertices who have all

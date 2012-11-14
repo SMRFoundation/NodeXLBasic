@@ -10,22 +10,22 @@ using Smrf.WpfGraphicsLib;
 namespace Smrf.NodeXL.Visualization.Wpf
 {
 //*****************************************************************************
-//  Class: SolidTaperedSquareVertexDrawingHistory
+//  Class: SolidRoundedXVertexDrawingHistory
 //
 /// <summary>
 /// Retains information about how one vertex was drawn as a <see
-/// cref="VertexShape.SolidTaperedSquare" />.
+/// cref="VertexShape.SolidRoundedX" />.
 /// </summary>
 //*****************************************************************************
 
-public class SolidTaperedSquareVertexDrawingHistory : SolidTaperedDiamondVertexDrawingHistory
+public class SolidRoundedXVertexDrawingHistory : SolidTaperedDiamondVertexDrawingHistory
 {
     //*************************************************************************
-    //  Constructor: SolidTaperedSquareVertexDrawingHistory()
+    //  Constructor: SolidRoundedXVertexDrawingHistory()
     //
     /// <summary>
     /// Initializes a new instance of the <see
-    /// cref="SolidTaperedSquareVertexDrawingHistory" />
+    /// cref="SolidRoundedXVertexDrawingHistory" />
     /// class.
     /// </summary>
     ///
@@ -42,12 +42,12 @@ public class SolidTaperedSquareVertexDrawingHistory : SolidTaperedDiamondVertexD
     /// </param>
     ///
     /// <param name="halfWidth">
-    /// The half-width of the square that was drawn for <paramref
+    /// One half the width of the rounded X that was drawn for <paramref
     /// name="vertex" />.
     /// </param>
     //*************************************************************************
 
-    public SolidTaperedSquareVertexDrawingHistory
+    public SolidRoundedXVertexDrawingHistory
     (
         IVertex vertex,
         DrawingVisual drawingVisual,
@@ -79,7 +79,7 @@ public class SolidTaperedSquareVertexDrawingHistory : SolidTaperedDiamondVertexD
     public override Geometry
     GetBounds()
     {
-        return ( WpfPathGeometryUtil.GetTaperedSquare(
+        return ( WpfPathGeometryUtil.GetRoundedX(
             this.VertexLocation, m_dHalfWidth) );
     }
 }

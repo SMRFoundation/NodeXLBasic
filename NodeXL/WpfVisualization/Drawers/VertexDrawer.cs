@@ -797,17 +797,17 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
             oVertexBounds = WpfPathGeometryUtil.GetTaperedDiamond(
                 oVertexLocation, dRadius).Bounds;
         }
-        else if (eShape == VertexShape.SolidTaperedSquare)
+        else if (eShape == VertexShape.SolidRoundedX)
         {
-            // Note that the bounds of a tapered square can't be calculated
-            // using simple equations.  Instead, create the tapered square and
+            // Note that the bounds of a rounded X can't be calculated
+            // using simple equations.  Instead, create the rounded X and
             // let WPF compute the bounds.
             //
-            // There is some inefficiency here, because the tapered square
+            // There is some inefficiency here, because the rounded X
             // gets created again before it is drawn, in its possibly-moved
             // location.
 
-            oVertexBounds = WpfPathGeometryUtil.GetTaperedSquare(
+            oVertexBounds = WpfPathGeometryUtil.GetRoundedX(
                 oVertexLocation, dRadius).Bounds;
         }
         else
@@ -965,7 +965,7 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
                         oVertexLocation, dRadius);
 
                 // Note that as of August 2012, the tapered diamond shape is
-                // used only for collapsed D-parallel motifs.  Collapsed motifs
+                // used only for collapsed connector motifs.  Collapsed motifs
                 // have an outline, so draw an outline here.
 
                 oDrawingContext.DrawGeometry(GetBrush(oColor),
@@ -982,13 +982,13 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
 
                 break;
 
-            case VertexShape.SolidTaperedSquare:
+            case VertexShape.SolidRoundedX:
 
-                Geometry oTaperedSquare =
-                    WpfPathGeometryUtil.GetTaperedSquare(
+                Geometry oRoundedX =
+                    WpfPathGeometryUtil.GetRoundedX(
                         oVertexLocation, dRadius);
 
-                // Note that as of August 2012, the tapered square shape is
+                // Note that as of August 2012, the rounded X shape is
                 // used only for collapsed clique motifs.  Collapsed motifs
                 // have an outline, so draw an outline here.
 
@@ -998,10 +998,10 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
                         .GetCollapsedMotifOutlineColor(oColor.A),
                         DefaultPenThickness),
 
-                    oTaperedSquare);
+                    oRoundedX);
 
                 oVertexDrawingHistory =
-                    new SolidTaperedSquareVertexDrawingHistory(
+                    new SolidRoundedXVertexDrawingHistory(
                         oVertex, oDrawingVisual, bDrawAsSelected, dRadius);
 
                 break;
@@ -2309,11 +2309,11 @@ VertexShape
     SolidTaperedDiamond = 11,
 
     /// <summary>
-    /// The vertex is drawn as a solid square with edges that are tapered
-    /// inward.
+    /// The vertex is drawn as a solid rounded X with edges that are tapered
+    /// outward.
     /// </summary>
 
-    SolidTaperedSquare = 12,
+    SolidRoundedX = 12,
 
 
     // If a new shape is added, the following must be done:

@@ -239,7 +239,7 @@ public static class CollapsedGroupAttributeAdder
             if (
                 sType == CollapsedGroupAttributeValues.FanMotifType
                 ||
-                sType == CollapsedGroupAttributeValues.DParallelMotifType
+                sType == CollapsedGroupAttributeValues.DConnectorMotifType
                 ||
                 sType == CollapsedGroupAttributeValues.CliqueMotifType
                 )
@@ -250,7 +250,7 @@ public static class CollapsedGroupAttributeAdder
                     oReadWorkbookContext, oCollapsedGroupAttributes);
             }
 
-            if (sType == CollapsedGroupAttributeValues.DParallelMotifType)
+            if (sType == CollapsedGroupAttributeValues.DConnectorMotifType)
             {
                 Int32 iAnchorVertices;
 
@@ -258,13 +258,13 @@ public static class CollapsedGroupAttributeAdder
                     CollapsedGroupAttributeKeys.AnchorVertices,
                     out iAnchorVertices) )
                 {
-                    AddEdgeColorAttributesToDParallelMotif(oGroup, 
+                    AddEdgeColorAttributesToDConnectorMotif(oGroup, 
                         bEdgeColorColumnAutoFilled, oEdgeColorResults,
                         oEdgeColorDetails, oEdgeColorSourceDictionary,
                         oReadWorkbookContext, oCollapsedGroupAttributes,
                         iAnchorVertices);
 
-                    AddEdgeWidthAttributesToDParallelMotif(oGroup,
+                    AddEdgeWidthAttributesToDConnectorMotif(oGroup,
                         bEdgeWidthColumnAutoFilled, oEdgeWidthResults,
                         oEdgeWidthDetails, oEdgeWidthSourceDictionary,
                         oReadWorkbookContext, oCollapsedGroupAttributes,
@@ -281,7 +281,7 @@ public static class CollapsedGroupAttributeAdder
     //
     /// <summary>
     /// Adds a collapsed group attribute for vertex color to one fan,
-    /// D-parallel, or clique motif.
+    /// D-connector, or clique motif.
     /// </summary>
     ///
     /// <param name="oGroup">
@@ -382,10 +382,10 @@ public static class CollapsedGroupAttributeAdder
     }
 
     //*************************************************************************
-    //  Method: AddEdgeColorAttributesToDParallelMotif()
+    //  Method: AddEdgeColorAttributesToDConnectorMotif()
     //
     /// <summary>
-    /// Adds collapsed group attributes for edge colors to one D-parallel
+    /// Adds collapsed group attributes for edge colors to one D-connector
     /// motif.
     /// </summary>
     ///
@@ -431,12 +431,12 @@ public static class CollapsedGroupAttributeAdder
     /// This method adds <see
     /// cref="CollapsedGroupAttributeKeys.GetAnchorVertexEdgeColorKey" /> and
     /// <see cref="CollapsedGroupAttributeKeys.GetAnchorVertexEdgeColorKey" />
-    /// attributes to one D-parallel motif group.
+    /// attributes to one D-connector motif group.
     /// </remarks>
     //*************************************************************************
 
     private static void
-    AddEdgeColorAttributesToDParallelMotif
+    AddEdgeColorAttributesToDConnectorMotif
     (
         ExcelTemplateGroupInfo oGroup,
         Boolean bEdgeColorColumnAutoFilled,
@@ -455,7 +455,7 @@ public static class CollapsedGroupAttributeAdder
         Debug.Assert(iAnchorVertices >= 0);
 
         // If the edge color column was autofilled, get the average color for
-        // the edges incident to the D-parallel motif's first anchor, then its
+        // the edges incident to the D-connector motif's first anchor, then its
         // second anchor, and so on.  Otherwise, don't do anything.
 
         if (!bEdgeColorColumnAutoFilled)
@@ -496,10 +496,10 @@ public static class CollapsedGroupAttributeAdder
     }
 
     //*************************************************************************
-    //  Method: AddEdgeWidthAttributesToDParallelMotif()
+    //  Method: AddEdgeWidthAttributesToDConnectorMotif()
     //
     /// <summary>
-    /// Adds collapsed group attributes for edge widths to one D-parallel
+    /// Adds collapsed group attributes for edge widths to one D-connector
     /// motif.
     /// </summary>
     ///
@@ -545,12 +545,12 @@ public static class CollapsedGroupAttributeAdder
     /// This method adds <see
     /// cref="CollapsedGroupAttributeKeys.GetAnchorVertexEdgeWidthKey" /> and
     /// <see cref="CollapsedGroupAttributeKeys.GetAnchorVertexEdgeWidthKey" />
-    /// attributes to one D-parallel motif group.
+    /// attributes to one D-connector motif group.
     /// </remarks>
     //*************************************************************************
 
     private static void
-    AddEdgeWidthAttributesToDParallelMotif
+    AddEdgeWidthAttributesToDConnectorMotif
     (
         ExcelTemplateGroupInfo oGroup,
         Boolean bEdgeWidthColumnAutoFilled,
@@ -569,7 +569,7 @@ public static class CollapsedGroupAttributeAdder
         Debug.Assert(iAnchorVertices >= 0);
 
         // If the edge width column was autofilled, get the average width for
-        // the edges incident to the two-parallel motif's first anchor, then
+        // the edges incident to the two-connector motif's first anchor, then
         // its second anchor.  Otherwise, don't do anything.
 
         if (!bEdgeWidthColumnAutoFilled)
@@ -728,10 +728,10 @@ public static class CollapsedGroupAttributeAdder
 
         switch (sType)
         {
-            // Fan, Parallel, and Clique fall through as each includes the proper vertices
+            // Fan, Connector, and Clique fall through as each includes the proper vertices
             case CollapsedGroupAttributeValues.FanMotifType:
 
-            case CollapsedGroupAttributeValues.DParallelMotifType:
+            case CollapsedGroupAttributeValues.DConnectorMotifType:
 
             case CollapsedGroupAttributeValues.CliqueMotifType:
 
@@ -766,11 +766,11 @@ public static class CollapsedGroupAttributeAdder
     //  Method: GetRowIDsToAverageForEdges()
     //
     /// <summary>
-    /// Gets a collection of edge row IDs for edges in a D-parallel motif.
+    /// Gets a collection of edge row IDs for edges in a D-connector motif.
     /// </summary>
     ///
     /// <param name="oGroup">
-    /// Group that represents the D-parallel motif.
+    /// Group that represents the D-connector motif.
     /// </param>
     ///
     /// <param name="oCollapsedGroupAttributes">
@@ -784,7 +784,7 @@ public static class CollapsedGroupAttributeAdder
     ///
     /// <returns>
     /// A collection of row IDs, one for each of the edges incident to the
-    /// specified anchor vertex of a D-parallel motif.
+    /// specified anchor vertex of a D-connector motif.
     /// </returns>
     //*************************************************************************
 

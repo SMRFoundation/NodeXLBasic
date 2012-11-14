@@ -9,28 +9,28 @@ using System.Collections.Generic;
 namespace Smrf.NodeXL.UnitTests
 {
 //*****************************************************************************
-//  Class: DParallelMotifTest
+//  Class: DConnectorMotifTest
 //
 /// <summary>
 /// This is a Visual Studio test fixture for the <see
-/// cref="DParallelMotif" /> class.
+/// cref="DConnectorMotif" /> class.
 /// </summary>
 //*****************************************************************************
 
 [TestClassAttribute]
 
-public class DParallelMotifTest : Object
+public class DConnectorMotifTest : Object
 {
     //*************************************************************************
-    //  Constructor: DParallelMotifTest()
+    //  Constructor: DConnectorMotifTest()
     //
     /// <summary>
-    /// Initializes a new instance of the <see cref="DParallelMotifTest" />
+    /// Initializes a new instance of the <see cref="DConnectorMotifTest" />
     /// class.
     /// </summary>
     //*************************************************************************
 
-    public DParallelMotifTest()
+    public DConnectorMotifTest()
     {
         // (Do nothing.)
     }
@@ -84,22 +84,22 @@ public class DParallelMotifTest : Object
         IVertex oAnchorVertex2 = new Vertex();
         IVertex oAnchorVertex3 = new Vertex();
 
-        DParallelMotif o2ParallelMotif = new DParallelMotif(
+        DConnectorMotif o2ConnectorMotif = new DConnectorMotif(
             new List<IVertex>(){oAnchorVertex1, oAnchorVertex2});
 
-        Assert.AreEqual(oAnchorVertex1, o2ParallelMotif.AnchorVertices[0]);
-        Assert.AreEqual(oAnchorVertex2, o2ParallelMotif.AnchorVertices[1]);
+        Assert.AreEqual(oAnchorVertex1, o2ConnectorMotif.AnchorVertices[0]);
+        Assert.AreEqual(oAnchorVertex2, o2ConnectorMotif.AnchorVertices[1]);
 
-        DParallelMotif o3ParallelMotif = new DParallelMotif(
+        DConnectorMotif o3ConnectorMotif = new DConnectorMotif(
             new List<IVertex>(){oAnchorVertex1, oAnchorVertex2, oAnchorVertex3});
 
-        Assert.AreEqual(oAnchorVertex1, o3ParallelMotif.AnchorVertices[0]);
-        Assert.AreEqual(oAnchorVertex2, o3ParallelMotif.AnchorVertices[1]);
-        Assert.AreEqual(oAnchorVertex3, o3ParallelMotif.AnchorVertices[2]);
+        Assert.AreEqual(oAnchorVertex1, o3ConnectorMotif.AnchorVertices[0]);
+        Assert.AreEqual(oAnchorVertex2, o3ConnectorMotif.AnchorVertices[1]);
+        Assert.AreEqual(oAnchorVertex3, o3ConnectorMotif.AnchorVertices[2]);
 
-        Assert.AreEqual(0, o2ParallelMotif.SpanVertices.Count);
-        Assert.AreEqual(0, o3ParallelMotif.SpanVertices.Count);
-        Assert.AreEqual(1.0, o3ParallelMotif.SpanScale);
+        Assert.AreEqual(0, o2ConnectorMotif.SpanVertices.Count);
+        Assert.AreEqual(0, o3ConnectorMotif.SpanVertices.Count);
+        Assert.AreEqual(1.0, o3ConnectorMotif.SpanScale);
     }
 
     //*************************************************************************
@@ -118,18 +118,18 @@ public class DParallelMotifTest : Object
         IVertex oAnchorVertex1 = new Vertex();
         IVertex oAnchorVertex2 = new Vertex();
 
-        DParallelMotif oDParallelMotif = new DParallelMotif(
+        DConnectorMotif oDConnectorMotif = new DConnectorMotif(
             new List<IVertex>() { oAnchorVertex1, oAnchorVertex2 });
 
         IVertex oSpanVertex1 = new Vertex();
         IVertex oSpanVertex2 = new Vertex();
 
-        oDParallelMotif.SpanVertices.Add(oSpanVertex1);
-        oDParallelMotif.SpanVertices.Add(oSpanVertex2);
+        oDConnectorMotif.SpanVertices.Add(oSpanVertex1);
+        oDConnectorMotif.SpanVertices.Add(oSpanVertex2);
 
-        Assert.AreEqual(2, oDParallelMotif.SpanVertices.Count);
-        Assert.AreEqual( oSpanVertex1, oDParallelMotif.SpanVertices[0] );
-        Assert.AreEqual( oSpanVertex2, oDParallelMotif.SpanVertices[1] );
+        Assert.AreEqual(2, oDConnectorMotif.SpanVertices.Count);
+        Assert.AreEqual( oSpanVertex1, oDConnectorMotif.SpanVertices[0] );
+        Assert.AreEqual( oSpanVertex2, oDConnectorMotif.SpanVertices[1] );
     }
 
     //*************************************************************************
@@ -148,16 +148,16 @@ public class DParallelMotifTest : Object
         IVertex oAnchorVertex1 = new Vertex();
         IVertex oAnchorVertex2 = new Vertex();
 
-        DParallelMotif oDParallelMotif = new DParallelMotif(
+        DConnectorMotif oDConnectorMotif = new DConnectorMotif(
             new List<IVertex>() {oAnchorVertex1, oAnchorVertex2} );
 
         IVertex oSpanVertex1 = new Vertex();
         IVertex oSpanVertex2 = new Vertex();
 
-        oDParallelMotif.SpanVertices.Add(oSpanVertex1);
-        oDParallelMotif.SpanVertices.Add(oSpanVertex2);
+        oDConnectorMotif.SpanVertices.Add(oSpanVertex1);
+        oDConnectorMotif.SpanVertices.Add(oSpanVertex2);
 
-        IVertex[] aoVerticesInMotif = oDParallelMotif.VerticesInMotif;
+        IVertex[] aoVerticesInMotif = oDConnectorMotif.VerticesInMotif;
 
         // Note that the anchor vertices aren't actually a part of the motif.
 
@@ -191,21 +191,21 @@ public class DParallelMotifTest : Object
         oAnchorVertex1.Name = "Name1";
         oAnchorVertex2.Name = "Name2";
 
-        DParallelMotif oDParallelMotif = new DParallelMotif(
+        DConnectorMotif oDConnectorMotif = new DConnectorMotif(
             new List<IVertex>(){oAnchorVertex1, oAnchorVertex2} );
 
         IVertex oSpanVertex1 = new Vertex();
         IVertex oSpanVertex2 = new Vertex();
 
-        oDParallelMotif.SpanVertices.Add(oSpanVertex1);
-        oDParallelMotif.SpanVertices.Add(oSpanVertex2);
+        oDConnectorMotif.SpanVertices.Add(oSpanVertex1);
+        oDConnectorMotif.SpanVertices.Add(oSpanVertex2);
 
-        String sCollapsedAttributes = oDParallelMotif.CollapsedAttributes;
+        String sCollapsedAttributes = oDConnectorMotif.CollapsedAttributes;
 
         CollapsedGroupAttributes oCollapsedGroupAttributes =
             CollapsedGroupAttributes.FromString(sCollapsedAttributes);
 
-        Assert.AreEqual( CollapsedGroupAttributeValues.DParallelMotifType,
+        Assert.AreEqual( CollapsedGroupAttributeValues.DConnectorMotifType,
             oCollapsedGroupAttributes[CollapsedGroupAttributeKeys.Type] );
 
         Assert.AreEqual( "2", oCollapsedGroupAttributes[
@@ -251,23 +251,23 @@ public class DParallelMotifTest : Object
         IVertex oAnchorVertex1 = new Vertex();
         IVertex oAnchorVertex2 = new Vertex();
 
-        DParallelMotif oDParallelMotif = new DParallelMotif(
+        DConnectorMotif oDConnectorMotif = new DConnectorMotif(
             new List<IVertex>() {oAnchorVertex1, oAnchorVertex2} );
 
         IVertex oSpanVertex1 = new Vertex();
         IVertex oSpanVertex2 = new Vertex();
 
-        oDParallelMotif.SpanVertices.Add(oSpanVertex1);
-        oDParallelMotif.SpanVertices.Add(oSpanVertex2);
+        oDConnectorMotif.SpanVertices.Add(oSpanVertex1);
+        oDConnectorMotif.SpanVertices.Add(oSpanVertex2);
 
-        oDParallelMotif.SpanScale = 0.5;
+        oDConnectorMotif.SpanScale = 0.5;
 
-        String sCollapsedAttributes = oDParallelMotif.CollapsedAttributes;
+        String sCollapsedAttributes = oDConnectorMotif.CollapsedAttributes;
 
         CollapsedGroupAttributes oCollapsedGroupAttributes =
             CollapsedGroupAttributes.FromString(sCollapsedAttributes);
 
-        Assert.AreEqual( CollapsedGroupAttributeValues.DParallelMotifType,
+        Assert.AreEqual( CollapsedGroupAttributeValues.DConnectorMotifType,
             oCollapsedGroupAttributes[CollapsedGroupAttributeKeys.Type] );
 
         Assert.AreEqual( "2", oCollapsedGroupAttributes[

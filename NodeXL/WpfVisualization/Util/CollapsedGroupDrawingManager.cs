@@ -294,7 +294,7 @@ public class CollapsedGroupDrawingManager : VisualizationBase
 
                 default:
 
-                    // Do nothing.  This includes the D-parallel motif case,
+                    // Do nothing.  This includes the D-connector motif case,
                     // which requires no post-drawing action.
 
                     break;
@@ -483,9 +483,9 @@ public class CollapsedGroupDrawingManager : VisualizationBase
                 SetCollapsedFanMotifAttributes();
                 break;
 
-            case CollapsedGroupAttributeValues.DParallelMotifType:
+            case CollapsedGroupAttributeValues.DConnectorMotifType:
 
-                SetCollapsedDParallelMotifAttributes();
+                SetCollapsedDConnectorMotifAttributes();
                 break;
 
             case CollapsedGroupAttributeValues.CliqueMotifType:
@@ -526,10 +526,10 @@ public class CollapsedGroupDrawingManager : VisualizationBase
         Debug.Assert(oCollapsedVertices != null);
         Debug.Assert(oCollapsedVertices.Count > 0);
 
-        // Use a tapered square for the collapsed group vertex.
+        // Use a rounded X for the collapsed group vertex.
 
         m_oCollapsedGroupVertex.SetValue(ReservedMetadataKeys.PerVertexShape,
-            VertexShape.SolidTaperedSquare);
+            VertexShape.SolidRoundedX);
 
         // Use the color specified in the collapsed attributes.
 
@@ -640,16 +640,16 @@ public class CollapsedGroupDrawingManager : VisualizationBase
     }
 
     //*************************************************************************
-    //  Method: SetCollapsedDParallelMotifAttributes()
+    //  Method: SetCollapsedDConnectorMotifAttributes()
     //
     /// <summary>
-    /// Sets attributes on the vertex that represents a collapsed D-parallel
+    /// Sets attributes on the vertex that represents a collapsed D-connector
     /// motif
     /// </summary>
     //*************************************************************************
 
     protected void
-    SetCollapsedDParallelMotifAttributes()
+    SetCollapsedDConnectorMotifAttributes()
     {
         Debug.Assert(m_oCollapsedGroup != null);
         Debug.Assert(m_oCollapsedGroupVertex != null);
@@ -698,8 +698,8 @@ public class CollapsedGroupDrawingManager : VisualizationBase
         Single fRadius = MathUtil.TransformValueToRange(
             (Single)dSpanScale,
             0, 1.0F,
-            (Single)MinimumDParallelRadius,
-            (Single)MaximumDParallelRadius
+            (Single)MinimumDConnectorRadius,
+            (Single)MaximumDConnectorRadius
             );
 
         m_oCollapsedGroupVertex.SetValue(
@@ -707,18 +707,18 @@ public class CollapsedGroupDrawingManager : VisualizationBase
 
         m_oCollapsedGroupVertex.SetValue(
             ReservedMetadataKeys.PerVertexToolTip,
-            GetCollapsedDParallelMotifToolTip(iAnchorVertices, iSpanVertices)
+            GetCollapsedDConnectorMotifToolTip(iAnchorVertices, iSpanVertices)
             );
 
-        SetCollapsedDParallelMotifEdgeAttributes(iAnchorVertices);
+        SetCollapsedDConnectorMotifEdgeAttributes(iAnchorVertices);
     }
 
     //*************************************************************************
-    //  Method: SetCollapsedDParallelMotifEdgeAttributes()
+    //  Method: SetCollapsedDConnectorMotifEdgeAttributes()
     //
     /// <summary>
     /// Sets attributes on the edges incident to the vertex that represents a
-    /// collapsed D-parallel motif
+    /// collapsed D-connector motif
     /// </summary>
     ///
     /// <param name="iAnchorVertices">
@@ -727,7 +727,7 @@ public class CollapsedGroupDrawingManager : VisualizationBase
     //*************************************************************************
 
     protected void
-    SetCollapsedDParallelMotifEdgeAttributes
+    SetCollapsedDConnectorMotifEdgeAttributes
     (
         Int32 iAnchorVertices
     )
@@ -745,7 +745,7 @@ public class CollapsedGroupDrawingManager : VisualizationBase
             GetAnchorVertexIndexes(iAnchorVertices);
 
         // Each of the collapsed group vertex's incident edges is connected to
-        // one of the D-parallel motif's anchor vertices.
+        // one of the D-connector motif's anchor vertices.
 
         foreach (IEdge oIncidentEdge in m_oCollapsedGroupVertex.IncidentEdges)
         {
@@ -776,7 +776,7 @@ public class CollapsedGroupDrawingManager : VisualizationBase
 
                     out oAnchorVertexEdgeColor) )
                 {
-                    SetCollapsedDParallelMotifEdgeColor(oIncidentEdge,
+                    SetCollapsedDConnectorMotifEdgeColor(oIncidentEdge,
                         oAnchorVertexEdgeColor);
                 }
 
@@ -791,7 +791,7 @@ public class CollapsedGroupDrawingManager : VisualizationBase
 
                     out dAnchorVertexEdgeWidth) )
                 {
-                    SetCollapsedDParallelMotifEdgeWidth(oIncidentEdge,
+                    SetCollapsedDConnectorMotifEdgeWidth(oIncidentEdge,
                         dAnchorVertexEdgeWidth);
                 }
             }
@@ -880,11 +880,11 @@ public class CollapsedGroupDrawingManager : VisualizationBase
     }
 
     //*************************************************************************
-    //  Method: SetCollapsedDParallelMotifEdgeWidth()
+    //  Method: SetCollapsedDConnectorMotifEdgeWidth()
     //
     /// <summary>
     /// Sets the width attribute on an edge incident to the vertex that
-    /// represents a collapsed D-parallel motif.
+    /// represents a collapsed D-connector motif.
     /// </summary>
     ///
     /// <param name="oEdge">
@@ -897,7 +897,7 @@ public class CollapsedGroupDrawingManager : VisualizationBase
     //*************************************************************************
 
     protected void
-    SetCollapsedDParallelMotifEdgeWidth
+    SetCollapsedDConnectorMotifEdgeWidth
     (
         IEdge oEdge,
         Double dWidth
@@ -924,11 +924,11 @@ public class CollapsedGroupDrawingManager : VisualizationBase
     }
 
     //*************************************************************************
-    //  Method: SetCollapsedDParallelMotifEdgeColor()
+    //  Method: SetCollapsedDConnectorMotifEdgeColor()
     //
     /// <summary>
     /// Sets the color attribute on an edge incident to the vertex that
-    /// represents a collapsed D-parallel motif.
+    /// represents a collapsed D-connector motif.
     /// </summary>
     ///
     /// <param name="oEdge">
@@ -941,7 +941,7 @@ public class CollapsedGroupDrawingManager : VisualizationBase
     //*************************************************************************
 
     protected void
-    SetCollapsedDParallelMotifEdgeColor
+    SetCollapsedDConnectorMotifEdgeColor
     (
         IEdge oEdge,
         System.Drawing.Color oColor
@@ -967,11 +967,11 @@ public class CollapsedGroupDrawingManager : VisualizationBase
     }
 
     //*************************************************************************
-    //  Method: GetCollapsedDParallelMotifToolTip()
+    //  Method: GetCollapsedDConnectorMotifToolTip()
     //
     /// <summary>
     /// Gets the tooltip to use on the vertex that represents a collapsed
-    /// D-parallel motif
+    /// D-connector motif
     /// </summary>
     ///
     /// <param name="iAnchorVertices">
@@ -988,7 +988,7 @@ public class CollapsedGroupDrawingManager : VisualizationBase
     //*************************************************************************
 
     protected String
-    GetCollapsedDParallelMotifToolTip
+    GetCollapsedDConnectorMotifToolTip
     (
         Int32 iAnchorVertices,
         Int32 iSpanVertices
@@ -1000,22 +1000,31 @@ public class CollapsedGroupDrawingManager : VisualizationBase
 
         // Sample tooltip:
         //
-        // D-parallel motif: 5 span vertices anchored by "AnchorVertex1Name",
-        // "AnchorVertex2Name", "AnchorVertex3Name"
+        // 4-connector motif: 5 span vertices anchored by "AnchorVertex1Name",
+        // "AnchorVertex2Name", "AnchorVertex3Name", ...
 
         StringBuilder oToolTip = new StringBuilder();
 
         oToolTip.AppendFormat(
-            "D-parallel motif: {0} span vertices anchored by "
-            ,
+            "{0}-connector motif: {1} span vertices anchored by ",
+            iAnchorVertices,
             iSpanVertices
             );
 
         Boolean bAppendComma = false;
 
+        int addedVertices = 0;
         foreach ( String sAnchorVertexName in
             GetAnchorVertexNames(iAnchorVertices) )
         {
+            // Only add three anchor verticies for a connector to prevent the name from growing too large
+            addedVertices++;
+            if (addedVertices > 3)
+            {
+                oToolTip.Append(", ...");
+                break;
+            }
+
             oToolTip.AppendFormat(
                 "{0}\"{1}\""
                 ,
@@ -1057,12 +1066,12 @@ public class CollapsedGroupDrawingManager : VisualizationBase
 
         // Sample tooltip:
         //
-        // Clique motif: 5 member vertices
+        // 5-clique motif: 5 member vertices
 
         StringBuilder oToolTip = new StringBuilder();
 
         oToolTip.AppendFormat(
-            "Clique motif: {0} member vertices"
+            "{0}-clique motif: {0} member vertices"
             ,
             iCliqueVertices
             );
@@ -1474,21 +1483,31 @@ public class CollapsedGroupDrawingManager : VisualizationBase
 
     protected Double MaximumFanMotifAngleRadians = 120.0 * Math.PI / 180.0;
 
-    /// Minimum radius of a D-parallel motif's span, in WPF units.
+    /// Minimum radius of a D-connector motif's span, in WPF units.
 
-    protected Double MinimumDParallelRadius = 30.0;
+    protected Double MinimumDConnectorRadius = 30.0;
 
-    /// Maximum radius of a D-parallel motif's span, in WPF units.
+    /// Maximum radius of a D-connector motif's span, in WPF units.
 
-    protected Double MaximumDParallelRadius = 60.0;
+    protected Double MaximumDConnectorRadius = 60.0;
 
-    /// Minimum radius of a clique motif's tapered square, in WPF units.
+    /// Minimum radius of a clique motif's rounded X, in WPF units.
+    /// Scaling by Math.Sqrt(2) used to ensure the clique diagonal radius is
+    /// the same as the D-connector motif span radius. However, the area of the
+    /// clique rounded X is approximtely 26% larger due to convex vs. concave 
+    /// curves. To make areas equal multiply radius by approximately 
+    /// 0.6296404 instead.
 
-    protected Double MinimumCliqueRadius = 30.0;
+    protected Double MinimumCliqueRadius = 30.0 / Math.Sqrt(2);
 
-    /// Maximum radius of a clique motif's tapered square, in WPF units.
-
-    protected Double MaximumCliqueRadius = 60.0;
+    /// Maximum radius of a clique motif's rounded X, in WPF units.
+    /// Scaling by Math.Sqrt(2) used to ensure the clique diagonal radius is
+    /// the same as the D-connector motif span radius. However, the area of the
+    /// clique rounded X is approximtely 26% larger due to convex vs. concave 
+    /// curves. To make areas equal multiply radius by approximately 
+    /// 0.6296404 instead.
+    
+    protected Double MaximumCliqueRadius = 60.0 / Math.Sqrt(2);
 
 
     //*************************************************************************

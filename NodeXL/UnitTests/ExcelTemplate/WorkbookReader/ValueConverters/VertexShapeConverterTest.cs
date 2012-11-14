@@ -474,7 +474,7 @@ public class VertexShapeConverterTest : Object
     VerifyUpToDate()
     {
         // Note: As of October 2012, the VertexShape.SolidTaperedDiamond and
-        // SolidTaperedSquare shapes are used only for collapsed motifs and
+        // SolidRoundedX shapes are used only for collapsed motifs and
         // cannot be selected as a vertex shape in the workbook.  Therefore,
         // there are 13 shapes, but only 11 of them are tested by this class.
 

@@ -43,12 +43,12 @@ public class MotifUserSettings : NodeXLApplicationSettingsBase
     /// </summary>
     ///
     /// <value>
-    /// The motifs to calculate.  The default value is Fan|DParallel|Clique.
+    /// The motifs to calculate.  The default value is Fan|DConnector|Clique.
     /// </value>
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("Fan, DParallel, Clique") ]
+    [ DefaultSettingValueAttribute("Fan, DConnector, Clique") ]
 
     public Motifs
     MotifsToCalculate
@@ -69,11 +69,11 @@ public class MotifUserSettings : NodeXLApplicationSettingsBase
     }
 
     //*************************************************************************
-    //  Property: DParallelMinimumAnchorVertices
+    //  Property: DConnectorMinimumAnchorVertices
     //
     /// <summary>
     /// Gets or sets the minimum number of anchor vertices when grouping the
-    /// graph's vertices by D-parallel motifs.
+    /// graph's vertices by D-connector motifs.
     /// </summary>
     ///
     /// <value>
@@ -85,29 +85,29 @@ public class MotifUserSettings : NodeXLApplicationSettingsBase
     [ DefaultSettingValueAttribute("2") ]
 
     public Int32
-    DParallelMinimumAnchorVertices
+    DConnectorMinimumAnchorVertices
     {
         get
         {
             AssertValid();
 
-            return ( (Int32)this[DParallelMinimumAnchorVerticesKey] );
+            return ( (Int32)this[DConnectorMinimumAnchorVerticesKey] );
         }
 
         set
         {
-            this[DParallelMinimumAnchorVerticesKey] = value;
+            this[DConnectorMinimumAnchorVerticesKey] = value;
 
             AssertValid();
         }
     }
 
     //*************************************************************************
-    //  Property: DParallelMaximumAnchorVertices
+    //  Property: DConnectorMaximumAnchorVertices
     //
     /// <summary>
     /// Gets or sets the maximum number of anchor vertices when grouping the
-    /// graph's vertices by D-parallel motifs.
+    /// graph's vertices by D-connector motifs.
     /// </summary>
     ///
     /// <value>
@@ -119,18 +119,18 @@ public class MotifUserSettings : NodeXLApplicationSettingsBase
     [ DefaultSettingValueAttribute("9999") ]
 
     public Int32
-    DParallelMaximumAnchorVertices
+    DConnectorMaximumAnchorVertices
     {
         get
         {
             AssertValid();
 
-            return ( (Int32)this[DParallelMaximumAnchorVerticesKey] );
+            return ( (Int32)this[DConnectorMaximumAnchorVerticesKey] );
         }
 
         set
         {
-            this[DParallelMaximumAnchorVerticesKey] = value;
+            this[DConnectorMaximumAnchorVerticesKey] = value;
 
             AssertValid();
         }
@@ -233,17 +233,17 @@ public class MotifUserSettings : NodeXLApplicationSettingsBase
     protected const String MotifsToCalculateKey =
         "MotifsToCalculate";
 
-    /// Name of the settings key for the DParallelMinimumAnchorVertices
+    /// Name of the settings key for the DConnectorMinimumAnchorVertices
     /// property.
 
-    protected const String DParallelMinimumAnchorVerticesKey =
-        "DParallelMinimumAnchorVertices";
+    protected const String DConnectorMinimumAnchorVerticesKey =
+        "DConnectorMinimumAnchorVertices";
 
-    /// Name of the settings key for the DParallelMaximumAnchorVertices
+    /// Name of the settings key for the DConnectorMaximumAnchorVertices
     /// property.
 
-    protected const String DParallelMaximumAnchorVerticesKey =
-        "DParallelMaximumAnchorVertices";
+    protected const String DConnectorMaximumAnchorVerticesKey =
+        "DConnectorMaximumAnchorVertices";
 
     /// Name of the settings key for the CliqueMinimumMemberVertices
     /// property.

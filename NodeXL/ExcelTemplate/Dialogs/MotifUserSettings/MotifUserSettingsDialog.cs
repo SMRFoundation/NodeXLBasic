@@ -94,21 +94,21 @@ public partial class MotifUserSettingsDialog : ExcelTemplateForm
                 eMotifsToCalculate |= Motifs.Fan;
             }
 
-            if (chkDParallel.Checked)
+            if (chkDConnector.Checked)
             {
-                eMotifsToCalculate |= Motifs.DParallel;
+                eMotifsToCalculate |= Motifs.DConnector;
 
-                Int32 iDParallelMinimumAnchorVertices,
-                    iDParallelMaximumAnchorVertices;
+                Int32 iDConnectorMinimumAnchorVertices,
+                    iDConnectorMaximumAnchorVertices;
 
                 if (
-                    !ValidateNumericUpDown(nudDParallelMinimumAnchorVertices,
+                    !ValidateNumericUpDown(nudDConnectorMinimumAnchorVertices,
                         "the minimum number of anchor vertices",
-                        out iDParallelMinimumAnchorVertices)
+                        out iDConnectorMinimumAnchorVertices)
                     ||
-                    !ValidateNumericUpDown(nudDParallelMaximumAnchorVertices,
+                    !ValidateNumericUpDown(nudDConnectorMaximumAnchorVertices,
                         "the maximum number of anchor vertices",
-                        out iDParallelMaximumAnchorVertices)
+                        out iDConnectorMaximumAnchorVertices)
                     )
                 {
                     return (false);
@@ -118,13 +118,13 @@ public partial class MotifUserSettingsDialog : ExcelTemplateForm
                     // Don't require the minimum and maximum to be in the
                     // typical order.
 
-                    m_oMotifUserSettings.DParallelMinimumAnchorVertices =
-                        Math.Min(iDParallelMinimumAnchorVertices,
-                            iDParallelMaximumAnchorVertices);
+                    m_oMotifUserSettings.DConnectorMinimumAnchorVertices =
+                        Math.Min(iDConnectorMinimumAnchorVertices,
+                            iDConnectorMaximumAnchorVertices);
 
-                    m_oMotifUserSettings.DParallelMaximumAnchorVertices =
-                        Math.Max(iDParallelMinimumAnchorVertices,
-                            iDParallelMaximumAnchorVertices);
+                    m_oMotifUserSettings.DConnectorMaximumAnchorVertices =
+                        Math.Max(iDConnectorMinimumAnchorVertices,
+                            iDConnectorMaximumAnchorVertices);
                 }
             }
 
@@ -167,14 +167,14 @@ public partial class MotifUserSettingsDialog : ExcelTemplateForm
         else
         {
             chkFan.Checked = ShouldGroupByMotif(Motifs.Fan);
-            chkDParallel.Checked = ShouldGroupByMotif(Motifs.DParallel);
+            chkDConnector.Checked = ShouldGroupByMotif(Motifs.DConnector);
             chkClique.Checked = ShouldGroupByMotif(Motifs.Clique);
 
-            nudDParallelMinimumAnchorVertices.Value =
-                m_oMotifUserSettings.DParallelMinimumAnchorVertices;
+            nudDConnectorMinimumAnchorVertices.Value =
+                m_oMotifUserSettings.DConnectorMinimumAnchorVertices;
 
-            nudDParallelMaximumAnchorVertices.Value =
-                m_oMotifUserSettings.DParallelMaximumAnchorVertices;
+            nudDConnectorMaximumAnchorVertices.Value =
+                m_oMotifUserSettings.DConnectorMaximumAnchorVertices;
 
             nudCliqueMinimumMemberVertices.Value =
                 m_oMotifUserSettings.CliqueMinimumMemberVertices;
@@ -227,9 +227,9 @@ public partial class MotifUserSettingsDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        EnableControls(chkDParallel.Checked,
-            nudDParallelMinimumAnchorVertices,
-            nudDParallelMaximumAnchorVertices
+        EnableControls(chkDConnector.Checked,
+            nudDConnectorMinimumAnchorVertices,
+            nudDConnectorMaximumAnchorVertices
             );
 
         EnableControls(chkClique.Checked,

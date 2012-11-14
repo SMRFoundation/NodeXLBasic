@@ -33,12 +33,12 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.chkFan = new System.Windows.Forms.CheckBox();
-            this.chkDParallel = new System.Windows.Forms.CheckBox();
+            this.chkDConnector = new System.Windows.Forms.CheckBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.nudDParallelMinimumAnchorVertices = new System.Windows.Forms.NumericUpDown();
+            this.nudDConnectorMinimumAnchorVertices = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
-            this.nudDParallelMaximumAnchorVertices = new System.Windows.Forms.NumericUpDown();
+            this.nudDConnectorMaximumAnchorVertices = new System.Windows.Forms.NumericUpDown();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.label3 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -54,8 +54,8 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudDParallelMinimumAnchorVertices)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudDParallelMaximumAnchorVertices)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDConnectorMinimumAnchorVertices)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDConnectorMaximumAnchorVertices)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -96,16 +96,16 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.chkFan.Text = "Group by &fan motifs";
             this.chkFan.UseVisualStyleBackColor = true;
             // 
-            // chkDParallel
+            // chkDConnector
             // 
-            this.chkDParallel.AutoSize = true;
-            this.chkDParallel.Location = new System.Drawing.Point(198, 25);
-            this.chkDParallel.Name = "chkDParallel";
-            this.chkDParallel.Size = new System.Drawing.Size(238, 17);
-            this.chkDParallel.TabIndex = 0;
-            this.chkDParallel.Text = "Group by &D-parallel motifs that have between";
-            this.chkDParallel.UseVisualStyleBackColor = true;
-            this.chkDParallel.CheckedChanged += new System.EventHandler(this.OnEventThatRequiresControlEnabling);
+            this.chkDConnector.AutoSize = true;
+            this.chkDConnector.Location = new System.Drawing.Point(198, 25);
+            this.chkDConnector.Name = "chkDConnector";
+            this.chkDConnector.Size = new System.Drawing.Size(238, 17);
+            this.chkDConnector.TabIndex = 0;
+            this.chkDConnector.Text = "Group by &D-connector motifs that have between";
+            this.chkDConnector.UseVisualStyleBackColor = true;
+            this.chkDConnector.CheckedChanged += new System.EventHandler(this.OnEventThatRequiresControlEnabling);
             // 
             // pictureBox1
             // 
@@ -125,24 +125,24 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.pictureBox2.TabIndex = 7;
             this.pictureBox2.TabStop = false;
             // 
-            // nudDParallelMinimumAnchorVertices
+            // nudDConnectorMinimumAnchorVertices
             // 
-            this.nudDParallelMinimumAnchorVertices.Location = new System.Drawing.Point(3, 3);
-            this.nudDParallelMinimumAnchorVertices.Maximum = new decimal(new int[] {
+            this.nudDConnectorMinimumAnchorVertices.Location = new System.Drawing.Point(3, 3);
+            this.nudDConnectorMinimumAnchorVertices.Maximum = new decimal(new int[] {
             9999,
             0,
             0,
             0});
-            this.nudDParallelMinimumAnchorVertices.Minimum = new decimal(new int[] {
+            this.nudDConnectorMinimumAnchorVertices.Minimum = new decimal(new int[] {
             2,
             0,
             0,
             0});
-            this.nudDParallelMinimumAnchorVertices.Name = "nudDParallelMinimumAnchorVertices";
-            this.nudDParallelMinimumAnchorVertices.Size = new System.Drawing.Size(52, 20);
-            this.nudDParallelMinimumAnchorVertices.TabIndex = 0;
-            this.nudDParallelMinimumAnchorVertices.ThousandsSeparator = true;
-            this.nudDParallelMinimumAnchorVertices.Value = new decimal(new int[] {
+            this.nudDConnectorMinimumAnchorVertices.Name = "nudDConnectorMinimumAnchorVertices";
+            this.nudDConnectorMinimumAnchorVertices.Size = new System.Drawing.Size(52, 20);
+            this.nudDConnectorMinimumAnchorVertices.TabIndex = 0;
+            this.nudDConnectorMinimumAnchorVertices.ThousandsSeparator = true;
+            this.nudDConnectorMinimumAnchorVertices.Value = new decimal(new int[] {
             2,
             0,
             0,
@@ -158,24 +158,24 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.label2.TabIndex = 1;
             this.label2.Text = "and";
             // 
-            // nudDParallelMaximumAnchorVertices
+            // nudDConnectorMaximumAnchorVertices
             // 
-            this.nudDParallelMaximumAnchorVertices.Location = new System.Drawing.Point(92, 3);
-            this.nudDParallelMaximumAnchorVertices.Maximum = new decimal(new int[] {
+            this.nudDConnectorMaximumAnchorVertices.Location = new System.Drawing.Point(92, 3);
+            this.nudDConnectorMaximumAnchorVertices.Maximum = new decimal(new int[] {
             9999,
             0,
             0,
             0});
-            this.nudDParallelMaximumAnchorVertices.Minimum = new decimal(new int[] {
+            this.nudDConnectorMaximumAnchorVertices.Minimum = new decimal(new int[] {
             2,
             0,
             0,
             0});
-            this.nudDParallelMaximumAnchorVertices.Name = "nudDParallelMaximumAnchorVertices";
-            this.nudDParallelMaximumAnchorVertices.Size = new System.Drawing.Size(52, 20);
-            this.nudDParallelMaximumAnchorVertices.TabIndex = 2;
-            this.nudDParallelMaximumAnchorVertices.ThousandsSeparator = true;
-            this.nudDParallelMaximumAnchorVertices.Value = new decimal(new int[] {
+            this.nudDConnectorMaximumAnchorVertices.Name = "nudDConnectorMaximumAnchorVertices";
+            this.nudDConnectorMaximumAnchorVertices.Size = new System.Drawing.Size(52, 20);
+            this.nudDConnectorMaximumAnchorVertices.TabIndex = 2;
+            this.nudDConnectorMaximumAnchorVertices.ThousandsSeparator = true;
+            this.nudDConnectorMaximumAnchorVertices.Value = new decimal(new int[] {
             9999,
             0,
             0,
@@ -183,9 +183,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             // 
             // flowLayoutPanel1
             // 
-            this.flowLayoutPanel1.Controls.Add(this.nudDParallelMinimumAnchorVertices);
+            this.flowLayoutPanel1.Controls.Add(this.nudDConnectorMinimumAnchorVertices);
             this.flowLayoutPanel1.Controls.Add(this.label2);
-            this.flowLayoutPanel1.Controls.Add(this.nudDParallelMaximumAnchorVertices);
+            this.flowLayoutPanel1.Controls.Add(this.nudDConnectorMaximumAnchorVertices);
             this.flowLayoutPanel1.Controls.Add(this.label3);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(215, 46);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
@@ -215,7 +215,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             // 
             this.groupBox1.Controls.Add(this.pictureBox2);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.chkDParallel);
+            this.groupBox1.Controls.Add(this.chkDConnector);
             this.groupBox1.Controls.Add(this.flowLayoutPanel1);
             this.groupBox1.Location = new System.Drawing.Point(12, 129);
             this.groupBox1.Name = "groupBox1";
@@ -361,8 +361,8 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.Text = "Group by Motif";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudDParallelMinimumAnchorVertices)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudDParallelMaximumAnchorVertices)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDConnectorMinimumAnchorVertices)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudDConnectorMaximumAnchorVertices)).EndInit();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -385,12 +385,12 @@ namespace Smrf.NodeXL.ExcelTemplate
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.CheckBox chkFan;
-        private System.Windows.Forms.CheckBox chkDParallel;
+        private System.Windows.Forms.CheckBox chkDConnector;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.NumericUpDown nudDParallelMinimumAnchorVertices;
+        private System.Windows.Forms.NumericUpDown nudDConnectorMinimumAnchorVertices;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.NumericUpDown nudDParallelMaximumAnchorVertices;
+        private System.Windows.Forms.NumericUpDown nudDConnectorMaximumAnchorVertices;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label1;

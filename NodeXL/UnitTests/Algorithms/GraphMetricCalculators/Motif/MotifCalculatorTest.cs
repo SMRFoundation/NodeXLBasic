@@ -95,7 +95,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.Fan | Motifs.DParallel | Motifs.Clique, 2, 2, 4, 4, null,
+            m_oGraph, Motifs.Fan | Motifs.DConnector | Motifs.Clique, 2, 2, 4, 4, null,
             out oMotifs) );
 
         Assert.AreEqual(0, oMotifs.Count);
@@ -138,7 +138,7 @@ public class MotifCalculatorTest : Object
         m_oEdges.Add(oVertexC, oVertexF);
         m_oEdges.Add(oVertexF, oVertexG);
 
-        // Fan.  Note the parallel edges in this one.
+        // Fan.  Note the connector edges in this one.
 
         m_oEdges.Add(oVertexH, oVertexI);
         m_oEdges.Add(oVertexH, oVertexI);
@@ -218,7 +218,7 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs4()
     {
-        // Simple two-parallel motifs.
+        // Simple two-connector motifs.
 
         IVertex oVertexA = m_oVertices.Add();
         IVertex oVertexB = m_oVertices.Add();
@@ -233,19 +233,19 @@ public class MotifCalculatorTest : Object
         IVertex oVertexK = m_oVertices.Add();
         IVertex oVertexL = m_oVertices.Add();
 
-        // Not a two-parallel.
+        // Not a two-connector.
 
         m_oEdges.Add(oVertexA, oVertexB);
         m_oEdges.Add(oVertexA, oVertexC);
 
-        // Two-parallel.
+        // Two-connector.
 
         m_oEdges.Add(oVertexD, oVertexF);
         m_oEdges.Add(oVertexD, oVertexG);
         m_oEdges.Add(oVertexE, oVertexF);
         m_oEdges.Add(oVertexE, oVertexG);
 
-        // Two-parallel.
+        // Two-connector.
 
         m_oEdges.Add(oVertexH, oVertexK);
         m_oEdges.Add(oVertexH, oVertexL);
@@ -257,19 +257,19 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, 2, 4, 4, null, out oMotifs));
+            m_oGraph, Motifs.DConnector, 2, 2, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(2, oMotifs.Count);
 
         foreach (Motif oMotif in oMotifs)
         {
-            Assert.IsTrue(oMotif is DParallelMotif);
+            Assert.IsTrue(oMotif is DConnectorMotif);
         }
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){oVertexF, oVertexG},
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){oVertexF, oVertexG},
             0.0, oVertexD, oVertexE);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){oVertexK, oVertexL},
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){oVertexK, oVertexL},
             1.0, oVertexH, oVertexI, oVertexJ);
     }
 
@@ -286,7 +286,7 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs5()
     {
-        // Simple two- and three-parallel motifs.
+        // Simple two- and three-connector motifs.
 
         IVertex oVertexA = m_oVertices.Add();
         oVertexA.Name = "A";
@@ -330,19 +330,19 @@ public class MotifCalculatorTest : Object
         IVertex oVertexS = m_oVertices.Add();
         oVertexS.Name = "S";
 
-        // Not a 2-parallel B-A-C
+        // Not a 2-connector B-A-C
 
         m_oEdges.Add(oVertexA, oVertexB);
         m_oEdges.Add(oVertexA, oVertexC);
 
-        // 2-parallel (F,G)<D,E> or (D,E)<F,G> depending on order of processing
+        // 2-connector (F,G)<D,E> or (D,E)<F,G> depending on order of processing
 
         m_oEdges.Add(oVertexD, oVertexF);
         m_oEdges.Add(oVertexD, oVertexG);
         m_oEdges.Add(oVertexE, oVertexF);
         m_oEdges.Add(oVertexE, oVertexG);
 
-        // 2-parallel (K,L)<H,I,J>
+        // 2-connector (K,L)<H,I,J>
 
         m_oEdges.Add(oVertexH, oVertexK);
         m_oEdges.Add(oVertexH, oVertexL);
@@ -351,7 +351,7 @@ public class MotifCalculatorTest : Object
         m_oEdges.Add(oVertexJ, oVertexK);
         m_oEdges.Add(oVertexJ, oVertexL);
 
-        // 3-Parallel (O,M,N)<P,Q,R,S>
+        // 3-connector (O,M,N)<P,Q,R,S>
 
         m_oEdges.Add(oVertexP, oVertexM);
         m_oEdges.Add(oVertexP, oVertexN);
@@ -369,22 +369,22 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
+            m_oGraph, Motifs.DConnector, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(3, oMotifs.Count);
 
         foreach (Motif oMotif in oMotifs)
         {
-            Assert.IsTrue(oMotif is DParallelMotif);
+            Assert.IsTrue(oMotif is DConnectorMotif);
         }
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){oVertexF, oVertexG}, 0.0,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){oVertexF, oVertexG}, 0.0,
             oVertexD, oVertexE);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){oVertexK, oVertexL}, 0.5,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){oVertexK, oVertexL}, 0.5,
             oVertexH, oVertexI, oVertexJ);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){oVertexM, oVertexN, oVertexO}, 1.0,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){oVertexM, oVertexN, oVertexO}, 1.0,
             oVertexP, oVertexQ, oVertexR, oVertexS);
     }
 
@@ -401,7 +401,7 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs6()
     {
-        // Two-parallel motifs with another vertex off of an anchor vertex.
+        // Two-connector motifs with another vertex off of an anchor vertex.
 
         IVertex oVertexA = m_oVertices.Add();
         IVertex oVertexB = m_oVertices.Add();
@@ -419,16 +419,16 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, 2, 4, 4, null, out oMotifs));
+            m_oGraph, Motifs.DConnector, 2, 2, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(1, oMotifs.Count);
 
         foreach (Motif oMotif in oMotifs)
         {
-            Assert.IsTrue(oMotif is DParallelMotif);
+            Assert.IsTrue(oMotif is DConnectorMotif);
         }
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){oVertexA, oVertexB},
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){oVertexA, oVertexB},
             0.5, oVertexC, oVertexD);
     }
 
@@ -445,7 +445,7 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs7()
     {
-        // 2-parallel motif with another vertex off of an anchor vertex (A,B)<C,D> + A-X
+        // 2-connector motif with another vertex off of an anchor vertex (A,B)<C,D> + A-X
 
         IVertex oVertexA = m_oVertices.Add();
         oVertexA.Name = "A";
@@ -466,7 +466,7 @@ public class MotifCalculatorTest : Object
 
         m_oEdges.Add(oVertexA, oVertexX);
 
-        // 3-Parallel motif with another vertex off of an anchor vertex (O,M,N)<P,Q,R,S> + O-Y
+        // 3-connector motif with another vertex off of an anchor vertex (O,M,N)<P,Q,R,S> + O-Y
 
         IVertex oVertexM = m_oVertices.Add();
         oVertexM.Name = "M";
@@ -504,19 +504,19 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, 4, 4, Int32.MaxValue, null, out oMotifs));
+            m_oGraph, Motifs.DConnector, 2, 4, 4, Int32.MaxValue, null, out oMotifs));
 
         Assert.AreEqual(2, oMotifs.Count);
 
         foreach (Motif oMotif in oMotifs)
         {
-            Assert.IsTrue(oMotif is DParallelMotif);
+            Assert.IsTrue(oMotif is DConnectorMotif);
         }
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){oVertexA, oVertexB}, 0.0,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){oVertexA, oVertexB}, 0.0,
             oVertexC, oVertexD);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>() { oVertexM, oVertexN, oVertexO }, 1.0,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>() { oVertexM, oVertexN, oVertexO }, 1.0,
             oVertexP, oVertexQ, oVertexR, oVertexS);
     }
 
@@ -533,7 +533,7 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs8()
     {
-        // Two-parallel motifs with another vertex off of a potential span
+        // Two-connector motifs with another vertex off of a potential span
         // vertex, which prevents it from being part of the motif.
 
         IVertex oVertexA = m_oVertices.Add();
@@ -555,16 +555,16 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, 2, 4, 4, null, out oMotifs));
+            m_oGraph, Motifs.DConnector, 2, 2, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(1, oMotifs.Count);
 
         foreach (Motif oMotif in oMotifs)
         {
-            Assert.IsTrue(oMotif is DParallelMotif);
+            Assert.IsTrue(oMotif is DConnectorMotif);
         }
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){oVertexA, oVertexB},
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){oVertexA, oVertexB},
             0.5, oVertexC, oVertexD);
     }
 
@@ -581,8 +581,8 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs9()
     {
-        // 3-Parallel motif with another vertex off of an anchor vertex (C,D,E)<A,B> + E-X
-        // This could be a 2-parallel motif ((A,B)<C,D> + (A,B)<E>, E-X), but this would be 
+        // 3-connector motif with another vertex off of an anchor vertex (C,D,E)<A,B> + E-X
+        // This could be a 2-connector motif ((A,B)<C,D> + (A,B)<E>, E-X), but this would be 
         // a smaller motif
 
         IVertex oVertexA = m_oVertices.Add();
@@ -608,8 +608,8 @@ public class MotifCalculatorTest : Object
 
         m_oEdges.Add(oVertexE, oVertexX);
 
-        // 3-Parallel motif with another vertex off of an anchor vertex (P,Q,R,S)<M,N,O> + S-Y
-        // This could be a 3-parallel motif (M,N,O)<P,Q,R> + (M,N,O)<S>, S-Y), but this would be 
+        // 3-connector motif with another vertex off of an anchor vertex (P,Q,R,S)<M,N,O> + S-Y
+        // This could be a 3-connector motif (M,N,O)<P,Q,R> + (M,N,O)<S>, S-Y), but this would be 
         // a smaller motif
 
         IVertex oVertexM = m_oVertices.Add();
@@ -649,19 +649,19 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, int.MaxValue, 4, 4, null, out oMotifs));
+            m_oGraph, Motifs.DConnector, 2, int.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(2, oMotifs.Count);
 
         foreach (Motif oMotif in oMotifs)
         {
-            Assert.IsTrue(oMotif is DParallelMotif);
+            Assert.IsTrue(oMotif is DConnectorMotif);
         }
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>() { oVertexC, oVertexD, oVertexE }, 0.0,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>() { oVertexC, oVertexD, oVertexE }, 0.0,
             oVertexA, oVertexB);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>() { oVertexP, oVertexQ, oVertexR, oVertexS }, 1.0,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>() { oVertexP, oVertexQ, oVertexR, oVertexS }, 1.0,
             oVertexM, oVertexN, oVertexO);
     }
 
@@ -678,7 +678,7 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs10()
     {
-        // 2-parallel motif motif with another vertex off of a potential span
+        // 2-connector motif with another vertex off of a potential span
         // vertex, which prevents it from being part of the motif. (A,B)<C,D> + (A,B)<E>, E-X, A-AAlt, B-BAlt
 
         IVertex oVertexA = m_oVertices.Add();
@@ -712,7 +712,7 @@ public class MotifCalculatorTest : Object
         m_oEdges.Add(oVertexA, oVertexAAlt);
         m_oEdges.Add(oVertexB, oVertexBAlt);
 
-        // 3-parallel motif motif with another vertex off of a potential span
+        // 3-connector motif motif with another vertex off of a potential span
         // vertex, which prevents it from being part of the motif. (M,N,O)<P,Q,R> + (M,N,O)<S>, S-Y, M-MAlt, N-NAlt, O-OAlt)
 
         IVertex oVertexM = m_oVertices.Add();
@@ -762,19 +762,19 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, int.MaxValue, 4, 4, null, out oMotifs));
+            m_oGraph, Motifs.DConnector, 2, int.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(2, oMotifs.Count);
 
         foreach (Motif oMotif in oMotifs)
         {
-            Assert.IsTrue(oMotif is DParallelMotif);
+            Assert.IsTrue(oMotif is DConnectorMotif);
         }
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>() { oVertexA, oVertexB }, 0.0,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>() { oVertexA, oVertexB }, 0.0,
             oVertexC, oVertexD);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>() { oVertexM, oVertexN, oVertexO }, 1.0,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>() { oVertexM, oVertexN, oVertexO }, 1.0,
             oVertexP, oVertexQ, oVertexR);
     }
 
@@ -791,7 +791,7 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs11()
     {
-        // 2-parallel motifs with a self-loop on an anchor vertex (A,B)<C,D> + A-A, B-BAlt
+        // 2-connector motifs with a self-loop on an anchor vertex (A,B)<C,D> + A-A, B-BAlt
 
         IVertex oVertexA = m_oVertices.Add();
         oVertexA.Name = "A";
@@ -817,16 +817,16 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
+            m_oGraph, Motifs.DConnector, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(1, oMotifs.Count);
 
         foreach (Motif oMotif in oMotifs)
         {
-            Assert.IsTrue(oMotif is DParallelMotif);
+            Assert.IsTrue(oMotif is DConnectorMotif);
         }
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>() { oVertexA, oVertexB }, 0.5,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>() { oVertexA, oVertexB }, 0.5,
             oVertexC, oVertexD);
     }
 
@@ -843,7 +843,7 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs12()
     {
-        // 2-parallel motif with a self-loop off of a potential span vertex,
+        // 2-connector motif with a self-loop off of a potential span vertex,
         // which IS ALLOWED to be part of the motif. (A,B)<C,D,E> + E-E
 
         IVertex oVertexA = m_oVertices.Add();
@@ -864,16 +864,16 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
+            m_oGraph, Motifs.DConnector, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(1, oMotifs.Count);
 
         foreach (Motif oMotif in oMotifs)
         {
-            Assert.IsTrue(oMotif is DParallelMotif);
+            Assert.IsTrue(oMotif is DConnectorMotif);
         }
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>() { oVertexA, oVertexB }, 0.5,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>() { oVertexA, oVertexB }, 0.5,
             oVertexC, oVertexD, oVertexE);
     }
 
@@ -890,7 +890,7 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs13()
     {
-        // Two-parallel motif with parallel edges.
+        // Two-connector motif with connector edges.
 
         IVertex oVertexA = m_oVertices.Add();
         IVertex oVertexB = m_oVertices.Add();
@@ -910,16 +910,16 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, 2, 4, 4, null, out oMotifs));
+            m_oGraph, Motifs.DConnector, 2, 2, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(1, oMotifs.Count);
 
         foreach (Motif oMotif in oMotifs)
         {
-            Assert.IsTrue(oMotif is DParallelMotif);
+            Assert.IsTrue(oMotif is DConnectorMotif);
         }
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){oVertexC, oVertexD},
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){oVertexC, oVertexD},
             0.5, oVertexA, oVertexB);
     }
 
@@ -936,7 +936,7 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs14()
     {
-        // 2-parallel motif with parallel edges. (C,D)<A,B>
+        // 2-connector motif with connector edges. (C,D)<A,B>
 
         IVertex oVertexA = m_oVertices.Add();
         IVertex oVertexB = m_oVertices.Add();
@@ -956,16 +956,16 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
+            m_oGraph, Motifs.DConnector, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(1, oMotifs.Count);
 
         foreach (Motif oMotif in oMotifs)
         {
-            Assert.IsTrue(oMotif is DParallelMotif);
+            Assert.IsTrue(oMotif is DConnectorMotif);
         }
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){ oVertexC, oVertexD }, 0.5,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){ oVertexC, oVertexD }, 0.5,
             oVertexA, oVertexB);
     }
 
@@ -982,7 +982,7 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs15()
     {
-        // Fan motif and two-parallel motif.
+        // Fan motif and two-connector motif.
 
         IVertex oVertexA = m_oVertices.Add();
         IVertex oVertexB = m_oVertices.Add();
@@ -997,7 +997,7 @@ public class MotifCalculatorTest : Object
         m_oEdges.Add(oVertexA, oVertexB);
         m_oEdges.Add(oVertexA, oVertexC);
 
-        // Two-parallel.
+        // Two-connector.
 
         m_oEdges.Add(oVertexD, oVertexF);
         m_oEdges.Add(oVertexD, oVertexG);
@@ -1007,14 +1007,14 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.Fan | Motifs.DParallel, 2, 2, 4, 4, null,
+            m_oGraph, Motifs.Fan | Motifs.DConnector, 2, 2, 4, 4, null,
             out oMotifs) );
 
         Assert.AreEqual(2, oMotifs.Count);
 
         VerifyFanMotif(oMotifs, oVertexA, 0.5, oVertexB, oVertexC);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){oVertexF, oVertexG},
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){oVertexF, oVertexG},
             0.5, oVertexD, oVertexE);
     }
 
@@ -1031,7 +1031,7 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs16()
     {
-        // Fan motif and two-parallel motif.
+        // Fan motif and two-connector motif.
 
         IVertex oVertexA = m_oVertices.Add();
         IVertex oVertexB = m_oVertices.Add();
@@ -1046,7 +1046,7 @@ public class MotifCalculatorTest : Object
         m_oEdges.Add(oVertexA, oVertexB);
         m_oEdges.Add(oVertexA, oVertexC);
 
-        // Two-parallel.
+        // Two-connector.
 
         m_oEdges.Add(oVertexD, oVertexF);
         m_oEdges.Add(oVertexD, oVertexG);
@@ -1056,13 +1056,13 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.Fan | Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
+            m_oGraph, Motifs.Fan | Motifs.DConnector, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(2, oMotifs.Count);
 
         VerifyFanMotif(oMotifs, oVertexA, 0.5, oVertexB, oVertexC);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){ oVertexF, oVertexG }, 0.5,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){ oVertexF, oVertexG }, 0.5,
             oVertexD, oVertexE);
     }
 
@@ -1079,7 +1079,7 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs17()
     {
-        // Fan motif attached to anchor of two-parallel motif, calculate fan
+        // Fan motif attached to anchor of two-connector motif, calculate fan
         // motifs.
 
         IVertex oVertexA = m_oVertices.Add();
@@ -1095,7 +1095,7 @@ public class MotifCalculatorTest : Object
         m_oEdges.Add(oVertexB, oVertexF);
         m_oEdges.Add(oVertexB, oVertexG);
 
-        // Two-parallel.
+        // Two-connector.
 
         m_oEdges.Add(oVertexA, oVertexC);
         m_oEdges.Add(oVertexA, oVertexD);
@@ -1127,7 +1127,7 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs18()
     {
-        // Fan motif attached to anchor of 3-parallel motif, calculate fan
+        // Fan motif attached to anchor of 3-connector motif, calculate fan
         // motifs.
 
         IVertex oVertexA = m_oVertices.Add();
@@ -1144,7 +1144,7 @@ public class MotifCalculatorTest : Object
         m_oEdges.Add(oVertexB, oVertexG);
         m_oEdges.Add(oVertexB, oVertexH);
 
-        // 3-parallel. (A,B,C)<D,E,F>
+        // 3-connector. (A,B,C)<D,E,F>
 
         m_oEdges.Add(oVertexA, oVertexD);
         m_oEdges.Add(oVertexA, oVertexE);
@@ -1179,8 +1179,8 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs19()
     {
-        // Fan motif attached to anchor of two-parallel motif, calculate
-        // two-parallel motifs.
+        // Fan motif attached to anchor of two-connector motif, calculate
+        // two-connector motifs.
 
         IVertex oVertexA = m_oVertices.Add();
         IVertex oVertexB = m_oVertices.Add();
@@ -1195,7 +1195,7 @@ public class MotifCalculatorTest : Object
         m_oEdges.Add(oVertexB, oVertexF);
         m_oEdges.Add(oVertexB, oVertexG);
 
-        // Two-parallel.
+        // Two-connector.
 
         m_oEdges.Add(oVertexA, oVertexC);
         m_oEdges.Add(oVertexA, oVertexD);
@@ -1207,11 +1207,11 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, 2, 4, 4, null, out oMotifs));
+            m_oGraph, Motifs.DConnector, 2, 2, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(1, oMotifs.Count);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){oVertexA, oVertexB},
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){oVertexA, oVertexB},
             0.5, oVertexC, oVertexD, oVertexE);
     }
 
@@ -1228,8 +1228,8 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs20()
     {
-        // Fan motif attached to anchor of 3-parallel motif, calculate
-        // D-parallel motifs.
+        // Fan motif attached to anchor of 3-connector motif, calculate
+        // D-connector motifs.
 
         IVertex oVertexA = m_oVertices.Add();
         IVertex oVertexB = m_oVertices.Add();
@@ -1245,7 +1245,7 @@ public class MotifCalculatorTest : Object
         m_oEdges.Add(oVertexB, oVertexG);
         m_oEdges.Add(oVertexB, oVertexH);
 
-        // 3-parallel. (A,B,C)<D,E,F>
+        // 3-connector. (A,B,C)<D,E,F>
 
         m_oEdges.Add(oVertexA, oVertexD);
         m_oEdges.Add(oVertexA, oVertexE);
@@ -1260,11 +1260,11 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
+            m_oGraph, Motifs.DConnector, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(1, oMotifs.Count);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){ oVertexA, oVertexB, oVertexC }, 0.5,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){ oVertexA, oVertexB, oVertexC }, 0.5,
             oVertexD, oVertexE, oVertexF);
     }
 
@@ -1281,8 +1281,8 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs21()
     {
-        // Fan motif attached to anchor of two-parallel motif, calculate fan
-        // and D-parallel motifs.
+        // Fan motif attached to anchor of two-connector motif, calculate fan
+        // and D-connector motifs.
 
         IVertex oVertexA = m_oVertices.Add();
         IVertex oVertexB = m_oVertices.Add();
@@ -1297,7 +1297,7 @@ public class MotifCalculatorTest : Object
         m_oEdges.Add(oVertexB, oVertexF);
         m_oEdges.Add(oVertexB, oVertexG);
 
-        // Two-parallel.
+        // Two-connector.
 
         m_oEdges.Add(oVertexA, oVertexC);
         m_oEdges.Add(oVertexA, oVertexD);
@@ -1309,14 +1309,14 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.Fan | Motifs.DParallel, 2, 2, 4, 4, null,
+            m_oGraph, Motifs.Fan | Motifs.DConnector, 2, 2, 4, 4, null,
             out oMotifs) );
 
         Assert.AreEqual(2, oMotifs.Count);
 
         VerifyFanMotif(oMotifs, oVertexB, 0.5, oVertexF, oVertexG);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){oVertexA, oVertexB},
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){oVertexA, oVertexB},
             0.5, oVertexC, oVertexD, oVertexE);
     }
 
@@ -1333,8 +1333,8 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs22()
     {
-        // Fan motif attached to anchor of 3-parallel motif, calculate fan
-        // and two-parallel motifs.
+        // Fan motif attached to anchor of 3-connector motif, calculate fan
+        // and two-connector motifs.
 
         IVertex oVertexA = m_oVertices.Add();
         IVertex oVertexB = m_oVertices.Add();
@@ -1350,7 +1350,7 @@ public class MotifCalculatorTest : Object
         m_oEdges.Add(oVertexB, oVertexG);
         m_oEdges.Add(oVertexB, oVertexH);
 
-        // 3-parallel. (A,B,C)<D,E,F>
+        // 3-connector. (A,B,C)<D,E,F>
 
         m_oEdges.Add(oVertexA, oVertexD);
         m_oEdges.Add(oVertexA, oVertexE);
@@ -1365,13 +1365,13 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.Fan | Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
+            m_oGraph, Motifs.Fan | Motifs.DConnector, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(2, oMotifs.Count);
 
         VerifyFanMotif(oMotifs, oVertexB, 0.5, oVertexG, oVertexH);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>() { oVertexA, oVertexB, oVertexC }, 0.5,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>() { oVertexA, oVertexB, oVertexC }, 0.5,
             oVertexD, oVertexE, oVertexF);
     }
 
@@ -1473,7 +1473,7 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs24()
     {
-        // Simple two-parallel motifs with varying number of span vertices.
+        // Simple two-connector motifs with varying number of span vertices.
 
         IVertex oVertexA = m_oVertices.Add();
         IVertex oVertexB = m_oVertices.Add();
@@ -1499,14 +1499,14 @@ public class MotifCalculatorTest : Object
         IVertex oVertexV = m_oVertices.Add();
         IVertex oVertexW = m_oVertices.Add();
 
-        // Two-parallel with 2 span vertices.
+        // Two-connector with 2 span vertices.
 
         m_oEdges.Add(oVertexA, oVertexC);
         m_oEdges.Add(oVertexA, oVertexD);
         m_oEdges.Add(oVertexB, oVertexC);
         m_oEdges.Add(oVertexB, oVertexD);
 
-        // Two-parallel with 3 span vertices.
+        // Two-connector with 3 span vertices.
 
         m_oEdges.Add(oVertexE, oVertexG);
         m_oEdges.Add(oVertexE, oVertexH);
@@ -1515,7 +1515,7 @@ public class MotifCalculatorTest : Object
         m_oEdges.Add(oVertexF, oVertexH);
         m_oEdges.Add(oVertexF, oVertexI);
 
-        // Two-parallel with 4 span vertices.
+        // Two-connector with 4 span vertices.
 
         m_oEdges.Add(oVertexJ, oVertexL);
         m_oEdges.Add(oVertexJ, oVertexM);
@@ -1526,7 +1526,7 @@ public class MotifCalculatorTest : Object
         m_oEdges.Add(oVertexK, oVertexN);
         m_oEdges.Add(oVertexK, oVertexO);
 
-        // Two-parallel with 6 span vertices.
+        // Two-connector with 6 span vertices.
 
         m_oEdges.Add(oVertexP, oVertexR);
         m_oEdges.Add(oVertexP, oVertexS);
@@ -1544,20 +1544,20 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue( m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, 2, 4, 4, null, out oMotifs));
+            m_oGraph, Motifs.DConnector, 2, 2, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(4, oMotifs.Count);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){oVertexC, oVertexD},
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){oVertexC, oVertexD},
             0.0, oVertexA, oVertexB);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){oVertexE, oVertexF},
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){oVertexE, oVertexF},
             0.25, oVertexG, oVertexH, oVertexI);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){oVertexJ, oVertexK},
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){oVertexJ, oVertexK},
             0.5, oVertexL, oVertexM, oVertexN, oVertexO);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){oVertexP, oVertexQ},
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){oVertexP, oVertexQ},
             1.0, oVertexR, oVertexS, oVertexT, oVertexU, oVertexV, oVertexW);
     }
 
@@ -1574,7 +1574,7 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs25()
     {
-        // Simple 2-parallel motifs with varying number of span vertices.
+        // Simple 2-connector motifs with varying number of span vertices.
 
         IVertex oVertexA = m_oVertices.Add();
         IVertex oVertexB = m_oVertices.Add();
@@ -1600,14 +1600,14 @@ public class MotifCalculatorTest : Object
         IVertex oVertexV = m_oVertices.Add();
         IVertex oVertexW = m_oVertices.Add();
 
-        // 2-parallel with 2 span vertices.
+        // 2-connector with 2 span vertices.
 
         m_oEdges.Add(oVertexA, oVertexC);
         m_oEdges.Add(oVertexA, oVertexD);
         m_oEdges.Add(oVertexB, oVertexC);
         m_oEdges.Add(oVertexB, oVertexD);
 
-        // 2-parallel with 3 span vertices.
+        // 2-connector with 3 span vertices.
 
         m_oEdges.Add(oVertexE, oVertexG);
         m_oEdges.Add(oVertexE, oVertexH);
@@ -1616,7 +1616,7 @@ public class MotifCalculatorTest : Object
         m_oEdges.Add(oVertexF, oVertexH);
         m_oEdges.Add(oVertexF, oVertexI);
 
-        // 2-parallel with 4 span vertices.
+        // 2-connector with 4 span vertices.
 
         m_oEdges.Add(oVertexJ, oVertexL);
         m_oEdges.Add(oVertexJ, oVertexM);
@@ -1627,7 +1627,7 @@ public class MotifCalculatorTest : Object
         m_oEdges.Add(oVertexK, oVertexN);
         m_oEdges.Add(oVertexK, oVertexO);
 
-        // 2-parallel with 6 span vertices.
+        // 2-connector with 6 span vertices.
 
         m_oEdges.Add(oVertexP, oVertexR);
         m_oEdges.Add(oVertexP, oVertexS);
@@ -1645,20 +1645,20 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
+            m_oGraph, Motifs.DConnector, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(4, oMotifs.Count);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){ oVertexC, oVertexD }, 0.0,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){ oVertexC, oVertexD }, 0.0,
             oVertexA, oVertexB);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){ oVertexE, oVertexF }, 0.25,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){ oVertexE, oVertexF }, 0.25,
             oVertexG, oVertexH, oVertexI);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){ oVertexJ, oVertexK }, 0.5,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){ oVertexJ, oVertexK }, 0.5,
             oVertexL, oVertexM, oVertexN, oVertexO);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>(){ oVertexP, oVertexQ }, 1.0,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>(){ oVertexP, oVertexQ }, 1.0,
             oVertexR, oVertexS, oVertexT, oVertexU, oVertexV, oVertexW);
     }
 
@@ -1675,9 +1675,9 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs26()
     {
-        // Simple 3-parallel motifs with varying number of span vertices.
+        // Simple 3-connector motifs with varying number of span vertices.
 
-        // 3-parallel with 2 span vertices. (A,B,C)<D,E> + A-AAlt
+        // 3-connector with 2 span vertices. (A,B,C)<D,E> + A-AAlt
         IVertex oVertexA = m_oVertices.Add();
         IVertex oVertexB = m_oVertices.Add();
         IVertex oVertexC = m_oVertices.Add();
@@ -1695,7 +1695,7 @@ public class MotifCalculatorTest : Object
 
         m_oEdges.Add(oVertexA, oVertexAAlt);
 
-        // 3-parallel with 3 span vertices. (F,G,H)<I,J,K> + F-FAlt
+        // 3-connector with 3 span vertices. (F,G,H)<I,J,K> + F-FAlt
 
         IVertex oVertexF = m_oVertices.Add();
         IVertex oVertexG = m_oVertices.Add();
@@ -1718,7 +1718,7 @@ public class MotifCalculatorTest : Object
 
         m_oEdges.Add(oVertexF, oVertexFAlt);
 
-        // 3-parallel with 4 span vertices. (L,M,N)<O,P,Q,R>
+        // 3-connector with 4 span vertices. (L,M,N)<O,P,Q,R>
 
         IVertex oVertexL = m_oVertices.Add();
         IVertex oVertexM = m_oVertices.Add();
@@ -1741,7 +1741,7 @@ public class MotifCalculatorTest : Object
         m_oEdges.Add(oVertexN, oVertexQ);
         m_oEdges.Add(oVertexN, oVertexR);
 
-        // 3-parallel with 6 span vertices. (S,T,U)<V,W,X,Y,Z,AA>
+        // 3-connector with 6 span vertices. (S,T,U)<V,W,X,Y,Z,AA>
 
         IVertex oVertexS = m_oVertices.Add();
         IVertex oVertexT = m_oVertices.Add();
@@ -1777,20 +1777,20 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
+            m_oGraph, Motifs.DConnector, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(4, oMotifs.Count);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>() { oVertexA, oVertexB, oVertexC }, 0.0,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>() { oVertexA, oVertexB, oVertexC }, 0.0,
             oVertexD, oVertexE);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>() { oVertexF, oVertexG, oVertexH }, 0.25,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>() { oVertexF, oVertexG, oVertexH }, 0.25,
             oVertexI, oVertexJ, oVertexK);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>() { oVertexL, oVertexM, oVertexN }, 0.5,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>() { oVertexL, oVertexM, oVertexN }, 0.5,
             oVertexO, oVertexP, oVertexQ, oVertexR);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>() { oVertexS, oVertexT, oVertexU }, 1.0,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>() { oVertexS, oVertexT, oVertexU }, 1.0,
             oVertexV, oVertexW, oVertexX, oVertexY, oVertexZ, oVertexAA);
     }
 
@@ -1807,9 +1807,9 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs27()
     {
-        // Simple 2-, 3-, and 4-parallel motifs with varying number of span vertices.
+        // Simple 2-, 3-, and 4-connector motifs with varying number of span vertices.
 
-        // 2-parallel with 4 span vertices (A,B)<C,D,E,F>
+        // 2-connector with 4 span vertices (A,B)<C,D,E,F>
         IVertex oVertexA = m_oVertices.Add();
         IVertex oVertexB = m_oVertices.Add();
         IVertex oVertexC = m_oVertices.Add();
@@ -1826,7 +1826,7 @@ public class MotifCalculatorTest : Object
         m_oEdges.Add(oVertexB, oVertexE);
         m_oEdges.Add(oVertexB, oVertexF);
 
-        // 3-parallel with 2 span vertices. (G,H,I)<J,K> + G-GAlt
+        // 3-connector with 2 span vertices. (G,H,I)<J,K> + G-GAlt
         IVertex oVertexG = m_oVertices.Add();
         IVertex oVertexH = m_oVertices.Add();
         IVertex oVertexI = m_oVertices.Add();
@@ -1844,7 +1844,7 @@ public class MotifCalculatorTest : Object
 
         m_oEdges.Add(oVertexG, oVertexGAlt);
 
-        // 4-parallel with 3 span vertices. (L,M,N,O)<P,Q,R> + L-LAlt, M-MAlt
+        // 4-connector with 3 span vertices. (L,M,N,O)<P,Q,R> + L-LAlt, M-MAlt
 
         IVertex oVertexL = m_oVertices.Add();
         IVertex oVertexM = m_oVertices.Add();
@@ -1873,7 +1873,7 @@ public class MotifCalculatorTest : Object
         m_oEdges.Add(oVertexL, oVertexLAlt);
         m_oEdges.Add(oVertexM, oVertexMAlt);
 
-        // 5-parallel with 2 span vertices. (S,T,U,V,W)<X,Y> + S-SAlt, T-TAlt, U-UAlt, V-VAlt
+        // 5-connector with 2 span vertices. (S,T,U,V,W)<X,Y> + S-SAlt, T-TAlt, U-UAlt, V-VAlt
         IVertex oVertexS = m_oVertices.Add();
         IVertex oVertexT = m_oVertices.Add();
         IVertex oVertexU = m_oVertices.Add();
@@ -1906,20 +1906,20 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
+            m_oGraph, Motifs.DConnector, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(4, oMotifs.Count);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>() { oVertexA, oVertexB }, 1.0,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>() { oVertexA, oVertexB }, 1.0,
             oVertexC, oVertexD, oVertexE, oVertexF);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>() { oVertexG, oVertexH, oVertexI }, 0.0,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>() { oVertexG, oVertexH, oVertexI }, 0.0,
             oVertexJ, oVertexK);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>() { oVertexL, oVertexM, oVertexN, oVertexO }, 0.5,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>() { oVertexL, oVertexM, oVertexN, oVertexO }, 0.5,
             oVertexP, oVertexQ, oVertexR);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>() { oVertexS, oVertexT, oVertexU, oVertexV, oVertexW }, 0.0,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>() { oVertexS, oVertexT, oVertexU, oVertexV, oVertexW }, 0.0,
             oVertexX, oVertexY);
     }
 
@@ -1936,9 +1936,9 @@ public class MotifCalculatorTest : Object
     public void
     TestCalculateMotifs28()
     {
-        // Two DParallel motifs with overlapping anchors
+        // Two DConnector motifs with overlapping anchors
 
-        // 2-parallel with 4 span vertices (A,B)<C,D,E,F>
+        // 2-connector with 4 span vertices (A,B)<C,D,E,F>
         IVertex oVertexA = m_oVertices.Add();
         IVertex oVertexB = m_oVertices.Add();
         IVertex oVertexC = m_oVertices.Add();
@@ -1955,7 +1955,7 @@ public class MotifCalculatorTest : Object
         m_oEdges.Add(oVertexB, oVertexE);
         m_oEdges.Add(oVertexB, oVertexF);
 
-        // 3-parallel with 2 span vertices. (A,G,H)<I,J> + G-GAlt
+        // 3-connector with 2 span vertices. (A,G,H)<I,J> + G-GAlt
         IVertex oVertexG = m_oVertices.Add();
         IVertex oVertexH = m_oVertices.Add();
         IVertex oVertexI = m_oVertices.Add();
@@ -1975,14 +1975,14 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
+            m_oGraph, Motifs.DConnector, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(2, oMotifs.Count);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>() { oVertexA, oVertexB }, 1.0,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>() { oVertexA, oVertexB }, 1.0,
             oVertexC, oVertexD, oVertexE, oVertexF);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>() { oVertexG, oVertexH, oVertexA }, 0.0,
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>() { oVertexG, oVertexH, oVertexA }, 0.0,
             oVertexI, oVertexJ);
     }
 
@@ -2169,7 +2169,7 @@ public class MotifCalculatorTest : Object
                 d-e
             ";
 
-        // Add an overlapping 2-parallel with 4 span vertices (e,f)<g,h,i,j>
+        // Add an overlapping 2-connector with 4 span vertices (e,f)<g,h,i,j>
         graphAsTextEdgeList +=
             @"
                 e-g
@@ -2196,13 +2196,13 @@ public class MotifCalculatorTest : Object
 
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.Fan | Motifs.DParallel | Motifs.Clique, 2, Int32.MaxValue, 4, Int32.MaxValue, null, out oMotifs));
+            m_oGraph, Motifs.Fan | Motifs.DConnector | Motifs.Clique, 2, Int32.MaxValue, 4, Int32.MaxValue, null, out oMotifs));
 
         Assert.AreEqual(3, oMotifs.Count);
 
         VerifyCliqueMotif(oMotifs, new List<IVertex>() { v["a"], v["b"], v["c"], v["d"], v["e"] }, 0.5);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>() { v["e"], v["f"] }, 0.5, v["g"], v["h"], v["i"], v["j"] );
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>() { v["e"], v["f"] }, 0.5, v["g"], v["h"], v["i"], v["j"] );
 
         VerifyFanMotif(oMotifs, v["a"], 0.5, v["k"], v["l"], v["m"]);
     }
@@ -2236,7 +2236,7 @@ public class MotifCalculatorTest : Object
                 d-e
             ";
 
-        // Add a highly overlapping 4-parallel motif with 2 span vertices (a,b,c,d)<e,f>
+        // Add a highly overlapping 4-connector motif with 2 span vertices (a,b,c,d)<e,f>
         graphAsTextEdgeList +=
             @"
                 a-f
@@ -2251,13 +2251,13 @@ public class MotifCalculatorTest : Object
 
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.Fan | Motifs.DParallel | Motifs.Clique, 2, Int32.MaxValue, 4, Int32.MaxValue, null, out oMotifs));
+            m_oGraph, Motifs.Fan | Motifs.DConnector | Motifs.Clique, 2, Int32.MaxValue, 4, Int32.MaxValue, null, out oMotifs));
 
         Assert.AreEqual(2, oMotifs.Count);
 
         VerifyCliqueMotif(oMotifs, new List<IVertex>() { v["a"], v["b"], v["c"], v["d"] }, 0.5);
 
-        VerifyDParallelMotif(oMotifs, new List<IVertex>() { v["a"], v["b"], v["c"], v["d"] }, 0.5, v["e"], v["f"] );
+        VerifyDConnectorMotif(oMotifs, new List<IVertex>() { v["a"], v["b"], v["c"], v["d"] }, 0.5, v["e"], v["f"] );
     }
 
 
@@ -2278,19 +2278,19 @@ public class MotifCalculatorTest : Object
 
 
     //*************************************************************************
-    //  Method: TestDParallelSelfLoops()
+    //  Method: TestDConnectorSelfLoops()
     //
     /// <summary>
-    /// Test that self loops on two connected nodes doesn't turn into an "anchorless" parallel motif.
+    /// Test that self loops on two connected nodes doesn't turn into an "anchorless" connector motif.
     /// </summary>
     //*************************************************************************
 
     [TestMethodAttribute]
 
     public void
-    TestDParallelSelfLoops()
+    TestDConnectorSelfLoops()
     {
-        // Invalid 2-parallel motif with a self-loop on each anchor vertex A-A, A-B, B-B
+        // Invalid 2-connector motif with a self-loop on each anchor vertex A-A, A-B, B-B
         // We should not find it.
 
         IVertex oVertexA = m_oVertices.Add();
@@ -2305,7 +2305,7 @@ public class MotifCalculatorTest : Object
         ICollection<Motif> oMotifs;
 
         Assert.IsTrue(m_oMotifCalculator.TryCalculateMotifs(
-            m_oGraph, Motifs.DParallel, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
+            m_oGraph, Motifs.DConnector, 2, Int32.MaxValue, 4, 4, null, out oMotifs));
 
         Assert.AreEqual(0, oMotifs.Count);
     }
@@ -2363,10 +2363,10 @@ public class MotifCalculatorTest : Object
     }
 
     //*************************************************************************
-    //  Method: VerifyDParallelMotif()
+    //  Method: VerifyDConnectorMotif()
     //
     /// <summary>
-    /// Verifies that a D-parallel motif was found.
+    /// Verifies that a D-connector motif was found.
     /// </summary>
     ///
     /// <param name="oMotifs>
@@ -2374,20 +2374,20 @@ public class MotifCalculatorTest : Object
     /// </param>
     ///
     /// <param name="oExpectedAnchorVertices>
-    /// The anchor vertices of the expected D-parallel motif.
+    /// The anchor vertices of the expected D-connector motif.
     /// </param>
     ///
     /// <param name="dExpectedSpanScale">
-    /// The SpanScale value of the expected two-parallel motif.
+    /// The SpanScale value of the expected two-connector motif.
     /// </param>
     ///
     /// <param name="aoExpectedSpanVertices">
-    /// The span vertices of the expected two-parallel motif.
+    /// The span vertices of the expected two-connector motif.
     /// </param>
     //*************************************************************************
 
     protected void
-    VerifyDParallelMotif
+    VerifyDConnectorMotif
     (
         ICollection<Motif> oMotifs,
         List<IVertex> oExpectedAnchorVertices,
@@ -2395,17 +2395,17 @@ public class MotifCalculatorTest : Object
         params IVertex[] aoExpectedSpanVertices
     )
     {
-        DParallelMotif oDParallelMotif = (DParallelMotif)oMotifs.Single(
+        DConnectorMotif oDConnectorMotif = (DConnectorMotif)oMotifs.Single(
             oMotif =>
-            oMotif is DParallelMotif
+            oMotif is DConnectorMotif
             &&
-            DParallelMotifHasExpectedAnchors((DParallelMotif)oMotif,
+            DConnectorMotifHasExpectedAnchors((DConnectorMotif)oMotif,
                 oExpectedAnchorVertices)
             );
 
-        Assert.AreEqual(dExpectedSpanScale, oDParallelMotif.SpanScale);
+        Assert.AreEqual(dExpectedSpanScale, oDConnectorMotif.SpanScale);
 
-        Assert.IsTrue(UnsortedEquality<IVertex>(aoExpectedSpanVertices, oDParallelMotif.SpanVertices));
+        Assert.IsTrue(UnsortedEquality<IVertex>(aoExpectedSpanVertices, oDConnectorMotif.SpanVertices));
     }
 
     protected void
@@ -2429,18 +2429,18 @@ public class MotifCalculatorTest : Object
     }
 
     //*************************************************************************
-    //  Method: DParallelMotifHasExpectedAnchors()
+    //  Method: DConnectorMotifHasExpectedAnchors()
     //
     /// <summary>
-    /// Tests whether a D-parallel motif has the expected anchors.
+    /// Tests whether a D-connector motif has the expected anchors.
     /// </summary>
     ///
-    /// <param name="oDParallelMotif">
+    /// <param name="oDConnectorMotif">
     /// The motif to test.
     /// </param>
     ///
     /// <param name="oExpectedAnchorVertices">
-    /// The anchor vertices of the expected D-parallel motif.
+    /// The anchor vertices of the expected D-connector motif.
     /// </param>
     ///
     /// <returns>
@@ -2449,13 +2449,13 @@ public class MotifCalculatorTest : Object
     //*************************************************************************
 
     protected Boolean
-    DParallelMotifHasExpectedAnchors
+    DConnectorMotifHasExpectedAnchors
     (
-        DParallelMotif oDParallelMotif,
+        DConnectorMotif oDConnectorMotif,
         List<IVertex> oExpectedAnchorVertices
     )
     {
-        return UnsortedEquality<IVertex>(oExpectedAnchorVertices, oDParallelMotif.AnchorVertices);
+        return UnsortedEquality<IVertex>(oExpectedAnchorVertices, oDConnectorMotif.AnchorVertices);
     }
 
     //*************************************************************************
