@@ -316,14 +316,34 @@ public class GraphMLToNodeXLWorkbookConverter
                 oPerWorkbookSettings.WorkbookSettings = sWorkbookSettings;
             }
 
+            Object oGraphDescriptionAsObject;
+
             if ( !String.IsNullOrEmpty(sGraphMLFilePath) )
             {
+                // The GraphML came from a file.
+
                 GraphImporter.UpdateGraphHistoryAfterImport(oNodeXLWorkbook,
 
                     GraphImporter.GetImportedGraphMLFileDescription(
                         sGraphMLFilePath, oGraph),
 
                     null);
+            }
+            else if ( oGraph.TryGetValue(ReservedMetadataKeys.GraphDescription,
+                typeof(String), out oGraphDescriptionAsObject) )
+            {
+                // The GraphML came from the NetworkServer program.
+                //
+                // Note that we can't have GraphImporter check the user's
+                // ImportUserSettings object here to determine if the import
+                // description should be saved.  Accessing user setting objects
+                // requires access to Globals.ThisWorkbook, which is null when
+                // GraphImporter is called from another process.
+
+                GraphImporter
+                    .UpdateGraphHistoryAfterImportWithoutPermissionCheck(
+                        oNodeXLWorkbook, (String)oGraphDescriptionAsObject,
+                        null, oPerWorkbookSettings);
             }
 
             if (bSetAutomateTasksOnOpen)

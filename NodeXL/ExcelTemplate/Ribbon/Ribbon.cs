@@ -1523,15 +1523,6 @@ public partial class Ribbon : OfficeRibbon
             GroupManager.GroupCommandsIncludeGroupCommand(
                 eGroupCommandsToEnable, GroupCommands.RemoveAllGroups);
 
-        // Starting with version 1.0.1.200, the group by motif feature is
-        // hidden unless you press the shift key while opening the Groups menu.
-        // This is to allow the feature to be improved before releasing it to
-        // the public, but still let NodeXL team members access it.
-
-        #if true
-        btnGroupByMotif.Visible = ( (Control.ModifierKeys & Keys.Shift) != 0 );
-        #endif
-
         // This is required to force the ItemsLoading event to fire the next
         // time the mnuGroups menu is opened.
 

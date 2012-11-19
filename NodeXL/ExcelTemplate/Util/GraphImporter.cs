@@ -292,28 +292,61 @@ public static class GraphImporter : Object
     {
         Debug.Assert(destinationNodeXLWorkbook != null);
 
-        Boolean bSaveImportDescription =
-            ( new ImportDataUserSettings() ).SaveImportDescription;
-
-        if (importDescription == null || !bSaveImportDescription)
+        if ( ( new ImportDataUserSettings() ).SaveImportDescription )
         {
-            importDescription = String.Empty;
+            UpdateGraphHistoryAfterImportWithoutPermissionCheck(
+                destinationNodeXLWorkbook, importDescription,
+                suggestedFileNameNoExtension,
+                new PerWorkbookSettings(destinationNodeXLWorkbook) );
         }
+    }
 
-        if (suggestedFileNameNoExtension == null || !bSaveImportDescription)
-        {
-            suggestedFileNameNoExtension = String.Empty;
-        }
+    //*************************************************************************
+    //  Method: UpdateGraphHistoryAfterImportWithoutPermissionCheck()
+    //
+    /// <summary>
+    /// Updates the graph's history with details about how the graph was
+    /// imported into a NodeXL workbook, regardless of the user's permissions.
+    /// </summary>
+    ///
+    /// <param name="destinationNodeXLWorkbook">
+    /// NodeXL workbook the edges and vertices were imported to.
+    /// </param>
+    ///
+    /// <param name="importDescription">
+    /// Description of the technique that was used to import the graph.  Can be
+    /// empty or null.
+    /// </param>
+    ///
+    /// <param name="suggestedFileNameNoExtension">
+    /// File name suggested for the NodeXL workbook, without a path or
+    /// extension.  Can be empty or null.
+    /// </param>
+    ///
+    /// <param name="perWorkbookSettings">
+    /// The per-workbook settings that contain the graph history.
+    /// </param>
+    //*************************************************************************
 
-        PerWorkbookSettings oPerWorkbookSettings = new PerWorkbookSettings(
-            destinationNodeXLWorkbook);
+    public static void
+    UpdateGraphHistoryAfterImportWithoutPermissionCheck
+    (
+        Microsoft.Office.Interop.Excel.Workbook destinationNodeXLWorkbook,
+        String importDescription,
+        String suggestedFileNameNoExtension,
+        PerWorkbookSettings perWorkbookSettings
+    )
+    {
+        Debug.Assert(destinationNodeXLWorkbook != null);
+        Debug.Assert(perWorkbookSettings != null);
 
-        oPerWorkbookSettings.SetGraphHistoryValue(
-            GraphHistoryKeys.ImportDescription, importDescription);
+        perWorkbookSettings.SetGraphHistoryValue(
+            GraphHistoryKeys.ImportDescription,
+            importDescription ?? String.Empty);
 
-        oPerWorkbookSettings.SetGraphHistoryValue(
+        perWorkbookSettings.SetGraphHistoryValue(
             GraphHistoryKeys.ImportSuggestedFileNameNoExtension,
-            suggestedFileNameNoExtension);
+            suggestedFileNameNoExtension ?? String.Empty);
     }
 
     //*************************************************************************

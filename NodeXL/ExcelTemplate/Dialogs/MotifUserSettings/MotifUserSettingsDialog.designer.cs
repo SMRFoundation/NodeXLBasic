@@ -101,7 +101,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.chkDConnector.AutoSize = true;
             this.chkDConnector.Location = new System.Drawing.Point(198, 25);
             this.chkDConnector.Name = "chkDConnector";
-            this.chkDConnector.Size = new System.Drawing.Size(238, 17);
+            this.chkDConnector.Size = new System.Drawing.Size(253, 17);
             this.chkDConnector.TabIndex = 0;
             this.chkDConnector.Text = "Group by &D-connector motifs that have between";
             this.chkDConnector.UseVisualStyleBackColor = true;

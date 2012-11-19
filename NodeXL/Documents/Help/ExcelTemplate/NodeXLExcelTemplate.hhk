@@ -206,6 +206,7 @@
 			<param name="Local" value="Topics\WorkbookTour\Worksheets.htm#ColumnInformation">
 			</OBJECT>
 	</UL>
+
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="connected components">
 		<param name="See Also" value="connected components">
@@ -216,6 +217,18 @@
 			<param name="See Also" value="groups">
 			</OBJECT>
 	</UL>
+
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="motifs">
+		<param name="See Also" value="motifs">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="creating groups by  (see groups, creating by motif)">
+			<param name="See Also" value="groups">
+			</OBJECT>
+	</UL>
+
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="creating groups  (see groups, creating)">
 		<param name="See Also" value="groups">
@@ -734,6 +747,11 @@
 			<param name="Name" value="creating by cluster">
 			<param name="Name" value="Creating Groups by Cluster">
 			<param name="Local" value="Topics\Groups\Clusters.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="creating by motif">
+			<param name="Name" value="Creating Groups by Motif">
+			<param name="Local" value="Topics\Groups\Motifs.htm">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="creating by connected component">

@@ -55,7 +55,7 @@
     <Compile Include="Algorithms\GraphMetricCalculators\ConnectedComponentCalculatorTest.cs" />
     <Compile Include="Algorithms\GraphMetricCalculators\EdgeReciprocationCalculatorTest.cs" />
     <Compile Include="Algorithms\GraphMetricCalculators\IntergroupEdgeCalculatorTest.cs" />
-    <Compile Include="Algorithms\GraphMetricCalculators\Motif\DParallelMotifTest.cs" />
+    <Compile Include="Algorithms\GraphMetricCalculators\Motif\DConnectorMotifTest.cs" />
     <Compile Include="Algorithms\GraphMetricCalculators\Motif\FanMotifTest.cs" />
     <Compile Include="Algorithms\GraphMetricCalculators\Motif\MotifCalculatorTest.cs" />
     <Compile Include="Algorithms\GraphMetricCalculators\Overall\OverallReciprocationCalculatorTest.cs" />

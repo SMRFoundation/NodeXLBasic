@@ -185,6 +185,10 @@
 				<param name="Local" value="Topics\Groups\Clusters.htm">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Creating Groups by Motif">
+				<param name="Local" value="Topics\Groups\Motifs.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Manually Creating Groups">
 				<param name="Local" value="Topics\Groups\Manual.htm">
 				</OBJECT>
