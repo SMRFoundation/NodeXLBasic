@@ -71,7 +71,7 @@ public class EmailExporter : Object
     /// </param>
     ///
     /// <param name="messageBody">
-    /// Email message body.  Can be empty or null.
+    /// Email message body.  Can be empty or null.  Can contain HTML markup.
     /// </param>
     ///
     /// <param name="smtpHost">
@@ -106,6 +106,13 @@ public class EmailExporter : Object
     /// true to use a fixed aspect ratio, false to use the aspect ratio of the
     /// graph pane.
     /// </param>
+    ///
+    /// <remarks>
+    /// If <paramref name="messageBody" /> contains the <see
+    /// cref="GraphImageMacro" /> macro, the macro gets replaced by the graph
+    /// image.  If it contains the <see cref="GraphSummaryMacro" /> macro, the
+    /// macro gets replaced by a graph summary.
+    /// </remarks>
     //*************************************************************************
 
     public void
@@ -245,7 +252,7 @@ public class EmailExporter : Object
     /// </param>
     ///
     /// <param name="sMessageBody">
-    /// Email message body.  Can be empty or null.
+    /// Email message body.  Can be empty or null.  Can contain HTML markup.
     /// </param>
     ///
     /// <param name="bExportWorkbookAndSettings">
@@ -298,7 +305,7 @@ public class EmailExporter : Object
         MailMessage oMailMessage = new MailMessage();
 
         oMailMessage.Subject = sSubject;
-        oMailMessage.Body = sMessageBody;
+        oMailMessage.Body = ReplaceGraphSummaryMacro(sMessageBody, oWorkbook);
         SetAddresses(oMailMessage, asToAddresses, sFromAddress);
 
         AddAttachmentsAndAlternateHtml(oMailMessage, oWorkbook, oNodeXLControl,
@@ -521,78 +528,6 @@ public class EmailExporter : Object
     }
 
     //*************************************************************************
-    //  Method: AddAlternateHtml()
-    //
-    /// <summary>
-    /// Adds an alternate HTML view to a MailMessage.
-    /// </summary>
-    ///
-    /// <param name="oMailMessage">
-    /// The message to add alternate HTML to.  If the MessageBody property is
-    /// set, this is used as the HTML's text.
-    /// </param>
-    ///
-    /// <param name="abtFullSizeImage">
-    /// The full-size PNG image.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    AddAlternateHtml
-    (
-        MailMessage oMailMessage,
-        Byte [] abtFullSizeImage
-    )
-    {
-        Debug.Assert(oMailMessage != null);
-        Debug.Assert(abtFullSizeImage != null);
-        AssertValid();
-
-        // Always include the full-size image.
-
-        String sHtml =
-            "<html>"
-            +     "<head>"
-            +     "</head>"
-            +     "<body>"
-            +         "<div style=\"margin-bottom:1em;\">"
-            +             "<img src=cid:fullSizeImage"
-            +                 " style=\"border:1px solid #000000;\" />"
-            +         "</div>"
-            ; 
-
-        // Add the plain-text message body if there is one.
-
-        String sMessageBody = oMailMessage.Body;
-
-        if ( !String.IsNullOrEmpty(sMessageBody) )
-        {
-            sHtml +=
-                      "<div>"
-                +          sMessageBody.Replace("\r\n", "<br />")
-                +     "</div>"
-                ;
-        }
-
-        sHtml +=
-                  "</body>"
-            + "</html>"
-            ;
-
-        LinkedResource oFullSizeImageResource = new LinkedResource(
-            new MemoryStream(abtFullSizeImage), PngContentType);
-
-        oFullSizeImageResource.ContentId = "fullSizeImage";
-
-        AlternateView oHtmlView = AlternateView.CreateAlternateViewFromString(
-            sHtml, null, "text/html");
-
-        oHtmlView.LinkedResources.Add(oFullSizeImageResource);
-
-        oMailMessage.AlternateViews.Add(oHtmlView);
-    }
-
-    //*************************************************************************
     //  Method: AddAttachment()
     //
     /// <summary>
@@ -699,6 +634,107 @@ public class EmailExporter : Object
     }
 
     //*************************************************************************
+    //  Method: AddAlternateHtml()
+    //
+    /// <summary>
+    /// Adds an alternate HTML view to a MailMessage.
+    /// </summary>
+    ///
+    /// <param name="oMailMessage">
+    /// The message to add alternate HTML to.  If the MessageBody property is
+    /// set, this is used as the HTML's text.
+    /// </param>
+    ///
+    /// <param name="abtFullSizeImage">
+    /// The full-size PNG image.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AddAlternateHtml
+    (
+        MailMessage oMailMessage,
+        Byte [] abtFullSizeImage
+    )
+    {
+        Debug.Assert(oMailMessage != null);
+        Debug.Assert(abtFullSizeImage != null);
+        AssertValid();
+
+        String sHtml =
+            "<html>"
+            +     "<head>"
+            +     "</head>"
+            +     "<body>"
+            ; 
+
+        String sMessageBody = oMailMessage.Body;
+        Boolean bGraphImageMacroReplaced = false;
+
+        if ( !String.IsNullOrEmpty(sMessageBody) )
+        {
+            bGraphImageMacroReplaced = TryReplaceGraphImageMacro(
+                ref sMessageBody);
+
+            sHtml +=
+                      "<div>"
+                +          sMessageBody.Replace("\r\n", "<br />")
+                +     "</div>"
+                ;
+        }
+
+        sHtml +=
+                  "</body>"
+            + "</html>"
+            ;
+
+        AlternateView oHtmlView = AlternateView.CreateAlternateViewFromString(
+            sHtml, null, "text/html");
+        
+        if (bGraphImageMacroReplaced)
+        {
+            AddLinkedResourceForFullSizeImage(abtFullSizeImage, oHtmlView);
+        }
+
+        oMailMessage.AlternateViews.Add(oHtmlView);
+    }
+
+    //*************************************************************************
+    //  Method: AddLinkedResourceForFullSizeImage()
+    //
+    /// <summary>
+    /// Adds a linked resource for the full-size image to an HTML alternate
+    /// view.
+    /// </summary>
+    ///
+    /// <param name="abtFullSizeImage">
+    /// The full-size PNG image.
+    /// </param>
+    ///
+    /// <param name="oHtmlView">
+    /// The HTML alternate view.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AddLinkedResourceForFullSizeImage
+    (
+        Byte [] abtFullSizeImage,
+        AlternateView oHtmlView
+    )
+    {
+        Debug.Assert(abtFullSizeImage != null);
+        Debug.Assert(oHtmlView != null);
+        AssertValid();
+
+        LinkedResource oFullSizeImageResource = new LinkedResource(
+            new MemoryStream(abtFullSizeImage), PngContentType);
+
+        oFullSizeImageResource.ContentId = FullSizeImageContentId;
+        oHtmlView.LinkedResources.Add(oFullSizeImageResource);
+    }
+
+    //*************************************************************************
     //  Method: GetSuggestedFileNameNoExtension()
     //
     /// <summary>
@@ -733,6 +769,95 @@ public class EmailExporter : Object
         return ("NodeXLGraph");
     }
 
+    //*************************************************************************
+    //  Method: ReplaceGraphSummaryMacro()
+    //
+    /// <summary>
+    /// Replaces any graph summary macro in a message body.
+    /// </summary>
+    ///
+    /// <param name="sMessageBody">
+    /// Email message body.  Can be empty or null.  Can contain HTML markup.
+    /// </param>
+    ///
+    /// <param name="oWorkbook">
+    /// Workbook containing the graph data.
+    /// </param>
+    ///
+    /// <remarks>
+    /// If <paramref name="sMessageBody" /> contains the <see
+    /// cref="GraphSummaryMacro" />, macro, the macro gets replaced by a graph
+    /// summary.  The summary does not contain HTML markup, so it can be used
+    /// in the plain-text message body.
+    /// </remarks>
+    //*************************************************************************
+
+    protected String
+    ReplaceGraphSummaryMacro
+    (
+        String sMessageBody,
+        Microsoft.Office.Interop.Excel.Workbook oWorkbook
+    )
+    {
+        Debug.Assert(oWorkbook != null);
+
+        if (sMessageBody != null &&
+            sMessageBody.IndexOf(GraphSummaryMacro) >= 0)
+        {
+            sMessageBody = sMessageBody.Replace( GraphSummaryMacro,
+                GraphSummarizer.SummarizeGraph(oWorkbook).Trim() );
+        }
+
+        return (sMessageBody);
+    }
+
+    //*************************************************************************
+    //  Method: TryReplaceGraphImageMacro()
+    //
+    /// <summary>
+    /// Replaces any graph image macro in a message body.
+    /// </summary>
+    ///
+    /// <param name="sMessageBody">
+    /// Email message body.  Can be empty or null.  Can contain HTML markup.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if a graph image macro was replaced.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If <paramref name="sMessageBody" /> contains the <see
+    /// cref="GraphImageMacro" />, macro, the macro gets replaced by a graph
+    /// image.
+    /// </remarks>
+    //*************************************************************************
+
+    protected Boolean
+    TryReplaceGraphImageMacro
+    (
+        ref String sMessageBody
+    )
+    {
+        if (sMessageBody != null &&
+            sMessageBody.IndexOf(GraphImageMacro) >= 0)
+        {
+            const String GraphImageHtml =
+                "<div>"
+                +     "<img src=cid:" + FullSizeImageContentId
+                +         " style=\"border:1px solid #000000;\" />"
+                +"</div>"
+                ;
+
+            sMessageBody = sMessageBody.Replace(GraphImageMacro,
+                GraphImageHtml);
+
+            return (true);
+        }
+
+        return (false);
+    }
+
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -754,6 +879,18 @@ public class EmailExporter : Object
     //*************************************************************************
     //  Protected constants
     //*************************************************************************
+
+    /// Macro that can be included in message body text.
+
+    protected const String GraphImageMacro = "{Graph Image}";
+
+    /// Macro that can be included in message body text.
+
+    protected const String GraphSummaryMacro = "{Graph Summary}";
+
+    /// Content ID of the image resource for the full-size image.
+
+    protected const String FullSizeImageContentId = "fullSizeImage";
 
     /// Send timeout, in milliseconds.
 

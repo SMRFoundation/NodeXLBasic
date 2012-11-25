@@ -15,13 +15,20 @@ namespace Smrf.NodeXL.Visualization.Wpf
 //  Class: GroupDrawer
 //
 /// <summary>
-/// Draws a graph's groups.
+/// Provides methods that draw a graph's groups.
 /// </summary>
 ///
 /// <remarks>
+/// This class provides methods for drawing groups when the user has specified
+/// a layout style of <see cref="LayoutStyle.UseGroups" />.  This is sometimes
+/// called "group in a box."
+///
+/// <para>
 /// Call the <see cref="TryDrawGroupRectangles" />, <see
 /// cref="TryDrawCombinedIntergroupEdges" /> and <see
 /// cref="TryDrawGroupLabels" /> methods to draw the group elements.
+/// </para>
+///
 /// </remarks>
 //*****************************************************************************
 
@@ -211,8 +218,12 @@ public class GroupDrawer : DrawerBase
         using ( DrawingContext oDrawingContext =
             oGroupRectangleDrawingVisual.RenderOpen() )
         {
-            Color oColor = GetContrastingColor(
-                graphDrawingContext, GroupRectangleAlpha);
+            // Note: Don't try to use an alpha value of anything except 255
+            // for the rectangle colors.  The rectangles overlap, and
+            // transparent overlapping rectangles would have uneven opacities.
+
+            Color oColor = GetContrastingColor(graphDrawingContext, 255,
+                false);
 
             // Note that 1.0 is used where the GraphScale would normally be
             // used.  Group rectangles don't get scaled.
@@ -496,7 +507,7 @@ public class GroupDrawer : DrawerBase
                 oGroupRectangle2Center, oBezierControlPoint);
 
         Color oColor = GetContrastingColor(
-            oGraphDrawingContext, CombinedIntergroupEdgeAlpha);
+            oGraphDrawingContext, CombinedIntergroupEdgeAlpha, true);
 
         Pen oPen = CreateFrozenPen(CreateFrozenSolidColorBrush(oColor),
 
@@ -789,6 +800,11 @@ public class GroupDrawer : DrawerBase
     /// Alpha to use for the color.
     /// </param>
     ///
+    /// <param name="bUseMaximumContrast">
+    /// true to get a color that provides maximum contrast with <paramref
+    /// name="color" />, false to get a color that provides less contrast.
+    /// </param>
+    ///
     /// <returns>
     /// A contrasting color.
     /// </returns>
@@ -798,7 +814,8 @@ public class GroupDrawer : DrawerBase
     GetContrastingColor
     (
         GraphDrawingContext oGraphDrawingContext,
-        Byte btAlpha
+        Byte btAlpha,
+        Boolean bUseMaximumContrast
     )
     {
         Debug.Assert(oGraphDrawingContext != null);
@@ -806,7 +823,8 @@ public class GroupDrawer : DrawerBase
 
         return ( WpfGraphicsUtil.SetWpfColorAlpha(
             WpfGraphicsUtil.GetContrastingColor(
-                oGraphDrawingContext.BackColor), btAlpha) );
+                oGraphDrawingContext.BackColor,
+                bUseMaximumContrast), btAlpha) );
     }
 
     //*************************************************************************
@@ -867,15 +885,6 @@ public class GroupDrawer : DrawerBase
         Debug.Assert(m_dLabelScale <= GraphDrawer.MaximumGraphScale);
         Debug.Assert(m_oFormattedTextManager != null);
     }
-
-
-    //*************************************************************************
-    //  Group rectangle protected constants
-    //*************************************************************************
-
-    /// Alpha value to use when drawing group rectangles.
-
-    protected const Int32 GroupRectangleAlpha = 255;
 
 
     //*************************************************************************

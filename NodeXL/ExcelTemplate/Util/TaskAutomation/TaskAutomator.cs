@@ -1084,8 +1084,7 @@ public static class TaskAutomator : Object
             return (false);
         }
 
-        // Note that the workbook's name is used for the subject, and a graph
-        // summary is used for the message body.
+        // Note that the workbook's name is used for the subject.
 
         Debug.Assert( !String.IsNullOrEmpty(oWorkbook.Name) );
 
@@ -1097,7 +1096,7 @@ public static class TaskAutomator : Object
                 oExportToEmailUserSettings.SpaceDelimitedToAddresses.Split(' '),
                 oExportToEmailUserSettings.FromAddress,
                 oWorkbook.Name,
-                GraphSummarizer.SummarizeGraph(oWorkbook),
+                oExportToEmailUserSettings.MessageBody,
                 oExportToEmailUserSettings.SmtpHost,
                 oExportToEmailUserSettings.SmtpPort,
                 oExportToEmailUserSettings.UseSslForSmtp,

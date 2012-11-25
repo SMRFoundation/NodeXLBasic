@@ -223,7 +223,7 @@ public class VertexRadiusConverter : Object, INumericValueConverter
     /// radius.
     /// </summary>
 
-    public static readonly Single MaximumRadiusWorkbook = 100F;
+    public static readonly Single MaximumRadiusWorkbook = 1000F;
 
     /// <summary>
     /// The vertex label font size that corresponds to MinimumRadiusWorkbook,

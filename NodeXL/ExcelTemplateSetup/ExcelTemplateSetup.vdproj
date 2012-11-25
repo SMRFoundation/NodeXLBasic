@@ -1219,7 +1219,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.GraphDataProviders, Version=1.0.1.228, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.GraphDataProviders, Version=1.0.1.229, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_2784411CE6C34C9D8C39D3BE71E982EF"
@@ -1290,7 +1290,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Control.Wpf, Version=1.0.1.228, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Control.Wpf, Version=1.0.1.229, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_318ECC0376DD442AE2E61480C612E62E"
@@ -1352,7 +1352,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Util, Version=1.0.1.228, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Util, Version=1.0.1.229, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_371BAE5100E748EE8EA87225BECFAD0B"
@@ -1556,7 +1556,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Layouts, Version=1.0.1.228, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Layouts, Version=1.0.1.229, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_6BA2A388103BAFDBAA5C4229D08ABAA5"
@@ -1658,7 +1658,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.ExcelTemplatePlugIns, Version=1.0.1.228, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.ExcelTemplatePlugIns, Version=1.0.1.229, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_7924CFC6248C100F4482B5F3A835DE0C"
@@ -1831,7 +1831,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.ExcelTemplatePlugIns, Version=1.0.1.228, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.ExcelTemplatePlugIns, Version=1.0.1.229, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_AD13B06AC547D893A40E43C53B2E9BA1"
@@ -1975,7 +1975,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Visualization.Wpf, Version=1.0.1.228, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Visualization.Wpf, Version=1.0.1.229, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_B736AFEAE68EA9F136D53E1B73089DF0"
@@ -2006,7 +2006,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Core, Version=1.0.1.228, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Core, Version=1.0.1.229, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_C3EB0FDB2FD72F69326DFBD4E8BE6E48"
@@ -2037,7 +2037,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.ApplicationUtil, Version=1.0.1.228, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.ApplicationUtil, Version=1.0.1.229, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_CBBBD257B3C9CCD56606C9E6447B4222"
@@ -2148,7 +2148,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Adapters, Version=1.0.1.228, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Adapters, Version=1.0.1.229, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_EF23FD144043A3FBD991EA1F5DC2DFF9"
@@ -2210,7 +2210,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Algorithms, Version=1.0.1.228, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Algorithms, Version=1.0.1.229, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_F353F938FA17DCE60268802E5A7A7C99"
@@ -2337,14 +2337,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:NodeXL Excel Template"
-        "ProductCode" = "8:{EE4AB95E-9966-4047-AF11-9DC2D2144DE6}"
-        "PackageCode" = "8:{86965A1C-01A3-4B1B-AC2C-90F8E0B4FEE9}"
+        "ProductCode" = "8:{E805804B-6A01-456F-9607-29E3240099F1}"
+        "PackageCode" = "8:{4A4E859A-CA3A-4A38-A16E-7A9F9836A908}"
         "UpgradeCode" = "8:{87DDE855-47E5-48B2-9D6E-03B84139823A}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.228"
+        "ProductVersion" = "8:1.0.229"
         "Manufacturer" = "8:Social Media Research Foundation"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

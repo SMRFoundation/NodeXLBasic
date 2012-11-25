@@ -36,6 +36,11 @@ LayoutStyle
     /// to the number of vertices in the group and the boxes are arranged using
     /// a squarified treemap algorithm.  Otherwise, <see cref="Normal" /> is
     /// used.
+    ///
+    /// <para>
+    /// This layout style is sometimes called "group in a box."
+    /// </para>
+    ///
     /// </summary>
 
     UseGroups,

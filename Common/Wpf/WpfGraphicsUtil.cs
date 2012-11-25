@@ -272,12 +272,48 @@ public static class WpfGraphicsUtil
     //*************************************************************************
     //  Method: GetContrastingColor()
     //
-    /// <summary>
+    /// <overloads>
     /// Gets a color that contrasts with a specified color.
+    /// </overloads>
+    ///
+    /// <summary>
+    /// Gets a color that provides maximum contrast with a specified color.
     /// </summary>
     ///
     /// <param name="color">
     /// The System.Windows.Media.Color to get a contrasting color for.
+    /// </param>
+    ///
+    /// <returns>
+    /// A color that provides maximum contrast with <paramref name="color" />.
+    /// The contrasting color has the same alpha value as <paramref
+    /// name="color" />.
+    /// </returns>
+    //*************************************************************************
+
+    public static System.Windows.Media.Color
+    GetContrastingColor
+    (
+        System.Windows.Media.Color color
+    )
+    {
+        return ( GetContrastingColor(color, true) );
+    }
+
+    //*************************************************************************
+    //  Method: GetContrastingColor()
+    //
+    /// <summary>
+    /// Gets a color that provides a specified contrast with a specified color.
+    /// </summary>
+    ///
+    /// <param name="color">
+    /// The System.Windows.Media.Color to get a contrasting color for.
+    /// </param>
+    ///
+    /// <param name="useMaximumContrast">
+    /// true to get a color that provides maximum contrast with <paramref
+    /// name="color" />, false to get a color that provides less contrast.
     /// </param>
     ///
     /// <returns>
@@ -290,12 +326,14 @@ public static class WpfGraphicsUtil
     public static System.Windows.Media.Color
     GetContrastingColor
     (
-        System.Windows.Media.Color color
+        System.Windows.Media.Color color,
+        Boolean useMaximumContrast
     )
     {
         // This algorithm is based on the YIC color model used by televisions.
         // If the calculated brightness is less than a constant threshold,
-        // white is used for the contrasting color.  Otherwise, black is used.
+        // white (or dark gray) is used for the contrasting color.  Otherwise,
+        // black (or light gray) is used.
         //
         // See this thread:
         //
@@ -304,10 +342,19 @@ public static class WpfGraphicsUtil
         Double dBrightness = 0.299 * color.R + 0.587 * color.G +
             0.114 * color.B;
 
-        Byte btComponent = (Byte)( (dBrightness < 127) ? 0xff : 0x00 );
+        Byte btRgbComponent;
+
+        if (dBrightness < 127)
+        {
+            btRgbComponent = (Byte)(useMaximumContrast ? 0xff : 0x44);
+        }
+        else
+        {
+            btRgbComponent = (Byte)(useMaximumContrast ? 0x00 : 0xbb);
+        }
 
         return ( System.Windows.Media.Color.FromArgb(
-            color.A, btComponent, btComponent, btComponent) );
+            color.A, btRgbComponent, btRgbComponent, btRgbComponent) );
     }
 
     //*************************************************************************

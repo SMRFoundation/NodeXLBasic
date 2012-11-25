@@ -84,8 +84,6 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
             InitializeForEditOnly();
         }
 
-        usrExportedFilesDescription.Workbook = workbook;
-
         // Instantiate an object that saves and retrieves the user settings for
         // this dialog.  Note that the object automatically saves the settings
         // when the form closes.
@@ -131,15 +129,8 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
     InitializeForEditOnly()
     {
         this.Text += " Options";
-        lblDialogDescription.Enabled = false;
 
-        usrExportedFilesDescription.Title =
-            "[The file name will be used as the subject.]";
-
-        usrExportedFilesDescription.Description =
-            "[The graph summary will be used as the message.]";
-
-        usrExportedFilesDescription.Enabled = false;
+        EnableControls(false, lblDialogDescription, lblSubject, txbSubject);
     }
 
     //*************************************************************************
@@ -167,8 +158,8 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
     {
         if (bFromControls)
         {
-            String sToAddresses, sFromAddress, sSmtpHost, sSmtpUserName,
-                sSmtpPassword;
+            String sToAddresses, sFromAddress, sSubject, sSmtpHost,
+                sSmtpUserName, sSmtpPassword;
 
             Int32 iSmtpPort;
 
@@ -184,7 +175,9 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
                     "Enter a \"from\" email address.",
                     out sFromAddress)
                 ||
-                !this.usrExportedFilesDescription.Validate()
+                !ValidateRequiredTextBox(txbSubject,
+                    "Enter a subject.",
+                    out sSubject)
                 ||
                 !ValidateRequiredTextBox(txbSmtpHost,
 
@@ -219,13 +212,10 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
 
             if (m_eMode == DialogMode.Normal)
             {
-                m_oExportToEmailUserSettings.Subject =
-                    usrExportedFilesDescription.Title;
-
-                m_oExportToEmailUserSettings.MessageBody =
-                    usrExportedFilesDescription.Description;
+                m_oExportToEmailUserSettings.Subject = txbSubject.Text;
             }
 
+            m_oExportToEmailUserSettings.MessageBody = txbMessageBody.Text;
             m_oExportToEmailUserSettings.SmtpHost = sSmtpHost;
             m_oExportToEmailUserSettings.SmtpPort = iSmtpPort;
 
@@ -251,15 +241,13 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
 
             txbFromAddress.Text = m_oExportToEmailUserSettings.FromAddress;
 
-            if (m_eMode == DialogMode.Normal)
-            {
-                usrExportedFilesDescription.Title =
-                    m_oExportToEmailUserSettings.Subject;
+            txbSubject.Text = (m_eMode == DialogMode.Normal) ?
+                m_oExportToEmailUserSettings.Subject
+                :
+                "[The file name will be used as the subject.]"
+                ;
 
-                usrExportedFilesDescription.Description =
-                    m_oExportToEmailUserSettings.MessageBody;
-            }
-
+            txbMessageBody.Text = m_oExportToEmailUserSettings.MessageBody;
             txbSmtpHost.Text = m_oExportToEmailUserSettings.SmtpHost;
 
             txbSmtpPort.Text =
