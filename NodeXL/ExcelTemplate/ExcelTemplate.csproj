@@ -22,7 +22,7 @@
     <InstallUrl>
     </InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.1.229</ApplicationVersion>
+    <ApplicationVersion>1.0.1.230</ApplicationVersion>
     <AutoIncrementApplicationRevision>false</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>0</UpdateInterval>
@@ -375,6 +375,12 @@
     <Compile Include="Dialogs\AutoFill\ColorColumnAutoFillUserSettings\ColorColumnAutoFillUserSettingsDialog.designer.cs">
       <DependentUpon>ColorColumnAutoFillUserSettingsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\AutoFill\GroupLabelColumnAutoFillUserSettings\GroupLabelColumnAutoFillUserSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\AutoFill\GroupLabelColumnAutoFillUserSettings\GroupLabelColumnAutoFillUserSettingsDialog.designer.cs">
+      <DependentUpon>GroupLabelColumnAutoFillUserSettingsDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\AutoFill\NumericComparisonColumnAutoFillUserSettings\NumericComparisonColumnAutoFillUserSettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -573,7 +579,6 @@
     <Compile Include="Dialogs\RegisterUser\RegisterUserDialog.designer.cs">
       <DependentUpon>RegisterUserDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\SaveGexfFile\SaveGexfFileDialog.cs" />
     <Compile Include="Dialogs\SaveGraphFile\SaveGraphFileDialog.cs" />
     <Compile Include="Dialogs\SaveGraphImageFile\SaveGraphImageFileDialog.cs" />
     <Compile Include="Dialogs\SaveGraphMLFile\SaveGraphMLFileDialog.cs" />
@@ -828,6 +833,7 @@
     </Compile>
     <Compile Include="UserSettings\AutoFill\AutoFillUserSettings.cs" />
     <Compile Include="UserSettings\AutoFill\ColorColumnAutoFillUserSettings.cs" />
+    <Compile Include="UserSettings\AutoFill\GroupLabelColumnAutoFillUserSettings.cs" />
     <Compile Include="UserSettings\AutoFill\NumericComparisonColumnAutoFillUserSettings.cs" />
     <Compile Include="UserSettings\AutoFill\NumericRangeColumnAutoFillUserSettings.cs" />
     <Compile Include="UserSettings\ClusterUserSettings.cs" />
@@ -1053,6 +1059,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\AutoFill\ColorColumnAutoFillUserSettings\ColorColumnAutoFillUserSettingsDialog.resx">
       <DependentUpon>ColorColumnAutoFillUserSettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\AutoFill\GroupLabelColumnAutoFillUserSettings\GroupLabelColumnAutoFillUserSettingsDialog.resx">
+      <DependentUpon>GroupLabelColumnAutoFillUserSettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\AutoFill\NumericComparisonColumnAutoFillUserSettings\NumericComparisonColumnAutoFillUserSettingsDialog.resx">
       <DependentUpon>NumericComparisonColumnAutoFillUserSettingsDialog.cs</DependentUpon>

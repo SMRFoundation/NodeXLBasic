@@ -14,8 +14,8 @@ namespace Smrf.NodeXL.ExcelTemplate
 /// </summary>
 /// 
 /// <remarks>
-/// The AutoFill feature automatically fills edge and vertex attribute columns
-/// using values from user-specified source columns.
+/// The AutoFill feature automatically fills various attribute columns using
+/// values from user-specified source columns.
 /// </remarks>
 //*****************************************************************************
 
@@ -1440,6 +1440,40 @@ public class AutoFillUserSettings : NodeXLApplicationSettingsBase
         }
     }
 
+    //*************************************************************************
+    //  Property: GroupLabelDetails
+    //
+    /// <summary>
+    /// Gets or sets the details for auto-filling the group label column.
+    /// </summary>
+    ///
+    /// <value>
+    /// The details for auto-filling the group label column.
+    /// </value>
+    //*************************************************************************
+
+    [ UserScopedSettingAttribute() ]
+    [ DefaultSettingValueAttribute("false") ]
+
+    public GroupLabelColumnAutoFillUserSettings
+    GroupLabelDetails
+    {
+        get
+        {
+            AssertValid();
+
+            return ( (GroupLabelColumnAutoFillUserSettings)
+                this[GroupLabelDetailsKey] );
+        }
+
+        set
+        {
+            this[GroupLabelDetailsKey] = value;
+
+            AssertValid();
+        }
+    }
+
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -1684,6 +1718,11 @@ public class AutoFillUserSettings : NodeXLApplicationSettingsBase
 
     protected const String GroupLabelSourceColumnNameKey =
         "GroupLabelSourceColumnName";
+
+    /// Name of the settings key for the GroupLabelDetailsKey property.
+
+    protected const String GroupLabelDetailsKey =
+        "GroupLabelDetails";
 
 
     //*************************************************************************

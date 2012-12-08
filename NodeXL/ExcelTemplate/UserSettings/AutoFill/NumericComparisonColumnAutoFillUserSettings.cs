@@ -16,11 +16,11 @@ namespace Smrf.NodeXL.ExcelTemplate
 /// </summary>
 /// 
 /// <remarks>
-/// The AutoFill feature automatically fills edge and vertex attribute columns
-/// using values from user-specified source columns.  This class stores the
-/// settings for a destination column that gets autofilled with one of two
-/// strings, depending on how the numbers in the source column compare to a
-/// specified number.
+/// The AutoFill feature automatically fills various attribute columns using
+/// values from user-specified source columns.  This class stores the settings
+/// for a destination column that gets autofilled with one of two strings,
+/// depending on how the numbers in the source column compare to a specified
+/// number.
 /// </remarks>
 //*****************************************************************************
 

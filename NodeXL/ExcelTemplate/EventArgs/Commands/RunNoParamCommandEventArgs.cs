@@ -312,12 +312,6 @@ NoParamCommand
     ExportToGraphMLFile,
 
     /// <summary>
-    /// Export the edge and vertex tables to a new GEXF file.
-    /// </summary>
-
-    ExportToGexfFile,
-
-    /// <summary>
     /// Export the edge and vertex tables to a new Pajek text file.
     /// </summary>
 

@@ -58,13 +58,13 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.mnuExport = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
             this.btnExportToUcinetFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnExportToGraphMLFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnExportToGexfFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnExportToPajekFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.separator8 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
             this.btnExportSelectionToNewNodeXLWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnExportToNewMatrixWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.separator19 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
             this.btnExportToNodeXLGraphGallery = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            this.btnExportToEmail = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.mniPrepareData = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
             this.btnMergeDuplicateEdges = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnPopulateVertexWorksheet = new Microsoft.Office.Tools.Ribbon.RibbonButton();
@@ -171,7 +171,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnOpenSampleNodeXLWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnAbout = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.btnCreateNodeXLWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnExportToEmail = new Microsoft.Office.Tools.Ribbon.RibbonButton();
             this.NodeXL.SuspendLayout();
             this.grpData.SuspendLayout();
             this.grpGraph.SuspendLayout();
@@ -411,7 +410,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.mnuExport.Dynamic = true;
             this.mnuExport.Items.Add(this.btnExportToUcinetFile);
             this.mnuExport.Items.Add(this.btnExportToGraphMLFile);
-            this.mnuExport.Items.Add(this.btnExportToGexfFile);
             this.mnuExport.Items.Add(this.btnExportToPajekFile);
             this.mnuExport.Items.Add(this.separator8);
             this.mnuExport.Items.Add(this.btnExportSelectionToNewNodeXLWorkbook);
@@ -448,18 +446,6 @@ namespace Smrf.NodeXL.ExcelTemplate
                 "nd Vertices worksheet are exported.";
             this.btnExportToGraphMLFile.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ExportToGraphMLFile;
             this.btnExportToGraphMLFile.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
-            // 
-            // btnExportToGexfFile
-            // 
-            this.btnExportToGexfFile.Label = "To GEXF File...";
-            this.btnExportToGexfFile.Name = "btnExportToGexfFile";
-            this.btnExportToGexfFile.OfficeImageId = "ExportTextFile";
-            this.btnExportToGexfFile.ScreenTip = "Export to GEXF File";
-            this.btnExportToGexfFile.ShowImage = true;
-            this.btnExportToGexfFile.SuperTip = "Exports the edges and vertices to a new GEXF file.  All columns in the Edges and " +
-                "Vertices worksheet are exported.";
-            this.btnExportToGexfFile.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ExportToGexfFile;
-            this.btnExportToGexfFile.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
             // 
             // btnExportToPajekFile
             // 
@@ -515,6 +501,17 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnExportToNodeXLGraphGallery.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ExportToNodeXLGraphGallery;
             this.btnExportToNodeXLGraphGallery.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
             // 
+            // btnExportToEmail
+            // 
+            this.btnExportToEmail.Label = "To Email...";
+            this.btnExportToEmail.Name = "btnExportToEmail";
+            this.btnExportToEmail.OfficeImageId = "EnvelopesAndLabelsDialog";
+            this.btnExportToEmail.ScreenTip = "Export to Email";
+            this.btnExportToEmail.ShowImage = true;
+            this.btnExportToEmail.SuperTip = "Export the graph to one or more email addresses.";
+            this.btnExportToEmail.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ExportToEmail;
+            this.btnExportToEmail.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            // 
             // mniPrepareData
             // 
             this.mniPrepareData.Items.Add(this.btnMergeDuplicateEdges);
@@ -564,8 +561,8 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnReadWorkbook.OfficeImageId = "ChartRadarChart";
             this.btnReadWorkbook.ScreenTip = "Show/Refresh Graph";
             this.btnReadWorkbook.ShowImage = true;
-            this.btnReadWorkbook.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ShowGraphAndReadWorkbook;
             this.btnReadWorkbook.SuperTip = resources.GetString("btnReadWorkbook.SuperTip");
+            this.btnReadWorkbook.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ShowGraphAndReadWorkbook;
             this.btnReadWorkbook.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
             // 
             // btnShowGraphSummary
@@ -1655,17 +1652,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnCreateNodeXLWorkbook.SuperTip = "Create a new NodeXL workbook.";
             this.btnCreateNodeXLWorkbook.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnCreateNodeXLWorkbook_Click);
             // 
-            // btnExportToEmail
-            // 
-            this.btnExportToEmail.Label = "To Email...";
-            this.btnExportToEmail.Name = "btnExportToEmail";
-            this.btnExportToEmail.OfficeImageId = "EnvelopesAndLabelsDialog";
-            this.btnExportToEmail.ScreenTip = "Export to Email";
-            this.btnExportToEmail.ShowImage = true;
-            this.btnExportToEmail.SuperTip = "Export the graph to one or more email addresses.";
-            this.btnExportToEmail.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ExportToEmail;
-            this.btnExportToEmail.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
-            // 
             // Ribbon
             // 
             this.Name = "Ribbon";
@@ -1836,7 +1822,6 @@ namespace Smrf.NodeXL.ExcelTemplate
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnShowGraphSummary;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportDataUserSettings;
         internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator14;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnExportToGexfFile;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnExportToEmail;
     }
 

@@ -1741,7 +1741,11 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
         OnDetailsClick(this.btnGroupLabelDetails,
             this.cbxGroupLabelSourceColumnName, "Group Label",
             WorksheetNames.Groups, TableNames.Groups,
-            GroupTableColumnNames.Label, null);
+            GroupTableColumnNames.Label, 
+
+            new GroupLabelColumnAutoFillUserSettingsDialog(
+                m_oAutoFillUserSettings.GroupLabelDetails)
+            );
     }
 
     //*************************************************************************
@@ -1916,7 +1920,7 @@ public partial class AutoFillWorkbookDialog : ExcelTemplateForm
 
         if ( !AskWarningQuestion(
             "This will clear all the source column names and reset any options"
-            + " you've changed.  It will not clear any worksheet columns."
+            + " you have changed.  It will not clear any worksheet columns."
             + "\r\n\r\n"
             + "Do you want to reset all autofill settings?"
             ) )

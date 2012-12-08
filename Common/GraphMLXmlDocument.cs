@@ -67,6 +67,8 @@ public class GraphMLXmlDocument : XmlDocument
         SetXmlNodeAttributes(m_oGraphXmlNode, "edgedefault",
             directed ? "directed" : "undirected");
 
+        m_iVertexXmlNodes = 0;
+
         AssertValid();
     }
 
@@ -115,6 +117,29 @@ public class GraphMLXmlDocument : XmlDocument
             AssertValid();
 
             return ( GetHasVertexXmlNode(this) );
+        }
+    }
+
+    //*************************************************************************
+    //  Property: VertexXmlNodes
+    //
+    /// <summary>
+    /// Gets the number of XML nodes that represent a vertex.
+    /// </summary>
+    ///
+    /// <value>
+    /// The number of XML nodes that represent a vertex.
+    /// </value>
+    //*************************************************************************
+
+    public Int32
+    VertexXmlNodes
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_iVertexXmlNodes);
         }
     }
 
@@ -214,6 +239,8 @@ public class GraphMLXmlDocument : XmlDocument
 
         XmlNode oVertexXmlNode = AppendXmlNode(m_oGraphXmlNode, "node");
         SetXmlNodeAttributes(oVertexXmlNode, "id", vertexID);
+
+        m_iVertexXmlNodes++;
 
         return (oVertexXmlNode);
     }
@@ -640,6 +667,7 @@ public class GraphMLXmlDocument : XmlDocument
     {
         Debug.Assert(m_oGraphMLXmlNode != null);
         Debug.Assert(m_oGraphXmlNode != null);
+        Debug.Assert(m_iVertexXmlNodes >= 0);
     }
 
 
@@ -664,6 +692,10 @@ public class GraphMLXmlDocument : XmlDocument
     /// Graph XML node.
 
     protected XmlNode m_oGraphXmlNode;
+
+    /// The number of XML nodes that represent a vertex.
+
+    protected Int32 m_iVertexXmlNodes;
 }
 
 }

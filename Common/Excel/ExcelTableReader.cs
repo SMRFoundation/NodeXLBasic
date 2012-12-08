@@ -23,6 +23,14 @@ namespace Smrf.AppLib
 /// cref="ColumnNames" /> property.
 /// </para>
 ///
+/// <para>
+/// Note that although this class is optimized for reading a table, the <see
+/// cref="ExcelTableRow.GetRangeForCell" /> property allows you to write to the
+/// cells in a row as well.  However, each such write operation incurs the
+/// overhead of a COM call, so this class should not be used when there are
+/// hundreds of cells that need to be written to.
+/// </para>
+///
 /// </remarks>
 //*****************************************************************************
 

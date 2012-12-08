@@ -773,17 +773,23 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
+        const String Int32FormatString = "N0";
+
         NetworkDescriber oNetworkDescriber = new NetworkDescriber();
+        Int32 iVertexXmlNodes = oGraphMLXmlDocument.VertexXmlNodes;
 
         oNetworkDescriber.AddSentence(
 
-            "The graph represents a network of up to {0} Twitter users whose"
-            + " recent tweets contained \"{1}\"."
+            "The graph represents a network of {0} Twitter {1} whose recent"
+            + " tweets contained \"{2}\", taken from a data set limited to a"
+            + " maximum of {3} users."
             ,
-            (iMaximumPeoplePerRequest == Int32.MaxValue) ?
-                1500 : iMaximumPeoplePerRequest,
+            iVertexXmlNodes.ToString(Int32FormatString),
+            StringUtil.MakePlural("user", iVertexXmlNodes),
+            sSearchTerm,
 
-            sSearchTerm
+            ( (iMaximumPeoplePerRequest == Int32.MaxValue) ?
+                1500 : iMaximumPeoplePerRequest ).ToString(Int32FormatString)
             );
 
         oNetworkDescriber.AddNetworkTime();

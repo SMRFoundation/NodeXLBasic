@@ -2,6 +2,7 @@
 using System;
 using System.Drawing;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Diagnostics;
 using Microsoft.Office.Interop.Excel;
 using Smrf.AppLib;
@@ -597,10 +598,83 @@ public static class WorkbookAutoFiller : Object
             oAutoFillUserSettings.GroupCollapsedDetails
             );
 
-        AutoFillColumnViaCopy(oGroupTable,
-            oAutoFillUserSettings.GroupLabelSourceColumnName,
-            GroupTableColumnNames.Label
-            );
+        if (
+            AutoFillColumnViaCopy(oGroupTable,
+                oAutoFillUserSettings.GroupLabelSourceColumnName,
+                GroupTableColumnNames.Label)
+            &&
+            oAutoFillUserSettings.GroupLabelDetails.PrependWithGroupName
+            )
+        {
+            PrependGroupLabelsWithGroupNames(oGroupTable);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: PrependGroupLabelsWithGroupNames()
+    //
+    /// <summary>
+    /// Prepends group labels with group names.
+    /// </summary>
+    ///
+    /// <param name="oGroupTable">
+    /// The table to autofill.
+    /// </param>
+    ///
+    /// <remarks>
+    /// If a group name cell contains "G1" and the corresponding group label
+    /// cell contains "label", for example, then this method replaced the group
+    /// label cell with "G1: label".
+    /// </remarks>
+    //*************************************************************************
+
+    private static void
+    PrependGroupLabelsWithGroupNames
+    (
+        ListObject oGroupTable
+    )
+    {
+        Debug.Assert(oGroupTable != null);
+
+        // Use ExcelTableReader to accomplish the task with minimal code.
+        //
+        // Note that ExcelTableReader is optimized for reading, and that its
+        // use for writing incurs the overhead of a COM call for each written
+        // cell.  There typically aren't many groups, though, so this is
+        // probably tolerable.
+        //
+        // If this turns out to be too slow, something similar to the code in
+        // TableColumnMapper.MapViaCopy() will need to be implemented.
+
+        ExcelTableReader oExcelTableReader = new ExcelTableReader(oGroupTable);
+
+        if (
+            oExcelTableReader.ColumnNames.Contains(GroupTableColumnNames.Name)
+            &&
+            oExcelTableReader.ColumnNames.Contains(GroupTableColumnNames.Label)
+            )
+        {
+            foreach (ExcelTableReader.ExcelTableRow oRow in
+                oExcelTableReader.GetRows() )
+            {
+                String sName;
+
+                if ( oRow.TryGetNonEmptyStringFromCell(
+                    GroupTableColumnNames.Name, out sName) )
+                {
+                    String sLabel;
+
+                    if ( oRow.TryGetNonEmptyStringFromCell(
+                        GroupTableColumnNames.Label, out sLabel) )
+                    {
+                        sName += ": " + sLabel;
+                    }
+
+                    oRow.GetRangeForCell(GroupTableColumnNames.Label)
+                        .set_Value(Missing.Value, sName);
+                }
+            }
+        }
     }
 
     //*************************************************************************
@@ -858,9 +932,13 @@ public static class WorkbookAutoFiller : Object
     /// <param name="sDestinationColumnName">
     /// Name of the destination column.
     /// </param>
+    ///
+    /// <returns>
+    /// true if the column was autofilled.
+    /// </returns>
     //*************************************************************************
 
-    private static void
+    private static Boolean
     AutoFillColumnViaCopy
     (
         ListObject oTable,
@@ -873,12 +951,14 @@ public static class WorkbookAutoFiller : Object
 
         if ( String.IsNullOrEmpty(sSourceColumnName) )
         {
-            return;
+            return (false);
         }
 
         TableColumnMapper.MapViaCopy(
             oTable, sSourceColumnName, sDestinationColumnName
             );
+
+        return (true);
     }
 
 

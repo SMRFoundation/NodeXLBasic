@@ -1136,36 +1136,6 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
-    //  Method: ExportToGexfFile()
-    //
-    /// <summary>
-    /// Exports the edge and vertex tables to a new GEXF file.
-    /// </summary>
-    //*************************************************************************
-
-    private void
-    ExportToGexfFile()
-    {
-        Debug.Assert( this.ExcelApplicationIsReady(false) );
-        AssertValid();
-
-        if ( !MergeIsApproved(
-                "add an Edge Weight column, and export the edges and vertices"
-                + " to a new GEXF file.") )
-        {
-            return;
-        }
-
-        ReadWorkbookContext oReadWorkbookContext = new ReadWorkbookContext();
-        oReadWorkbookContext.ReadAllEdgeAndVertexColumns = true;
-
-        SaveGexfFileDialog oSaveGexfFileDialog =
-            new SaveGexfFileDialog(String.Empty, String.Empty);
-
-        ExportToFile(oReadWorkbookContext, oSaveGexfFileDialog);
-    }
-
-    //*************************************************************************
     //  Method: ExportToPajekFile()
     //
     /// <summary>
@@ -2994,11 +2964,6 @@ public partial class ThisWorkbook
                 case NoParamCommand.ExportToGraphMLFile:
 
                     ExportToGraphMLFile();
-                    break;
-
-                case NoParamCommand.ExportToGexfFile:
-
-                    ExportToGexfFile();
                     break;
 
                 case NoParamCommand.ExportToPajekFile:
