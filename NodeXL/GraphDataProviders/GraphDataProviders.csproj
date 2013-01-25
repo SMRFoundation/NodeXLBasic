@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;AddExtraEdges</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Smrf.NodeXL.GraphDataProviders.xml</DocumentationFile>
@@ -190,6 +190,7 @@
     <Compile Include="NetworkAnalyzers\Twitter\Authorization\oAuthTwitter.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\Authorization\TwitterAccessToken.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\Authorization\TwitterAuthorizationStatus.cs" />
+    <Compile Include="NetworkAnalyzers\Twitter\SharedTermEdgeAppender.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TwitterDateParser.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TwitterListNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TwitterNetworkAnalyzerBase.cs" />

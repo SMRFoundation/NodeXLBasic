@@ -371,56 +371,32 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
         if (bIncludeStatistics)
         {
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false, FollowedID,
-                "Followed", "int", null);
+            oGraphMLXmlDocument.DefineGraphMLAttributes(false, "int",
+                FollowedID, "Followed",
+                FollowersID, "Followers",
+                StatusesID, "Tweets",
+                FavoritesID, "Favorites",
+                UtcOffsetID, "Time Zone UTC Offset (Seconds)"
+                );
 
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false, FollowersID,
-                "Followers", "int", null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false, StatusesID,
-                "Tweets", "int", null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false, FavoritesID,
-                "Favorites", "int", null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false, DescriptionID,
-                "Description", "string", null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false, LocationID,
-                "Location", "string", null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false, UrlID,
-                "Web", "string", null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false, TimeZoneID,
-                "Time Zone", "string", null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false, UtcOffsetID,
-                "Time Zone UTC Offset (Seconds)", "int", null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false, JoinedDateUtcID,
-                "Joined Twitter Date (UTC)", "string", null);
+            oGraphMLXmlDocument.DefineVertexStringGraphMLAttributes(
+                DescriptionID, "Description",
+                LocationID, "Location",
+                UrlID, "Web",
+                TimeZoneID, "Time Zone",
+                JoinedDateUtcID, "Joined Twitter Date (UTC)"
+                );
         }
 
         if (bIncludeLatestStatuses)
         {
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false, LatestStatusID,
-                "Latest Tweet", "string", null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false,
-                LatestStatusUrlsID, "URLs in Latest Tweet", "string", null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false,
-                LatestStatusDomainsID, "Domains in Latest Tweet", "string",
-                null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false,
-                LatestStatusHashtagsID, "Hashtags in Latest Tweet", "string",
-                null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false,
-                LatestStatusDateUtcID, "Latest Tweet Date (UTC)", "string",
-                null);
+            oGraphMLXmlDocument.DefineVertexStringGraphMLAttributes(
+                LatestStatusID, "Latest Tweet",
+                LatestStatusUrlsID, "URLs in Latest Tweet",
+                LatestStatusDomainsID, "Domains in Latest Tweet",
+                LatestStatusHashtagsID, "Hashtags in Latest Tweet",
+                LatestStatusDateUtcID, "Latest Tweet Date (UTC)"
+                );
 
             DefineLatitudeAndLongitudeGraphMLAttributes(oGraphMLXmlDocument,
                 false);
@@ -430,9 +406,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         DefineCustomMenuGraphMLAttributes(oGraphMLXmlDocument);
         DefineRelationshipGraphMLAttribute(oGraphMLXmlDocument);
 
-        oGraphMLXmlDocument.DefineGraphMLAttribute(true,
-            RelationshipDateUtcID, "Relationship Date (UTC)", "string",
-            null);
+        oGraphMLXmlDocument.DefineEdgeStringGraphMLAttributes(
+            RelationshipDateUtcID, "Relationship Date (UTC)");
 
         return (oGraphMLXmlDocument);
     }
@@ -463,11 +438,10 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
-        oGraphMLXmlDocument.DefineGraphMLAttribute(bForEdge,
-            LatitudeID, "Latitude", "string", null);
-
-        oGraphMLXmlDocument.DefineGraphMLAttribute(bForEdge,
-            LongitudeID, "Longitude", "string", null);
+        oGraphMLXmlDocument.DefineStringGraphMLAttributes(bForEdge,
+            LatitudeID, "Latitude",
+            LongitudeID, "Longitude"
+            );
     }
 
     //*************************************************************************
@@ -2154,11 +2128,12 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: AppendRelationshipDateUtcGraphMLAttributeValue()
+    //  Method: AppendStartTimeRelationshipDateUtcGraphMLAttributeValue()
     //
     /// <summary>
     /// Appends a GraphML attribute value for the relationship date to an edge
-    /// XML node.
+    /// XML node when the relationship date is the start time of the network
+    /// request.
     /// </summary>
     ///
     /// <param name="oGraphMLXmlDocument">
@@ -2173,15 +2148,10 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// A <see cref="RequestStatistics" /> object that is keeping track of
     /// requests made while getting the network.
     /// </param>
-    ///
-    /// <remarks>
-    /// The Graph-ML attribute value is set to the start time of the network
-    /// request.
-    /// </remarks>
     //*************************************************************************
 
     protected void
-    AppendRelationshipDateUtcGraphMLAttributeValue
+    AppendStartTimeRelationshipDateUtcGraphMLAttributeValue
     (
         GraphMLXmlDocument oGraphMLXmlDocument,
         XmlNode oEdgeXmlNode,
@@ -2766,8 +2736,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                 sOtherScreenName, sScreenName, "Follower");
         }
 
-        AppendRelationshipDateUtcGraphMLAttributeValue(oGraphMLXmlDocument,
-            oEdgeXmlNode, oRequestStatistics);
+        AppendStartTimeRelationshipDateUtcGraphMLAttributeValue(
+            oGraphMLXmlDocument, oEdgeXmlNode, oRequestStatistics);
     }
 
     //*************************************************************************

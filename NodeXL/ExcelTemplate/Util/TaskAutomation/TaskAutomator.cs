@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Smrf.NodeXL.Visualization.Wpf;
 using Smrf.AppLib;
@@ -744,8 +745,11 @@ public static class TaskAutomator : Object
 
                     if (bSaveWorkbookIfNeverSaved)
                     {
-                        SaveWorkbookIfNeverSaved(oWorkbook,
-                            sFolderToSaveWorkbookTo);
+                        if ( !TrySaveWorkbookIfNeverSaved(oWorkbook,
+                            sFolderToSaveWorkbookTo) )
+                        {
+                            return;
+                        }
                     }
 
                     if (bSaveGraphImageFile)
@@ -791,16 +795,20 @@ public static class TaskAutomator : Object
         {
             if (bSaveWorkbookIfNeverSaved)
             {
-                SaveWorkbookIfNeverSaved(oWorkbook, sFolderToSaveWorkbookTo);
+                if ( !TrySaveWorkbookIfNeverSaved(oWorkbook,
+                    sFolderToSaveWorkbookTo) )
+                {
+                    return;
+                }
             }
         }
     }
 
     //*************************************************************************
-    //  Method: SaveWorkbookIfNeverSaved()
+    //  Method: TrySaveWorkbookIfNeverSaved()
     //
     /// <summary>
-    /// Saves the workbook if it has never been saved.
+    /// Attempts to save the workbook if it has never been saved.
     /// </summary>
     ///
     /// <param name="oWorkbook">
@@ -812,10 +820,15 @@ public static class TaskAutomator : Object
     /// file in this folder.  If this argument is null or empty, the
     /// workbook is saved to the Environment.SpecialFolder.MyDocuments folder.
     /// </param>
+    ///
+    /// <returns>
+    /// true if the workbook was saved or doesn't need to be saved, false if
+    /// there was an error.
+    /// </returns>
     //*************************************************************************
 
-    private static void
-    SaveWorkbookIfNeverSaved
+    private static Boolean
+    TrySaveWorkbookIfNeverSaved
     (
         Microsoft.Office.Interop.Excel.Workbook oWorkbook,
         String sFolderToSaveWorkbookTo
@@ -860,9 +873,27 @@ public static class TaskAutomator : Object
                     + " NodeXL";
             }
 
-            ExcelUtil.SaveWorkbookAs(oWorkbook,
-                Path.Combine(sFolderToSaveWorkbookTo, sFileNameNoExtension) );
+            try
+            {
+                ExcelUtil.SaveWorkbookAs(oWorkbook,
+                    Path.Combine(sFolderToSaveWorkbookTo,
+                        sFileNameNoExtension) );
+            }
+            catch (COMException)
+            {
+                FormUtil.ShowWarning(
+                    "The workbook can't be saved, probably because the folder"
+                    + " where the workbook should be saved does not exist.  To"
+                    + " fix this, go to NodeXL, Graph, Automate and change the"
+                    + " Options for \"Save workbook to a new file if it has"
+                    + " never been saved\"."
+                    );
+
+                return (false);
+            }
         }
+
+        return (true);
     }
 
     //*************************************************************************

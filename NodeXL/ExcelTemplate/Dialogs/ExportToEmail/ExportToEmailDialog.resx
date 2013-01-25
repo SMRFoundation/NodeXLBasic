@@ -137,7 +137,7 @@ If you want to include a graph summary, insert the following placeholder in the 
 
     {Graph Summary}
 
-Here is a complete message that includes a hosted image, some header text, a graph image, a graph summary, and some footer text.  (You can type Ctrl-C to copy this entire message to the clipboard.)
+Here is a sample message that includes a hosted image, some header text, a graph image, a graph summary, and some footer text.  (You can type Ctrl-C to copy this entire message to the clipboard.)
 
     &lt;img src="http://www.nodexlgraphgallery.org/Images/SiteLogo.png" /&gt;
 

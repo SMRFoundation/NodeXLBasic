@@ -158,6 +158,34 @@ public static class StringUtil
     }
 
     //*************************************************************************
+    //  Method: SplitOnSpaces()
+    //
+    /// <summary>
+    /// Splits a string on space delimiters.
+    /// </summary>
+    ///
+    /// <param name="stringToSplit">
+    /// The string to split.  Can't be null.
+    /// </param>
+    ///
+    /// <returns>
+    /// An array of zero or more non-empty strings.
+    /// </returns>
+    //*************************************************************************
+
+    public static String []
+    SplitOnSpaces
+    (
+        String stringToSplit
+    )
+    {
+        Debug.Assert(stringToSplit != null);
+
+        return ( stringToSplit.Split(new Char[]{' '},
+            StringSplitOptions.RemoveEmptyEntries) );
+    }
+
+    //*************************************************************************
     //  Method: TruncateWithEllipses()
     //
     /// <summary>

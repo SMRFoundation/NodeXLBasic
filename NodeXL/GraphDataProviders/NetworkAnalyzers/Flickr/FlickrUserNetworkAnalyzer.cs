@@ -646,23 +646,21 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
 
         if (bIncludeCommenterVertices)
         {
-            oGraphMLXmlDocument.DefineGraphMLAttribute(true, CommentDateUtcID,
-                "Comment Time (UTC)", "string", null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(true, CommentUrlID,
-                "Comment URL", "string", null);
+            oGraphMLXmlDocument.DefineEdgeStringGraphMLAttributes(
+                CommentDateUtcID, "Comment Time (UTC)",
+                CommentUrlID, "Comment URL"
+                );
         }
 
         if (bIncludeUserInformation)
         {
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false, RealNameID,
-                "Real Name", "string", null);
-
             oGraphMLXmlDocument.DefineGraphMLAttribute(false, TotalPhotosID,
                 "Total Photos", "int", null);
 
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false, IsProfessionalID,
-                "Is Professional", "string", null);
+            oGraphMLXmlDocument.DefineVertexStringGraphMLAttributes(
+                RealNameID, "Real Name",
+                IsProfessionalID, "Is Professional"
+                );
 
             DefineImageFileGraphMLAttribute(oGraphMLXmlDocument);
             DefineCustomMenuGraphMLAttributes(oGraphMLXmlDocument);

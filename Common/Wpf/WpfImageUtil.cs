@@ -215,6 +215,11 @@ public class WpfImageUtil
                 catch (IOException)
                 {
                 }
+                catch (ArgumentException)
+                {
+                    // This occurs when the URI contains an invalid character,
+                    // such as "<".
+                }
                 catch (WebException)
                 {
                     // This occurs when a non-existent drive letter is used.

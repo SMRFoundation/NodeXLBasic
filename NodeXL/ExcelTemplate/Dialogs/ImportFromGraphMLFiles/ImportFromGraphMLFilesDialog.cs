@@ -4,6 +4,8 @@ using System;
 using System.Configuration;
 using System.ComponentModel;
 using System.Windows.Forms;
+using System.Collections.Generic;
+using System.Linq;
 using Smrf.AppLib;
 using System.Diagnostics;
 
@@ -275,11 +277,7 @@ public partial class ImportFromGraphMLFilesDialog : ExcelTemplateForm
         {
             Exception oException = e.Error;
 
-            if (
-                oException is System.Xml.XmlException
-                ||
-                oException is ConvertGraphMLToNodeXLWorkbookException
-                )
+            if (oException is ConvertGraphMLToNodeXLWorkbookException)
             {
                 this.ShowWarning(oException.Message);
             }
@@ -296,7 +294,47 @@ public partial class ImportFromGraphMLFilesDialog : ExcelTemplateForm
             // in a message box in addition to the StatusLabel.
 
             this.ShowInformation(slStatusLabel.Text);
+
+            CheckForInvalidGraphMLFileNames();
             this.Close();
+        }
+    }
+
+    //*************************************************************************
+    //  Method: CheckForInvalidGraphMLFileNames()
+    //
+    /// <summary>
+    /// Checks whether any of the files contained invalid GraphML.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    CheckForInvalidGraphMLFileNames()
+    {
+        AssertValid();
+
+        ICollection<String> oInvalidGraphMLFileNames = 
+            m_oGraphMLFilesImporter.InvalidGraphMLFileNames;
+
+        Int32 iInvalidGraphMLFileNames = oInvalidGraphMLFileNames.Count;
+
+        if (iInvalidGraphMLFileNames > 0)
+        {
+            if (MessageBox.Show(
+
+                    iInvalidGraphMLFileNames.ToString() + " of the files did"
+                        + " not contain valid GraphML.  Do you want to copy"
+                        + " the names of the invalid files to the Clipboard?",
+            
+                    ApplicationUtil.ApplicationName,
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning
+                    )
+                == DialogResult.Yes)
+            {
+                Clipboard.SetText( String.Join("\r\n",
+                    oInvalidGraphMLFileNames.ToArray() ) );
+            }
         }
     }
 

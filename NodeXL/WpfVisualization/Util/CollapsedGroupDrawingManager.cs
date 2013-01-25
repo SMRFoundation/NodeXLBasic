@@ -413,12 +413,14 @@ public class CollapsedGroupDrawingManager : VisualizationBase
 
         Object oColor;
 
+        // Note: Don't check the type of the color here, because it can be
+        // either of two types.
+
         if ( oFirstVertexToCollapse.TryGetValue(
-            ReservedMetadataKeys.PerColor, typeof(System.Drawing.Color),
-            out oColor) )
+            ReservedMetadataKeys.PerColor, out oColor) )
         {
             m_oCollapsedGroupVertex.SetValue(ReservedMetadataKeys.PerColor,
-                (System.Drawing.Color)oColor);
+                oColor);
         }
 
         Object oShape;

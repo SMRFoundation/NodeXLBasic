@@ -88,6 +88,24 @@
     <Compile Include="..\..\Common\StringUtil.cs">
       <Link>StringUtil.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\TermCounters\CountedTermBase.cs">
+      <Link>TermCounters\CountedTermBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\TermCounters\CountedWord.cs">
+      <Link>TermCounters\CountedWord.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\TermCounters\CountedWordPair.cs">
+      <Link>TermCounters\CountedWordPair.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\TermCounters\TermCounterBase.cs">
+      <Link>TermCounters\TermCounterBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\TermCounters\WordCounter.cs">
+      <Link>TermCounters\WordCounter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\TermCounters\WordPairCounter.cs">
+      <Link>TermCounters\WordPairCounter.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\TwitterStatusParser.cs">
       <Link>TwitterStatusParser.cs</Link>
     </Compile>

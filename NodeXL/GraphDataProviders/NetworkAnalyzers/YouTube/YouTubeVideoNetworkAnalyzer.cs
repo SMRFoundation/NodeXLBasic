@@ -331,45 +331,38 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.SharedCategoryEdges) )
         {
-            oGraphMLXmlDocument.DefineGraphMLAttribute(true, SharedCategoryID,
-                "Shared Category", "string", null);
+            oGraphMLXmlDocument.DefineEdgeStringGraphMLAttributes(
+                SharedCategoryID, "Shared Category");
         }
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.SharedCommenterEdges) )
         {
-            oGraphMLXmlDocument.DefineGraphMLAttribute(true, SharedCommenterID,
-                "Shared Commenter", "string", null);
+            oGraphMLXmlDocument.DefineEdgeStringGraphMLAttributes(
+                SharedCommenterID, "Shared Commenter");
         }
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.SharedVideoResponderEdges) )
         {
-            oGraphMLXmlDocument.DefineGraphMLAttribute(true,
-                SharedVideoResponderID, "Shared Video Responder", "string",
-                null);
+            oGraphMLXmlDocument.DefineEdgeStringGraphMLAttributes(
+                SharedVideoResponderID, "Shared Video Responder");
         }
 
-        oGraphMLXmlDocument.DefineGraphMLAttribute(false, TitleID,
-            "Title", "string", null);
-
-        oGraphMLXmlDocument.DefineGraphMLAttribute(false, AuthorID,
-            "Author", "string", null);
+        oGraphMLXmlDocument.DefineVertexStringGraphMLAttributes(
+            TitleID, "Title",
+            AuthorID, "Author",
+            CreatedDateUtcID, "Created Date (UTC)"
+            );
 
         oGraphMLXmlDocument.DefineGraphMLAttribute(false, RatingID,
             "Rating", "double", null);
 
-        oGraphMLXmlDocument.DefineGraphMLAttribute(false, ViewsID,
-            "Views", "int", null);
-
-        oGraphMLXmlDocument.DefineGraphMLAttribute(false, FavoritedID,
-            "Favorited", "int", null);
-
-        oGraphMLXmlDocument.DefineGraphMLAttribute(false, CommentsID,
-            "Comments", "int", null);
-
-        oGraphMLXmlDocument.DefineGraphMLAttribute(false, CreatedDateUtcID,
-            "Created Date (UTC)", "string", null);
+        oGraphMLXmlDocument.DefineGraphMLAttributes(false, "int",
+            ViewsID, "Views",
+            FavoritedID, "Favorited",
+            CommentsID, "Comments"
+            );
 
         DefineImageFileGraphMLAttribute(oGraphMLXmlDocument);
         DefineCustomMenuGraphMLAttributes(oGraphMLXmlDocument);

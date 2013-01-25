@@ -3,6 +3,7 @@ using System;
 using System.Drawing;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Smrf.GraphicsLib;
 
 namespace Smrf.NodeXL.ExcelTemplate
 {
@@ -107,36 +108,8 @@ public class ColorConverter2 : Object
         Debug.Assert(workbookValue != null);
         AssertValid();
 
-        graphValue = Color.Empty;
-
-        // Colors can include optional spaces between words: the color
-        // LightBlue can be specified as either "Light Blue" or "LightBlue",
-        // for example.
-
-        workbookValue = workbookValue.Replace(" ", String.Empty);
-
-        if (workbookValue.Length == 0)
-        {
-            // ColorConverter converts an empty string to Color.Black.  Bypass
-            // ColorConverter.
-
-            return (false);
-        }
-
-        try
-        {
-            graphValue = (Color)m_oColorConverter.ConvertFromInvariantString(
-                workbookValue);
-        }
-        catch (Exception)
-        {
-            // (Format errors raise a System.Exception with an inner exception
-            // of type FormatException.  Go figure.)
-
-            return (false);
-        }
-
-        return (true);
+        return ( ColorUtil.TryConvertFromInvariantString(workbookValue,
+            m_oColorConverter, out graphValue) );
     }
 
     //*************************************************************************

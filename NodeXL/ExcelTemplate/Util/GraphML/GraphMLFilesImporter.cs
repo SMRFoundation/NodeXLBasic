@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Xml;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 
@@ -20,6 +21,14 @@ namespace Smrf.NodeXL.ExcelTemplate
 /// cref="ImportationProgressChanged" /> and <see
 /// cref="ImportationCompleted" /> events to monitor the progress and
 /// completion of the importation.
+///
+/// <para>
+/// If a file does not contain valid GraphML, it is skipped and added to an
+/// internal list of invalid files.  After the importation completes, read the
+/// <see cref="InvalidGraphMLFileNames" /> property to retrieve the names of
+/// any invalid files.
+/// </para>
+///
 /// </remarks>
 //*****************************************************************************
 
@@ -37,6 +46,7 @@ public class GraphMLFilesImporter : Object
     public GraphMLFilesImporter()
     {
         m_oBackgroundWorker = null;
+        m_oInvalidGraphMLFileNames = new List<String>();
 
         AssertValid();
     }
@@ -60,6 +70,36 @@ public class GraphMLFilesImporter : Object
         get
         {
             return (m_oBackgroundWorker != null && m_oBackgroundWorker.IsBusy);
+        }
+    }
+
+    //*************************************************************************
+    //  Property: InvalidGraphMLFileNames
+    //
+    /// <summary>
+    /// Gets the names of any files that did not contain valid GraphML, to be
+    /// called only after importation completes.
+    /// </summary>
+    ///
+    /// <value>
+    /// A collection of zero or more file names, without a path.
+    /// </value>
+    ///
+    /// <remarks>
+    /// Do not use this property until after the <see
+    /// cref="ImportationCompleted" /> event fires.
+    /// </remarks>
+    //*************************************************************************
+
+    public ICollection<String>
+    InvalidGraphMLFileNames
+    {
+        get
+        {
+            AssertValid();
+            Debug.Assert(!this.IsBusy);
+
+            return (m_oInvalidGraphMLFileNames);
         }
     }
 
@@ -259,15 +299,8 @@ public class GraphMLFilesImporter : Object
             }
             catch (XmlException oXmlException)
             {
-                throw new XmlException( String.Format(
-
-                    "The file \"{0}\" does not contain valid XML."
-                    ,
-                    sGraphMLFilePath
-                    ),
-
-                    oXmlException
-                    );
+                OnXmlException(sGraphMLFileName, oXmlException);
+                continue;
             }
 
             String sNodeXLWorkbookPath = Path.Combine(
@@ -286,24 +319,8 @@ public class GraphMLFilesImporter : Object
             }
             catch (XmlException oXmlException)
             {
-                // SaveGraphToNodeXLWorkbook() throws an XmlException when
-                // invalid GraphML is detected, but it doesn't know the name of
-                // the file the GraphML came from.  Refine the exception
-                // message.
-
-                throw new XmlException( String.Format(
-
-                    "The file \"{0}\" does not contain valid GraphML."
-                    + "  Details:"
-                    + "\r\n\r\n"
-                    + "{1}"
-                    ,
-                    sGraphMLFilePath,
-                    oXmlException.Message
-                    ),
-
-                    oXmlException
-                    );
+                OnXmlException(sGraphMLFileName, oXmlException);
+                continue;
             }
 
             iGraphMLFiles++;
@@ -314,6 +331,43 @@ public class GraphMLFilesImporter : Object
                 "Done.  GraphML files imported: {0}."
                 ,
                 iGraphMLFiles
+            ) );
+    }
+
+    //*************************************************************************
+    //  Method: OnXmlException()
+    //
+    /// <summary>
+    /// Handles an XmlException caught while attempting to import a GraphML
+    /// file.
+    /// </summary>
+    ///
+    /// <param name="sGraphMLFileName">
+    /// The name of the invalid GraphML file, without a path.
+    /// </param>
+    ///
+    /// <param name="oXmlException">
+    /// The XmlException that was caught.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    OnXmlException
+    (
+        String sGraphMLFileName,
+        XmlException oXmlException
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sGraphMLFileName) );
+        Debug.Assert(oXmlException != null);
+        AssertValid();
+
+        m_oInvalidGraphMLFileNames.Add( String.Format(
+        
+            "{0}: {1}"
+            ,
+            sGraphMLFileName,
+            oXmlException.Message
             ) );
     }
 
@@ -441,6 +495,7 @@ public class GraphMLFilesImporter : Object
     AssertValid()
     {
         // m_oBackgroundWorker
+        Debug.Assert(m_oInvalidGraphMLFileNames != null);
     }
 
 
@@ -452,6 +507,11 @@ public class GraphMLFilesImporter : Object
     /// is not in progress.
 
     protected BackgroundWorker m_oBackgroundWorker;
+
+    /// The names of any files that did not contain valid GraphML, without a
+    /// path.
+
+    protected List<String> m_oInvalidGraphMLFileNames;
 
 
     //*************************************************************************

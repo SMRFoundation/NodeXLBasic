@@ -56,6 +56,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.label7 = new System.Windows.Forms.Label();
             this.txbMessageBody = new System.Windows.Forms.TextBox();
             this.lnkMessageHelp = new Smrf.AppLib.HelpLinkLabel();
+            this.btnInsertSampleMessageBody = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -65,7 +66,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnCancel.Location = new System.Drawing.Point(485, 523);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
-            this.btnCancel.TabIndex = 13;
+            this.btnCancel.TabIndex = 14;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -74,7 +75,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnOK.Location = new System.Drawing.Point(399, 523);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
-            this.btnOK.TabIndex = 12;
+            this.btnOK.TabIndex = 13;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -86,7 +87,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.usrExportedFiles.Location = new System.Drawing.Point(12, 385);
             this.usrExportedFiles.Name = "usrExportedFiles";
             this.usrExportedFiles.Size = new System.Drawing.Size(553, 133);
-            this.usrExportedFiles.TabIndex = 11;
+            this.usrExportedFiles.TabIndex = 12;
             this.usrExportedFiles.UseFixedAspectRatio = false;
             // 
             // lblDialogDescription
@@ -209,7 +210,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.groupBox1.Location = new System.Drawing.Point(12, 232);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(553, 138);
-            this.groupBox1.TabIndex = 10;
+            this.groupBox1.TabIndex = 11;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "SMTP server";
             // 
@@ -268,25 +269,35 @@ namespace Smrf.NodeXL.ExcelTemplate
             // txbMessageBody
             // 
             this.txbMessageBody.AcceptsReturn = true;
-            this.txbMessageBody.Location = new System.Drawing.Point(170, 144);
+            this.txbMessageBody.Location = new System.Drawing.Point(212, 144);
             this.txbMessageBody.MaxLength = 80000;
             this.txbMessageBody.Multiline = true;
             this.txbMessageBody.Name = "txbMessageBody";
             this.txbMessageBody.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txbMessageBody.Size = new System.Drawing.Size(395, 72);
+            this.txbMessageBody.Size = new System.Drawing.Size(353, 72);
             this.txbMessageBody.TabIndex = 8;
             // 
             // lnkMessageHelp
             // 
             this.lnkMessageHelp.AutoSize = true;
-            this.lnkMessageHelp.Location = new System.Drawing.Point(28, 172);
+            this.lnkMessageHelp.Location = new System.Drawing.Point(35, 199);
             this.lnkMessageHelp.Name = "lnkMessageHelp";
             this.lnkMessageHelp.Size = new System.Drawing.Size(106, 13);
-            this.lnkMessageHelp.TabIndex = 9;
+            this.lnkMessageHelp.TabIndex = 10;
             this.lnkMessageHelp.TabStop = true;
             this.lnkMessageHelp.Tag = resources.GetString("lnkMessageHelp.Tag");
             this.lnkMessageHelp.Text = "About HTML markup";
             this.lnkMessageHelp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // btnInsertSampleMessageBody
+            // 
+            this.btnInsertSampleMessageBody.Location = new System.Drawing.Point(35, 168);
+            this.btnInsertSampleMessageBody.Name = "btnInsertSampleMessageBody";
+            this.btnInsertSampleMessageBody.Size = new System.Drawing.Size(168, 23);
+            this.btnInsertSampleMessageBody.TabIndex = 9;
+            this.btnInsertSampleMessageBody.Text = "&Insert Sample Message ->";
+            this.btnInsertSampleMessageBody.UseVisualStyleBackColor = true;
+            this.btnInsertSampleMessageBody.Click += new System.EventHandler(this.btnInsertSampleMessageBody_Click);
             // 
             // ExportToEmailDialog
             // 
@@ -295,6 +306,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(580, 561);
+            this.Controls.Add(this.btnInsertSampleMessageBody);
             this.Controls.Add(this.lnkMessageHelp);
             this.Controls.Add(this.txbMessageBody);
             this.Controls.Add(this.label7);
@@ -347,5 +359,6 @@ namespace Smrf.NodeXL.ExcelTemplate
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox txbMessageBody;
         private Smrf.AppLib.HelpLinkLabel lnkMessageHelp;
+        private System.Windows.Forms.Button btnInsertSampleMessageBody;
     }
 }

@@ -22,7 +22,7 @@
     <InstallUrl>
     </InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.1.230</ApplicationVersion>
+    <ApplicationVersion>1.0.1.234</ApplicationVersion>
     <AutoIncrementApplicationRevision>false</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>0</UpdateInterval>
@@ -232,24 +232,6 @@
     </Compile>
     <Compile Include="..\..\Common\GraphicsUtil.cs">
       <Link>Util\GraphicsUtil.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\TermCounters\CountedTermBase.cs">
-      <Link>Util\TermCounters\CountedTermBase.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\TermCounters\CountedWord.cs">
-      <Link>Util\TermCounters\CountedWord.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\TermCounters\CountedWordPair.cs">
-      <Link>Util\TermCounters\CountedWordPair.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\TermCounters\TermCounterBase.cs">
-      <Link>Util\TermCounters\TermCounterBase.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\TermCounters\WordCounter.cs">
-      <Link>Util\TermCounters\WordCounter.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\TermCounters\WordPairCounter.cs">
-      <Link>Util\TermCounters\WordPairCounter.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Win32Functions.cs">
       <Link>Util\Win32Functions.cs</Link>

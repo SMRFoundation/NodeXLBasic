@@ -588,23 +588,16 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
 
         if (bIncludeAllStatistics)
         {
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false, FriendsID,
-                "Friends", "int", null);
+            oGraphMLXmlDocument.DefineGraphMLAttributes(false, "int",
+                FriendsID, "Friends",
+                SubscriptionsID, "People Subscribed To",
+                SubscribersID, "Subscribers",
+                VideosWatchedID, "Videos Watched",
+                VideosUploadedID, "Videos Uploaded"
+                );
 
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false, SubscriptionsID,
-                "People Subscribed To", "int", null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false, SubscribersID,
-                "Subscribers", "int", null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false, VideosWatchedID,
-                "Videos Watched", "int", null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false,
-                JoinedDateUtcID, "Joined YouTube Date (UTC)", "string", null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(false, VideosUploadedID,
-                "Videos Uploaded", "int", null);
+            oGraphMLXmlDocument.DefineVertexStringGraphMLAttributes(
+                JoinedDateUtcID, "Joined YouTube Date (UTC)");
 
             DefineImageFileGraphMLAttribute(oGraphMLXmlDocument);
         }

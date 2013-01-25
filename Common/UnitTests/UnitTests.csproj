@@ -54,6 +54,7 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
@@ -62,6 +63,9 @@
     </Compile>
     <Compile Include="..\ChartUtil.cs">
       <Link>Util\ChartUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\ColorUtil.cs">
+      <Link>Util\ColorUtil.cs</Link>
     </Compile>
     <Compile Include="..\DateTimeUtil2.cs">
       <Link>Util\DateTimeUtil2.cs</Link>
@@ -104,6 +108,7 @@
     </Compile>
     <Compile Include="ArgumentCheckerTest.cs" />
     <Compile Include="ChartUtilTest.cs" />
+    <Compile Include="ColorUtilTest.cs" />
     <Compile Include="DateTimeUtil2Test.cs" />
     <Compile Include="ExceptionUtilTest.cs" />
     <Compile Include="PersistableStringDictionaryTest.cs" />

@@ -1,4 +1,5 @@
 ﻿
+
 using System;
 using System.Xml;
 using System.Text;
@@ -113,6 +114,9 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         /// </summary>
 
         NonRepliesToNonMentionsEdges = 64,
+
+        #if AddExtraEdges
+        #endif
     }
 
     //*************************************************************************
@@ -268,8 +272,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         GraphMLXmlDocument oGraphMLXmlDocument = CreateGraphMLXmlDocument(
             bIncludeStatistics, false);
 
-        oGraphMLXmlDocument.DefineGraphMLAttribute(false, TooltipID,
-            "Tooltip", "string", null);
+        DefineGraphMLAttributes(eWhatToInclude, oGraphMLXmlDocument);
 
         RequestStatistics oRequestStatistics = new RequestStatistics();
 
@@ -342,35 +345,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
-        Boolean bIncludeStatuses = WhatToIncludeFlagIsSet(
-            eWhatToInclude, WhatToInclude.Statuses);
-
-        if (bIncludeStatuses)
-        {
-            oGraphMLXmlDocument.DefineGraphMLAttribute(true, StatusID,
-                "Tweet", "string", null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(true, StatusUrlsID,
-                "URLs in Tweet", "string", null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(true, StatusDomainsID,
-                "Domains in Tweet", "string", null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(true, StatusHashtagsID,
-                "Hashtags in Tweet", "string", null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(true, StatusDateUtcID,
-                "Tweet Date (UTC)", "string", null);
-
-            oGraphMLXmlDocument.DefineGraphMLAttribute(true,
-                StatusWebPageUrlID, "Twitter Page for Tweet", "string", null);
-
-            DefineLatitudeAndLongitudeGraphMLAttributes(oGraphMLXmlDocument,
-                true);
-
-            DefineImportedIDGraphMLAttribute(oGraphMLXmlDocument, true);
-        }
-
         // The key is the Twitter user ID and the value is the corresponding
         // TwitterUser.
 
@@ -401,8 +375,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 oRequestStatistics);
         }
 
-        // Add edges nodes for replies-to and mentions relationships.
-
         AppendRepliesToAndMentionsEdgeXmlNodes(oGraphMLXmlDocument,
             oUserIDDictionary.Values,
             TwitterUsersToUniqueScreenNames(oUserIDDictionary.Values),
@@ -416,8 +388,87 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             WhatToIncludeFlagIsSet(eWhatToInclude,
                 WhatToInclude.NonRepliesToNonMentionsEdges),
 
-            bIncludeStatuses
+            WhatToIncludeFlagIsSet(eWhatToInclude,
+                WhatToInclude.Statuses)
             );
+
+        #if AddExtraEdges
+        #endif
+    }
+
+    //*************************************************************************
+    //  Method: DefineGraphMLAttributes()
+    //
+    /// <summary>
+    /// Defines GraphML-Attributes for the network.
+    /// </summary>
+    ///
+    /// <param name="eWhatToInclude">
+    /// Specifies what should be included in the network.
+    /// </param>
+    ///
+    /// <param name="oGraphMLXmlDocument">
+    /// The GraphMLXmlDocument to populate with the requested network.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    DefineGraphMLAttributes
+    (
+        WhatToInclude eWhatToInclude,
+        GraphMLXmlDocument oGraphMLXmlDocument
+    )
+    {
+        Debug.Assert(oGraphMLXmlDocument != null);
+        AssertValid();
+
+        oGraphMLXmlDocument.DefineVertexStringGraphMLAttributes(
+            TooltipID, "Tooltip");
+
+        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
+            WhatToInclude.Statuses) )
+        {
+            DefineStatusGraphMLAttributes(oGraphMLXmlDocument);
+        }
+
+        #if AddExtraEdges
+        #endif
+    }
+
+    //*************************************************************************
+    //  Method: DefineStatusGraphMLAttributes()
+    //
+    /// <summary>
+    /// Defines GraphML-Attributes for statuses.
+    /// </summary>
+    ///
+    /// <param name="oGraphMLXmlDocument">
+    /// The GraphMLXmlDocument to populate with the requested network.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    DefineStatusGraphMLAttributes
+    (
+        GraphMLXmlDocument oGraphMLXmlDocument
+    )
+    {
+        Debug.Assert(oGraphMLXmlDocument != null);
+        AssertValid();
+
+        oGraphMLXmlDocument.DefineEdgeStringGraphMLAttributes(
+            StatusID, "Tweet",
+            StatusUrlsID, "URLs in Tweet",
+            StatusDomainsID, "Domains in Tweet",
+            StatusHashtagsID, "Hashtags in Tweet",
+            StatusDateUtcID, "Tweet Date (UTC)",
+            StatusWebPageUrlID, "Twitter Page for Tweet"
+            );
+
+        DefineLatitudeAndLongitudeGraphMLAttributes(oGraphMLXmlDocument,
+            true);
+
+        DefineImportedIDGraphMLAttribute(oGraphMLXmlDocument, true);
     }
 
     //*************************************************************************
@@ -1081,6 +1132,14 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         // (Do nothing else.)
     }
+
+
+    //*************************************************************************
+    //  Public constants
+    //*************************************************************************
+
+    #if AddExtraEdges
+    #endif
 
 
     //*************************************************************************

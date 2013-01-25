@@ -599,8 +599,9 @@ public abstract class HttpNetworkAnalyzerBase : Object
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
-        oGraphMLXmlDocument.DefineGraphMLAttribute(false, ImageFileID,
-            ImageColumnName, "string", null);
+        oGraphMLXmlDocument.DefineVertexStringGraphMLAttributes(
+            ImageFileID, ImageColumnName
+            );
     }
 
     //*************************************************************************
@@ -624,8 +625,8 @@ public abstract class HttpNetworkAnalyzerBase : Object
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
-        oGraphMLXmlDocument.DefineGraphMLAttribute(false, LabelID,
-            LabelColumnName, "string", null);
+        oGraphMLXmlDocument.DefineVertexStringGraphMLAttributes(
+            LabelID, LabelColumnName);
     }
 
     //*************************************************************************
@@ -649,11 +650,10 @@ public abstract class HttpNetworkAnalyzerBase : Object
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
-        oGraphMLXmlDocument.DefineGraphMLAttribute(false, MenuTextID,
-            MenuTextColumnName, "string", null);
-
-        oGraphMLXmlDocument.DefineGraphMLAttribute(false, MenuActionID,
-            MenuActionColumnName, "string", null);
+        oGraphMLXmlDocument.DefineVertexStringGraphMLAttributes(
+            MenuTextID, MenuTextColumnName, 
+            MenuActionID, MenuActionColumnName
+            );
     }
 
     //*************************************************************************
@@ -677,8 +677,8 @@ public abstract class HttpNetworkAnalyzerBase : Object
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
-        oGraphMLXmlDocument.DefineGraphMLAttribute(true, RelationshipID,
-            "Relationship", "string", null);
+        oGraphMLXmlDocument.DefineEdgeStringGraphMLAttributes(
+            RelationshipID, "Relationship");
     }
 
     //*************************************************************************
@@ -692,7 +692,7 @@ public abstract class HttpNetworkAnalyzerBase : Object
     /// GraphMLXmlDocument being populated.
     /// </param>
     ///
-    /// <param name="bForEdge">
+    /// <param name="bForEdges">
     /// true if the attribute is for edges, false if it is for vertices.
     /// </param>
     ///
@@ -705,14 +705,14 @@ public abstract class HttpNetworkAnalyzerBase : Object
     DefineImportedIDGraphMLAttribute
     (
         GraphMLXmlDocument oGraphMLXmlDocument,
-        Boolean bForEdge
+        Boolean bForEdges
     )
     {
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
-        oGraphMLXmlDocument.DefineGraphMLAttribute(bForEdge, ImportedIDID,
-            "Imported ID", "string", null);
+        oGraphMLXmlDocument.DefineStringGraphMLAttributes(bForEdges,
+            ImportedIDID, "Imported ID");
     }
 
     //*************************************************************************
@@ -1584,6 +1584,10 @@ public abstract class HttpNetworkAnalyzerBase : Object
 
     public const Int32 HttpWebRequestTimeoutMs = 30000;
 
+    /// GraphML-attribute IDs for edges.
+
+    public const String RelationshipID = "Relationship";
+
 
     //*************************************************************************
     //  Protected constants
@@ -1598,10 +1602,6 @@ public abstract class HttpNetworkAnalyzerBase : Object
     protected const String MenuTextID = "MenuText";
     ///
     protected const String MenuActionID = "MenuAction";
-
-    /// GraphML-attribute IDs for edges.
-
-    protected const String RelationshipID = "Relationship";
 
     /// This is a special GraphML-attribute that specifies the unique imported
     /// ID for an imported edge or vertex.  It is used by the Excel Template to

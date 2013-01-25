@@ -276,6 +276,34 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
+    //  Method: btnInsertSampleMessageBody_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnInsertSampleMessageBody button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnInsertSampleMessageBody_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        txbMessageBody.SelectedText = SampleMessageBody;
+    }
+
+    //*************************************************************************
     //  Method: btnOK_Click()
     //
     /// <summary>
@@ -411,6 +439,27 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
         Debug.Assert(m_oPasswordUserSettings != null);
         Debug.Assert(m_oExportToEmailDialogUserSettings != null);
     }
+
+
+    //*************************************************************************
+    //  Protected constants
+    //*************************************************************************
+
+    /// Sample message body.
+
+    protected const String SampleMessageBody =
+
+        "<img src=\"http://www.nodexlgraphgallery.org/Images/SiteLogo.png\" />"
+        + "\r\n\r\n"
+        + "This graph was brought to you by NodeXL."
+        + "\r\n\r\n"
+        + "{Graph Image}"
+        + "\r\n\r\n"
+        + "{Graph Summary}"
+        + "\r\n\r\n"
+        + "For more information, go to <a href=\"http://nodexl.codeplex.com/\">"
+        + "NodeXL on CodePlex</a>."
+        ;
 
 
     //*************************************************************************

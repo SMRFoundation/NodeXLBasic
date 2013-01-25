@@ -210,6 +210,149 @@ public class GraphMLXmlDocument : XmlDocument
     }
 
     //*************************************************************************
+    //  Method: DefineEdgeStringGraphMLAttributes()
+    //
+    /// <summary>
+    /// Defines one or more GraphML-Attributes of type "string" for edges.
+    /// </summary>
+    ///
+    /// <param name="attributeIDNamePairs">
+    /// Array of zero or more pairs of strings.  The first string in the pair
+    /// is an attribute ID and the second is the corresponding attribute name.
+    /// </param>
+    /// 
+    /// <remarks>
+    /// THe GraphML-Attributes cannot have default attribute values.
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    DefineEdgeStringGraphMLAttributes
+    (
+        params String[] attributeIDNamePairs
+    )
+    {
+        Debug.Assert(attributeIDNamePairs != null);
+        AssertValid();
+
+        DefineStringGraphMLAttributes(true, attributeIDNamePairs);
+    }
+
+    //*************************************************************************
+    //  Method: DefineVertexStringGraphMLAttributes()
+    //
+    /// <summary>
+    /// Defines one or more GraphML-Attributes of type "string" for vertices.
+    /// </summary>
+    ///
+    /// <param name="attributeIDNamePairs">
+    /// Array of zero or more pairs of strings.  The first string in the pair
+    /// is an attribute ID and the second is the corresponding attribute name.
+    /// </param>
+    /// 
+    /// <remarks>
+    /// THe GraphML-Attributes cannot have default attribute values.
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    DefineVertexStringGraphMLAttributes
+    (
+        params String[] attributeIDNamePairs
+    )
+    {
+        Debug.Assert(attributeIDNamePairs != null);
+        AssertValid();
+
+        DefineStringGraphMLAttributes(false, attributeIDNamePairs);
+    }
+
+    //*************************************************************************
+    //  Method: DefineStringGraphMLAttributes()
+    //
+    /// <summary>
+    /// Defines one or more GraphML-Attributes of type "string" for edges or
+    /// vertices.
+    /// </summary>
+    ///
+    /// <param name="forEdges">
+    /// true if the attributes are for edges, false if they are for vertices.
+    /// </param>
+    ///
+    /// <param name="attributeIDNamePairs">
+    /// Array of zero or more pairs of strings.  The first string in the pair
+    /// is an attribute ID and the second is the corresponding attribute name.
+    /// </param>
+    /// 
+    /// <remarks>
+    /// THe GraphML-Attributes cannot have default attribute values.
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    DefineStringGraphMLAttributes
+    (
+        Boolean forEdges,
+        params String[] attributeIDNamePairs
+    )
+    {
+        Debug.Assert(attributeIDNamePairs != null);
+        AssertValid();
+
+        DefineGraphMLAttributes(forEdges, "string", attributeIDNamePairs);
+    }
+
+    //*************************************************************************
+    //  Method: DefineGraphMLAttributes()
+    //
+    /// <summary>
+    /// Defines one or more GraphML-Attributes for edges or vertices.
+    /// </summary>
+    ///
+    /// <param name="forEdges">
+    /// true if the attributes are for edges, false if they are for vertices.
+    /// </param>
+    ///
+    /// <param name="attributeType">
+    /// The attribute's type  Must be "boolean," "int," "long," "float,"
+    /// "double," or "string."
+    /// </param>
+    ///
+    /// <param name="attributeIDNamePairs">
+    /// Array of zero or more pairs of strings.  The first string in the pair
+    /// is an attribute ID and the second is the corresponding attribute name.
+    /// </param>
+    /// 
+    /// <remarks>
+    /// THe GraphML-Attributes cannot have default attribute values.
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    DefineGraphMLAttributes
+    (
+        Boolean forEdges,
+        String attributeType,
+        params String[] attributeIDNamePairs
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(attributeType) );
+        Debug.Assert(attributeIDNamePairs != null);
+        AssertValid();
+
+        Int32 iStrings = attributeIDNamePairs.Length;
+        Debug.Assert(iStrings % 2 == 0);
+
+        for (Int32 i = 0; i < iStrings; i += 2)
+        {
+            DefineGraphMLAttribute(forEdges,
+                attributeIDNamePairs[i + 0],
+                attributeIDNamePairs[i + 1],
+                attributeType, null);
+        }
+    }
+
+    //*************************************************************************
     //  Method: AppendVertexXmlNode()
     //
     /// <summary>

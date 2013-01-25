@@ -112,6 +112,112 @@ public static class ColorUtil
     }
 
     //*************************************************************************
+    //  Method: TryConvertFromInvariantString()
+    //
+    /// <summary>
+    /// Attempts to convert a string to a color.
+    /// </summary>
+    ///
+    /// <param name="theString">
+    /// The string that might contain a color.  Valid colors are those
+    /// recognized by the ColorConverter class, as well as named colors that
+    /// have spaces in them.  Both "LightBlue" and "LightBlue" are valid
+    /// colors, for example.
+    /// </param>
+    ///
+    /// <param name="colorConverter">
+    /// The ColorConverter object to use.
+    /// </param>
+    ///
+    /// <param name="color">
+    /// Where the converted color gets stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if <paramref name="theString" /> contains a valid color.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If <paramref name="theString" /> contains a valid color, the converted
+    /// color gets stored at <paramref name="color" /> and true is returned.
+    /// Otherwise, false is returned.
+    /// </remarks>
+    //*************************************************************************
+
+    public static Boolean
+    TryConvertFromInvariantString
+    (
+        String theString,
+        ColorConverter colorConverter,
+        out Color color
+    )
+    {
+        Debug.Assert(colorConverter != null);
+        Debug.Assert(theString != null);
+
+        color = Color.Empty;
+
+        // Remove spaces in named colors, so that "Light Blue" becomes
+        // "LightBlue", for example.
+
+        theString = theString.Replace(" ", String.Empty);
+
+        if (theString.Length == 0)
+        {
+            // ColorConverter converts an empty string to Color.Black.  Bypass
+            // ColorConverter.
+
+            return (false);
+        }
+
+        try
+        {
+            color = (Color)colorConverter.ConvertFromInvariantString(
+                theString);
+        }
+        catch (Exception)
+        {
+            // (Format errors raise a System.Exception with an inner exception
+            // of type FormatException.  Go figure.)
+
+            return (false);
+        }
+
+        return (true);
+    }
+
+    //*************************************************************************
+    //  Method: ToHtmlString()
+    //
+    /// <summary>
+    /// Converts a Color to an HTML string in the format #rrggbb.
+    /// </summary>
+    ///
+    /// <param name="color">
+    /// The color to convert.
+    /// </param>
+    ///
+    /// <returns>
+    /// The color, in #rrggbb format.
+    /// </returns>
+    //*************************************************************************
+
+    public static String
+    ToHtmlString
+    (
+        Color color
+    )
+    {
+        return ( String.Format(
+            "#{0:x2}{1:x2}{2:x2}"
+            ,
+            color.R,
+            color.G,
+            color.B
+            ) );
+    }
+
+    //*************************************************************************
     //  Method: ColorHLSToRGB()
     //
     /// <summary>
