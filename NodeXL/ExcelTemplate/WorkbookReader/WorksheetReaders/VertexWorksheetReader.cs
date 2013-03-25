@@ -152,6 +152,8 @@ public class VertexWorksheetReader : WorksheetReaderBase
             {
                 ReadVertexTable(oVertexTable, readWorkbookContext, graph,
                     out bLayoutAndZOrderSet);
+
+                RemoveUnwantedIsolates(readWorkbookContext, graph);
             }
             finally
             {
@@ -365,6 +367,9 @@ public class VertexWorksheetReader : WorksheetReaderBase
                         oVertex = CreateVertex(sVertexName, oVertices,
                             oVertexNameDictionary);
                     }
+
+                    oVertex.SetValue(
+                        ReservedMetadataKeys.VertexHasVisibilityOfShow, null);
 
                     break;
 
@@ -1233,6 +1238,64 @@ public class VertexWorksheetReader : WorksheetReaderBase
                 oVertex.SetValue(
                     ReservedMetadataKeys.SortableLayoutAndZOrder,
                     Single.MaxValue);
+            }
+        }
+    }
+
+    //*************************************************************************
+    //  Method: RemoveUnwantedIsolates()
+    //
+    /// <summary>
+    /// Removes vertices that were isolated as a result of other vertices being
+    /// skipped.
+    /// </summary>
+    ///
+    /// <param name="oReadWorkbookContext">
+    /// Provides access to objects needed for converting an Excel workbook to a
+    /// NodeXL graph.
+    /// </param>
+    ///
+    /// <param name="oGraph">
+    /// Graph containing the vertices.
+    /// </param>
+    ///
+    /// <remarks>
+    /// Assume the edge worksheet has an (A,B) row.  Also assume the vertex
+    /// worksheet has an A row with a default visibility of ShowIfInAnEdge and
+    /// a B row with a visibility of Skip.  The Skip visibility caused vertex B
+    /// and edge (A,B) to be removed from the graph, but it left vertex A in
+    /// the graph.  This method removes vertex A, because it is no longer in an
+    /// edge.
+    /// </remarks>
+    //*************************************************************************
+
+    protected void
+    RemoveUnwantedIsolates
+    (
+        ReadWorkbookContext oReadWorkbookContext,
+        IGraph oGraph
+    )
+    {
+        Debug.Assert(oReadWorkbookContext != null);
+        Debug.Assert(oGraph != null);
+        AssertValid();
+
+        List<IVertex> oIsolatedVertices = new List<IVertex>(
+
+            from oVertex in oGraph.Vertices
+            where oVertex.Degree == 0
+            select oVertex
+            );
+
+        foreach (IVertex oIsolatedVertex in oIsolatedVertices)
+        {
+            // Don't remove the isolated vertex if it is supposed to be shown
+            // regardless of whether it is part of an edge.
+
+            if ( !oIsolatedVertex.ContainsKey(
+                ReservedMetadataKeys.VertexHasVisibilityOfShow) )
+            {
+                RemoveVertex(oIsolatedVertex, oReadWorkbookContext, oGraph);
             }
         }
     }

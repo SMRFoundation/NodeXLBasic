@@ -50,6 +50,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.chkIncludeFollowedFollowerEdges = new System.Windows.Forms.CheckBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.slStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.usrTwitterRateLimits = new Smrf.NodeXL.GraphDataProviders.Twitter.TwitterRateLimitsControl();
             this.pnlUserInputs.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -87,15 +88,15 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.pnlUserInputs.Controls.Add(this.label1);
             this.pnlUserInputs.Controls.Add(this.usrNetworkLevel);
             this.pnlUserInputs.Controls.Add(this.groupBox2);
-            this.pnlUserInputs.Location = new System.Drawing.Point(12, 12);
+            this.pnlUserInputs.Location = new System.Drawing.Point(12, 39);
             this.pnlUserInputs.Name = "pnlUserInputs";
-            this.pnlUserInputs.Size = new System.Drawing.Size(359, 527);
+            this.pnlUserInputs.Size = new System.Drawing.Size(359, 500);
             this.pnlUserInputs.TabIndex = 0;
             // 
             // chkExpandLatestStatusUrls
             // 
             this.chkExpandLatestStatusUrls.AutoSize = true;
-            this.chkExpandLatestStatusUrls.Location = new System.Drawing.Point(147, 264);
+            this.chkExpandLatestStatusUrls.Location = new System.Drawing.Point(147, 266);
             this.chkExpandLatestStatusUrls.Name = "chkExpandLatestStatusUrls";
             this.chkExpandLatestStatusUrls.Size = new System.Drawing.Size(204, 17);
             this.chkExpandLatestStatusUrls.TabIndex = 6;
@@ -104,15 +105,15 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // 
             // usrTwitterAuthorization
             // 
-            this.usrTwitterAuthorization.Location = new System.Drawing.Point(0, 315);
+            this.usrTwitterAuthorization.Location = new System.Drawing.Point(0, 317);
             this.usrTwitterAuthorization.Name = "usrTwitterAuthorization";
-            this.usrTwitterAuthorization.Size = new System.Drawing.Size(352, 209);
-            this.usrTwitterAuthorization.Status = Smrf.NodeXL.GraphDataProviders.Twitter.TwitterAuthorizationStatus.NoTwitterAccount;
+            this.usrTwitterAuthorization.Size = new System.Drawing.Size(352, 180);
+            this.usrTwitterAuthorization.Status = Smrf.NodeXL.GraphDataProviders.Twitter.TwitterAuthorizationStatus.HasTwitterAccountNotAuthorized;
             this.usrTwitterAuthorization.TabIndex = 8;
             // 
             // usrLimitToN
             // 
-            this.usrLimitToN.Location = new System.Drawing.Point(128, 289);
+            this.usrLimitToN.Location = new System.Drawing.Point(128, 291);
             this.usrLimitToN.MaximumN = 9999;
             this.usrLimitToN.N = 2147483647;
             this.usrLimitToN.Name = "usrLimitToN";
@@ -122,7 +123,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // 
             // chkIncludeLatestStatuses
             // 
-            this.chkIncludeLatestStatuses.Location = new System.Drawing.Point(128, 225);
+            this.chkIncludeLatestStatuses.Location = new System.Drawing.Point(128, 227);
             this.chkIncludeLatestStatuses.Name = "chkIncludeLatestStatuses";
             this.chkIncludeLatestStatuses.Size = new System.Drawing.Size(222, 37);
             this.chkIncludeLatestStatuses.TabIndex = 5;
@@ -135,7 +136,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.groupBox1.Controls.Add(this.radIncludeFollowedAndFollower);
             this.groupBox1.Controls.Add(this.radIncludeFollowerVertices);
             this.groupBox1.Controls.Add(this.radIncludeFollowedVertices);
-            this.groupBox1.Location = new System.Drawing.Point(0, 45);
+            this.groupBox1.Location = new System.Drawing.Point(0, 47);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(350, 86);
             this.groupBox1.TabIndex = 2;
@@ -177,7 +178,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // 
             // txbScreenNameToAnalyze
             // 
-            this.txbScreenNameToAnalyze.Location = new System.Drawing.Point(0, 17);
+            this.txbScreenNameToAnalyze.Location = new System.Drawing.Point(0, 19);
             this.txbScreenNameToAnalyze.MaxLength = 15;
             this.txbScreenNameToAnalyze.Name = "txbScreenNameToAnalyze";
             this.txbScreenNameToAnalyze.Size = new System.Drawing.Size(222, 20);
@@ -186,7 +187,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(0, -2);
+            this.label1.Location = new System.Drawing.Point(0, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(264, 13);
             this.label1.TabIndex = 0;
@@ -195,7 +196,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // usrNetworkLevel
             // 
             this.usrNetworkLevel.Level = Smrf.SocialNetworkLib.NetworkLevel.One;
-            this.usrNetworkLevel.Location = new System.Drawing.Point(0, 228);
+            this.usrNetworkLevel.Location = new System.Drawing.Point(0, 230);
             this.usrNetworkLevel.Name = "usrNetworkLevel";
             this.usrNetworkLevel.Size = new System.Drawing.Size(119, 79);
             this.usrNetworkLevel.TabIndex = 4;
@@ -205,7 +206,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.groupBox2.Controls.Add(this.chkIncludeMentionsEdges);
             this.groupBox2.Controls.Add(this.chkIncludeRepliesToEdges);
             this.groupBox2.Controls.Add(this.chkIncludeFollowedFollowerEdges);
-            this.groupBox2.Location = new System.Drawing.Point(0, 137);
+            this.groupBox2.Location = new System.Drawing.Point(0, 139);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(350, 85);
             this.groupBox2.TabIndex = 3;
@@ -262,6 +263,13 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.slStatusLabel.Spring = true;
             this.slStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // usrTwitterRateLimits
+            // 
+            this.usrTwitterRateLimits.Location = new System.Drawing.Point(12, 12);
+            this.usrTwitterRateLimits.Name = "usrTwitterRateLimits";
+            this.usrTwitterRateLimits.Size = new System.Drawing.Size(352, 14);
+            this.usrTwitterRateLimits.TabIndex = 3;
+            // 
             // TwitterGetUserNetworkDialog
             // 
             this.AcceptButton = this.btnOK;
@@ -269,6 +277,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(374, 601);
+            this.Controls.Add(this.usrTwitterRateLimits);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.pnlUserInputs);
             this.Controls.Add(this.btnCancel);
@@ -313,5 +322,6 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
         private System.Windows.Forms.CheckBox chkIncludeFollowedFollowerEdges;
         private TwitterAuthorizationControl usrTwitterAuthorization;
         private System.Windows.Forms.CheckBox chkExpandLatestStatusUrls;
+        private TwitterRateLimitsControl usrTwitterRateLimits;
     }
 }

@@ -93,6 +93,15 @@ the template from data sources that the template doesn't know about, such as
 Twitter, YouTube, and Flickr.
 
 
+GraphMLFileProcessor
+--------------------
+Windows Forms project.  Continuously checks for new GraphML files created by
+the Network Server console application, and creates and automates a NodeXL
+workbook for each such file.  This was implemented after it was discovered that
+simultaneous Excel instances created by multiple instances of the NetworkServer
+program do not work properly.
+
+
 Layouts
 -------------
 Class library project.  Contains classes that lay out graphs.
@@ -101,8 +110,8 @@ Class library project.  Contains classes that lay out graphs.
 NetworkServer
 -------------
 Console project.  Gets graph data using the classes in GraphDataProviders and
-stores it in a variety of file formats.  This is a console-based alternative to
-getting the same graph data from within the ExcelTemplate.
+stores it in GraphML files and NodeXL workbooks.  This is a console-based
+alternative to getting the same graph data from within the ExcelTemplate.
 
 
 TestGraphDataProviders
@@ -137,4 +146,3 @@ WpfVisualization
 ----------------
 Class library project.  Contains classes used to draw graphs in the WPF
 environment.
-

@@ -123,19 +123,25 @@ will remember the authorization and use your account for all network requests.
         ***********************************************************************
         -->
 
-        <WhatToInclude>RepliesToEdges,MentionsEdges,NonRepliesToNonMentionsEdges</WhatToInclude>
+        <WhatToInclude>MentionsEdges,Statuses</WhatToInclude>
 
 
         <!--
         ***********************************************************************
-        MaximumPeoplePerRequest
+        MaximumStatuses
         
-        The maximum number of people to request for each query, or leave empty
-        for no limit.
+        The maximum number of tweets to request.
+
+        (There was a value here in earlier versions of NodeXL called
+        MaximumPeoplePerRequest.  It has been replaced with MaximumStatuses.
+        NodeXL will read a MaximumPeoplePerRequest value from older
+        configuration files, but it will treat it like MaximumStatuses.  New
+        configuration files should use MaximumStatuses, not
+        MaximumPeoplePerRequest.)
         ***********************************************************************
         -->
 
-        <MaximumPeoplePerRequest>100</MaximumPeoplePerRequest>
+        <MaximumStatuses>10</MaximumStatuses>
 
 
         <!--
@@ -295,7 +301,7 @@ will remember the authorization and use your account for all network requests.
         ***********************************************************************
         -->
 
-        <WhatToInclude>FollowedVertices,FollowedFollowerEdges</WhatToInclude>
+        <WhatToInclude>FollowedVertices,LatestStatuses</WhatToInclude>
 
 
         <!--
@@ -318,7 +324,7 @@ will remember the authorization and use your account for all network requests.
         ***********************************************************************
         -->
 
-        <MaximumPeoplePerRequest>100</MaximumPeoplePerRequest>
+        <MaximumPeoplePerRequest>10</MaximumPeoplePerRequest>
 
 
         <!--
@@ -489,7 +495,7 @@ will remember the authorization and use your account for all network requests.
         ***********************************************************************
         -->
 
-        <WhatToInclude>FollowedEdges,MentionsEdges</WhatToInclude>
+        <WhatToInclude>MentionsEdges,LatestStatuses</WhatToInclude>
 
 
         <!--

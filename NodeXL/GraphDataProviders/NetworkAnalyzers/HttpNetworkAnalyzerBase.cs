@@ -1,4 +1,9 @@
 ﻿
+
+// Define WriteRequestsToDebug to write web request details to Debug.Write().
+//
+// #define WriteRequestsToDebug
+
 using System;
 using System.Xml;
 using System.IO;
@@ -465,6 +470,12 @@ public abstract class HttpNetworkAnalyzerBase : Object
             }
             catch (Exception oException)
             {
+                #if WriteRequestsToDebug
+
+                Debug.WriteLine("Exception: " + oException.Message);
+
+                #endif
+
                 if (oStream != null)
                 {
                     oStream.Close();
@@ -564,14 +575,25 @@ public abstract class HttpNetworkAnalyzerBase : Object
 
         oHttpWebRequest.KeepAlive = false;
 
+        #if WriteRequestsToDebug
+
+        Debug.WriteLine("\r\n\r\nURL: " + oHttpWebRequest.RequestUri);
+
+        #endif
+
         HttpWebResponse oHttpWebResponse =
             (HttpWebResponse)oHttpWebRequest.GetResponse();
 
-        #if false
-        if (oHttpWebRequest.RequestUri.PathAndQuery.Contains("users/lookup") )
+        #if WriteRequestsToDebug
+
+        foreach (String sKey in oHttpWebResponse.Headers.Keys)
         {
-            oHttpWebResponse.Close();
-            throw new WebException("Testing exceptions.");
+            Debug.WriteLine( String.Format(
+                "Response header: {0} = {1}"
+                ,
+                sKey,
+                oHttpWebResponse.Headers[sKey]
+                ) );
         }
         #endif
 

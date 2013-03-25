@@ -564,8 +564,7 @@ public class TwitterListNetworkAnalyzer : TwitterNetworkAnalyzerBase
             // list.
 
             foreach ( Object oResult in EnumerateJsonValues(sUrl, "users",
-                Int32.MaxValue, Int32.MaxValue, false, false,
-                oRequestStatistics) )
+                Int32.MaxValue, false, oRequestStatistics) )
             {
                 String sScreenName;
 

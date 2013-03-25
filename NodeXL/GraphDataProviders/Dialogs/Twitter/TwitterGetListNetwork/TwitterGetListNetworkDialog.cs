@@ -438,12 +438,12 @@ public partial class TwitterGetListNetworkDialog
 
     /// true to include an edge for each followed relationship.
 
-    protected static Boolean m_bIncludeFollowedEdges = true;
+    protected static Boolean m_bIncludeFollowedEdges = false;
 
     /// true to include an edge from person A to person B if person A's tweet
     /// is a reply to person B.
 
-    protected static Boolean m_bIncludeRepliesToEdges = false;
+    protected static Boolean m_bIncludeRepliesToEdges = true;
 
     /// true to include an edge from person A to person B if person A's tweet
     /// is mentions person B.

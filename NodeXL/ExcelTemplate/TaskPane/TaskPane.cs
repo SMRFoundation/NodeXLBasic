@@ -813,7 +813,9 @@ public partial class TaskPane : UserControl
             if (m_oDynamicFilterDialog != null)
             {
                 ReadDynamicFilterColumns(false);
-                ReadFilteredAlpha(false);
+
+                DynamicFilterHandler.ReadFilteredAlpha(m_oDynamicFilterDialog,
+                    oNodeXLControl, false);
             }
 
             oNodeXLControl.DrawGraph(bLayOutGraph);
@@ -2831,7 +2833,10 @@ public partial class TaskPane : UserControl
         if (m_oDynamicFilterDialog != null)
         {
             ReadDynamicFilterColumns(false);
-            ReadFilteredAlpha(true);
+
+            DynamicFilterHandler.ReadFilteredAlpha(m_oDynamicFilterDialog,
+                oNodeXLControl, true);
+
             UpdateDynamicFiltersLegend();
         }
     }
@@ -3349,383 +3354,10 @@ public partial class TaskPane : UserControl
     {
         AssertValid();
 
-        ReadEdgeDynamicFilterColumn(false);
-        ReadVertexDynamicFilterColumn(bForceRedraw);
+        DynamicFilterHandler.ReadDynamicFilterColumns(m_oDynamicFilterDialog,
+            m_oWorkbook, oNodeXLControl, bForceRedraw, m_oEdgeRowIDDictionary,
+            m_oVertexRowIDDictionary);
     }
-
-    //*************************************************************************
-    //  Method: ReadEdgeDynamicFilterColumn()
-    //
-    /// <summary>
-    /// Updates the graph with the contents of the dynamic filter column on
-    /// the edge table.
-    /// </summary>
-    ///
-    /// <param name="bForceRedraw">
-    /// true if the graph should be redrawn after the column is read.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    ReadEdgeDynamicFilterColumn
-    (
-        Boolean bForceRedraw
-    )
-    {
-        AssertValid();
-
-        ReadDynamicFilterColumn(WorksheetNames.Edges, TableNames.Edges,
-            m_oEdgeRowIDDictionary, GetFilteredEdgeIDs(), this.OnEdgeFiltered,
-            bForceRedraw);
-    }
-
-    //*************************************************************************
-    //  Method: ReadVertexDynamicFilterColumn()
-    //
-    /// <summary>
-    /// Updates the graph with the contents of the dynamic filter column on
-    /// the vertex table.
-    /// </summary>
-    ///
-    /// <param name="bForceRedraw">
-    /// true if the graph should be redrawn after the column is read.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    ReadVertexDynamicFilterColumn
-    (
-        Boolean bForceRedraw
-    )
-    {
-        AssertValid();
-
-        ReadDynamicFilterColumn(WorksheetNames.Vertices, TableNames.Vertices,
-            m_oVertexRowIDDictionary, GetFilteredVertexIDs(),
-            this.OnVertexFiltered, bForceRedraw);
-    }
-
-    //*************************************************************************
-    //  Method: ReadDynamicFilterColumn()
-    //
-    /// <summary>
-    /// Updates the graph with the contents of the dynamic filter column on
-    /// the edge or vertex table.
-    /// </summary>
-    ///
-    /// <param name="sWorksheetName">
-    /// Name of the worksheet containing the table.
-    /// </param>
-    ///
-    /// <param name="sTableName">
-    /// Name of the table.
-    /// </param>
-    ///
-    /// <param name="oIDDictionary">
-    /// Dictionary that maps IDs stored in the edge or vertex worksheet to edge
-    /// or vertex objects in the graph.
-    /// </param>
-    ///
-    /// <param name="oFilteredIDs">
-    /// HashSet of edge or vertex IDs that have been filtered.  The HashSet is
-    /// first cleared and then populated with the IEdge.ID or IVertex.ID of
-    /// each edge or vertex that is filtered.
-    /// </param>
-    ///
-    /// <param name="oOnEdgeOrVertexFiltered">
-    /// Method to call as each edge or vertex is made visible or filtered.
-    /// </param>
-    ///
-    /// <param name="bForceRedraw">
-    /// true if the graph should be redrawn after the column is read.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    ReadDynamicFilterColumn
-    (
-        String sWorksheetName,
-        String sTableName,
-        Dictionary<Int32, IIdentityProvider> oIDDictionary,
-        HashSet<Int32> oFilteredIDs,
-        EdgeOrVertexFilteredHandler oOnEdgeOrVertexFiltered,
-        Boolean bForceRedraw
-    )
-    {
-        Debug.Assert( !String.IsNullOrEmpty(sWorksheetName) );
-        Debug.Assert( !String.IsNullOrEmpty(sTableName) );
-        Debug.Assert(oIDDictionary != null);
-        Debug.Assert(oFilteredIDs != null);
-        Debug.Assert(oOnEdgeOrVertexFiltered != null);
-        AssertValid();
-
-        if (oNodeXLControl.IsLayingOutGraph)
-        {
-            return;
-        }
-
-        oFilteredIDs.Clear();
-
-        // The dynamic filter column on the edge or vertex table contains
-        // Booleans indicating whether the edge or vertex should be made
-        // visible.
-
-        // Get the data in the ID and dynamic filter columns.
-
-        Object [,] oIDColumnValues, oDynamicFilterColumnValues;
-
-        if ( !TryGetIDAndDynamicFilterValues(sWorksheetName, sTableName,
-            out oIDColumnValues, out oDynamicFilterColumnValues) )
-        {
-            return;
-        }
-
-        HashSet<Int32> oFilteredVertexIDs = GetFilteredVertexIDs();
-
-        Int32 iRows = oIDColumnValues.GetUpperBound(0);
-        Debug.Assert( iRows == oDynamicFilterColumnValues.GetUpperBound(0) );
-
-        for (Int32 iOneBasedRow = 1; iOneBasedRow <= iRows; iOneBasedRow++)
-        {
-            Object oID = oIDColumnValues[iOneBasedRow, 1];
-
-            Object oDynamicFilter =
-                oDynamicFilterColumnValues[iOneBasedRow, 1];
-
-            IIdentityProvider oEdgeOrVertex;
-
-            if (
-                oID is Double
-                &&
-                oIDDictionary.TryGetValue( (Int32)(Double)oID,
-                    out oEdgeOrVertex )
-                &&
-                oDynamicFilter is Boolean
-                )
-            {
-                Debug.Assert(oEdgeOrVertex is IMetadataProvider);
-
-                IMetadataProvider oEdgeOrVertex2 =
-                    (IMetadataProvider)oEdgeOrVertex;
-
-                Boolean bMakeVisible = (Boolean)oDynamicFilter;
-
-                if (!bMakeVisible)
-                {
-                    oFilteredIDs.Add(oEdgeOrVertex.ID);
-                }
-
-                if (oEdgeOrVertex2 is IEdge && bMakeVisible)
-                {
-                    IEdge oEdge = (IEdge)oEdgeOrVertex;
-
-                    // Don't make the edge visible if either of its vertices
-                    // was filtered by a vertex filter.
-
-                    IVertex [] aoVertices = oEdge.Vertices;
-
-                    if (
-                        oFilteredVertexIDs.Contains(aoVertices[0].ID)
-                        ||
-                        oFilteredVertexIDs.Contains(aoVertices[1].ID)
-                        )
-
-                    {
-                        bMakeVisible = false;
-                    }
-                }
-
-                // Filter or make visible the edge or vertex, then call the
-                // handler specified by the caller.
-
-                DynamicallyFilterEdgeOrVertex(oEdgeOrVertex2, bMakeVisible);
-
-                oOnEdgeOrVertexFiltered(oEdgeOrVertex2, bMakeVisible);
-            }
-        }
-
-        if (bForceRedraw)
-        {
-            oNodeXLControl.DrawGraph();
-        }
-    }
-
-    //*************************************************************************
-    //  Method: ReadFilteredAlpha()
-    //
-    /// <summary>
-    /// Reads the filtered alpha specified by the user in the
-    /// m_oDynamicFilterDialog and applies it to the NodeXLControl.
-    /// </summary>
-    ///
-    /// <param name="bForceRedraw">
-    /// true if the graph should be redrawn after the filtered alpha is read.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    ReadFilteredAlpha
-    (
-        Boolean bForceRedraw
-    )
-    {
-        AssertValid();
-
-        oNodeXLControl.FilteredAlpha =
-            ( new AlphaConverter() ).WorkbookToGraphAsByte(
-                m_oDynamicFilterDialog.FilteredAlpha
-                );
-
-        if (bForceRedraw)
-        {
-            oNodeXLControl.DrawGraph();
-        }
-    }
-
-    //*************************************************************************
-    //  Method: TryGetIDAndDynamicFilterValues()
-    //
-    /// <summary>
-    /// Tries to get the values from the ID and dynamic filter columns on a
-    /// specified table.
-    /// </summary>
-    ///
-    /// <param name="sWorksheetName">
-    /// Name of the worksheet containing the table.
-    /// </param>
-    ///
-    /// <param name="sTableName">
-    /// Name of the table.
-    /// </param>
-    ///
-    /// <param name="oIDColumnValues">
-    /// Where the values from the ID column get stored.
-    /// </param>
-    ///
-    /// <param name="oDynamicFilterColumnValues">
-    /// Where the values from the dynamic filter column get stored.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if successful.
-    /// </returns>
-    //*************************************************************************
-
-    protected Boolean
-    TryGetIDAndDynamicFilterValues
-    (
-        String sWorksheetName,
-        String sTableName,
-        out Object [,] oIDColumnValues,
-        out Object [,] oDynamicFilterColumnValues
-    )
-    {
-        Debug.Assert( !String.IsNullOrEmpty(sWorksheetName) );
-        Debug.Assert( !String.IsNullOrEmpty(sTableName) );
-        AssertValid();
-
-        oIDColumnValues = oDynamicFilterColumnValues = null;
-
-        ListObject oTable;
-        Range oIDColumnData, oDynamicFilterColumnData;
-
-        return (
-            ExcelTableUtil.TryGetTable(m_oWorkbook, sWorksheetName, sTableName,
-                out oTable)
-            &&
-            ExcelTableUtil.TryGetTableColumnDataAndValues(oTable,
-                CommonTableColumnNames.ID, out oIDColumnData,
-                out oIDColumnValues)
-            &&
-            ExcelTableUtil.TryGetTableColumnDataAndValues(oTable,
-                CommonTableColumnNames.DynamicFilter,
-                out oDynamicFilterColumnData, out oDynamicFilterColumnValues)
-            );
-    }
-
-    //*************************************************************************
-    //  Method: DynamicallyFilterEdgeOrVertex
-    //
-    /// <summary>
-    /// Makes visible or filters an edge or vertex in response to a change in a
-    /// dynamic filter.
-    /// </summary>
-    ///
-    /// <param name="oEdgeOrVertex">
-    /// The edge or vertex to make visible or filter.
-    /// </param>
-    ///
-    /// <param name="bMakeVisible">
-    /// true to make the edge or vertex visible, false to filter it.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    DynamicallyFilterEdgeOrVertex
-    (
-        IMetadataProvider oEdgeOrVertex,
-        Boolean bMakeVisible
-    )
-    {
-        Debug.Assert(oEdgeOrVertex != null);
-        AssertValid();
-
-        // Don't do anything if the edge or vertex is hidden.
-
-        Object oVisibilityKeyValue;
-
-        if (
-            oEdgeOrVertex.TryGetValue(ReservedMetadataKeys.Visibility,
-                typeof(VisibilityKeyValue), out oVisibilityKeyValue)
-            &&
-            (VisibilityKeyValue)oVisibilityKeyValue ==
-                VisibilityKeyValue.Hidden
-            )
-        {
-            return;
-        }
-
-        if (bMakeVisible)
-        {
-            // Remove the key that controls visibility.  Without the key, the
-            // edge or vertex is visible by default.
-
-            oEdgeOrVertex.RemoveKey(ReservedMetadataKeys.Visibility);
-        }
-        else
-        {
-            // Set the key to Filtered.
-
-            oEdgeOrVertex.SetValue(ReservedMetadataKeys.Visibility,
-                VisibilityKeyValue.Filtered);
-        }
-    }
-
-    //*************************************************************************
-    //  Delegate: EdgeOrVertexFilteredHandler
-    //
-    /// <summary>
-    /// Represents a method that will be called by <see
-    /// cref="ReadDynamicFilterColumn" /> when an edge or vertex is made
-    /// visible or filtered.
-    /// </summary>
-    ///
-    /// <param name="oEdgeOrVertex">
-    /// The edge or vertex that was made visible or filtered.
-    /// </param>
-    ///
-    /// <param name="bMadeVisible">
-    /// true if the edge or vertex was made visible, false if it was filtered.
-    /// </param>
-    //*************************************************************************
-
-    protected delegate void
-    EdgeOrVertexFilteredHandler
-    (
-        Object oEdgeOrVertex,
-        Boolean bMadeVisible
-    );
-
 
     //*************************************************************************
     //  Method: OnLayoutChanged
@@ -3805,104 +3437,6 @@ public partial class TaskPane : UserControl
     }
 
     //*************************************************************************
-    //  Method: OnEdgeFiltered
-    //
-    /// <summary>
-    /// Gets called by <see cref="ReadDynamicFilterColumn" /> when an edge is
-    /// made visible or filtered.
-    /// </summary>
-    ///
-    /// <param name="oEdge">
-    /// The edge that was made visible or filtered.
-    /// </param>
-    ///
-    /// <param name="bMadeVisible">
-    /// true if the edge was made visible, false if it was filtered.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    OnEdgeFiltered
-    (
-        Object oEdge,
-        Boolean bMadeVisible
-    )
-    {
-        AssertValid();
-
-        // When an edge is filtered, its vertices should not be modified.  When
-        // an edge is made visible, its vertices should also be made visible.
-
-        if (bMadeVisible)
-        {
-            Debug.Assert(oEdge is IEdge);
-
-            IEdge oEdge2 = (IEdge)oEdge;
-            IVertex [] aoVertices = oEdge2.Vertices;
-
-            DynamicallyFilterEdgeOrVertex(aoVertices[0], true);
-            DynamicallyFilterEdgeOrVertex(aoVertices[1], true);
-        }
-    }
-
-    //*************************************************************************
-    //  Method: OnVertexFiltered
-    //
-    /// <summary>
-    /// Gets called by <see cref="ReadDynamicFilterColumn" /> when a vertex is
-    /// made visible or filtered.
-    /// </summary>
-    ///
-    /// <param name="oVertex">
-    /// The vertex that was made visible or filtered.
-    /// </param>
-    ///
-    /// <param name="bMadeVisible">
-    /// true if the vertex was made visible, false if it was filtered.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    OnVertexFiltered
-    (
-        Object oVertex,
-        Boolean bMadeVisible
-    )
-    {
-        AssertValid();
-
-        // When a vertex is filtered, its incident edges should also be
-        // filtered.  When a vertex is made visible, its incident edges should
-        // also be made visible, unless 1) the edge was filtered by an edge
-        // filter; or 2) the adjacent vertex was filtered by a vertex filter.
-
-        HashSet<Int32> oFilteredEdgeIDs = GetFilteredEdgeIDs();
-        HashSet<Int32> oFilteredVertexIDs = GetFilteredVertexIDs();
-
-        Debug.Assert(oVertex is IVertex);
-
-        IVertex oVertex2 = (IVertex)oVertex;
-
-        foreach (IEdge oEdge in oVertex2.IncidentEdges)
-        {
-            if (bMadeVisible)
-            {
-                if (
-                    oFilteredEdgeIDs.Contains(oEdge.ID)
-                    ||
-                    oFilteredVertexIDs.Contains(
-                        oEdge.GetAdjacentVertex(oVertex2).ID)
-                    )
-                {
-                    continue;
-                }
-            }
-
-            DynamicallyFilterEdgeOrVertex(oEdge, bMadeVisible);
-        }
-    }
-
-    //*************************************************************************
     //  Method: OnVerticesMoved()
     //
     /// <summary>
@@ -3959,69 +3493,6 @@ public partial class TaskPane : UserControl
         {
             this.UseWaitCursor = false;
         }
-    }
-
-    //*************************************************************************
-    //  Method: GetFilteredEdgeIDs
-    //
-    /// <summary>
-    /// Gets a HashSet of edges that have been dynamically filtered by edge
-    /// filters.
-    /// </summary>
-    ///
-    /// <returns>
-    /// A HashSet of IEdge.ID values.
-    /// used.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// The HashSet is available only when the m_oDynamicFilterDialog dialog is
-    /// open.
-    /// </remarks>
-    //*************************************************************************
-
-    protected HashSet<Int32>
-    GetFilteredEdgeIDs()
-    {
-        AssertValid();
-
-        Debug.Assert(m_oDynamicFilterDialog != null);
-        Debug.Assert( m_oDynamicFilterDialog.Tag is HashSet<Int32>[] );
-
-        return (
-            ( ( HashSet<Int32>[] )m_oDynamicFilterDialog.Tag )[0]
-            );
-    }
-
-    //*************************************************************************
-    //  Method: GetFilteredVertexIDs
-    //
-    /// <summary>
-    /// Gets a HashSet of vertices that have been dynamically filtered by
-    /// vertex filters.
-    /// </summary>
-    ///
-    /// <returns>
-    /// A HashSet of IVertex.ID values.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// The HashSet is available only when the m_oDynamicFilterDialog dialog is
-    /// open.
-    /// </remarks>
-    //*************************************************************************
-
-    protected HashSet<Int32>
-    GetFilteredVertexIDs()
-    {
-        AssertValid();
-
-        Debug.Assert(m_oDynamicFilterDialog != null);
-        Debug.Assert( m_oDynamicFilterDialog.Tag is HashSet<Int32>[] );
-
-        return (
-            ( ( HashSet<Int32>[] )m_oDynamicFilterDialog.Tag )[1]
-            );
     }
 
     //*************************************************************************
@@ -6037,20 +5508,9 @@ public partial class TaskPane : UserControl
             return;
         }
 
-        if (e.DynamicFilterColumns ==
-            (DynamicFilterColumns.EdgeTable | DynamicFilterColumns.VertexTable)
-            )
-        {
-            ReadDynamicFilterColumns(true);
-        }
-        else if (e.DynamicFilterColumns == DynamicFilterColumns.EdgeTable)
-        {
-            ReadEdgeDynamicFilterColumn(true);
-        }
-        else if (e.DynamicFilterColumns == DynamicFilterColumns.VertexTable)
-        {
-            ReadVertexDynamicFilterColumn(true);
-        }
+        DynamicFilterHandler.OnDynamicFilterColumnsChanged(
+            m_oDynamicFilterDialog, e, m_oWorkbook, oNodeXLControl,
+            m_oEdgeRowIDDictionary, m_oVertexRowIDDictionary);
 
         UpdateDynamicFiltersLegend();
     }
@@ -6085,7 +5545,8 @@ public partial class TaskPane : UserControl
             return;
         }
 
-        ReadFilteredAlpha(true);
+        DynamicFilterHandler.ReadFilteredAlpha(m_oDynamicFilterDialog,
+            oNodeXLControl, true);
     }
 
     //*************************************************************************

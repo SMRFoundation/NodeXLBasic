@@ -1042,6 +1042,23 @@ public static class ReservedMetadataKeys : Object
 
 
     //*************************************************************************
+    //  Keys used by VertexWorksheetReader
+    //*************************************************************************
+
+    /// <summary>
+    /// Key added to a vertex to mark it as a vertex that should be shown
+    /// regardless of whether it is part of an edge.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// The key's value is null.
+    /// </remarks>
+
+    public static readonly String VertexHasVisibilityOfShow =
+        FirstChar + "VertexHasVisibilityOfShow";
+
+
+    //*************************************************************************
     //  Keys used by GraphMLGraphAdapter
     //*************************************************************************
 

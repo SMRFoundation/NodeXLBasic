@@ -196,7 +196,6 @@ public class PerWorkbookSettings : WorksheetReaderBase
         {
             Debug.Assert( !String.IsNullOrEmpty(value) );
 
-            const Int32 MaximumCharactersPerCell = 6000;
             Int32 iWorkbookSettingsCellCount = 1;
 
             while (value.Length > 0)
@@ -415,8 +414,30 @@ public class PerWorkbookSettings : WorksheetReaderBase
 
         set
         {
-            SetValue( AutoFillWorkbookResultsSettingName,
-                value.ConvertToString() );
+            String sAutoFillWorkbookResults = value.ConvertToString();
+
+            if (sAutoFillWorkbookResults.Length > MaximumCharactersPerCell)
+            {
+                // Don't exceed Excel's maximum character count.
+                //
+                // A very long string can result if the user autofills a color
+                // column by category, for example, and there are many
+                // categories or the categories have long names.
+                //
+                // The proper way to handle this is to split the long string
+                // among multiple Excel cells, as is done in the
+                // WorkbookSettings property setter.
+                //
+                // The short-term fix implemented here, (which might suffice
+                // for the long term), is to not save the results.  The
+                // consequences are minor: there will be no autofill results in
+                // the graph summary or graph legend.
+
+                sAutoFillWorkbookResults = String.Empty;
+            }
+
+            SetValue(AutoFillWorkbookResultsSettingName,
+                sAutoFillWorkbookResults);
 
             AssertValid();
         }
@@ -979,6 +1000,16 @@ public class PerWorkbookSettings : WorksheetReaderBase
     ///
     public const String SubFieldSeparatorString =
         StringUtil.SubFieldSeparatorString;
+
+
+    //*************************************************************************
+    //  Other constants
+    //*************************************************************************
+
+    /// Maximum characters that can be written to an Excel cell.  See the
+    /// WorkbookSettings property setter for details.
+
+    protected const Int32 MaximumCharactersPerCell = 6000;
 
 
     //*************************************************************************

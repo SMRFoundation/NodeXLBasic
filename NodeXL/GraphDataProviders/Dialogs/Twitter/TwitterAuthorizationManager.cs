@@ -45,12 +45,11 @@ public class TwitterAuthorizationManager : Object
         m_oTwitterAuthorizationControl = twitterAuthorizationControl;
 
         // If the user has already authorized, he doesn't need to do so again.
-        // Otherwise, assume he doesn't have a Twitter account.
 
         m_oTwitterAuthorizationControl.Status =
             TwitterAccessToken.Exists() ?
                 TwitterAuthorizationStatus.HasTwitterAccountAuthorized :
-                TwitterAuthorizationStatus.NoTwitterAccount;
+                TwitterAuthorizationStatus.HasTwitterAccountNotAuthorized;
 
         AssertValid();
     }

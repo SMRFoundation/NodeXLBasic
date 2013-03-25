@@ -409,6 +409,6 @@ public partial class TwitterGetUserNetworkDialog :
     /// Maximum number of people to request for each query, or Int32.MaxValue
     /// for no limit.
 
-    protected static Int32 m_iMaximumPeoplePerRequest = Int32.MaxValue;
+    protected static Int32 m_iMaximumPeoplePerRequest = 10;
 }
 }

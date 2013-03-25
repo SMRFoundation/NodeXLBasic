@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkServer", "NetworkSer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestGraphDataProviders", "TestGraphDataProviders\TestGraphDataProviders.csproj", "{40E9844B-8CF9-4D85-9B5D-CD5A78B019C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphMLFileProcessor", "GraphMLFileProcessor\GraphMLFileProcessor.csproj", "{2AC12919-B90B-4BC5-9390-1B10F1684045}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +125,10 @@ Global
 		{40E9844B-8CF9-4D85-9B5D-CD5A78B019C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40E9844B-8CF9-4D85-9B5D-CD5A78B019C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40E9844B-8CF9-4D85-9B5D-CD5A78B019C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AC12919-B90B-4BC5-9390-1B10F1684045}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AC12919-B90B-4BC5-9390-1B10F1684045}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AC12919-B90B-4BC5-9390-1B10F1684045}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AC12919-B90B-4BC5-9390-1B10F1684045}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

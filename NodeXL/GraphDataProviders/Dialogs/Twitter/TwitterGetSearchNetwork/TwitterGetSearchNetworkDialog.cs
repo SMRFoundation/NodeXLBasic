@@ -47,9 +47,14 @@ public partial class TwitterGetSearchNetworkDialog :
         // m_bIncludeNonRepliesToNonMentionsEdges
 
         #if AddExtraEdges
+        #else
+
+        pnlSharedWordUserThreshold.Visible = false;
+
         #endif
 
-        // m_iMaximumPeoplePerRequest
+        // m_iMaximumStatuses
+        // m_iSharedWordUserThreshold
         // m_bIncludeStatuses
         // m_bExpandStatusUrls
         // m_bIncludeStatistics
@@ -150,17 +155,22 @@ public partial class TwitterGetSearchNetworkDialog :
                 }
             }
 
-            m_bIncludeFollowedEdges = clbWhatEdgesToInclude.GetItemChecked(0);
-            m_bIncludeRepliesToEdges = clbWhatEdgesToInclude.GetItemChecked(1);
-            m_bIncludeMentionsEdges = clbWhatEdgesToInclude.GetItemChecked(2);
+            m_bIncludeRepliesToEdges = clbWhatEdgesToInclude.GetItemChecked(0);
+            m_bIncludeMentionsEdges = clbWhatEdgesToInclude.GetItemChecked(1);
 
             m_bIncludeNonRepliesToNonMentionsEdges =
-                clbWhatEdgesToInclude.GetItemChecked(3);
+                clbWhatEdgesToInclude.GetItemChecked(2);
+
+            m_bIncludeFollowedEdges = clbWhatEdgesToInclude.GetItemChecked(3);
 
             #if AddExtraEdges
             #endif
 
-            m_iMaximumPeoplePerRequest = usrLimitToN.N;
+            m_iMaximumStatuses = (Int32)nudMaximumStatuses.Value;
+
+            m_iSharedWordUserThreshold =
+                (Int32)nudSharedWordUserThreshold.Value;
+
             m_bIncludeStatuses = chkIncludeStatuses.Checked;
             m_bExpandStatusUrls = chkExpandStatusUrls.Checked;
             m_bIncludeStatistics = chkIncludeStatistics.Checked;
@@ -169,17 +179,19 @@ public partial class TwitterGetSearchNetworkDialog :
         {
             txbSearchTerm.Text = m_sSearchTerm;
 
-            clbWhatEdgesToInclude.SetItemChecked(0, m_bIncludeFollowedEdges);
-            clbWhatEdgesToInclude.SetItemChecked(1, m_bIncludeRepliesToEdges);
-            clbWhatEdgesToInclude.SetItemChecked(2, m_bIncludeMentionsEdges);
+            clbWhatEdgesToInclude.SetItemChecked(0, m_bIncludeRepliesToEdges);
+            clbWhatEdgesToInclude.SetItemChecked(1, m_bIncludeMentionsEdges);
 
-            clbWhatEdgesToInclude.SetItemChecked(3,
+            clbWhatEdgesToInclude.SetItemChecked(2,
                 m_bIncludeNonRepliesToNonMentionsEdges);
+
+            clbWhatEdgesToInclude.SetItemChecked(3, m_bIncludeFollowedEdges);
 
             #if AddExtraEdges
             #endif
 
-            usrLimitToN.N = m_iMaximumPeoplePerRequest;
+            nudMaximumStatuses.Value = m_iMaximumStatuses;
+            nudSharedWordUserThreshold.Value = m_iSharedWordUserThreshold;
             chkIncludeStatuses.Checked = m_bIncludeStatuses;
             chkExpandStatusUrls.Checked = m_bExpandStatusUrls;
             chkIncludeStatistics.Checked = m_bIncludeStatistics;
@@ -241,8 +253,8 @@ public partial class TwitterGetSearchNetworkDialog :
             ;
 
         ( (TwitterSearchNetworkAnalyzer)m_oHttpNetworkAnalyzer ).
-            GetNetworkAsync(m_sSearchTerm, eWhatToInclude,
-                m_iMaximumPeoplePerRequest);
+            GetNetworkAsync(m_sSearchTerm, eWhatToInclude, m_iMaximumStatuses,
+            m_iSharedWordUserThreshold);
     }
 
     //*************************************************************************
@@ -365,7 +377,9 @@ public partial class TwitterGetSearchNetworkDialog :
         #if AddExtraEdges
         #endif
 
-        Debug.Assert(m_iMaximumPeoplePerRequest > 0);
+        Debug.Assert(m_iMaximumStatuses > 0);
+        Debug.Assert(m_iMaximumStatuses != Int32.MaxValue);
+        Debug.Assert(m_iSharedWordUserThreshold >= 2);
         // m_bIncludeStatuses
         // m_bExpandStatusUrls
         // m_bIncludeStatistics
@@ -407,10 +421,14 @@ public partial class TwitterGetSearchNetworkDialog :
     #if AddExtraEdges
     #endif
 
-    /// Maximum number of people to request for each query, or Int32.MaxValue
-    /// for no limit.
+    /// Maximum number of tweets to request.
 
-    protected static Int32 m_iMaximumPeoplePerRequest = 100;
+    protected static Int32 m_iMaximumStatuses = 100;
+
+    /// Edge XML nodes are appended for a word only if at least this many users
+    /// have tweeted the word.
+
+    protected static Int32 m_iSharedWordUserThreshold = 1000;
 
     /// true to include each status.
 
@@ -515,11 +533,6 @@ WhatEdgeToIncludeInformation
         return ( new WhatEdgeToIncludeInformation[] {
 
             new WhatEdgeToIncludeInformation(
-                TwitterSearchNetworkAnalyzer.WhatToInclude.FollowedEdges,
-                "Follows relationship (slower)"
-                ),
-
-            new WhatEdgeToIncludeInformation(
                 TwitterSearchNetworkAnalyzer.WhatToInclude.RepliesToEdges,
                 "\"Replies-to\" relationship in tweet"
                 ),
@@ -533,6 +546,11 @@ WhatEdgeToIncludeInformation
                 TwitterSearchNetworkAnalyzer.WhatToInclude
                     .NonRepliesToNonMentionsEdges,
                 "Tweet that is not a \"replies-to\" or \"mentions\""
+                ),
+
+            new WhatEdgeToIncludeInformation(
+                TwitterSearchNetworkAnalyzer.WhatToInclude.FollowedEdges,
+                "Follows relationship (very slow!)"
                 ),
 
             #if AddExtraEdges

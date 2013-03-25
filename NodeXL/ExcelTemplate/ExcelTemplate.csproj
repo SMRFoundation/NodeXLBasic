@@ -22,7 +22,7 @@
     <InstallUrl>
     </InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.1.234</ApplicationVersion>
+    <ApplicationVersion>1.0.1.236</ApplicationVersion>
     <AutoIncrementApplicationRevision>false</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>0</UpdateInterval>
@@ -801,6 +801,7 @@
     <Compile Include="Sheet7.Designer.cs">
       <DependentUpon>Sheet7.Designer.xml</DependentUpon>
     </Compile>
+    <Compile Include="TaskPane\DynamicFilterHandler.cs" />
     <Compile Include="TaskPane\TaskPane.cs">
       <SubType>UserControl</SubType>
     </Compile>

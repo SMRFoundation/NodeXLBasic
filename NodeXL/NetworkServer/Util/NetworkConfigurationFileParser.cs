@@ -164,9 +164,8 @@ public class NetworkConfigurationFileParser : Object
     /// stored.
     /// </param>
     ///
-    /// <param name="maximumPeoplePerRequest">
-    /// Where the maximum number of people to request for each query gets
-    /// stored.  Can be Int32.MaxValue for no limit.
+    /// <param name="maximumStatuses">
+    /// Where the maximum number of statuses to request gets stored.
     /// </param>
     ///
     /// <param name="networkFileFolderPath">
@@ -195,7 +194,7 @@ public class NetworkConfigurationFileParser : Object
     (
         out String searchTerm,
         out TwitterSearchNetworkAnalyzer.WhatToInclude whatToInclude,
-        out Int32 maximumPeoplePerRequest,
+        out Int32 maximumStatuses,
         out String networkFileFolderPath,
         out NetworkFileFormats networkFileFormats,
         out String nodeXLWorkbookSettingsFilePath,
@@ -215,15 +214,38 @@ public class NetworkConfigurationFileParser : Object
         searchTerm = XmlUtil2.SelectRequiredSingleNodeAsString(
             oTwitterSearchNetworkConfigurationNode, "SearchTerm/text()", null);
 
+        if ( !XmlUtil2.TrySelectSingleNodeAsInt32(
+            oTwitterSearchNetworkConfigurationNode,
+            "MaximumStatuses/text()", null, out maximumStatuses) )
+        {
+            // Older versions of NodeXL used a MaximumPeoplePerRequest value,
+            // which has been replaced with MaximumStatuses.  To avoid breaking
+            // older configuration files, accept either one.
+
+            try
+            {
+                maximumStatuses = XmlUtil2.SelectRequiredSingleNodeAsInt32(
+                    oTwitterSearchNetworkConfigurationNode,
+                    "MaximumPeoplePerRequest/text()", null);
+            }
+            catch
+            {
+                throw new XmlException(
+                    "There must be a MaximumStatuses value.  (This was called"
+                    + " MaximumPeoplePerRequest in previous versions of"
+                    + " NodeXL.)"
+                );
+            }
+        }
+
         whatToInclude =
             GetRequiredEnumValue<TwitterSearchNetworkAnalyzer.WhatToInclude>(
                 oTwitterSearchNetworkConfigurationNode, "WhatToInclude/text()",
                 "WhatToInclude");
 
         GetTwitterCommonConfiguration(oTwitterSearchNetworkConfigurationNode,
-            out maximumPeoplePerRequest, out networkFileFolderPath,
-            out networkFileFormats, out nodeXLWorkbookSettingsFilePath,
-            out automateNodeXLWorkbook);
+            out networkFileFolderPath, out networkFileFormats,
+            out nodeXLWorkbookSettingsFilePath, out automateNodeXLWorkbook);
     }
 
     //*************************************************************************

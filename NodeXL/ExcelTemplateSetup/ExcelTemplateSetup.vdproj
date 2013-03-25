@@ -81,6 +81,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_10EFCB5DD79640EFA734F0D7476C1EFD"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_1A7AB044A9AF4D6986CDBA1E3EE0A035"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -424,6 +430,12 @@
         "Entry"
         {
         "MsmKey" = "8:_9DB47FE3D6584E85A949BD947C5F1D7A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A42748F2B3424ECF91F956F7248CCA34"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1164,6 +1176,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_10EFCB5DD79640EFA734F0D7476C1EFD"
+            {
+            "SourcePath" = "8:..\\GraphMLFileProcessor\\bin\\Debug\\NodeXLGraphMLFileProcessor.exe.config"
+            "TargetName" = "8:NodeXLGraphMLFileProcessor.exe.config"
+            "Tag" = "8:"
+            "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1A7AB044A9AF4D6986CDBA1E3EE0A035"
             {
             "SourcePath" = "8:..\\ExcelTemplate\\SampleNodeXLWorkbook\\Images\\Email.jpg"
@@ -1219,7 +1251,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.GraphDataProviders, Version=1.0.1.234, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.GraphDataProviders, Version=1.0.1.236, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                 }
@@ -1285,7 +1317,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Control.Wpf, Version=1.0.1.234, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Control.Wpf, Version=1.0.1.236, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                 }
@@ -1342,7 +1374,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Util, Version=1.0.1.234, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Util, Version=1.0.1.236, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                 }
@@ -1541,7 +1573,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Layouts, Version=1.0.1.234, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Layouts, Version=1.0.1.236, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                 }
@@ -1638,7 +1670,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.ExcelTemplatePlugIns, Version=1.0.1.234, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.ExcelTemplatePlugIns, Version=1.0.1.236, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                 }
@@ -1751,6 +1783,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A42748F2B3424ECF91F956F7248CCA34"
+            {
+            "SourcePath" = "8:..\\GraphMLFileProcessor\\bin\\Debug\\NodeXLGraphMLFileProcessor.exe"
+            "TargetName" = "8:NodeXLGraphMLFileProcessor.exe"
+            "Tag" = "8:"
+            "Folder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A7EAAB21C7EE40F8A47F9F03B4B03944"
             {
             "SourcePath" = "8:..\\ExcelTemplate\\SampleNodeXLWorkbook\\SampleNodeXLWorkbookAsGraphML.graphml"
@@ -1806,7 +1858,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.ExcelTemplatePlugIns, Version=1.0.1.234, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Microsoft.NodeXL.ExcelTemplatePlugIns, Version=1.0.1.236, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                 }
@@ -1940,7 +1992,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Visualization.Wpf, Version=1.0.1.234, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Visualization.Wpf, Version=1.0.1.236, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                 }
@@ -1966,7 +2018,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Core, Version=1.0.1.234, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Core, Version=1.0.1.236, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                 }
@@ -1992,7 +2044,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.ApplicationUtil, Version=1.0.1.234, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.ApplicationUtil, Version=1.0.1.236, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                 }
@@ -2098,7 +2150,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Adapters, Version=1.0.1.234, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Adapters, Version=1.0.1.236, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                 }
@@ -2155,7 +2207,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Algorithms, Version=1.0.1.234, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Smrf.NodeXL.Algorithms, Version=1.0.1.236, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                 }
@@ -2277,14 +2329,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:NodeXL Excel Template"
-        "ProductCode" = "8:{AB658E86-69E0-45C2-8387-1CE88E3A577F}"
-        "PackageCode" = "8:{DAF1D02B-7E23-4BE7-A0C5-16641A5733CB}"
+        "ProductCode" = "8:{E9F9EE1E-18BC-4CFD-B1F9-37123E96C585}"
+        "PackageCode" = "8:{14FABFA0-9E2A-435C-96CE-3334F3DCDDC4}"
         "UpgradeCode" = "8:{87DDE855-47E5-48B2-9D6E-03B84139823A}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.234"
+        "ProductVersion" = "8:1.0.236"
         "Manufacturer" = "8:Social Media Research Foundation"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -2397,6 +2449,20 @@
         }
         "Shortcut"
         {
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_B5EAD8FABFAA4DA18540C8DD9BF810F5"
+            {
+            "Name" = "8:GraphML File Processor"
+            "Arguments" = "8:"
+            "Description" = "8:Continuously monitor a folder and its subfolders for new GraphML files and create NodeXL workbook from them [advanced users]"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_A42748F2B3424ECF91F956F7248CCA34"
+            "Folder" = "8:_74BE9EFEBB0B42179D5E2F1B4AFD60F4"
+            "WorkingFolder" = "8:_D2D3AA7EBFBD477C8FA7800AC1AB7DE7"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_C7AD2CDC5CB2496088F915B502134022"
             {
             "Name" = "8:NodeXL Excel Template"

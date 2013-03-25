@@ -135,9 +135,14 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// Specifies what should be included in the network.
     /// </param>
     ///
-    /// <param name="maximumPeoplePerRequest">
-    /// Maximum number of people to request for each query, or Int32.MaxValue
-    /// for no limit.
+    /// <param name="maximumStatuses">
+    /// Maximum number of tweets to request.  Can't be Int32.MaxValue.
+    /// </param>
+    ///
+    /// <param name="sharedWordUserThreshold">
+    /// Edge XML nodes are appended for a word only if at least this many users
+    /// have tweeted the word.  Must be at least 2.  Used only if <paramref
+    /// name="whatToInclude" /> includes SharedWordEdges.
     /// </param>
     ///
     /// <remarks>
@@ -159,11 +164,14 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     (
         String searchTerm,
         WhatToInclude whatToInclude,
-        Int32 maximumPeoplePerRequest
+        Int32 maximumStatuses,
+        Int32 sharedWordUserThreshold
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(searchTerm) );
-        Debug.Assert(maximumPeoplePerRequest > 0);
+        Debug.Assert(maximumStatuses > 0);
+        Debug.Assert(maximumStatuses != Int32.MaxValue);
+        Debug.Assert(sharedWordUserThreshold >= 2);
         AssertValid();
 
         const String MethodName = "GetNetworkAsync";
@@ -176,7 +184,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         oGetNetworkAsyncArgs.SearchTerm = searchTerm;
         oGetNetworkAsyncArgs.WhatToInclude = whatToInclude;
-        oGetNetworkAsyncArgs.MaximumPeoplePerRequest = maximumPeoplePerRequest;
+        oGetNetworkAsyncArgs.MaximumStatuses = maximumStatuses;
+        oGetNetworkAsyncArgs.SharedWordUserThreshold = sharedWordUserThreshold;
 
         m_oBackgroundWorker.RunWorkerAsync(oGetNetworkAsyncArgs);
     }
@@ -197,9 +206,14 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// Specifies what should be included in the network.
     /// </param>
     ///
-    /// <param name="maximumPeoplePerRequest">
-    /// Maximum number of people to request for each query, or Int32.MaxValue
-    /// for no limit.
+    /// <param name="maximumStatuses">
+    /// Maximum number of tweets to request.  Can't be Int32.MaxValue.
+    /// </param>
+    ///
+    /// <param name="sharedWordUserThreshold">
+    /// Edge XML nodes are appended for a word only if at least this many users
+    /// have tweeted the word.  Must be at least 2.  Used only if <paramref
+    /// name="whatToInclude" /> includes SharedWordEdges.
     /// </param>
     ///
     /// <returns>
@@ -212,15 +226,18 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     (
         String searchTerm,
         WhatToInclude whatToInclude,
-        Int32 maximumPeoplePerRequest
+        Int32 maximumStatuses,
+        Int32 sharedWordUserThreshold
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(searchTerm) );
-        Debug.Assert(maximumPeoplePerRequest > 0);
+        Debug.Assert(maximumStatuses > 0);
+        Debug.Assert(maximumStatuses != Int32.MaxValue);
+        Debug.Assert(sharedWordUserThreshold >= 2);
         AssertValid();
 
         return ( GetNetworkInternal(searchTerm, whatToInclude,
-            maximumPeoplePerRequest) );
+            maximumStatuses, sharedWordUserThreshold) );
     }
 
     //*************************************************************************
@@ -242,9 +259,13 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// Specifies what should be included in the network.
     /// </param>
     ///
-    /// <param name="iMaximumPeoplePerRequest">
-    /// Maximum number of people to request for each query, or Int32.MaxValue
-    /// for no limit.
+    /// <param name="iMaximumStatuses">
+    /// Maximum number of tweets to request.  Can't be Int32.MaxValue.
+    /// </param>
+    ///
+    /// <param name="iSharedWordUserThreshold">
+    /// Edge XML nodes are appended for a word only if at least this many users
+    /// have tweeted the word.
     /// </param>
     ///
     /// <returns>
@@ -257,11 +278,14 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     (
         String sSearchTerm,
         WhatToInclude eWhatToInclude,
-        Int32 iMaximumPeoplePerRequest
+        Int32 iMaximumStatuses,
+        Int32 iSharedWordUserThreshold
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
-        Debug.Assert(iMaximumPeoplePerRequest > 0);
+        Debug.Assert(iMaximumStatuses > 0);
+        Debug.Assert(iMaximumStatuses != Int32.MaxValue);
+        Debug.Assert(iSharedWordUserThreshold >= 2);
         AssertValid();
 
         BeforeGetNetwork();
@@ -278,8 +302,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         try
         {
-            GetNetworkInternal(sSearchTerm, eWhatToInclude,
-                iMaximumPeoplePerRequest, oRequestStatistics,
+            GetNetworkInternal(sSearchTerm, eWhatToInclude, iMaximumStatuses,
+                iSharedWordUserThreshold, oRequestStatistics,
                 oGraphMLXmlDocument);
         }
         catch (Exception oException)
@@ -291,7 +315,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         OnNetworkObtained(oGraphMLXmlDocument, oRequestStatistics, 
 
             GetNetworkDescription(sSearchTerm, eWhatToInclude,
-                iMaximumPeoplePerRequest, oGraphMLXmlDocument),
+                iMaximumStatuses, oGraphMLXmlDocument),
 
             "Twitter Search " + sSearchTerm
             );
@@ -314,9 +338,13 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// Specifies what should be included in the network.
     /// </param>
     ///
-    /// <param name="iMaximumPeoplePerRequest">
-    /// Maximum number of people to request for each query, or Int32.MaxValue
-    /// for no limit.
+    /// <param name="iMaximumStatuses">
+    /// Maximum number of tweets to request.  Can't be Int32.MaxValue.
+    /// </param>
+    ///
+    /// <param name="iSharedWordUserThreshold">
+    /// Edge XML nodes are appended for a word only if at least this many users
+    /// have tweeted the word.
     /// </param>
     ///
     /// <param name="oRequestStatistics">
@@ -334,13 +362,16 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     (
         String sSearchTerm,
         WhatToInclude eWhatToInclude,
-        Int32 iMaximumPeoplePerRequest,
+        Int32 iMaximumStatuses,
+        Int32 iSharedWordUserThreshold,
         RequestStatistics oRequestStatistics,
         GraphMLXmlDocument oGraphMLXmlDocument
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
-        Debug.Assert(iMaximumPeoplePerRequest > 0);
+        Debug.Assert(iMaximumStatuses > 0);
+        Debug.Assert(iMaximumStatuses != Int32.MaxValue);
+        Debug.Assert(iSharedWordUserThreshold >= 2);
         Debug.Assert(oRequestStatistics != null);
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
@@ -353,9 +384,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         // First, add a vertex for each person who has tweeted the search term.
 
-        AppendVertexXmlNodes(sSearchTerm, eWhatToInclude,
-            iMaximumPeoplePerRequest, oGraphMLXmlDocument, oUserIDDictionary,
-            oRequestStatistics);
+        AppendVertexXmlNodes(sSearchTerm, eWhatToInclude, iMaximumStatuses,
+            oGraphMLXmlDocument, oUserIDDictionary, oRequestStatistics);
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.FollowedEdges) )
@@ -365,8 +395,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             // and the followed.
 
             AppendFollowedOrFollowingEdgeXmlNodes(oUserIDDictionary, true,
-                iMaximumPeoplePerRequest, oGraphMLXmlDocument,
-                oRequestStatistics);
+                MaximumFollowers, oGraphMLXmlDocument, oRequestStatistics);
         }
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude, WhatToInclude.Statistics) )
@@ -487,9 +516,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// Specifies what should be included in the network.
     /// </param>
     ///
-    /// <param name="iMaximumPeoplePerRequest">
-    /// Maximum number of people to request for each query, or Int32.MaxValue
-    /// for no limit.
+    /// <param name="iMaximumStatuses">
+    /// Maximum number of tweets to request.  Can't be Int32.MaxValue.
     /// </param>
     ///
     /// <param name="oGraphMLXmlDocument">
@@ -512,57 +540,45 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     (
         String sSearchTerm,
         WhatToInclude eWhatToInclude,
-        Int32 iMaximumPeoplePerRequest,
+        Int32 iMaximumStatuses,
         GraphMLXmlDocument oGraphMLXmlDocument,
         Dictionary<String, TwitterUser> oUserIDDictionary,
         RequestStatistics oRequestStatistics
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
-        Debug.Assert(iMaximumPeoplePerRequest > 0);
+        Debug.Assert(iMaximumStatuses > 0);
+        Debug.Assert(iMaximumStatuses != Int32.MaxValue);
         Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert(oUserIDDictionary != null);
         Debug.Assert(oRequestStatistics != null);
         AssertValid();
-
-        // Convert spaces in the search term to a plus sign.
-
-        String sUrl = String.Format(
-
-            "{0}?q={1}&rpp=100&result_type=recent&{2}"
-            ,
-            SearchApiUri,
-            UrlUtil.EncodeUrlParameter(sSearchTerm).Replace("%20", "+"),
-            IncludeEntitiesUrlParameter
-            );
 
         Boolean bExpandStatusUrls = WhatToIncludeFlagIsSet(
             eWhatToInclude, WhatToInclude.ExpandedStatusUrls);
 
         ReportProgress("Getting a list of tweets.");
 
-        // The JSON contains a "results" array for the tweets that contain the
-        // search term.  Multiple tweets may have the same author.
+        // Get the tweets that contain the search term.  Note that multiple
+        // tweets may have the same author.
 
-        foreach ( Object oResult in EnumerateJsonValues(sUrl, "results", 15,
-            Int32.MaxValue, true, false, oRequestStatistics) )
+        foreach ( Dictionary<String, Object> oStatusValueDictionary in
+            EnumerateStatuses(sSearchTerm, iMaximumStatuses,
+            oRequestStatistics) )
         {
-            if (oUserIDDictionary.Count == iMaximumPeoplePerRequest)
-            {
-                break;
-            }
-
-            Dictionary<String, Object> oValueDictionary =
-                ( Dictionary<String, Object> )oResult;
+            Dictionary<String, Object> oUserValueDictionary =
+                ( Dictionary<String, Object> )oStatusValueDictionary["user"];
 
             String sScreenName, sUserID;
 
             if (
-                !TryGetJsonValueFromDictionary(oValueDictionary, "from_user",
-                    out sScreenName)
+                oUserValueDictionary == null
                 ||
-                !TryGetJsonValueFromDictionary(oValueDictionary,
-                    "from_user_id_str", out sUserID)
+                !TryGetJsonValueFromDictionary(oUserValueDictionary,
+                    "screen_name", out sScreenName)
+                ||
+                !TryGetJsonValueFromDictionary(oUserValueDictionary,
+                    "id_str", out sUserID)
                 )
             {
                 continue;
@@ -581,7 +597,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             if (
                 bIsFirstTweetForAuthor
                 && 
-                TryGetJsonValueFromDictionary(oValueDictionary,
+                TryGetJsonValueFromDictionary(oUserValueDictionary,
                     "profile_image_url", out sImageUrl)
                 )
             {
@@ -594,16 +610,16 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             String sID, sStatus;
 
             if (
-                TryGetJsonValueFromDictionary(oValueDictionary, "id_str",
+                TryGetJsonValueFromDictionary(oStatusValueDictionary, "id_str",
                     out sID)
                 &&
-                TryGetJsonValueFromDictionary(oValueDictionary, "text",
+                TryGetJsonValueFromDictionary(oStatusValueDictionary, "text",
                     out sStatus)
                 )
             {
                 String sStatusDateUtc;
 
-                if ( TryGetJsonValueFromDictionary(oValueDictionary,
+                if ( TryGetJsonValueFromDictionary(oStatusValueDictionary,
                     "created_at", out sStatusDateUtc) )
                 {
                     sStatusDateUtc = TwitterDateParser.ParseTwitterDate(
@@ -613,12 +629,13 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 String sLatitude, sLongitude;
 
                 GetLatitudeAndLongitudeFromStatusValueDictionary(
-                    oValueDictionary, out sLatitude, out sLongitude);
+                    oStatusValueDictionary, out sLatitude, out sLongitude);
 
                 String sStatusUrls, sStatusHashtags;
 
-                GetUrlsAndHashtagsFromStatusValueDictionary(oValueDictionary, 
-                    bExpandStatusUrls, out sStatusUrls, out sStatusHashtags);
+                GetUrlsAndHashtagsFromStatusValueDictionary(
+                    oStatusValueDictionary, bExpandStatusUrls, out sStatusUrls,
+                    out sStatusHashtags);
 
                 // Note that null date, coordinates, URLs and hashtags are
                 // acceptable here.
@@ -630,6 +647,217 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         }
 
         AppendVertexTooltipXmlNodes(oGraphMLXmlDocument, oUserIDDictionary);
+    }
+
+    //*************************************************************************
+    //  Method: EnumerateStatuses()
+    //
+    /// <summary>
+    /// Enumerates through the statuses that include a specified search term.
+    /// </summary>
+    ///
+    /// <param name="sSearchTerm">
+    /// The term to search for.
+    /// </param>
+    ///
+    /// <param name="iMaximumStatuses">
+    /// Maximum number of tweets to request.  Can't be Int32.MaxValue.
+    /// </param>
+    ///
+    /// <param name="oRequestStatistics">
+    /// A <see cref="RequestStatistics" /> object that is keeping track of
+    /// requests made while getting the network.
+    /// </param>
+    ///
+    /// <returns>
+    /// A Dictionary for each status, returned one by one.  The dictionary keys
+    /// are names and the dictionary values are the named values.
+    /// </returns>
+    //*************************************************************************
+
+    protected IEnumerable< Dictionary<String, Object> >
+    EnumerateStatuses
+    (
+        String sSearchTerm,
+        Int32 iMaximumStatuses,
+        RequestStatistics oRequestStatistics
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
+        Debug.Assert(iMaximumStatuses > 0);
+        Debug.Assert(iMaximumStatuses != Int32.MaxValue);
+        Debug.Assert(oRequestStatistics != null);
+        AssertValid();
+
+        Int32 iPage = 1;
+        Int32 iStatusesEnumerated = 0;
+        String sQueryParametersForNextPage = null;
+
+        while (true)
+        {
+            if (iPage > 1)
+            {
+                ReportProgress("Getting page " + iPage + ".");
+            }
+
+            Dictionary<String, Object> oResponseDictionary = null;
+            Object [] aoStatusesThisPage;
+
+            String sUrl = GetSearchUrl(sSearchTerm,
+                sQueryParametersForNextPage);
+
+            try
+            {
+                Object oDeserializedTwitterResponse = 
+                    ( new JavaScriptSerializer() ).DeserializeObject(
+                        GetTwitterResponseAsString(sUrl, oRequestStatistics) );
+
+                // The top level of the Json response contains a set of
+                // name/value pairs.  The value for the "statuses" name is the
+                // array of objects this method will enumerate.
+
+                oResponseDictionary = ( Dictionary<String, Object> )
+                    oDeserializedTwitterResponse;
+
+                aoStatusesThisPage =
+                    ( Object [] )oResponseDictionary["statuses"];
+            }
+            catch (Exception oException)
+            {
+                // Rethrow the exception if appropriate.
+
+                OnExceptionWhileEnumeratingJsonValues(oException, iPage,
+                    false);
+
+                // Otherwise, just halt the enumeration.
+
+                yield break;
+            }
+
+            Int32 iObjectsThisPage = aoStatusesThisPage.Length;
+
+            if (iObjectsThisPage == 0)
+            {
+                yield break;
+            }
+
+            for (Int32 i = 0; i < iObjectsThisPage; i++)
+            {
+                yield return (
+                    ( Dictionary<String, Object> )aoStatusesThisPage[i] );
+
+                iStatusesEnumerated++;
+
+                if (iStatusesEnumerated == iMaximumStatuses)
+                {
+                    yield break;
+                }
+            }
+
+            iPage++;
+
+            if ( !TryGetQueryParametersForNextPage(oResponseDictionary,
+                out sQueryParametersForNextPage) )
+            {
+                yield break;
+            }
+
+            // Get the next page...
+        }
+    }
+
+    //*************************************************************************
+    //  Method: GetSearchUrl()
+    //
+    /// <summary>
+    /// Gets the URL for getting tweets with a specified search term.
+    /// </summary>
+    ///
+    /// <param name="sSearchTerm">
+    /// The term to search for.
+    /// </param>
+    ///
+    /// <param name="sQueryParametersForNextPage">
+    /// The complete query parameters to use if getting page number 2 or
+    /// greater, or null if getting the first page.
+    /// </param>
+    ///
+    /// <returns>
+    /// The URL to use.
+    /// </returns>
+    //*************************************************************************
+
+    protected String
+    GetSearchUrl
+    (
+        String sSearchTerm,
+        String sQueryParametersForNextPage
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
+        AssertValid();
+
+        if (sQueryParametersForNextPage == null)
+        {
+            // Convert spaces in the search term to a plus sign.
+
+            return ( String.Format(
+
+                "{0}?q={1}&count=100&result_type=recent&{2}"
+                ,
+                SearchApiUri,
+                UrlUtil.EncodeUrlParameter(sSearchTerm).Replace("%20", "+"),
+                IncludeEntitiesUrlParameter
+                ) );
+        }
+
+        return (SearchApiUri + sQueryParametersForNextPage);
+    }
+
+    //*************************************************************************
+    //  Method: TryGetQueryParametersForNextPage()
+    //
+    /// <summary>
+    /// Attempts to get the query parameters to use for the next page of search
+    /// results.
+    /// </summary>
+    ///
+    /// <param name="oResponseDictionary">
+    /// Response returned by Twitter for the current page.
+    /// </param>
+    ///
+    /// <param name="sQueryParametersForNextPage">
+    /// Where the complete query parameters to use get stored if true is
+    /// returned.  Includes a leading question mark.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if successful.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    TryGetQueryParametersForNextPage
+    (
+        Dictionary<String, Object> oResponseDictionary,
+        out String sQueryParametersForNextPage
+    )
+    {
+        Debug.Assert(oResponseDictionary != null);
+        AssertValid();
+
+        sQueryParametersForNextPage = null;
+
+        Dictionary<String, Object> oSearchMetadataDictionary =
+            ( Dictionary<String, Object> )
+            oResponseDictionary["search_metadata"];
+
+        return (
+            oSearchMetadataDictionary != null
+            &&
+            TryGetJsonValueFromDictionary(oSearchMetadataDictionary,
+                "next_results", out sQueryParametersForNextPage)
+            );
     }
 
     //*************************************************************************
@@ -796,9 +1024,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// Specifies what should be included in the network.
     /// </param>
     ///
-    /// <param name="iMaximumPeoplePerRequest">
-    /// Maximum number of people to request for each query, or Int32.MaxValue
-    /// for no limit.
+    /// <param name="iMaximumStatuses">
+    /// Maximum number of tweets to request.  Can't be Int32.MaxValue.
     /// </param>
     ///
     /// <param name="oGraphMLXmlDocument">
@@ -815,12 +1042,13 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     (
         String sSearchTerm,
         WhatToInclude eWhatToInclude,
-        Int32 iMaximumPeoplePerRequest,
+        Int32 iMaximumStatuses,
         GraphMLXmlDocument oGraphMLXmlDocument
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
-        Debug.Assert(iMaximumPeoplePerRequest > 0);
+        Debug.Assert(iMaximumStatuses > 0);
+        Debug.Assert(iMaximumStatuses != Int32.MaxValue);
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
@@ -833,14 +1061,12 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
             "The graph represents a network of {0} Twitter {1} whose recent"
             + " tweets contained \"{2}\", taken from a data set limited to a"
-            + " maximum of {3} users."
+            + " maximum of {3} tweets."
             ,
             iVertexXmlNodes.ToString(Int32FormatString),
             StringUtil.MakePlural("user", iVertexXmlNodes),
             sSearchTerm,
-
-            ( (iMaximumPeoplePerRequest == Int32.MaxValue) ?
-                1500 : iMaximumPeoplePerRequest ).ToString(Int32FormatString)
+            iMaximumStatuses.ToString(Int32FormatString)
             );
 
         oNetworkDescriber.AddNetworkTime();
@@ -1106,7 +1332,9 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             e.Result = GetNetworkInternal(
                 oGetNetworkAsyncArgs.SearchTerm,
                 oGetNetworkAsyncArgs.WhatToInclude,
-                oGetNetworkAsyncArgs.MaximumPeoplePerRequest);
+                oGetNetworkAsyncArgs.MaximumStatuses,
+                oGetNetworkAsyncArgs.SharedWordUserThreshold
+                );
         }
         catch (CancellationPendingException)
         {
@@ -1150,6 +1378,12 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
     protected const String TooltipID = "Tooltip";
 
+    /// Maximum number of followers to request.  This is arbitrarily set to the
+    /// number of followers returned in one page of the Twitter friends/ids
+    /// API.  It can be parameterized later if required.
+
+    protected const Int32 MaximumFollowers = 5000;
+
 
     //*************************************************************************
     //  Protected fields
@@ -1166,12 +1400,16 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// </summary>
     //*************************************************************************
 
-    protected class GetNetworkAsyncArgs : GetNetworkAsyncArgsBase
+    protected class GetNetworkAsyncArgs : Object
     {
         ///
         public String SearchTerm;
         ///
         public WhatToInclude WhatToInclude;
+        ///
+        public Int32 MaximumStatuses;
+        ///
+        public Int32 SharedWordUserThreshold;
     };
 }
 

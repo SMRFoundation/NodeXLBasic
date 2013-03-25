@@ -284,13 +284,13 @@ class Program
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude =
             TwitterSearchNetworkAnalyzer.WhatToInclude.None;
 
-        Int32 iMaximumPeoplePerRequest = Int32.MaxValue;
+        Int32 iMaximumTweets = Int32.MinValue;
 
         try
         {
             oNetworkConfigurationFileParser.
                 GetTwitterSearchNetworkConfiguration(out sSearchTerm,
-                out eWhatToInclude, out iMaximumPeoplePerRequest,
+                out eWhatToInclude, out iMaximumTweets,
                 out sNetworkFileFolderPath, out eNetworkFileFormats,
                 out sNodeXLWorkbookSettingsFilePath,
                 out bAutomateNodeXLWorkbook);
@@ -317,10 +317,17 @@ class Program
             sSearchTerm
             );
 
+        // Note that this program has not been tested with the newer shared
+        // word and shared word pair edges options.  Just use a constant value
+        // for the user threshold for now.
+
+        const Int32 SharedWordUserThreshold = 2;
+
         try
         {
             oXmlDocument = oTwitterSearchNetworkAnalyzer.GetNetwork(
-                sSearchTerm, eWhatToInclude, iMaximumPeoplePerRequest);
+                sSearchTerm, eWhatToInclude, iMaximumTweets,
+                SharedWordUserThreshold);
         }
         catch (PartialNetworkException oPartialNetworkException)
         {
@@ -721,7 +728,15 @@ class Program
 
         try
         {
-            oXmlDocument.Save(sNetworkFilePath);
+            // Don't allow sharing.  This is so the GraphMLFileProcessor
+            // program won't be able to process the file while it is still
+            // being written.
+
+            using ( FileStream fileStream = File.Open(sNetworkFilePath,
+                FileMode.Create, FileAccess.Write, FileShare.None) )
+            {
+                oXmlDocument.Save(fileStream);
+            }
         }
         catch (IOException oIOException)
         {

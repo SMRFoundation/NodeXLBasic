@@ -327,7 +327,7 @@ public static class TaskAutomator : Object
             // detect the flag's presence, run task automation on it, close
             // the workbook, and close the other instance of Excel.
 
-            OpenWorkbookToAutomate(nodeXLWorkbookFilePath);
+            OpenWorkbookToAutomate(nodeXLWorkbookFilePath, 60 * 60);
         }
         catch (Exception oException)
         {
@@ -347,21 +347,51 @@ public static class TaskAutomator : Object
     /// <param name="workbookPath">
     /// Path to the workbook to open.
     /// </param>
+    ///
+    /// <param name="timeoutSeconds">
+    /// Maximum time to wait for automation to complete, in seconds.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the workbook closed by itself, false if the Excel process had
+    /// to be killed because the workbook was taking too long to automate.
+    /// </returns>
     //*************************************************************************
 
-    public static void
+    public static Boolean
     OpenWorkbookToAutomate
     (
-        String workbookPath
+        String workbookPath,
+        Int32 timeoutSeconds
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(workbookPath) );
 
+        Boolean bWorkbookClosedByItself = true;
+
         Process oProcess = Process.Start("Excel.exe",
             "\"" + workbookPath + "\"");
 
-        oProcess.WaitForExit();
+        if ( !oProcess.WaitForExit(timeoutSeconds * 1000) )
+        {
+            bWorkbookClosedByItself = false;
+
+            try
+            {
+                oProcess.Kill();
+                oProcess.WaitForExit();
+            }
+            catch
+            {
+                // It's possible that the process exited after WaitForExit()
+                // returned, in which case the Kill() call will fail.  Ignore
+                // the Kill() failure.
+            }
+        }
+
         oProcess.Close();
+
+        return (bWorkbookClosedByItself);
     }
 
     //*************************************************************************

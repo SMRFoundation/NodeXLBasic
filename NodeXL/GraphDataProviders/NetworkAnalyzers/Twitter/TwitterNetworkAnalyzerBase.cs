@@ -100,14 +100,13 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                 sMessage = String.Format(
 
                     RefusedMessage 
-                    + "  A likely cause is that you have made too many"
-                    + " requests in the last hour, and the Twitter servers"
-                    + " are too busy to provide more information.  (Twitter"
+                    + "  A likely cause is that you have made too many Twitter"
+                    + " requests in the last 15 minutes.  (Twitter"
                     + " limits information requests to prevent its service"
                     + " from being attacked.  Click the '{0}' link for"
                     + " details.)"
                     ,
-                    TwitterAuthorizationControl.RateLimitingLinkText
+                    TwitterRateLimitsControl.RateLimitingLinkText
                     );
             }
             else if (oWebException.Response is HttpWebResponse)
@@ -200,45 +199,12 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Debug.Assert(oWebException != null);
         AssertValid();
 
-        // As of October 18, 2010, Twitter's response when rate limits are
-        // reached is all over the board:
-        //
-        // * For the search API, HTTP 420 is returned.
-        //
-        // * For the REST API with an unauthenticated user, HTTP 400
-        //   (BadRequest) is returned.
-        //
-        // * For the REST API with an authenticated user, HTTP 401 is returned.
-        //   I think this is a bug (HTTP 400 should be returned, not 401), and
-        //   I've reported it here:
-        //
-        //     http://code.google.com/p/twitter-api/issues/detail?id=1938
-        //
-        //   (Update: I was using http://twitter.com instead of
-        //   http://api.twitter.com/1.  The bug does not occur with the second
-        //   address.)
-        //
-        // * For all cases (I think), an X-RateLimit-Remaining header is
-        //   returned, with a value of 0.
-        //
-        // Check for all these cases.
-
-        if ( !(oWebException.Response is HttpWebResponse) )
-        {
-            return (false);
-        }
-
-        String sXRateLimitRemaining =
-            ( (HttpWebResponse)oWebException.Response ).Headers[
-                "X-RateLimit-Remaining"];
-
-        if (sXRateLimitRemaining != null && sXRateLimitRemaining == "0")
-        {
-            return (true);
-        }
+        // Starting with version 1.1 of the Twitter API, a single HTTP status
+        // code (429, "rate limit exceeded") is used for all rate-limit
+        // responses.
 
         return ( WebExceptionHasHttpStatusCode(oWebException,
-            HttpStatusCode.BadRequest, (HttpStatusCode)420) );
+            (HttpStatusCode)429) );
     }
 
     //*************************************************************************
@@ -268,23 +234,17 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Debug.Assert(oWebException != null);
         AssertValid();
 
-        // The Twitter REST API provides a custom X-RateLimit-Reset header in
+        // The Twitter REST API provides a custom X-Rate-Limit-Reset header in
         // the response headers.  This is the time at which the request should
         // be made again, in seconds since 1/1/1970, in UTC.  If this header is
         // available, use it.  Otherwise, use a default pause time.
-        //
-        // Note that the Twitter search API uses a different header for the
-        // same purpose, Retry-After, that is in "seconds to wait."  This
-        // method doesn't check for that header, because NodeXL makes
-        // relatively few calls to the search API and is unlikely to encounter
-        // search API rate limiting.
 
         WebResponse oWebResponse = oWebException.Response;
 
         if (oWebResponse != null)
         {
             String sXRateLimitReset =
-                oWebResponse.Headers["X-RateLimit-Reset"];
+                oWebResponse.Headers["X-Rate-Limit-Reset"];
 
             Int32 iSecondsSince1970;
 
@@ -710,19 +670,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// parameter should be null. 
     /// </param>
     ///
-    /// <param name="iMaximumPages">
-    /// Maximum number of pages to request, or Int32.MaxValue for no limit.
-    /// (This is required for the Twitter search API, which returns an error
-    /// instead of an empty list if you request more than 15 pages.)
-    /// </param>
-    ///
     /// <param name="iMaximumValues">
     /// Maximum number of values to return, or Int32.MaxValue for no limit.
-    /// </param>
-    ///
-    /// <param name="bUsePageParameter">
-    /// If true, a "page" URL parameter is used for pagination.  If false, a
-    /// "cursor" URL parameter is used.
     /// </param>
     ///
     /// <param name="bSkipMostPage1Errors">
@@ -746,24 +695,18 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     (
         String sUrl,
         String sJsonName,
-        Int32 iMaximumPages,
         Int32 iMaximumValues,
-        Boolean bUsePageParameter,
         Boolean bSkipMostPage1Errors,
         RequestStatistics oRequestStatistics
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sUrl) );
-        Debug.Assert(iMaximumPages > 0);
         Debug.Assert(iMaximumValues > 0);
         Debug.Assert(oRequestStatistics != null);
         AssertValid();
 
-        // See GetUrlWithPagination() for details about Twitter's paging
-        // schemes.
-
         Int32 iPage = 1;
-        String sCursor = "-1";
+        String sCursor = null;
         Int32 iObjectsEnumerated = 0;
 
         while (true)
@@ -773,8 +716,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                 ReportProgress("Getting page " + iPage + ".");
             }
 
-            String sUrlWithPagination = GetUrlWithPagination(
-                sUrl, bUsePageParameter, iPage, sCursor);
+            String sUrlWithCursor = AppendCursorToUrl(sUrl, sCursor);
 
             Dictionary<String, Object> oValueDictionary = null;
             Object [] aoObjectsThisPage;
@@ -783,7 +725,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             {
                 Object oDeserializedTwitterResponse = 
                     ( new JavaScriptSerializer() ).DeserializeObject(
-                        GetTwitterResponseAsString(sUrlWithPagination,
+                        GetTwitterResponseAsString(sUrlWithCursor,
                         oRequestStatistics) );
 
                 Object oObjectsThisPageAsObject;
@@ -842,26 +784,20 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
             iPage++;
 
-            if (iMaximumPages != Int32.MaxValue && iPage == iMaximumPages + 1)
+            // When the top level of the Json response contains a set of
+            // name/value pairs, a next_cursor_str value of "0" means "end of
+            // data."
+
+            if (
+                oValueDictionary == null
+                ||
+                !TryGetJsonValueFromDictionary(oValueDictionary,
+                    "next_cursor_str", out sCursor)
+                ||
+                sCursor == "0"
+                )
             {
                 yield break;
-            }
-
-            if (!bUsePageParameter)
-            {
-                // A next_cursor_str value of "0" means "end of data."
-
-                Debug.Assert(oValueDictionary != null);
-
-                if (
-                    !TryGetJsonValueFromDictionary(oValueDictionary,
-                        "next_cursor_str", out sCursor)
-                    ||
-                    sCursor == "0"
-                    )
-                {
-                    yield break;
-                }
             }
 
             // Get the next page...
@@ -926,8 +862,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         // array of integer IDs.
 
         foreach ( Object oUserIDAsObject in EnumerateJsonValues(
-            sUrl, "ids", Int32.MaxValue, iMaximumPeoplePerRequest, false,
-            true, oRequestStatistics) )
+            sUrl, "ids", iMaximumPeoplePerRequest, true, oRequestStatistics) )
         {
             String sUserID;
 
@@ -989,9 +924,9 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         {
             // For each call, ask for information about as many users as
             // possible until either 100 is reached or the URL reaches an
-            // arbitrary maximum length.  Twitter recommends using a POST here,
-            // but it would require revising the base-class HTTP calls and
-            // isn't worth the trouble.
+            // arbitrary maximum length.  Twitter recommends using a POST here
+            // (without specifying why), but it would require revising the
+            // base-class HTTP calls and isn't worth the trouble.
 
             Int32 iUserIDsProcessedThisCall = 0;
 
@@ -1019,7 +954,14 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             {
                 if (iUserIDsProcessedThisCall > 0)
                 {
-                    oUrl.Append(',');
+                    // Append an encoded comma.  Using an unencoded comma 
+                    // causes Twitter to return a 401 "unauthorized" error.
+                    //
+                    // See this post for an explanation:
+                    //
+                    // https://dev.twitter.com/discussions/11399
+
+                    oUrl.Append("%2C");
                 }
 
                 oUrl.Append( asUserIDs[iUserIDsProcessed] );
@@ -1034,11 +976,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                 ReportProgress("Getting page " + iCalls + ".");
             }
 
-            // Note that users/lookup doesn't use paging, so ask for just one
-            // page here.
-
             foreach ( Object oResult in EnumerateJsonValues(oUrl.ToString(),
-                null, 1, Int32.MaxValue, true, true, oRequestStatistics) )
+                null, Int32.MaxValue, true, oRequestStatistics) )
             {
                 yield return ( ( Dictionary<String, Object> )oResult );
             }
@@ -1046,65 +985,47 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: GetUrlWithPagination()
+    //  Method: AppendCursorToUrl()
     //
     /// <summary>
-    /// Adds a pagination parameter to a Twitter URL.
+    /// Appends a cursor to a Twitter URL.
     /// </summary>
     ///
     /// <param name="sUrl">
-    /// The URL to get the JSON from.  Can include URL parameters.
-    /// </param>
-    ///
-    /// <param name="bUsePageParameter">
-    /// If true, a "page" URL parameter is used for pagination.  If false, a
-    /// "cursor" URL parameter is used.
-    /// </param>
-    ///
-    /// <param name="iPage">
-    /// The page number to use if <paramref name="bUsePageParameter" /> is
-    /// true.
+    /// The URL to append to.  Can include URL parameters.
     /// </param>
     ///
     /// <param name="sCursor">
-    /// The cursor to use if <paramref name="bUsePageParameter" /> is false.
+    /// The cursor to append, or null to not append a cursor.
     /// </param>
     ///
     /// <returns>
-    /// <paramref name="sUrl" /> with a pagination parameter.
+    /// <paramref name="sUrl" /> with a cursor appended to it if requested.
     /// </returns>
     //*************************************************************************
 
     protected String
-    GetUrlWithPagination
+    AppendCursorToUrl
     (
         String sUrl,
-        Boolean bUsePageParameter,
-        Int32 iPage,
         String sCursor
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sUrl) );
-        Debug.Assert(iPage > 0);
-        Debug.Assert( !String.IsNullOrEmpty(sCursor) );
         AssertValid();
 
-        // Twitter uses two different paging schemes, and the one to use is
-        // specified by bUsePageParameter.  If true, a one-based "page"
-        // parameter is used.  If false, a "cursor" parameter is used, and the
-        // cursor for the next page is obtained from a "next_cursor_str" value
-        // in the results for the current page.
+        if (sCursor == null)
+        {
+            return (sUrl);
+        }
 
         return ( String.Format(
             
-            "{0}{1}{2}={3}"
+            "{0}{1}cursor={2}"
             ,
             sUrl,
             sUrl.IndexOf('?') == -1 ? '?' : '&',
-            bUsePageParameter ? "page" : "cursor",
-
-            bUsePageParameter ? iPage.ToString(CultureInfo.InvariantCulture)
-                : sCursor
+            sCursor
             ) );
     }
 
@@ -2847,16 +2768,16 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
     /// URI of the Twitter REST API.
 
-    protected const String RestApiUri = "http://api.twitter.com/1/";
+    protected const String RestApiUri = "http://api.twitter.com/1.1/";
 
     /// URI of the Twitter search API.
 
     protected const String SearchApiUri =
-        "http://search.twitter.com/search.json";
+        "http://api.twitter.com/1.1/search/tweets.json";
 
     /// URI of the Twitter OAuth API.
 
-    public const string OAuthApiUri = "http://api.twitter.com/oauth/";
+    public const string OAuthApiUri = "https://api.twitter.com/oauth/";
 
     /// Format pattern for the URL of the Web page for a Twitter user.  The {0}
     /// argument must be replaced with a Twitter screen name.
@@ -2912,13 +2833,11 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
             HttpStatusCode.NotFound,
 
-            // Twitter used to always return BadRequest when rate limiting
-            // kicked in.  Starting January 18, 2010, the search API was
-            // changed to return 420 instead.  The REST API still returns
-            // BadRequest.
+            // Starting with version 1.1 of the Twitter API, a single HTTP
+            // status code (429, "rate limit exceeded") is used for all
+            // rate-limit responses.
 
-            HttpStatusCode.BadRequest,
-            (HttpStatusCode)420,
+            (HttpStatusCode)429,
 
             // Not sure about what causes this one.
 
@@ -2929,7 +2848,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// Default time to pause before retrying a request after Twitter rate
     /// limits kick in, in milliseconds.
 
-    protected const Int32 DefaultRateLimitPauseMs = 60 * 60 * 1000;
+    protected const Int32 DefaultRateLimitPauseMs = 15 * 60 * 1000;
 
 
     /// GraphML-attribute IDs.

@@ -160,7 +160,7 @@ class NodeXLWorkbookSaver
             try
             {
                 ExcelTemplate.TaskAutomator.OpenWorkbookToAutomate(
-                    sWorkbookPath);
+                    sWorkbookPath, 60 * 60);
             }
             catch (Exception oException)
             {

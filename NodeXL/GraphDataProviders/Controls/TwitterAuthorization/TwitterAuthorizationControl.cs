@@ -40,8 +40,8 @@ public partial class TwitterAuthorizationControl : UserControl
     {
         InitializeComponent();
 
-        this.Status = TwitterAuthorizationStatus.NoTwitterAccount;
-        this.lnkRateLimiting.Text = RateLimitingLinkText;
+        this.Status =
+            TwitterAuthorizationStatus.HasTwitterAccountNotAuthorized;
 
         AssertValid();
     }
@@ -121,56 +121,6 @@ public partial class TwitterAuthorizationControl : UserControl
         }
     }
 
-    //*************************************************************************
-    //  Method: lnkRateLimiting_LinkClicked()
-    //
-    /// <summary>
-    /// Handles the LinkClicked event on the lnkRateLimiting LinkLabel.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    lnkRateLimiting_LinkClicked
-    (
-        object sender,
-        LinkLabelLinkClickedEventArgs e
-    )
-    {
-        AssertValid();
-
-        FormUtil.ShowInformation(
-
-            "To protect its Web service, Twitter limits the number of"
-            + " information requests that can be made within a one-hour"
-            + " period.  They call this \"rate limiting.\"  Depending on the"
-            + " types of networks you import, you can easily reach Twitter's"
-            + " limit."
-            + "\r\n\r\n"
-            + "The exact limit that Twitter imposes depends on several"
-            + " factors.  If you do not have a Twitter account, or you do have"
-            + " an account but you have not yet authorized NodeXL to use it to"
-            + " import Twitter networks, then Twitter imposes a severe limit."
-            + "  If you have authorized NodeXL to use your account, the limit"
-            + " is somewhat higher."
-            + "\r\n\r\n"
-            + "When the limit is reached, NodeXL pauses for about an hour"
-            + " until Twitter resets the limit.  These hour-long pauses can"
-            + " add up to a long delay before the entire Twitter network is"
-            + " imported."
-            + "\r\n\r\n"
-            + "(As of February 2011, Twitter no longer offers a"
-            + " \"whitelisting\" option to people who need higher limits.)"
-            );
-    }
-
     
     //*************************************************************************
     //  Method: AssertValid()
@@ -187,16 +137,6 @@ public partial class TwitterAuthorizationControl : UserControl
     {
         // (Do nothing.)
     }
-
-
-    //*************************************************************************
-    //  Public constants
-    //*************************************************************************
-
-    /// Text for the lnkRateLimiting LinkLabel.
-
-    public const String RateLimitingLinkText = 
-        "Why this might take a long time: Twitter rate limiting";
 
 
     //*************************************************************************

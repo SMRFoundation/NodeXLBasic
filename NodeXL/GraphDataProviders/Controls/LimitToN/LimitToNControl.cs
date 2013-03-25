@@ -14,9 +14,16 @@ namespace Smrf.NodeXL.GraphDataProviders
 /// </summary>
 ///
 /// <remarks>
-/// Use the <see cref="N" /> property to set and get the maximum number of
-/// objects to include.
+/// The control contains a CheckBox and a NumericUpDown control.  If the
+/// checkbox is checked, the user can enter a value into the NumericUpDown
+/// control that is between 10 and <see cref="MaximumN" />.  The value is
+/// available via the <see cref="N" /> property.
 ///
+/// <para>
+/// Unchecking the checkbox indicates "no limit," in which case the user cannot
+/// enter a value and <see cref="N" /> is always Int32.MaxValue.
+/// </para>
+/// 
 /// <para>
 /// By default, the "objects" are people.  If the control is being used to
 /// select a maximum number of something besides people, set the <see
@@ -24,7 +31,7 @@ namespace Smrf.NodeXL.GraphDataProviders
 /// </para>
 ///
 /// <para>
-/// This control uses the following keyboard shortcuts: T
+/// This control uses the following keyboard shortcut: T
 /// </para>
 ///
 /// </remarks>
@@ -250,7 +257,7 @@ public partial class LimitToNControl : UserControl
     /// This is a constant for now, because no callers need to change it.
     /// </remarks>
 
-    public const Int32 MinimumN = 100;
+    public const Int32 MinimumN = 10;
 
 
     //*************************************************************************

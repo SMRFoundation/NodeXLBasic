@@ -45,6 +45,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.radUseListName = new System.Windows.Forms.RadioButton();
             this.txbListName = new System.Windows.Forms.TextBox();
             this.usrTwitterAuthorization = new Smrf.NodeXL.GraphDataProviders.Twitter.TwitterAuthorizationControl();
+            this.usrTwitterRateLimits = new Smrf.NodeXL.GraphDataProviders.Twitter.TwitterRateLimitsControl();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -84,9 +85,9 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.pnlUserInputs.Controls.Add(this.groupBox2);
             this.pnlUserInputs.Controls.Add(this.groupBox1);
             this.pnlUserInputs.Controls.Add(this.usrTwitterAuthorization);
-            this.pnlUserInputs.Location = new System.Drawing.Point(12, 12);
+            this.pnlUserInputs.Location = new System.Drawing.Point(10, 41);
             this.pnlUserInputs.Name = "pnlUserInputs";
-            this.pnlUserInputs.Size = new System.Drawing.Size(362, 541);
+            this.pnlUserInputs.Size = new System.Drawing.Size(362, 512);
             this.pnlUserInputs.TabIndex = 0;
             // 
             // chkExpandLatestStatusUrls
@@ -135,33 +136,31 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // chkIncludeMentionsEdges
             // 
             this.chkIncludeMentionsEdges.AutoSize = true;
-            this.chkIncludeMentionsEdges.Location = new System.Drawing.Point(15, 60);
+            this.chkIncludeMentionsEdges.Location = new System.Drawing.Point(15, 40);
             this.chkIncludeMentionsEdges.Name = "chkIncludeMentionsEdges";
             this.chkIncludeMentionsEdges.Size = new System.Drawing.Size(203, 17);
-            this.chkIncludeMentionsEdges.TabIndex = 2;
+            this.chkIncludeMentionsEdges.TabIndex = 1;
             this.chkIncludeMentionsEdges.Text = "\"&Mentions\" relationship in latest tweet";
             this.chkIncludeMentionsEdges.UseVisualStyleBackColor = true;
             // 
             // chkIncludeRepliesToEdges
             // 
             this.chkIncludeRepliesToEdges.AutoSize = true;
-            this.chkIncludeRepliesToEdges.Location = new System.Drawing.Point(15, 40);
+            this.chkIncludeRepliesToEdges.Location = new System.Drawing.Point(15, 20);
             this.chkIncludeRepliesToEdges.Name = "chkIncludeRepliesToEdges";
             this.chkIncludeRepliesToEdges.Size = new System.Drawing.Size(207, 17);
-            this.chkIncludeRepliesToEdges.TabIndex = 1;
+            this.chkIncludeRepliesToEdges.TabIndex = 0;
             this.chkIncludeRepliesToEdges.Text = "\"&Replies-to\" relationship in latest tweet";
             this.chkIncludeRepliesToEdges.UseVisualStyleBackColor = true;
             // 
             // chkIncludeFollowedEdges
             // 
             this.chkIncludeFollowedEdges.AutoSize = true;
-            this.chkIncludeFollowedEdges.Checked = true;
-            this.chkIncludeFollowedEdges.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkIncludeFollowedEdges.Location = new System.Drawing.Point(15, 20);
+            this.chkIncludeFollowedEdges.Location = new System.Drawing.Point(15, 60);
             this.chkIncludeFollowedEdges.Name = "chkIncludeFollowedEdges";
-            this.chkIncludeFollowedEdges.Size = new System.Drawing.Size(156, 17);
-            this.chkIncludeFollowedEdges.TabIndex = 0;
-            this.chkIncludeFollowedEdges.Text = "&Follows relationship (slower)";
+            this.chkIncludeFollowedEdges.Size = new System.Drawing.Size(173, 17);
+            this.chkIncludeFollowedEdges.TabIndex = 2;
+            this.chkIncludeFollowedEdges.Text = "&Follows relationship (very slow!)";
             this.chkIncludeFollowedEdges.UseVisualStyleBackColor = true;
             // 
             // groupBox1
@@ -214,9 +213,16 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // 
             this.usrTwitterAuthorization.Location = new System.Drawing.Point(0, 330);
             this.usrTwitterAuthorization.Name = "usrTwitterAuthorization";
-            this.usrTwitterAuthorization.Size = new System.Drawing.Size(352, 209);
-            this.usrTwitterAuthorization.Status = Smrf.NodeXL.GraphDataProviders.Twitter.TwitterAuthorizationStatus.NoTwitterAccount;
+            this.usrTwitterAuthorization.Size = new System.Drawing.Size(352, 180);
+            this.usrTwitterAuthorization.Status = Smrf.NodeXL.GraphDataProviders.Twitter.TwitterAuthorizationStatus.HasTwitterAccountNotAuthorized;
             this.usrTwitterAuthorization.TabIndex = 5;
+            // 
+            // usrTwitterRateLimits
+            // 
+            this.usrTwitterRateLimits.Location = new System.Drawing.Point(12, 12);
+            this.usrTwitterRateLimits.Name = "usrTwitterRateLimits";
+            this.usrTwitterRateLimits.Size = new System.Drawing.Size(352, 14);
+            this.usrTwitterRateLimits.TabIndex = 3;
             // 
             // btnCancel
             // 
@@ -245,7 +251,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.statusStrip1.Location = new System.Drawing.Point(0, 596);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(374, 22);
-            this.statusStrip1.TabIndex = 3;
+            this.statusStrip1.TabIndex = 4;
             this.statusStrip1.Text = "statusStrip1";
             // 
             // slStatusLabel
@@ -262,6 +268,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(374, 618);
+            this.Controls.Add(this.usrTwitterRateLimits);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
@@ -305,5 +312,6 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
         private System.Windows.Forms.CheckBox chkIncludeLatestStatuses;
         private System.Windows.Forms.CheckBox chkIncludeStatistics;
         private System.Windows.Forms.CheckBox chkExpandLatestStatusUrls;
+        private TwitterRateLimitsControl usrTwitterRateLimits;
     }
 }

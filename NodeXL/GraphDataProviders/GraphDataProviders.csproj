@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;AddExtraEdges</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;XAddExtraEdges</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Smrf.NodeXL.GraphDataProviders.xml</DocumentationFile>
@@ -102,6 +102,12 @@
     </Compile>
     <Compile Include="Controls\TwitterAuthorization\TwitterAuthorizationControl.designer.cs">
       <DependentUpon>TwitterAuthorizationControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TwitterRateLimits\TwitterRateLimitsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TwitterRateLimits\TwitterRateLimitsControl.Designer.cs">
+      <DependentUpon>TwitterRateLimitsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\Flickr\FlickrGetRelatedTagNetwork\FlickrGetRelatedTagNetworkDialog.cs">
       <SubType>Form</SubType>
@@ -216,6 +222,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\TwitterAuthorization\TwitterAuthorizationControl.resx">
       <DependentUpon>TwitterAuthorizationControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TwitterRateLimits\TwitterRateLimitsControl.resx">
+      <DependentUpon>TwitterRateLimitsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\Flickr\FlickrGetRelatedTagNetwork\FlickrGetRelatedTagNetworkDialog.resx">
       <DependentUpon>FlickrGetRelatedTagNetworkDialog.cs</DependentUpon>

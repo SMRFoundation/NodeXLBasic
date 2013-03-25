@@ -626,15 +626,22 @@ public static class ApplicationUtil
             //   1. "E:\NodeXL\ExcelTemplate\bin\Debug"
             //
             //   2. "E:\NodeXL\NetworkServer\bin\Debug"
+            //
+            //   3. "E:\NodeXL\GraphMLFileProcessor\bin\Debug"
 
             sTemplatesPath = Path.GetDirectoryName(
                 GetExecutingAssemblyPath() );
 
             // The template in the development environment is under the
-            // ExcelTemplate folder.  For case 2, fix the folder.
+            // ExcelTemplate folder.  For cases 2 and 3, fix the folder.
+
+            const String ExcelTemplateFolderName = "ExcelTemplate";
 
             sTemplatesPath = sTemplatesPath.Replace("NetworkServer",
-                "ExcelTemplate");
+                ExcelTemplateFolderName);
+
+            sTemplatesPath = sTemplatesPath.Replace("GraphMLFileProcessor",
+                ExcelTemplateFolderName);
         }
         else
         {
