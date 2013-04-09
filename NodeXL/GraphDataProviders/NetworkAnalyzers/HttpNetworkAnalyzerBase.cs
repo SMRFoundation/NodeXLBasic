@@ -577,7 +577,7 @@ public abstract class HttpNetworkAnalyzerBase : Object
 
         #if WriteRequestsToDebug
 
-        Debug.WriteLine("\r\n\r\nURL: " + oHttpWebRequest.RequestUri);
+        Debug.WriteLine("\r\n\r\nURL: " + oHttpWebRequest.RequestUri.AbsoluteUri);
 
         #endif
 

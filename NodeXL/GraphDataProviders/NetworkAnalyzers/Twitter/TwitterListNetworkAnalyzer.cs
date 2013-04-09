@@ -555,8 +555,8 @@ public class TwitterListNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 "{0}lists/members.json?slug={1}&owner_screen_name={2}&{3}"
                 ,
                 RestApiUri,
-                UrlUtil.EncodeUrlParameter(sSlug),
-                UrlUtil.EncodeUrlParameter(sOwnerScreenName),
+                EncodeUrlParameter(sSlug),
+                EncodeUrlParameter(sOwnerScreenName),
                 IncludeEntitiesUrlParameter
                 );
 

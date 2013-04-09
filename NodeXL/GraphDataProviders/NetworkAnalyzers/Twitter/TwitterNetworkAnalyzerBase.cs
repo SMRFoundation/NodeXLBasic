@@ -118,12 +118,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                 {
                     case HttpStatusCode.Unauthorized:  // HTTP 401.
 
-                        sMessage =
-                            RefusedMessage
-                            + "  One possible cause is that the Twitter user"
-                            + " has protected her tweets."
-                            ;
-
+                        sMessage = RefusedMessage;
                         break;
 
                     case HttpStatusCode.NotFound:  // HTTP 404.
@@ -493,7 +488,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             "{0}users/show.json?screen_name={1}&{2}"
             ,
             RestApiUri,
-            UrlUtil.EncodeUrlParameter(sScreenName),
+            EncodeUrlParameter(sScreenName),
             IncludeEntitiesUrlParameter
             );
 
@@ -855,7 +850,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             ,
             RestApiUri,
             bFollowed ? "friends/ids" : "followers/ids",
-            UrlUtil.EncodeUrlParameter(sScreenName)
+            EncodeUrlParameter(sScreenName)
             );
 
         // The JSON looped through here has an "ids" name whose value is an
@@ -1027,6 +1022,39 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             sUrl.IndexOf('?') == -1 ? '?' : '&',
             sCursor
             ) );
+    }
+
+    //*************************************************************************
+    //  Method: EncodeUrlParameter()
+    //
+    /// <summary>
+    /// Encodes an URL parameter using a method appropriate for Twitter and
+    /// OAuth.
+    /// </summary>
+    ///
+    /// <param name="urlParameter">
+    /// The URL parameter to be encoded.  Can't be null.
+    /// </param>
+    ///
+    /// <returns>
+    /// The encoded parameter.
+    /// </returns>
+    //*************************************************************************
+
+    public static String
+    EncodeUrlParameter
+    (
+        String urlParameter
+    )
+    {
+        Debug.Assert(urlParameter != null);
+
+        // The OAuth code provides a method for this.  That method is based on
+        // RFC 3986, Section 2.1, which is documented in "Percent encoding
+        // parameters" at
+        // https://dev.twitter.com/docs/auth/percent-encoding-parameters.
+
+        return ( OAuthBase.UrlEncode(urlParameter) );
     }
 
     //*************************************************************************

@@ -187,7 +187,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
                             postData += "&";
                         }
                         qs[key] = HttpUtility.UrlDecode(qs[key]);
-                        qs[key] = this.UrlEncode(qs[key]);
+                        qs[key] = UrlEncode(qs[key]);
                         postData += key + "=" + qs[key];
 
                     }

@@ -799,14 +799,12 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         if (sQueryParametersForNextPage == null)
         {
-            // Convert spaces in the search term to a plus sign.
-
             return ( String.Format(
 
                 "{0}?q={1}&count=100&result_type=recent&{2}"
                 ,
                 SearchApiUri,
-                UrlUtil.EncodeUrlParameter(sSearchTerm).Replace("%20", "+"),
+                EncodeUrlParameter(sSearchTerm),
                 IncludeEntitiesUrlParameter
                 ) );
         }
