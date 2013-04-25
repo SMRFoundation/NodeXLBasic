@@ -3,6 +3,7 @@ using System;
 using System.Windows.Forms;
 using System.Web;
 using System.Diagnostics;
+using Smrf.SocialNetworkLib.Twitter;
 
 namespace Smrf.NodeXL.GraphDataProviders.Twitter
 {
@@ -112,7 +113,10 @@ public class TwitterAuthorizationManager : Object
 
         // Get a Twitter request token.
 
-        oAuthTwitter oTwitterAuth = new oAuthTwitter();
+        oAuthTwitter oTwitterAuth = new oAuthTwitter(
+            HttpNetworkAnalyzerBase.UserAgent,
+            HttpNetworkAnalyzerBase.HttpWebRequestTimeoutMs);
+
         Uri oAuthorizationUri = new Uri( oTwitterAuth.AuthorizationLinkGet() );
 
         String sRequestToken = HttpUtility.ParseQueryString(

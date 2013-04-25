@@ -1,8 +1,8 @@
-﻿
-using System;
+﻿using System;
 using System.Xml;
 using System.Runtime.Serialization;
 using System.Diagnostics;
+using Smrf.SocialNetworkLib;
 
 namespace Smrf.NodeXL.GraphDataProviders
 {

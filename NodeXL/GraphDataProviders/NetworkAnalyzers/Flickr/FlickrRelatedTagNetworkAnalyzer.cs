@@ -415,7 +415,7 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
             // If the exception is not a WebException or XmlException, or if
             // none of the network has been obtained yet, throw the exception.
 
-            if (!ExceptionIsWebOrXml(oException) ||
+            if (!HttpSocialNetworkUtil.ExceptionIsWebOrXml(oException) ||
                 !oGraphMLXmlDocument.HasVertexXmlNode)
             {
                 throw oException;

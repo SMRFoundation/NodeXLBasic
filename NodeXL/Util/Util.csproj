@@ -85,6 +85,9 @@
     <Compile Include="..\..\Common\SentenceConcatenator.cs">
       <Link>SentenceConcatenator.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\SocialNetwork\Twitter\TwitterStatusParser.cs">
+      <Link>SocialNetwork\Twitter\TwitterStatusParser.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\StringUtil.cs">
       <Link>StringUtil.cs</Link>
     </Compile>
@@ -105,9 +108,6 @@
     </Compile>
     <Compile Include="..\..\Common\TermCounters\WordPairCounter.cs">
       <Link>TermCounters\WordPairCounter.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\TwitterStatusParser.cs">
-      <Link>TwitterStatusParser.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\XmlUtil2.cs">
       <Link>XmlUtil2.cs</Link>

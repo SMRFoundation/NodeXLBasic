@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Smrf.AppLib;
+using Smrf.SocialNetworkLib.Twitter;
 
 namespace Smrf.Common.UnitTests
 {

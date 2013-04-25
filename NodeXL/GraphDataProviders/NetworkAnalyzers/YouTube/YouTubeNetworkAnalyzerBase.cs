@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Smrf.AppLib;
 using Smrf.XmlLib;
+using Smrf.SocialNetworkLib;
 
 namespace Smrf.NodeXL.GraphDataProviders.YouTube
 {
@@ -266,7 +267,7 @@ public abstract class YouTubeNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             }
             catch (Exception oException)
             {
-                if ( !ExceptionIsWebOrXml(oException) )
+                if (!HttpSocialNetworkUtil.ExceptionIsWebOrXml(oException))
                 {
                     throw oException;
                 }
@@ -395,7 +396,7 @@ public abstract class YouTubeNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         }
         catch (Exception oException)
         {
-            if ( !ExceptionIsWebOrXml(oException) )
+            if ( !HttpSocialNetworkUtil.ExceptionIsWebOrXml(oException))
             {
                 throw oException;
             }
@@ -457,7 +458,7 @@ public abstract class YouTubeNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             );
 
         XmlDocument oXmlDocument = GetXmlDocumentWithRetries(sUrlWithVersion,
-            HttpStatusCodesToFailImmediately, oRequestStatistics, null);
+            HttpStatusCodesToFailImmediately, oRequestStatistics);
 
         oXmlNamespaceManager = CreateXmlNamespaceManager(oXmlDocument);
 
@@ -757,6 +758,11 @@ public abstract class YouTubeNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
             HttpStatusCode.Forbidden,
         };
+
+    /// URI of the Atom namespace.
+
+    protected const String AtomNamespaceUri =
+        "http://www.w3.org/2005/Atom";
 
 
     //*************************************************************************

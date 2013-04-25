@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 
-namespace Smrf.AppLib
+namespace Smrf.SocialNetworkLib.Twitter
 {
 //*****************************************************************************
 //  Class: TwitterStatusParser

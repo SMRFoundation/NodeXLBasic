@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Security.Cryptography;
 using System.Collections.Generic;
 using System.Text;
@@ -27,7 +28,7 @@ using System.Web;
 
 #pragma warning disable 1591, 1573
 
-namespace Smrf.NodeXL.GraphDataProviders.Twitter
+namespace Smrf.SocialNetworkLib.Twitter
 {
     public class OAuthBase
     {

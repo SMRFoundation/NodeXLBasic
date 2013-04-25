@@ -73,8 +73,29 @@
     <Compile Include="..\..\Common\ObjectWithText.cs">
       <Link>Util\ObjectWithText.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\SocialNetwork\HttpSocialNetworkUtil.cs">
+      <Link>Util\SocialNetwork\HttpSocialNetworkUtil.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\SocialNetwork\NetworkLevel.cs">
       <Link>Util\SocialNetwork\NetworkLevel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\SocialNetwork\RequestStatistics.cs">
+      <Link>Util\SocialNetwork\RequestStatistics.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\SocialNetwork\Twitter\Authorization\oAuth.cs">
+      <Link>Util\SocialNetwork\Twitter\Authorization\oAuth.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\SocialNetwork\Twitter\Authorization\oAuthTwitter.cs">
+      <Link>Util\SocialNetwork\Twitter\Authorization\oAuthTwitter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\SocialNetwork\Twitter\TwitterApiUrlParameters.cs">
+      <Link>Util\SocialNetwork\Twitter\TwitterApiUrlParameters.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\SocialNetwork\Twitter\TwitterApiUrls.cs">
+      <Link>Util\SocialNetwork\Twitter\TwitterApiUrls.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\SocialNetwork\Twitter\TwitterUtil.cs">
+      <Link>Util\SocialNetwork\Twitter\TwitterUtil.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\UrlUtil.cs">
       <Link>Util\UrlUtil.cs</Link>
@@ -191,9 +212,6 @@
     <Compile Include="NetworkAnalyzers\Flickr\FlickrRelatedTagNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\Flickr\FlickrUserNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\HttpNetworkAnalyzerBase.cs" />
-    <Compile Include="NetworkAnalyzers\RequestStatistics.cs" />
-    <Compile Include="NetworkAnalyzers\Twitter\Authorization\oAuth.cs" />
-    <Compile Include="NetworkAnalyzers\Twitter\Authorization\oAuthTwitter.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\Authorization\TwitterAccessToken.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\Authorization\TwitterAuthorizationStatus.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\SharedTermEdgeAppender.cs" />

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Smrf.AppLib;
 using Smrf.XmlLib;
+using Smrf.SocialNetworkLib;
 
 namespace Smrf.NodeXL.GraphDataProviders.Flickr
 {
@@ -254,7 +255,7 @@ public abstract class FlickrNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             // following logic will cause false to be returned for a
             // FlickrException.
 
-            if ( !ExceptionIsWebOrXml(oException) )
+            if ( !HttpSocialNetworkUtil.ExceptionIsWebOrXml(oException))
             {
                 throw oException;
             }
@@ -428,7 +429,7 @@ public abstract class FlickrNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             }
             catch (Exception oException)
             {
-                if ( !ExceptionIsWebOrXml(oException) )
+                if ( !HttpSocialNetworkUtil.ExceptionIsWebOrXml(oException))
                 {
                     throw oException;
                 }

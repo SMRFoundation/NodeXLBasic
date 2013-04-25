@@ -1,5 +1,4 @@
 ﻿
-
 using System;
 using System.Xml;
 using System.Text;
@@ -11,6 +10,8 @@ using System.Diagnostics;
 using Smrf.AppLib;
 using Smrf.XmlLib;
 using Smrf.DateTimeLib;
+using Smrf.SocialNetworkLib;
+using Smrf.SocialNetworkLib.Twitter;
 
 namespace Smrf.NodeXL.GraphDataProviders.Twitter
 {
@@ -398,12 +399,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 MaximumFollowers, oGraphMLXmlDocument, oRequestStatistics);
         }
 
-        if ( WhatToIncludeFlagIsSet(eWhatToInclude, WhatToInclude.Statistics) )
-        {
-            AppendStatistics(oGraphMLXmlDocument, oUserIDDictionary,
-                oRequestStatistics);
-        }
-
         AppendRepliesToAndMentionsEdgeXmlNodes(oGraphMLXmlDocument,
             oUserIDDictionary.Values,
             TwitterUsersToUniqueScreenNames(oUserIDDictionary.Values),
@@ -526,7 +521,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     ///
     /// <param name="oUserIDDictionary">
     /// The key is the Twitter user ID and the value is the corresponding
-    /// TwitterUser.
+    /// TwitterUser.  The dictionary is empty when this method is called, and
+    /// this method populates the dictionary.
     /// </param>
     ///
     /// <param name="oRequestStatistics">
@@ -557,14 +553,25 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Boolean bExpandStatusUrls = WhatToIncludeFlagIsSet(
             eWhatToInclude, WhatToInclude.ExpandedStatusUrls);
 
+        Boolean bIncludeStatistics = WhatToIncludeFlagIsSet(
+            eWhatToInclude, WhatToInclude.Statistics);
+
         ReportProgress("Getting a list of tweets.");
 
         // Get the tweets that contain the search term.  Note that multiple
         // tweets may have the same author.
 
+        Debug.Assert(m_oTwitterUtil != null);
+
         foreach ( Dictionary<String, Object> oStatusValueDictionary in
-            EnumerateStatuses(sSearchTerm, iMaximumStatuses,
-            oRequestStatistics) )
+
+            m_oTwitterUtil.EnumerateSearchStatuses(
+                sSearchTerm, iMaximumStatuses, oRequestStatistics,
+                new ReportProgressHandler(this.ReportProgress),
+
+                new CheckCancellationPendingHandler(
+                    this.CheckCancellationPending)
+                ) )
         {
             Dictionary<String, Object> oUserValueDictionary =
                 ( Dictionary<String, Object> )oStatusValueDictionary["user"];
@@ -590,19 +597,11 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 sScreenName, sUserID, oGraphMLXmlDocument, oUserIDDictionary,
                 out oTwitterUser);
 
-            // Get the author's image URL.
-
-            String sImageUrl;
-
-            if (
-                bIsFirstTweetForAuthor
-                && 
-                TryGetJsonValueFromDictionary(oUserValueDictionary,
-                    "profile_image_url", out sImageUrl)
-                )
+            if (bIsFirstTweetForAuthor)
             {
-                oGraphMLXmlDocument.AppendGraphMLAttributeValue(
-                    oTwitterUser.VertexXmlNode, ImageFileID, sImageUrl);
+                AppendUserInformationFromValueDictionary(oUserValueDictionary,
+                    oGraphMLXmlDocument, oTwitterUser, bIncludeStatistics,
+                    false, false, false);
             }
 
             // Get the status information.
@@ -647,215 +646,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         }
 
         AppendVertexTooltipXmlNodes(oGraphMLXmlDocument, oUserIDDictionary);
-    }
-
-    //*************************************************************************
-    //  Method: EnumerateStatuses()
-    //
-    /// <summary>
-    /// Enumerates through the statuses that include a specified search term.
-    /// </summary>
-    ///
-    /// <param name="sSearchTerm">
-    /// The term to search for.
-    /// </param>
-    ///
-    /// <param name="iMaximumStatuses">
-    /// Maximum number of tweets to request.  Can't be Int32.MaxValue.
-    /// </param>
-    ///
-    /// <param name="oRequestStatistics">
-    /// A <see cref="RequestStatistics" /> object that is keeping track of
-    /// requests made while getting the network.
-    /// </param>
-    ///
-    /// <returns>
-    /// A Dictionary for each status, returned one by one.  The dictionary keys
-    /// are names and the dictionary values are the named values.
-    /// </returns>
-    //*************************************************************************
-
-    protected IEnumerable< Dictionary<String, Object> >
-    EnumerateStatuses
-    (
-        String sSearchTerm,
-        Int32 iMaximumStatuses,
-        RequestStatistics oRequestStatistics
-    )
-    {
-        Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
-        Debug.Assert(iMaximumStatuses > 0);
-        Debug.Assert(iMaximumStatuses != Int32.MaxValue);
-        Debug.Assert(oRequestStatistics != null);
-        AssertValid();
-
-        Int32 iPage = 1;
-        Int32 iStatusesEnumerated = 0;
-        String sQueryParametersForNextPage = null;
-
-        while (true)
-        {
-            if (iPage > 1)
-            {
-                ReportProgress("Getting page " + iPage + ".");
-            }
-
-            Dictionary<String, Object> oResponseDictionary = null;
-            Object [] aoStatusesThisPage;
-
-            String sUrl = GetSearchUrl(sSearchTerm,
-                sQueryParametersForNextPage);
-
-            try
-            {
-                Object oDeserializedTwitterResponse = 
-                    ( new JavaScriptSerializer() ).DeserializeObject(
-                        GetTwitterResponseAsString(sUrl, oRequestStatistics) );
-
-                // The top level of the Json response contains a set of
-                // name/value pairs.  The value for the "statuses" name is the
-                // array of objects this method will enumerate.
-
-                oResponseDictionary = ( Dictionary<String, Object> )
-                    oDeserializedTwitterResponse;
-
-                aoStatusesThisPage =
-                    ( Object [] )oResponseDictionary["statuses"];
-            }
-            catch (Exception oException)
-            {
-                // Rethrow the exception if appropriate.
-
-                OnExceptionWhileEnumeratingJsonValues(oException, iPage,
-                    false);
-
-                // Otherwise, just halt the enumeration.
-
-                yield break;
-            }
-
-            Int32 iObjectsThisPage = aoStatusesThisPage.Length;
-
-            if (iObjectsThisPage == 0)
-            {
-                yield break;
-            }
-
-            for (Int32 i = 0; i < iObjectsThisPage; i++)
-            {
-                yield return (
-                    ( Dictionary<String, Object> )aoStatusesThisPage[i] );
-
-                iStatusesEnumerated++;
-
-                if (iStatusesEnumerated == iMaximumStatuses)
-                {
-                    yield break;
-                }
-            }
-
-            iPage++;
-
-            if ( !TryGetQueryParametersForNextPage(oResponseDictionary,
-                out sQueryParametersForNextPage) )
-            {
-                yield break;
-            }
-
-            // Get the next page...
-        }
-    }
-
-    //*************************************************************************
-    //  Method: GetSearchUrl()
-    //
-    /// <summary>
-    /// Gets the URL for getting tweets with a specified search term.
-    /// </summary>
-    ///
-    /// <param name="sSearchTerm">
-    /// The term to search for.
-    /// </param>
-    ///
-    /// <param name="sQueryParametersForNextPage">
-    /// The complete query parameters to use if getting page number 2 or
-    /// greater, or null if getting the first page.
-    /// </param>
-    ///
-    /// <returns>
-    /// The URL to use.
-    /// </returns>
-    //*************************************************************************
-
-    protected String
-    GetSearchUrl
-    (
-        String sSearchTerm,
-        String sQueryParametersForNextPage
-    )
-    {
-        Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
-        AssertValid();
-
-        if (sQueryParametersForNextPage == null)
-        {
-            return ( String.Format(
-
-                "{0}?q={1}&count=100&result_type=recent&{2}"
-                ,
-                SearchApiUri,
-                EncodeUrlParameter(sSearchTerm),
-                IncludeEntitiesUrlParameter
-                ) );
-        }
-
-        return (SearchApiUri + sQueryParametersForNextPage);
-    }
-
-    //*************************************************************************
-    //  Method: TryGetQueryParametersForNextPage()
-    //
-    /// <summary>
-    /// Attempts to get the query parameters to use for the next page of search
-    /// results.
-    /// </summary>
-    ///
-    /// <param name="oResponseDictionary">
-    /// Response returned by Twitter for the current page.
-    /// </param>
-    ///
-    /// <param name="sQueryParametersForNextPage">
-    /// Where the complete query parameters to use get stored if true is
-    /// returned.  Includes a leading question mark.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if successful.
-    /// </returns>
-    //*************************************************************************
-
-    protected Boolean
-    TryGetQueryParametersForNextPage
-    (
-        Dictionary<String, Object> oResponseDictionary,
-        out String sQueryParametersForNextPage
-    )
-    {
-        Debug.Assert(oResponseDictionary != null);
-        AssertValid();
-
-        sQueryParametersForNextPage = null;
-
-        Dictionary<String, Object> oSearchMetadataDictionary =
-            ( Dictionary<String, Object> )
-            oResponseDictionary["search_metadata"];
-
-        return (
-            oSearchMetadataDictionary != null
-            &&
-            TryGetJsonValueFromDictionary(oSearchMetadataDictionary,
-                "next_results", out sQueryParametersForNextPage)
-            );
     }
 
     //*************************************************************************
@@ -910,68 +700,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
             oGraphMLXmlDocument.AppendGraphMLAttributeValue(
                 oTwitterUser.VertexXmlNode, TooltipID, sTooltip);
-        }
-    }
-
-    //*************************************************************************
-    //  Method: AppendStatistics()
-    //
-    /// <summary>
-    /// Appends user statistics to the GraphML document.
-    /// </summary>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
-    /// </param>
-    ///
-    /// <param name="oUserIDDictionary">
-    /// The key is the Twitter user ID and the value is the corresponding
-    /// TwitterUser.
-    /// </param>
-    ///
-    /// <param name="oRequestStatistics">
-    /// A <see cref="RequestStatistics" /> object that is keeping track of
-    /// requests made while getting the network.
-    /// </param>
-    ///
-    /// <remarks>
-    /// This method appends statistics to <paramref
-    /// name="oGraphMLXmlDocument" /> for each user in <paramref
-    /// name="oUserIDDictionary" />.
-    /// </remarks>
-    //*************************************************************************
-
-    protected void
-    AppendStatistics
-    (
-        GraphMLXmlDocument oGraphMLXmlDocument,
-        Dictionary<String, TwitterUser> oUserIDDictionary,
-        RequestStatistics oRequestStatistics
-    )
-    {
-        Debug.Assert(oGraphMLXmlDocument != null);
-        Debug.Assert(oUserIDDictionary != null);
-        Debug.Assert(oRequestStatistics != null);
-        AssertValid();
-
-        foreach (Dictionary<String, Object> oUserValueDictionary in
-            EnumerateUserValueDictionaries(oUserIDDictionary.Keys.ToArray(),
-            oRequestStatistics) )
-        {
-            String sUserID;
-            TwitterUser oTwitterUser;
-
-            if (
-                TryGetJsonValueFromDictionary(oUserValueDictionary, "id",
-                    out sUserID)
-                &&
-                oUserIDDictionary.TryGetValue(sUserID, out oTwitterUser)
-                )
-            {
-                AppendUserInformationFromValueDictionary(oUserValueDictionary,
-                    oGraphMLXmlDocument, oTwitterUser, true, false, false,
-                    false);
-            }
         }
     }
 

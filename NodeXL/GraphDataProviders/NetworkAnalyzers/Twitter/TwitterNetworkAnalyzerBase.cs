@@ -14,6 +14,8 @@ using System.Diagnostics;
 using Smrf.AppLib;
 using Smrf.XmlLib;
 using Smrf.DateTimeLib;
+using Smrf.SocialNetworkLib;
+using Smrf.SocialNetworkLib.Twitter;
 
 namespace Smrf.NodeXL.GraphDataProviders.Twitter
 {
@@ -43,7 +45,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
     public TwitterNetworkAnalyzerBase()
     {
-        m_oTwitterAccessToken = null;
+        m_oTwitterUtil = null;
         m_oTwitterStatusParser = new TwitterStatusParser();
 
         AssertValid();
@@ -89,7 +91,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         {
             WebException oWebException = (WebException)oException;
 
-            if ( WebExceptionIsDueToRateLimit(oWebException) )
+            if ( TwitterUtil.WebExceptionIsDueToRateLimit(oWebException) )
             {
                 // Note that this shouldn't actually occur, because
                 // this.GetTwitterResponseAsString() pauses and retries when
@@ -169,106 +171,6 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: WebExceptionIsDueToRateLimit()
-    //
-    /// <summary>
-    /// Determines whether a WebException is due to Twitter rate limits.
-    /// </summary>
-    ///
-    /// <param name="oWebException">
-    /// The WebException to check.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if <paramref name="oWebException" /> is due to Twitter rate limits
-    /// kicking in.
-    /// </returns>
-    //*************************************************************************
-
-    protected Boolean
-    WebExceptionIsDueToRateLimit
-    (
-        WebException oWebException
-    )
-    {
-        Debug.Assert(oWebException != null);
-        AssertValid();
-
-        // Starting with version 1.1 of the Twitter API, a single HTTP status
-        // code (429, "rate limit exceeded") is used for all rate-limit
-        // responses.
-
-        return ( WebExceptionHasHttpStatusCode(oWebException,
-            (HttpStatusCode)429) );
-    }
-
-    //*************************************************************************
-    //  Method: GetRateLimitPauseMs()
-    //
-    /// <summary>
-    /// Gets the time to pause before retrying a request after Twitter rate
-    /// limits kicks in.
-    /// </summary>
-    ///
-    /// <param name="oWebException">
-    /// The WebException to check.
-    /// </param>
-    ///
-    /// <returns>
-    /// The time to pause before retrying a request after Twitter rate limits
-    /// kick in, in milliseconds.
-    /// </returns>
-    //*************************************************************************
-
-    protected Int32
-    GetRateLimitPauseMs
-    (
-        WebException oWebException
-    )
-    {
-        Debug.Assert(oWebException != null);
-        AssertValid();
-
-        // The Twitter REST API provides a custom X-Rate-Limit-Reset header in
-        // the response headers.  This is the time at which the request should
-        // be made again, in seconds since 1/1/1970, in UTC.  If this header is
-        // available, use it.  Otherwise, use a default pause time.
-
-        WebResponse oWebResponse = oWebException.Response;
-
-        if (oWebResponse != null)
-        {
-            String sXRateLimitReset =
-                oWebResponse.Headers["X-Rate-Limit-Reset"];
-
-            Int32 iSecondsSince1970;
-
-            // (Note that Int32.TryParse() can handle null, which indicates a
-            // missing header.)
-
-            if ( Int32.TryParse(sXRateLimitReset, out iSecondsSince1970) )
-            {
-                DateTime oResetTimeUtc =
-                    new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).
-                        AddSeconds(iSecondsSince1970);
-
-                Double dRateLimitPauseMs =
-                    (oResetTimeUtc - DateTime.UtcNow).TotalMilliseconds;
-
-                // Don't wait longer than two hours.
-
-                if (dRateLimitPauseMs > 0 &&
-                    dRateLimitPauseMs <= 2 * 60 * 60 * 1000)
-                {
-                    return ( (Int32)dRateLimitPauseMs );
-                }
-            }
-        }
-
-        return (DefaultRateLimitPauseMs);
-    }
-
-    //*************************************************************************
     //  Method: BeforeGetNetwork()
     //
     /// <summary>
@@ -288,7 +190,21 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         // TwitterAccessToken caches the access token it reads from disk.  Make
         // sure the latest access token is read.
 
-        m_oTwitterAccessToken = new TwitterAccessToken();
+        TwitterAccessToken oTwitterAccessToken = new TwitterAccessToken();
+
+        // A network should never be requested if the access token hasn't been
+        // saved yet.
+
+        String sToken, sSecret;
+
+        if ( !oTwitterAccessToken.TryLoad(out sToken, out sSecret) )
+        {
+            throw new Exception("Twitter access token not set.");
+        }
+
+        m_oTwitterUtil = new TwitterUtil(sToken, sSecret,
+            HttpNetworkAnalyzerBase.UserAgent,
+            HttpNetworkAnalyzerBase.HttpWebRequestTimeoutMs);
     }
 
     //*************************************************************************
@@ -487,9 +403,9 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
             "{0}users/show.json?screen_name={1}&{2}"
             ,
-            RestApiUri,
-            EncodeUrlParameter(sScreenName),
-            IncludeEntitiesUrlParameter
+            TwitterApiUrls.Rest,
+            TwitterUtil.EncodeUrlParameter(sScreenName),
+            TwitterApiUrlParameters.IncludeEntities
             );
 
         ReportProgress( String.Format(
@@ -509,7 +425,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         }
         catch (Exception oException)
         {
-            if (!ExceptionIsWebOrJson(oException) ||
+            if (!HttpSocialNetworkUtil.ExceptionIsWebOrJson(oException) ||
                 !bIgnoreWebAndJsonExceptions)
             {
                 throw oException;
@@ -555,94 +471,12 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Debug.Assert(oRequestStatistics != null);
         AssertValid();
 
-        Debug.Assert(m_oTwitterAccessToken != null);
+        Debug.Assert(m_oTwitterUtil != null);
 
-        Int32 iRateLimitPauses = 0;
-
-        while (true)
-        {
-            String sUrlToUse = sUrl;
-
-            // Has the user authorized NodeXL to use her Twitter account?
-
-            String sToken, sSecret;
-
-            if ( m_oTwitterAccessToken.TryLoad(out sToken, out sSecret) )
-            {
-                // Yes.  Add the required authorization information to the URL.
-
-                // Note: Don't do this outside the while (true) loop.  The
-                // authorization information includes a timestamp that will
-                // probably expire if the code within the catch block pauses.
-
-                oAuthTwitter oAuthTwitter = new oAuthTwitter();
-                oAuthTwitter.Token = sToken;
-                oAuthTwitter.TokenSecret = sSecret;
-
-                String sAuthorizedUrl, sAuthorizedPostData;
-
-                oAuthTwitter.ConstructAuthWebRequest(oAuthTwitter.Method.GET,
-                    sUrl, String.Empty, out sAuthorizedUrl,
-                    out sAuthorizedPostData);
-
-                sUrlToUse = sAuthorizedUrl;
-            }
-
-            Stream oStream = null;
-
-            try
-            {
-                oStream = GetHttpWebResponseStreamWithRetries(sUrlToUse,
-                    HttpStatusCodesToFailImmediately, oRequestStatistics,
-                    null);
-
-                return ( new StreamReader(oStream).ReadToEnd() );
-            }
-            catch (WebException oWebException)
-            {
-                if (!WebExceptionIsDueToRateLimit(oWebException) ||
-                    iRateLimitPauses > 0)
-                {
-                    throw;
-                }
-
-                // Twitter rate limits have kicked in.  Pause and try again.
-
-                iRateLimitPauses++;
-                Int32 iRateLimitPauseMs = GetRateLimitPauseMs(oWebException);
-
-                DateTime oWakeUpTime = DateTime.Now.AddMilliseconds(
-                    iRateLimitPauseMs);
-
-                ReportProgress( String.Format(
-
-                    "Reached Twitter rate limits.  Pausing until {0}."
-                    ,
-                    oWakeUpTime.ToLongTimeString()
-                    ) );
-
-                // Don't pause in one large interval, which would prevent
-                // cancellation.
-
-                const Int32 SleepCycleDurationMs = 1000;
-
-                Int32 iSleepCycles = (Int32)Math.Ceiling(
-                    (Double)iRateLimitPauseMs / SleepCycleDurationMs) ;
-
-                for (Int32 i = 0; i < iSleepCycles; i++)
-                {
-                    CheckCancellationPending();
-                    System.Threading.Thread.Sleep(SleepCycleDurationMs);
-                }
-            }
-            finally
-            {
-                if (oStream != null)
-                {
-                    oStream.Close();
-                }
-            }
-        }
+        return ( m_oTwitterUtil.GetTwitterResponseAsString(sUrl,
+            oRequestStatistics, new ReportProgressHandler(this.ReportProgress),
+            new CheckCancellationPendingHandler(this.CheckCancellationPending)
+            ) );
     }
 
     //*************************************************************************
@@ -695,6 +529,18 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         RequestStatistics oRequestStatistics
     )
     {
+        // Note:
+        //
+        // The logic in this method is similar to the logic in
+        // TwitterUtil.EnumerateSearchStatuses().  In fact, at one time all
+        // enumeration was done through this EnumerateJsonValues() method.
+        // TwitterUtil.EnumerateSearchStatuses() was created only when
+        // version 1.1 of the Twitter API introduced yet another paging scheme,
+        // one that differs from the cursor scheme that this method handles.
+        //
+        // A possible work item is to recombine the two methods into one,
+        // possibly by using a delegate to handle the different paging schemes.
+
         Debug.Assert( !String.IsNullOrEmpty(sUrl) );
         Debug.Assert(iMaximumValues > 0);
         Debug.Assert(oRequestStatistics != null);
@@ -750,8 +596,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             {
                 // Rethrow the exception if appropriate.
 
-                OnExceptionWhileEnumeratingJsonValues(oException, iPage,
-                    bSkipMostPage1Errors);
+                TwitterUtil.OnExceptionWhileEnumeratingJsonValues(
+                    oException, iPage, bSkipMostPage1Errors);
 
                 // Otherwise, just halt the enumeration.
 
@@ -848,9 +694,9 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
             "{0}{1}.json?screen_name={2}"
             ,
-            RestApiUri,
+            TwitterApiUrls.Rest,
             bFollowed ? "friends/ids" : "followers/ids",
-            EncodeUrlParameter(sScreenName)
+            TwitterUtil.EncodeUrlParameter(sScreenName)
             );
 
         // The JSON looped through here has an "ids" name whose value is an
@@ -861,7 +707,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         {
             String sUserID;
 
-            if ( TryConvertJsonValueToString(oUserIDAsObject, out sUserID) )
+            if ( TwitterUtil.TryConvertJsonValueToString(
+                oUserIDAsObject, out sUserID) )
             {
                 yield return (sUserID);
             }
@@ -930,8 +777,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             oUrl.AppendFormat(
                 "{0}users/lookup.json?{1}&user_id="
                 ,
-                RestApiUri,
-                IncludeEntitiesUrlParameter
+                TwitterApiUrls.Rest,
+                TwitterApiUrlParameters.IncludeEntities
                 );
 
             const Int32 MaxUserIDsPerCall = 100;
@@ -1025,147 +872,6 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: EncodeUrlParameter()
-    //
-    /// <summary>
-    /// Encodes an URL parameter using a method appropriate for Twitter and
-    /// OAuth.
-    /// </summary>
-    ///
-    /// <param name="urlParameter">
-    /// The URL parameter to be encoded.  Can't be null.
-    /// </param>
-    ///
-    /// <returns>
-    /// The encoded parameter.
-    /// </returns>
-    //*************************************************************************
-
-    public static String
-    EncodeUrlParameter
-    (
-        String urlParameter
-    )
-    {
-        Debug.Assert(urlParameter != null);
-
-        // The OAuth code provides a method for this.  That method is based on
-        // RFC 3986, Section 2.1, which is documented in "Percent encoding
-        // parameters" at
-        // https://dev.twitter.com/docs/auth/percent-encoding-parameters.
-
-        return ( OAuthBase.UrlEncode(urlParameter) );
-    }
-
-    //*************************************************************************
-    //  Method: OnExceptionWhileEnumeratingJsonValues()
-    //
-    /// <summary>
-    /// Handles an exception throws while enumerating JSON values.
-    /// </summary>
-    ///
-    /// <param name="oException">
-    /// The exception that was thrown.
-    /// </param>
-    ///
-    /// <param name="iPage">
-    /// The page the exception was thrown from.
-    /// </param>
-    ///
-    /// <param name="bSkipMostPage1Errors">
-    /// If true, most page-1 errors are skipped over.  If false, they are
-    /// rethrown.  (Errors that occur on page 2 and above are always skipped,
-    /// unless they are due to rate limiting.)
-    /// </param>
-    ///
-    /// <remarks>
-    /// If <paramref name="oException" /> is fatal, this method rethrows the
-    /// exception.  Otherwise, this method returns and the caller should stop
-    /// its enumeration but not throw an exception.
-    /// </remarks>
-    //*************************************************************************
-
-    protected void
-    OnExceptionWhileEnumeratingJsonValues
-    (
-        Exception oException,
-        Int32 iPage,
-        Boolean bSkipMostPage1Errors
-    )
-    {
-        Debug.Assert(oException != null);
-        Debug.Assert(iPage > 0);
-        AssertValid();
-
-        if ( !ExceptionIsWebOrJson(oException) )
-        {
-            // This is an unknown exception.
-
-            throw (oException);
-        }
-
-        if (
-            oException is WebException
-            &&
-            WebExceptionIsDueToRateLimit( (WebException)oException )
-            )
-        {
-            throw (oException);
-        }
-        else if (iPage == 1)
-        {
-            if (bSkipMostPage1Errors)
-            {
-                return;
-            }
-            else
-            {
-                throw (oException);
-            }
-        }
-        else
-        {
-            // Always skip non-rate-limit errors on page 2 and above.
-
-            return;
-        }
-    }
-
-    //*************************************************************************
-    //  Method: ExceptionIsWebOrJson()
-    //
-    /// <summary>
-    /// Determines whether an exception is a WebException or an exception
-    /// thrown while parsing JSON.
-    /// </summary>
-    ///
-    /// <param name="oException">
-    /// The exception to test.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the exception is a WebException or an exception thrown by the
-    /// JavaScriptSerializer class.
-    /// </returns>
-    //*************************************************************************
-
-    protected Boolean
-    ExceptionIsWebOrJson
-    (
-        Exception oException
-    )
-    {
-        Debug.Assert(oException != null);
-
-        return (
-            oException is WebException ||
-            oException is ArgumentException ||
-            oException is InvalidOperationException ||
-            oException is InvalidCastException
-            );
-    }
-
-    //*************************************************************************
     //  Method: TryGetJsonValueFromDictionary()
     //
     /// <summary>
@@ -1209,65 +915,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Debug.Assert( !String.IsNullOrEmpty(sName) );
         AssertValid();
 
-        Object oValue;
-
-        if ( oValueDictionary.TryGetValue(sName, out oValue) )
-        {
-            return ( TryConvertJsonValueToString(oValue, out sValue) );
-        }
-
-        sValue = null;
-        return (false);
-    }
-
-    //*************************************************************************
-    //  Method: TryConvertJsonValueToString()
-    //
-    /// <summary>
-    /// Attempts to convert a JSON value to a non-empty string.
-    /// </summary>
-    ///
-    /// <param name="oValue">
-    /// A JSON value to convert.  Can be null.
-    /// </param>
-    ///
-    /// <param name="sValue">
-    /// Where the non-empty value gets stored if true is returned.  If false is
-    /// returned, this gets set to null.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the value was converted.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// If <paramref name="oValue" /> is not null and can be converted to a
-    /// non-empty string, the string gets stored at <paramref name="sValue" />
-    /// and true is returned.  false is returned otherwise.
-    /// </remarks>
-    //*************************************************************************
-
-    protected Boolean
-    TryConvertJsonValueToString
-    (
-        Object oValue,
-        out String sValue
-    )
-    {
-        AssertValid();
-
-        if (oValue != null)
-        {
-            sValue = oValue.ToString();
-
-            if (sValue.Length > 0)
-            {
-                return (true);
-            }
-        }
-
-        sValue = null;
-        return (false);
+        return ( TwitterUtil.TryGetJsonValueFromDictionary(
+            oValueDictionary, sName, out sValue) );
     }
 
     //*************************************************************************
@@ -1477,11 +1126,11 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
                 if (aoCoordinates.Length == 2)
                 {
-                    TryConvertJsonValueToString(aoCoordinates[0],
-                        out sLatitude);
+                    TwitterUtil.TryConvertJsonValueToString(
+                        aoCoordinates[0], out sLatitude);
 
-                    TryConvertJsonValueToString(aoCoordinates[1],
-                        out sLongitude);
+                    TwitterUtil.TryConvertJsonValueToString(
+                        aoCoordinates[1], out sLongitude);
 
                     return;
                 }
@@ -1712,8 +1361,11 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         oGraphMLXmlDocument.AppendGraphMLAttributeValue(oVertexXmlNode,
             MenuTextID, "Open Twitter Page for This Person");
 
-        oGraphMLXmlDocument.AppendGraphMLAttributeValue( oVertexXmlNode,
-            MenuActionID, String.Format(UserWebPageUrlPattern, sScreenName) );
+        oGraphMLXmlDocument.AppendGraphMLAttributeValue(
+            oVertexXmlNode,
+            MenuActionID,
+            String.Format(TwitterApiUrls.UserWebPageUrlPattern, sScreenName)
+            );
 
         return (true);
     }
@@ -1784,6 +1436,12 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
         XmlNode oVertexXmlNode = oTwitterUser.VertexXmlNode;
 
+        // Always include an image file.
+
+        AppendValueFromValueDictionary(oUserValueDictionary,
+            "profile_image_url", oGraphMLXmlDocument, oVertexXmlNode,
+            ImageFileID);
+
         if (bIncludeStatistics)
         {
             AppendValueFromValueDictionary(oUserValueDictionary,
@@ -1828,19 +1486,6 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                     oVertexXmlNode, JoinedDateUtcID,
                     TwitterDateParser.ParseTwitterDate(sJoinedDateUtc) );
             }
-        }
-
-        // Add an image URL GraphML-attribute if it hasn't already been added.
-        // (It might have been added from an "entry" node by
-        // TwitterSearchNetworkAnalyzer.)
-
-        if (oVertexXmlNode.SelectSingleNode(
-            "a:data[@key='" + ImageFileID + "']", 
-            oGraphMLXmlDocument.CreateXmlNamespaceManager("a") ) == null)
-        {
-            AppendValueFromValueDictionary(oUserValueDictionary,
-                "profile_image_url", oGraphMLXmlDocument, oVertexXmlNode,
-                ImageFileID);
         }
 
         // Process the user's latest status if requested.
@@ -2717,7 +2362,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         AssertValid();
 
         return ( String.Format(
-            StatusWebPageUrlPattern
+            TwitterApiUrls.StatusWebPageUrlPattern
             ,
             sScreenName,
             oTwitterStatus.ID
@@ -2785,44 +2430,9 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     {
         base.AssertValid();
 
-        // m_oTwitterAccessToken
+        // m_oTwitterUtil
         Debug.Assert(m_oTwitterStatusParser != null);
     }
-
-
-    //*************************************************************************
-    //  Twitter API URIs
-    //*************************************************************************
-
-    /// URI of the Twitter REST API.
-
-    protected const String RestApiUri = "http://api.twitter.com/1.1/";
-
-    /// URI of the Twitter search API.
-
-    protected const String SearchApiUri =
-        "http://api.twitter.com/1.1/search/tweets.json";
-
-    /// URI of the Twitter OAuth API.
-
-    public const string OAuthApiUri = "https://api.twitter.com/oauth/";
-
-    /// Format pattern for the URL of the Web page for a Twitter user.  The {0}
-    /// argument must be replaced with a Twitter screen name.
-
-    protected const String UserWebPageUrlPattern =
-        "http://twitter.com/{0}";
-
-    /// Format pattern for the URL of the Web page for a Twitter status.  The
-    /// {0} argument must be replaced with a Twitter screen name and the {1}
-    /// argument must be replaced with a status ID.
-
-    protected const String StatusWebPageUrlPattern =
-        "https://twitter.com/#!/{0}/status/{1}";
-
-    /// Twitter API URL parameter to include entities in the response.
-
-    protected const String IncludeEntitiesUrlParameter = "include_entities=1"; 
 
 
     //*************************************************************************
@@ -2871,12 +2481,6 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
             HttpStatusCode.Forbidden,
         };
-
-
-    /// Default time to pause before retrying a request after Twitter rate
-    /// limits kick in, in milliseconds.
-
-    protected const Int32 DefaultRateLimitPauseMs = 15 * 60 * 1000;
 
 
     /// GraphML-attribute IDs.
@@ -2934,10 +2538,9 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     //  Protected fields
     //*************************************************************************
 
-    /// Gets a Twitter access token if the user has been authorized.  null if
-    /// BeforeGetNetwork() hasn't been called.
+    /// Provides utility methods for getting social networks from Twitter.
 
-    protected TwitterAccessToken m_oTwitterAccessToken;
+    protected TwitterUtil m_oTwitterUtil;
 
     /// Parses the text of a Twitter tweet.  This class uses only one instance
     /// to avoid making TwitterStatusParser recompile all of its regular

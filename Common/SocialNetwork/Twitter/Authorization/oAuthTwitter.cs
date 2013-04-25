@@ -1,9 +1,9 @@
+
 using System;
 using System.Web;
 using System.Net;
 using System.IO;
 using System.Collections.Specialized;
-
 
 //****************************************************************************
 // Credits
@@ -42,26 +42,40 @@ using System.Collections.Specialized;
 
 #pragma warning disable 1591, 1573
 
-namespace Smrf.NodeXL.GraphDataProviders.Twitter
+namespace Smrf.SocialNetworkLib.Twitter
 {
     public class oAuthTwitter : OAuthBase
     {
+
+        public oAuthTwitter
+        (
+            String userAgent,
+            Int32 timeoutMs
+        )
+        {
+            _userAgent = userAgent;
+            _timeoutMs = timeoutMs;
+        }
+
         public enum Method { GET, POST };
 
         public const string REQUEST_TOKEN =
-            TwitterNetworkAnalyzerBase.OAuthApiUri + "request_token";
+            TwitterApiUrls.OAuth + "request_token";
 
         public const string AUTHORIZE =
-            TwitterNetworkAnalyzerBase.OAuthApiUri + "authorize";
+            TwitterApiUrls.OAuth + "authorize";
 
         public const string ACCESS_TOKEN =
-            TwitterNetworkAnalyzerBase.OAuthApiUri + "access_token";
+            TwitterApiUrls.OAuth + "access_token";
 
         private string _consumerKey = "I7Q4S6FR3YvhX0yO8A39xx";
         private string _consumerSecret = "mjyp331jwIC3dRPoG7m98QgB95FvHPUVs1mwZe5ZSu";
         private string _token = "";
         private string _tokenSecret = "";
         private string _verifier = "";
+
+        private string _userAgent = "";
+        private Int32 _timeoutMs = -1;
 
 #region Properties
         public string ConsumerKey 
@@ -270,11 +284,11 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             StreamWriter requestWriter = null;
             string responseData = "";
 
-            webRequest = HttpNetworkAnalyzerBase.CreateHttpWebRequest(url);
+            webRequest = HttpSocialNetworkUtil.CreateHttpWebRequest(
+                url, _userAgent, _timeoutMs);
+
             webRequest.Method = method.ToString();
             webRequest.ServicePoint.Expect100Continue = false;
-            webRequest.UserAgent = HttpNetworkAnalyzerBase.UserAgent;
-            webRequest.Timeout = HttpNetworkAnalyzerBase.HttpWebRequestTimeoutMs;
 
             if (method == Method.POST)
             {

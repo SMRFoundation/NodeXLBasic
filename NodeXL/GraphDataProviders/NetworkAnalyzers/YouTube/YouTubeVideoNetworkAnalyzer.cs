@@ -4,8 +4,8 @@ using System.Xml;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using Smrf.AppLib;
 using Smrf.XmlLib;
+using Smrf.SocialNetworkLib;
 
 namespace Smrf.NodeXL.GraphDataProviders.YouTube
 {

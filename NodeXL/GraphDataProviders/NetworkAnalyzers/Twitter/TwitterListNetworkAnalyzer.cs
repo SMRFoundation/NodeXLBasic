@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Diagnostics;
-using Smrf.AppLib;
 using Smrf.XmlLib;
+using Smrf.SocialNetworkLib;
+using Smrf.SocialNetworkLib.Twitter;
 
 namespace Smrf.NodeXL.GraphDataProviders.Twitter
 {
@@ -554,10 +555,10 @@ public class TwitterListNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
                 "{0}lists/members.json?slug={1}&owner_screen_name={2}&{3}"
                 ,
-                RestApiUri,
-                EncodeUrlParameter(sSlug),
-                EncodeUrlParameter(sOwnerScreenName),
-                IncludeEntitiesUrlParameter
+                TwitterApiUrls.Rest,
+                TwitterUtil.EncodeUrlParameter(sSlug),
+                TwitterUtil.EncodeUrlParameter(sOwnerScreenName),
+                TwitterApiUrlParameters.IncludeEntities
                 );
 
             // The JSON contains a "users" array for the users in the Twitter

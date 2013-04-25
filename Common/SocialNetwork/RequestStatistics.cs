@@ -2,13 +2,13 @@
 using System;
 using System.Diagnostics;
 
-namespace Smrf.NodeXL.GraphDataProviders
+namespace Smrf.SocialNetworkLib
 {
 //*****************************************************************************
 //  Class: RequestStatistics
 //
 /// <summary>
-/// Keeps track of requests that have been made while getting the network.
+/// Keeps track of requests that have been made while getting a network.
 /// </summary>
 ///
 /// <remarks>

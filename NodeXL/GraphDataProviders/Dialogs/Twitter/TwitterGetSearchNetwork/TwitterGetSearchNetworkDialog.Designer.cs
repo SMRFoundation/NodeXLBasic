@@ -255,7 +255,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.chkIncludeStatistics.Name = "chkIncludeStatistics";
             this.chkIncludeStatistics.Size = new System.Drawing.Size(287, 17);
             this.chkIncludeStatistics.TabIndex = 11;
-            this.chkIncludeStatistics.Text = "A&dd statistic columns to the Vertices worksheet (slower)";
+            this.chkIncludeStatistics.Text = "A&dd statistic columns to the Vertices worksheet";
             this.chkIncludeStatistics.UseVisualStyleBackColor = true;
             // 
             // txbSearchTerm

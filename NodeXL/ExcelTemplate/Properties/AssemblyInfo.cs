@@ -38,8 +38,8 @@ using Microsoft.Office.Tools.Excel;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.0.1.238")]
-[assembly: AssemblyFileVersion("1.0.1.238")]
+[assembly: AssemblyVersion("1.0.1.240")]
+[assembly: AssemblyFileVersion("1.0.1.240")]
 
 // 
 // The ExcelLocale1033 attribute controls the locale that is passed to the Excel

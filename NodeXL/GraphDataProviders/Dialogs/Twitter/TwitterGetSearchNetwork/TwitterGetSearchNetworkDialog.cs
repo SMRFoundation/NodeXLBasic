@@ -47,6 +47,7 @@ public partial class TwitterGetSearchNetworkDialog :
         // m_bIncludeNonRepliesToNonMentionsEdges
 
         #if AddExtraEdges
+
         #else
 
         pnlSharedWordUserThreshold.Visible = false;
@@ -375,7 +376,6 @@ public partial class TwitterGetSearchNetworkDialog :
         // m_bIncludeNonRepliesToNonMentionsEdges
 
         #if AddExtraEdges
-
         #endif
 
         Debug.Assert(m_iMaximumStatuses > 0);
@@ -420,7 +420,6 @@ public partial class TwitterGetSearchNetworkDialog :
     protected static Boolean m_bIncludeNonRepliesToNonMentionsEdges = true;
 
     #if AddExtraEdges
-
     #endif
 
     /// Maximum number of tweets to request.
@@ -556,7 +555,6 @@ WhatEdgeToIncludeInformation
                 ),
 
             #if AddExtraEdges
-
             #endif
             } );
     }

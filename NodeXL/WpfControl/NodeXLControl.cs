@@ -2052,11 +2052,11 @@ public partial class NodeXLControl : FrameworkElement
             MethodName, "vertex", vertex);
 
         // The reason that vertices and edges can't be selected while the graph
-        // is being laid out is that selecting them edges involves modifying
-        // their metadata.  The graph layout code, which runs on a worker
-        // thread, is allowed to modify metadata during the layout, so having
-        // the worker thread and this foreground thread modify metadata
-        // simultaneously would lead to synchronization clashes.
+        // is being laid out is that selecting them involves modifying their
+        // metadata.  The graph layout code, which runs on a worker thread, is
+        // allowed to modify metadata during the layout, so having the worker
+        // thread and this foreground thread modifying metadata simultaneously
+        // would lead to synchronization clashes.
         //
         // A solution would be to make the metadata implementation thread-safe.
 

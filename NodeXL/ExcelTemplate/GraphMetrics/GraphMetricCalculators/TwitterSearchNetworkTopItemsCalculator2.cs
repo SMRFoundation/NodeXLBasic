@@ -7,6 +7,7 @@ using System.Diagnostics;
 using Microsoft.Office.Interop.Excel;
 using Smrf.NodeXL.Core;
 using Smrf.AppLib;
+using Smrf.SocialNetworkLib.Twitter;
 
 namespace Smrf.NodeXL.ExcelTemplate
 {
