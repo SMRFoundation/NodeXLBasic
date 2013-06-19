@@ -21,6 +21,12 @@ namespace Smrf.AppLib
 /// cref="CalculateSalienceOfCountedTerms" /> to calculate the salience of each
 /// term within all the documents, then use <see cref="CountedTerms" /> to get
 /// a collection of the terms that were counted in all the documents.
+///
+/// <para>
+/// By default, URLs and punctuation are skipped when terms are counted.  Use
+/// the <see cref="SkipUrlsAndPunctuation" /> property to change this behavior.
+/// </para>
+///
 /// </remarks>
 //*****************************************************************************
 
@@ -48,6 +54,7 @@ public abstract class TermCounterBase<TCountedTerm> : Object
         Debug.Assert(wordsToSkip != null);
 
         m_oWordsToSkip = new HashSet<String>();
+        m_bSkipUrlsAndPunctuation = true;
 
         foreach (String sWordToSkip in wordsToSkip)
         {
@@ -64,6 +71,38 @@ public abstract class TermCounterBase<TCountedTerm> : Object
         m_iTotalWordsInDocuments = 0;
 
         AssertValid();
+    }
+
+    //*************************************************************************
+    //  Property: SkipUrlsAndPunctuation
+    //
+    /// <summary>
+    /// Gets or sets a value specifying whether URLs and punctuation should be
+    /// skipped when counting terms.
+    /// </summary>
+    ///
+    /// <value>
+    /// true to skip URLs and punctuation, false to count them.  The default
+    /// value is true.
+    /// </value>
+    //*************************************************************************
+
+    public Boolean
+    SkipUrlsAndPunctuation
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_bSkipUrlsAndPunctuation);
+        }
+
+        set
+        {
+            m_bSkipUrlsAndPunctuation = value;
+
+            AssertValid();
+        }
     }
 
     //*************************************************************************
@@ -333,6 +372,11 @@ public abstract class TermCounterBase<TCountedTerm> : Object
         Debug.Assert(sDocument != null);
         AssertValid();
 
+        if (!this.SkipUrlsAndPunctuation)
+        {
+            return (sDocument);
+        }
+
         sDocument = m_oUrlRemover.Replace(sDocument, " ");
 
         StringBuilder oStringBuilder = new StringBuilder();
@@ -408,6 +452,7 @@ public abstract class TermCounterBase<TCountedTerm> : Object
     AssertValid()
     {
         Debug.Assert(m_oWordsToSkip != null);
+        // m_bSkipUrlsAndPunctuation
         Debug.Assert(m_oUrlRemover != null);
         Debug.Assert(m_oCountedTerms != null);
         Debug.Assert(m_iTotalDocuments >= 0);
@@ -422,6 +467,11 @@ public abstract class TermCounterBase<TCountedTerm> : Object
     /// The words that should be skipped when counting terms.
 
     protected HashSet<String> m_oWordsToSkip;
+
+    /// true to skip URLs and punctuation, false to count them.  The default
+    /// value is true.
+
+    protected Boolean m_bSkipUrlsAndPunctuation;
 
     /// Removes URLs from the text.
 

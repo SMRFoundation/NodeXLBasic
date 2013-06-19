@@ -106,6 +106,27 @@ will remember the authorization and use your account for all network requests.
                 Add an edge for each Tweet that is not a "replies-to" or
                 "mentions."
 
+            SharedHashtagEdges
+
+                Add an edge from user A to user B if both users have the same
+                hashtag.  Available only in some versions of NodeXL.
+
+            SharedUrlEdges
+
+                Add an edge from user A to user B if both users have tweeted
+                the same URL.  Available only in some versions of NodeXL.
+
+            SharedWordEdges
+
+                Add an edge from user A to user B if both users have tweeted
+                the same word, subject to the SharedWordUserThreshold specified
+                below.  Available only in some versions of NodeXL.
+
+            SharedWordPairEdges
+
+                Add an edge from user A to user B if both users have tweeted
+                the same word pair.  Available only in some versions of NodeXL.
+
             Statuses
 
                 Include tweets in the edges.
@@ -142,6 +163,21 @@ will remember the authorization and use your account for all network requests.
         -->
 
         <MaximumStatuses>10</MaximumStatuses>
+
+
+        <!--
+        ***********************************************************************
+        SharedWordUserThreshold
+        
+        The threshold to use for shared word edges.
+
+        Used only if WhatToInclude includes SharedWordEdges.  Edges are
+        included for a word only if at least this many users have tweeted the
+        word.  Must be at least 2.
+        ***********************************************************************
+        -->
+
+        <SharedWordUserThreshold>1000</SharedWordUserThreshold>
 
 
         <!--

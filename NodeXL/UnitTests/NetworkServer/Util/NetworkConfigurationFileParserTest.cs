@@ -394,7 +394,7 @@ public class NetworkConfigurationFileParserTest : Object
 
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
+        Int32 iMaximumStatuses, iSharedWordUserThreshold;
         String sNetworkFileFolder;
         NetworkFileFormats eNetworkFileFormats;
         String sNodeXLWorkbookSettingsFilePath;
@@ -402,8 +402,9 @@ public class NetworkConfigurationFileParserTest : Object
 
         m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
             out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
-            out sNetworkFileFolder, out eNetworkFileFormats,
-            out sNodeXLWorkbookSettingsFilePath, out bAutomateNodeXLWorkbook);
+            out iSharedWordUserThreshold, out sNetworkFileFolder,
+            out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
+            out bAutomateNodeXLWorkbook);
 
         Assert.AreEqual("NodeXL", sSearchTerm);
 
@@ -413,6 +414,7 @@ public class NetworkConfigurationFileParserTest : Object
             eWhatToInclude);
 
         Assert.AreEqual(10, iMaximumStatuses);
+        Assert.AreEqual(1000, iSharedWordUserThreshold);
         Assert.AreEqual(@"C:\", sNetworkFileFolder);
         Assert.AreEqual(NetworkFileFormats.GraphML, eNetworkFileFormats);
         Assert.IsNull(sNodeXLWorkbookSettingsFilePath);
@@ -444,7 +446,7 @@ public class NetworkConfigurationFileParserTest : Object
 
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
+        Int32 iMaximumStatuses, iSharedWordUserThreshold;
         String sNetworkFileFolder;
         NetworkFileFormats eNetworkFileFormats;
         String sNodeXLWorkbookSettingsFilePath;
@@ -452,8 +454,9 @@ public class NetworkConfigurationFileParserTest : Object
 
         m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
             out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
-            out sNetworkFileFolder, out eNetworkFileFormats,
-            out sNodeXLWorkbookSettingsFilePath, out bAutomateNodeXLWorkbook);
+            out iSharedWordUserThreshold, out sNetworkFileFolder,
+            out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
+            out bAutomateNodeXLWorkbook);
 
         Assert.AreEqual(10, iMaximumStatuses);
     }
@@ -483,7 +486,7 @@ public class NetworkConfigurationFileParserTest : Object
 
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
+        Int32 iMaximumStatuses, iSharedWordUserThreshold;
         String sNetworkFileFolder;
         NetworkFileFormats eNetworkFileFormats;
         String sNodeXLWorkbookSettingsFilePath;
@@ -491,8 +494,9 @@ public class NetworkConfigurationFileParserTest : Object
 
         m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
             out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
-            out sNetworkFileFolder, out eNetworkFileFormats,
-            out sNodeXLWorkbookSettingsFilePath, out bAutomateNodeXLWorkbook);
+            out iSharedWordUserThreshold, out sNetworkFileFolder,
+            out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
+            out bAutomateNodeXLWorkbook);
 
         Assert.AreEqual(
             NetworkFileFormats.GraphML | NetworkFileFormats.NodeXLWorkbook,
@@ -524,7 +528,7 @@ public class NetworkConfigurationFileParserTest : Object
 
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
+        Int32 iMaximumStatuses, iSharedWordUserThreshold;
         String sNetworkFileFolder;
         NetworkFileFormats eNetworkFileFormats;
         String sNodeXLWorkbookSettingsFilePath;
@@ -532,8 +536,9 @@ public class NetworkConfigurationFileParserTest : Object
 
         m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
             out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
-            out sNetworkFileFolder, out eNetworkFileFormats,
-            out sNodeXLWorkbookSettingsFilePath, out bAutomateNodeXLWorkbook);
+            out iSharedWordUserThreshold, out sNetworkFileFolder,
+            out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
+            out bAutomateNodeXLWorkbook);
 
         Assert.IsTrue(bAutomateNodeXLWorkbook);
     }
@@ -565,7 +570,7 @@ public class NetworkConfigurationFileParserTest : Object
 
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
+        Int32 iMaximumStatuses, iSharedWordUserThreshold;
         String sNetworkFileFolder;
         NetworkFileFormats eNetworkFileFormats;
         String sNodeXLWorkbookSettingsFilePath;
@@ -573,8 +578,9 @@ public class NetworkConfigurationFileParserTest : Object
 
         m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
             out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
-            out sNetworkFileFolder, out eNetworkFileFormats,
-            out sNodeXLWorkbookSettingsFilePath, out bAutomateNodeXLWorkbook);
+            out iSharedWordUserThreshold, out sNetworkFileFolder,
+            out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
+            out bAutomateNodeXLWorkbook);
 
         Assert.AreEqual("C:\\Folder\\NodeXLOptions.graphml",
             sNodeXLWorkbookSettingsFilePath);
@@ -605,7 +611,7 @@ public class NetworkConfigurationFileParserTest : Object
 
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
+        Int32 iMaximumStatuses, iSharedWordUserThreshold;
         String sNetworkFileFolder;
         NetworkFileFormats eNetworkFileFormats;
         String sNodeXLWorkbookSettingsFilePath;
@@ -613,8 +619,9 @@ public class NetworkConfigurationFileParserTest : Object
 
         m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
             out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
-            out sNetworkFileFolder, out eNetworkFileFormats,
-            out sNodeXLWorkbookSettingsFilePath, out bAutomateNodeXLWorkbook);
+            out iSharedWordUserThreshold, out sNetworkFileFolder,
+            out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
+            out bAutomateNodeXLWorkbook);
 
         Assert.IsNull(sNodeXLWorkbookSettingsFilePath);
     }
@@ -644,7 +651,7 @@ public class NetworkConfigurationFileParserTest : Object
 
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
+        Int32 iMaximumStatuses, iSharedWordUserThreshold;
         String sNetworkFileFolder;
         NetworkFileFormats eNetworkFileFormats;
         String sNodeXLWorkbookSettingsFilePath;
@@ -652,8 +659,9 @@ public class NetworkConfigurationFileParserTest : Object
 
         m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
             out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
-            out sNetworkFileFolder, out eNetworkFileFormats,
-            out sNodeXLWorkbookSettingsFilePath, out bAutomateNodeXLWorkbook);
+            out iSharedWordUserThreshold, out sNetworkFileFolder,
+            out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
+            out bAutomateNodeXLWorkbook);
 
         Assert.IsTrue(bAutomateNodeXLWorkbook);
     }
@@ -671,14 +679,36 @@ public class NetworkConfigurationFileParserTest : Object
     public void
     TestGetTwitterSearchNetworkConfiguration8()
     {
-        // All WhatToInclude options.
+        #if AddExtraEdges
+        #else
+
+        Assert.Fail(
+            "This test is bypassed because extra edges aren't included in the"
+            + " Twitter search network.  Search the source code for"
+            + "\"AddExtraEdges\" for details."
+            );
+
+        #endif
+    }
+
+    //*************************************************************************
+    //  Method: TestGetTwitterSearchNetworkConfiguration9()
+    //
+    /// <summary>
+    /// Tests the GetTwitterSearchNetworkConfiguration() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetTwitterSearchNetworkConfiguration9()
+    {
+        // No SharedWordUserThreshold.
 
         WriteSampleNetworkConfigurationFile(
-            "<WhatToInclude>RepliesToEdges,MentionsEdges,"
-            + "NonRepliesToNonMentionsEdges</WhatToInclude>",
-
-            "<WhatToInclude>Statuses,Statistics,FollowedEdges,RepliesToEdges,"
-            + "MentionsEdges,NonRepliesToNonMentionsEdges</WhatToInclude>"
+            "<SharedWordUserThreshold>1000</SharedWordUserThreshold>",
+            String.Empty
             );
 
         m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
@@ -686,7 +716,7 @@ public class NetworkConfigurationFileParserTest : Object
 
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
+        Int32 iMaximumStatuses, iSharedWordUserThreshold;
         String sNetworkFileFolder;
         NetworkFileFormats eNetworkFileFormats;
         String sNodeXLWorkbookSettingsFilePath;
@@ -694,22 +724,51 @@ public class NetworkConfigurationFileParserTest : Object
 
         m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
             out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
-            out sNetworkFileFolder, out eNetworkFileFormats,
-            out sNodeXLWorkbookSettingsFilePath, out bAutomateNodeXLWorkbook);
+            out iSharedWordUserThreshold, out sNetworkFileFolder,
+            out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
+            out bAutomateNodeXLWorkbook);
 
-        Assert.AreEqual("NodeXL", sSearchTerm);
+        Assert.AreEqual(1000, iSharedWordUserThreshold);
+    }
 
-        Assert.AreEqual(
-            TwitterSearchNetworkAnalyzer.WhatToInclude.Statuses |
-            TwitterSearchNetworkAnalyzer.WhatToInclude.MentionsEdges,
+    //*************************************************************************
+    //  Method: TestGetTwitterSearchNetworkConfiguration10()
+    //
+    /// <summary>
+    /// Tests the GetTwitterSearchNetworkConfiguration() method.
+    /// </summary>
+    //*************************************************************************
 
-            eWhatToInclude);
+    [TestMethodAttribute]
 
-        Assert.AreEqual(10, iMaximumStatuses);
-        Assert.AreEqual(@"C:\", sNetworkFileFolder);
-        Assert.AreEqual(NetworkFileFormats.GraphML, eNetworkFileFormats);
-        Assert.IsNull(sNodeXLWorkbookSettingsFilePath);
-        Assert.IsFalse(bAutomateNodeXLWorkbook);
+    public void
+    TestGetTwitterSearchNetworkConfiguration10()
+    {
+        // Modified SharedWordUserThreshold.
+
+        WriteSampleNetworkConfigurationFile(
+            "<SharedWordUserThreshold>1000</SharedWordUserThreshold>",
+            "<SharedWordUserThreshold>1234</SharedWordUserThreshold>"
+            );
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        String sSearchTerm;
+        TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
+        Int32 iMaximumStatuses, iSharedWordUserThreshold;
+        String sNetworkFileFolder;
+        NetworkFileFormats eNetworkFileFormats;
+        String sNodeXLWorkbookSettingsFilePath;
+        Boolean bAutomateNodeXLWorkbook;
+
+        m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
+            out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
+            out iSharedWordUserThreshold, out sNetworkFileFolder,
+            out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
+            out bAutomateNodeXLWorkbook);
+
+        Assert.AreEqual(1234, iSharedWordUserThreshold);
     }
 
     //*************************************************************************
@@ -738,7 +797,7 @@ public class NetworkConfigurationFileParserTest : Object
 
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
+        Int32 iMaximumStatuses, iSharedWordUserThreshold;
         String sNetworkFileFolder;
         NetworkFileFormats eNetworkFileFormats;
         String sNodeXLWorkbookSettingsFilePath;
@@ -749,8 +808,8 @@ public class NetworkConfigurationFileParserTest : Object
             m_oNetworkConfigurationFileParser.
                 GetTwitterSearchNetworkConfiguration(out sSearchTerm,
                 out eWhatToInclude, out iMaximumStatuses,
-                out sNetworkFileFolder, out eNetworkFileFormats,
-                out sNodeXLWorkbookSettingsFilePath,
+                out iSharedWordUserThreshold, out sNetworkFileFolder,
+                out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
                 out bAutomateNodeXLWorkbook);
         }
         catch (XmlException oXmlException)
@@ -788,7 +847,7 @@ public class NetworkConfigurationFileParserTest : Object
 
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
+        Int32 iMaximumStatuses, iSharedWordUserThreshold;
         String sNetworkFileFolder;
         NetworkFileFormats eNetworkFileFormats;
         String sNodeXLWorkbookSettingsFilePath;
@@ -799,8 +858,8 @@ public class NetworkConfigurationFileParserTest : Object
             m_oNetworkConfigurationFileParser.
                 GetTwitterSearchNetworkConfiguration(out sSearchTerm,
                 out eWhatToInclude, out iMaximumStatuses,
-                out sNetworkFileFolder, out eNetworkFileFormats,
-                out sNodeXLWorkbookSettingsFilePath,
+                out iSharedWordUserThreshold, out sNetworkFileFolder,
+                out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
                 out bAutomateNodeXLWorkbook);
         }
         catch (XmlException oXmlException)
@@ -841,7 +900,7 @@ public class NetworkConfigurationFileParserTest : Object
 
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
+        Int32 iMaximumStatuses, iSharedWordUserThreshold;
         String sNetworkFileFolder;
         NetworkFileFormats eNetworkFileFormats;
         String sNodeXLWorkbookSettingsFilePath;
@@ -852,8 +911,8 @@ public class NetworkConfigurationFileParserTest : Object
             m_oNetworkConfigurationFileParser.
                 GetTwitterSearchNetworkConfiguration(out sSearchTerm,
                 out eWhatToInclude, out iMaximumStatuses,
-                out sNetworkFileFolder, out eNetworkFileFormats,
-                out sNodeXLWorkbookSettingsFilePath,
+                out iSharedWordUserThreshold, out sNetworkFileFolder,
+                out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
                 out bAutomateNodeXLWorkbook);
         }
         catch (XmlException oXmlException)
@@ -894,7 +953,7 @@ public class NetworkConfigurationFileParserTest : Object
 
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
+        Int32 iMaximumStatuses, iSharedWordUserThreshold;
         String sNetworkFileFolder;
         NetworkFileFormats eNetworkFileFormats;
         String sNodeXLWorkbookSettingsFilePath;
@@ -905,8 +964,8 @@ public class NetworkConfigurationFileParserTest : Object
             m_oNetworkConfigurationFileParser.
                 GetTwitterSearchNetworkConfiguration(out sSearchTerm,
                 out eWhatToInclude, out iMaximumStatuses,
-                out sNetworkFileFolder, out eNetworkFileFormats,
-                out sNodeXLWorkbookSettingsFilePath,
+                out iSharedWordUserThreshold, out sNetworkFileFolder,
+                out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
                 out bAutomateNodeXLWorkbook);
         }
         catch (XmlException oXmlException)
@@ -948,7 +1007,7 @@ public class NetworkConfigurationFileParserTest : Object
 
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
+        Int32 iMaximumStatuses, iSharedWordUserThreshold;
         String sNetworkFileFolder;
         NetworkFileFormats eNetworkFileFormats;
         String sNodeXLWorkbookSettingsFilePath;
@@ -959,8 +1018,8 @@ public class NetworkConfigurationFileParserTest : Object
             m_oNetworkConfigurationFileParser.
                 GetTwitterSearchNetworkConfiguration(out sSearchTerm,
                 out eWhatToInclude, out iMaximumStatuses,
-                out sNetworkFileFolder, out eNetworkFileFormats,
-                out sNodeXLWorkbookSettingsFilePath,
+                out iSharedWordUserThreshold, out sNetworkFileFolder,
+                out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
                 out bAutomateNodeXLWorkbook);
         }
         catch (XmlException oXmlException)
@@ -998,7 +1057,7 @@ public class NetworkConfigurationFileParserTest : Object
 
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
+        Int32 iMaximumStatuses, iSharedWordUserThreshold;
         String sNetworkFileFolder;
         NetworkFileFormats eNetworkFileFormats;
         String sNodeXLWorkbookSettingsFilePath;
@@ -1009,8 +1068,8 @@ public class NetworkConfigurationFileParserTest : Object
             m_oNetworkConfigurationFileParser.
                 GetTwitterSearchNetworkConfiguration(out sSearchTerm,
                 out eWhatToInclude, out iMaximumStatuses,
-                out sNetworkFileFolder, out eNetworkFileFormats,
-                out sNodeXLWorkbookSettingsFilePath,
+                out iSharedWordUserThreshold, out sNetworkFileFolder,
+                out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
                 out bAutomateNodeXLWorkbook);
         }
         catch (XmlException oXmlException)
@@ -1051,7 +1110,7 @@ public class NetworkConfigurationFileParserTest : Object
 
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
+        Int32 iMaximumStatuses, iSharedWordUserThreshold;
         String sNetworkFileFolder;
         NetworkFileFormats eNetworkFileFormats;
         String sNodeXLWorkbookSettingsFilePath;
@@ -1062,8 +1121,8 @@ public class NetworkConfigurationFileParserTest : Object
             m_oNetworkConfigurationFileParser.
                 GetTwitterSearchNetworkConfiguration(out sSearchTerm,
                 out eWhatToInclude, out iMaximumStatuses,
-                out sNetworkFileFolder, out eNetworkFileFormats,
-                out sNodeXLWorkbookSettingsFilePath,
+                out iSharedWordUserThreshold, out sNetworkFileFolder,
+                out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
                 out bAutomateNodeXLWorkbook);
         }
         catch (XmlException oXmlException)
@@ -1104,7 +1163,7 @@ public class NetworkConfigurationFileParserTest : Object
 
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
+        Int32 iMaximumStatuses, iSharedWordUserThreshold;
         String sNetworkFileFolder;
         NetworkFileFormats eNetworkFileFormats;
         String sNodeXLWorkbookSettingsFilePath;
@@ -1115,8 +1174,8 @@ public class NetworkConfigurationFileParserTest : Object
             m_oNetworkConfigurationFileParser.
                 GetTwitterSearchNetworkConfiguration(out sSearchTerm,
                 out eWhatToInclude, out iMaximumStatuses,
-                out sNetworkFileFolder, out eNetworkFileFormats,
-                out sNodeXLWorkbookSettingsFilePath,
+                out iSharedWordUserThreshold, out sNetworkFileFolder,
+                out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
                 out bAutomateNodeXLWorkbook);
         }
         catch (XmlException oXmlException)
@@ -1453,6 +1512,71 @@ public class NetworkConfigurationFileParserTest : Object
             out bAutomateNodeXLWorkbook);
 
         Assert.IsTrue(bAutomateNodeXLWorkbook);
+    }
+
+    //*************************************************************************
+    //  Method: TestGetTwitterUserNetworkConfiguration9()
+    //
+    /// <summary>
+    /// Tests the GetTwitterUserNetworkConfiguration() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetTwitterUserNetworkConfiguration9()
+    {
+        // All WhatToInclude options.
+
+        WriteSampleNetworkConfigurationFile(
+            "<NetworkType>.*</NetworkType>",
+            "<NetworkType>TwitterUser</NetworkType>",
+
+            "<WhatToInclude>FollowedVertices,LatestStatuses</WhatToInclude>",
+
+            "<WhatToInclude>FollowedVertices,FollowerVertices,"
+            + "FollowedFollowerEdges,RepliesToEdges,MentionsEdges,"
+            + "LatestStatuses,ExpandedLatestStatusUrls</WhatToInclude>"
+            );
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        String sScreenNameToAnalyze;
+        TwitterUserNetworkAnalyzer.WhatToInclude eWhatToInclude;
+        NetworkLevel eNetworkLevel;
+        Int32 iMaximumPeoplePerRequest;
+        String sNetworkFileFolder;
+        NetworkFileFormats eNetworkFileFormats;
+        String sNodeXLWorkbookSettingsFilePath;
+        Boolean bAutomateNodeXLWorkbook;
+
+        m_oNetworkConfigurationFileParser.GetTwitterUserNetworkConfiguration(
+            out sScreenNameToAnalyze, out eWhatToInclude, out eNetworkLevel,
+            out iMaximumPeoplePerRequest, out sNetworkFileFolder,
+            out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
+            out bAutomateNodeXLWorkbook);
+
+        Assert.AreEqual("bob", sScreenNameToAnalyze);
+
+        Assert.AreEqual(
+            TwitterUserNetworkAnalyzer.WhatToInclude.FollowedVertices |
+            TwitterUserNetworkAnalyzer.WhatToInclude.FollowerVertices |
+            TwitterUserNetworkAnalyzer.WhatToInclude.FollowedFollowerEdges |
+            TwitterUserNetworkAnalyzer.WhatToInclude.RepliesToEdges |
+            TwitterUserNetworkAnalyzer.WhatToInclude.MentionsEdges |
+            TwitterUserNetworkAnalyzer.WhatToInclude.LatestStatuses |
+            TwitterUserNetworkAnalyzer.WhatToInclude.ExpandedLatestStatusUrls
+            ,
+            eWhatToInclude);
+
+        Assert.AreEqual(NetworkLevel.One, eNetworkLevel);
+        Assert.AreEqual(10, iMaximumPeoplePerRequest);
+        Assert.AreEqual(@"C:\", sNetworkFileFolder);
+        Assert.AreEqual(NetworkFileFormats.GraphML, eNetworkFileFormats);
+        Assert.IsNull(sNodeXLWorkbookSettingsFilePath);
+        Assert.IsFalse(bAutomateNodeXLWorkbook);
     }
 
     //*************************************************************************
@@ -2216,9 +2340,11 @@ public class NetworkConfigurationFileParserTest : Object
             "<NetworkType>.*</NetworkType>",
             "<NetworkType>TwitterList</NetworkType>",
 
-            "<WhatToInclude>FollowedEdges,MentionsEdges</WhatToInclude>",
-            "<WhatToInclude>Statistics,FollowedEdges,MentionsEdges,"
-                + "RepliesToEdges,LatestStatuses</WhatToInclude>",
+            "<WhatToInclude>MentionsEdges,LatestStatuses</WhatToInclude>",
+
+            "<WhatToInclude>FollowedEdges,RepliesToEdges,MentionsEdges,"
+                + "LatestStatuses,ExpandedLatestStatusUrls,Statistics"
+                + "</WhatToInclude>",
 
             "<NetworkFileFolder>.*</NetworkFileFolder>",
             "<NetworkFileFolder>T:\\Folder1\\Folder2</NetworkFileFolder>",
@@ -2257,9 +2383,13 @@ public class NetworkConfigurationFileParserTest : Object
         Assert.IsNull(oScreenNames);
 
         Assert.AreEqual(
+            TwitterListNetworkAnalyzer.WhatToInclude.FollowedEdges |
+            TwitterListNetworkAnalyzer.WhatToInclude.RepliesToEdges |
             TwitterListNetworkAnalyzer.WhatToInclude.MentionsEdges |
-            TwitterListNetworkAnalyzer.WhatToInclude.LatestStatuses,
-
+            TwitterListNetworkAnalyzer.WhatToInclude.LatestStatuses |
+            TwitterListNetworkAnalyzer.WhatToInclude.ExpandedLatestStatusUrls |
+            TwitterListNetworkAnalyzer.WhatToInclude.Statistics
+            ,
             eWhatToInclude);
 
         Assert.AreEqual(@"T:\Folder1\Folder2", sNetworkFileFolder);

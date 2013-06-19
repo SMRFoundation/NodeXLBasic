@@ -46,7 +46,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     public TwitterNetworkAnalyzerBase()
     {
         m_oTwitterUtil = null;
-        m_oTwitterStatusParser = new TwitterStatusParser();
+        m_oTwitterStatusTextParser = new TwitterStatusTextParser();
 
         AssertValid();
     }
@@ -723,8 +723,13 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// collection of specified users.
     /// </summary>
     ///
-    /// <param name="asUserIDs">
-    /// Array of user IDs to get user value dictionaries for.
+    /// <param name="asUserIDsOrScreenNames">
+    /// Array of user IDs or screen names to get user value dictionaries for.
+    /// </param>
+    ///
+    /// <param name="bUserIDsSpecified">
+    /// true if <paramref name="asUserIDsOrScreenNames" /> contains IDs, false
+    /// if it contains screen names.
     /// </param>
     ///
     /// <param name="oRequestStatistics">
@@ -737,32 +742,34 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// </returns>
     ///
     /// <remarks>
-    /// For each user ID in <paramref name="asUserIDs" />, this method gets
-    /// information about the user from Twitter and returns it as a dictionary
-    /// of values.  The order of the returned values is not necessarily the
-    /// same as the order of the user IDs.
+    /// For each user ID or screen name in <paramref
+    /// name="asUserIDsOrScreenNames" />, this method gets information about
+    /// the user from Twitter and returns it as a dictionary of values.  The
+    /// order of the returned values is not necessarily the same as the order
+    /// of the user IDs or screen names.
     /// </remarks>
     //*************************************************************************
 
     protected IEnumerable< Dictionary<String, Object> >
     EnumerateUserValueDictionaries
     (
-        String [] asUserIDs,
+        String [] asUserIDsOrScreenNames,
+        Boolean bUserIDsSpecified,
         RequestStatistics oRequestStatistics
     )
     {
-        Debug.Assert(asUserIDs != null);
+        Debug.Assert(asUserIDsOrScreenNames != null);
         Debug.Assert(oRequestStatistics != null);
         AssertValid();
 
         // We'll use Twitter's users/lookup API, which gets extended
         // information for up to 100 users in one call.
 
-        Int32 iUserIDs = asUserIDs.Length;
-        Int32 iUserIDsProcessed = 0;
+        Int32 iUsers = asUserIDsOrScreenNames.Length;
+        Int32 iUsersProcessed = 0;
         Int32 iCalls = 0;
 
-        while (iUserIDsProcessed < iUserIDs)
+        while (iUsersProcessed < iUsers)
         {
             // For each call, ask for information about as many users as
             // possible until either 100 is reached or the URL reaches an
@@ -770,31 +777,32 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             // (without specifying why), but it would require revising the
             // base-class HTTP calls and isn't worth the trouble.
 
-            Int32 iUserIDsProcessedThisCall = 0;
+            Int32 iUsersProcessedThisCall = 0;
 
             StringBuilder oUrl = new StringBuilder();
 
             oUrl.AppendFormat(
-                "{0}users/lookup.json?{1}&user_id="
+                "{0}users/lookup.json?{1}&{2}="
                 ,
                 TwitterApiUrls.Rest,
-                TwitterApiUrlParameters.IncludeEntities
+                TwitterApiUrlParameters.IncludeEntities,
+                bUserIDsSpecified ? "user_id" : "screen_name"
                 );
 
-            const Int32 MaxUserIDsPerCall = 100;
+            const Int32 MaxUsersPerCall = 100;
             const Int32 MaxUrlLength = 2000;
 
             // Construct the URL for this call.
 
             while (
-                iUserIDsProcessed < iUserIDs
+                iUsersProcessed < iUsers
                 &&
-                iUserIDsProcessedThisCall < MaxUserIDsPerCall
+                iUsersProcessedThisCall < MaxUsersPerCall
                 &&
                 oUrl.Length < MaxUrlLength
                 )
             {
-                if (iUserIDsProcessedThisCall > 0)
+                if (iUsersProcessedThisCall > 0)
                 {
                     // Append an encoded comma.  Using an unencoded comma 
                     // causes Twitter to return a 401 "unauthorized" error.
@@ -806,9 +814,9 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                     oUrl.Append("%2C");
                 }
 
-                oUrl.Append( asUserIDs[iUserIDsProcessed] );
-                iUserIDsProcessed++;
-                iUserIDsProcessedThisCall++;
+                oUrl.Append( asUserIDsOrScreenNames[iUsersProcessed] );
+                iUsersProcessed++;
+                iUsersProcessedThisCall++;
             }
 
             iCalls++;
@@ -1967,7 +1975,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         String sRepliedToScreenName;
         String [] asUniqueMentionedScreenNames;
 
-        m_oTwitterStatusParser.GetScreenNames(sStatus,
+        m_oTwitterStatusTextParser.GetScreenNames(sStatus,
             out sRepliedToScreenName, out asUniqueMentionedScreenNames);
 
         if (sRepliedToScreenName != null)
@@ -2431,7 +2439,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         base.AssertValid();
 
         // m_oTwitterUtil
-        Debug.Assert(m_oTwitterStatusParser != null);
+        Debug.Assert(m_oTwitterStatusTextParser != null);
     }
 
 
@@ -2543,10 +2551,10 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     protected TwitterUtil m_oTwitterUtil;
 
     /// Parses the text of a Twitter tweet.  This class uses only one instance
-    /// to avoid making TwitterStatusParser recompile all of its regular
+    /// to avoid making TwitterStatusTextParser recompile all of its regular
     /// expressions.
 
-    protected TwitterStatusParser m_oTwitterStatusParser;
+    protected TwitterStatusTextParser m_oTwitterStatusTextParser;
 
 
     //*************************************************************************

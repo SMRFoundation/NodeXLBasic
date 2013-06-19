@@ -15,8 +15,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
 ///
 /// <remarks>
 /// Call <see cref="GraphDataProviderBase.TryGetGraphDataAsTemporaryFile" /> to
-/// get GraphML that describes the network of people followed by a Twitter
-/// user, or the network of people following the user.
+/// get the network as a temporary GraphML file.
 /// </remarks>
 //*****************************************************************************
 

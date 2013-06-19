@@ -1027,7 +1027,7 @@ public abstract class HttpNetworkAnalyzerBase : Object
     protected void
     OnNetworkObtained
     (
-        GraphMLXmlDocument oGraphMLXmlDocument,
+        XmlDocument oGraphMLXmlDocument,
         RequestStatistics oRequestStatistics,
         String sNetworkDescription,
         String sNetworkTitle
@@ -1039,7 +1039,14 @@ public abstract class HttpNetworkAnalyzerBase : Object
         Debug.Assert( !String.IsNullOrEmpty(sNetworkTitle) );
         AssertValid();
 
-        XmlUtil2.SetAttributes(oGraphMLXmlDocument.GraphXmlNode,
+        XmlNode oGraphXmlNode = XmlUtil2.SelectRequiredSingleNode(
+            oGraphMLXmlDocument, "g:graphml/g:graph",
+
+            GraphMLXmlDocument.CreateXmlNamespaceManager(
+                oGraphMLXmlDocument, "g")
+            );
+
+        XmlUtil2.SetAttributes(oGraphXmlNode,
             "description", sNetworkDescription);
 
         String sSuggestedFileNameNoExtension = String.Format(
@@ -1049,7 +1056,7 @@ public abstract class HttpNetworkAnalyzerBase : Object
             sNetworkTitle
             );
 
-        XmlUtil2.SetAttributes(oGraphMLXmlDocument.GraphXmlNode,
+        XmlUtil2.SetAttributes(oGraphXmlNode,
             "suggestedFileNameNoExtension", sSuggestedFileNameNoExtension);
 
         if (oRequestStatistics.UnexpectedExceptions > 0)
@@ -1101,7 +1108,7 @@ public abstract class HttpNetworkAnalyzerBase : Object
     OnUnexpectedException
     (
         Exception oException,
-        GraphMLXmlDocument oGraphMLXmlDocument,
+        XmlDocument oGraphMLXmlDocument,
         RequestStatistics oRequestStatistics
     )
     {

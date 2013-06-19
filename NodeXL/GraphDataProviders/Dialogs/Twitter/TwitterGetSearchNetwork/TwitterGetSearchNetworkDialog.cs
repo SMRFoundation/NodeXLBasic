@@ -47,7 +47,6 @@ public partial class TwitterGetSearchNetworkDialog :
         // m_bIncludeNonRepliesToNonMentionsEdges
 
         #if AddExtraEdges
-
         #else
 
         pnlSharedWordUserThreshold.Visible = false;

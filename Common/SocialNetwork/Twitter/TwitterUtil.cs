@@ -468,6 +468,10 @@ public class TwitterUtil
     //*************************************************************************
     //  Method: TryGetJsonValueFromDictionary()
     //
+    /// <overloads>
+    /// Attempts to get a value from a JSON value dictionary.
+    /// </overloads>
+    ///
     /// <summary>
     /// Attempts to get a non-empty string value from a JSON value dictionary.
     /// </summary>
@@ -516,6 +520,65 @@ public class TwitterUtil
         }
 
         value = null;
+        return (false);
+    }
+
+    //*************************************************************************
+    //  Method: TryGetJsonValueFromDictionary()
+    //
+    /// <summary>
+    /// Attempts to get an Int64 value from a JSON value dictionary.
+    /// </summary>
+    ///
+    /// <param name="valueDictionary">
+    /// Name/value pairs parsed from a Twitter JSON response.
+    /// </param>
+    ///
+    /// <param name="name">
+    /// The name of the value to get.
+    /// </param>
+    ///
+    /// <param name="value">
+    /// Where the value gets stored if true is returned.  If false is returned,
+    /// this gets set to Int64.MinValue.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the value was obtained.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method attempts to get the specified value, which must be of type
+    /// Int64, from <paramref name="valueDictionary" />.  If the value is
+    /// found, it gets stored at <paramref name="value" /> and true is
+    /// returned.
+    /// </remarks>
+    //*************************************************************************
+
+    public static Boolean
+    TryGetJsonValueFromDictionary
+    (
+        Dictionary<String, Object> valueDictionary,
+        String name,
+        out Int64 value
+    )
+    {
+        Debug.Assert(valueDictionary != null);
+        Debug.Assert( !String.IsNullOrEmpty(name) );
+
+        Object oValue;
+
+        if (
+            valueDictionary.TryGetValue(name, out oValue)
+            &&
+            oValue is Int64
+            )
+        {
+            value = (Int64)oValue;
+            return (true);
+        }
+
+        value = Int64.MinValue;
         return (false);
     }
 

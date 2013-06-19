@@ -116,6 +116,9 @@ public static class UrlUtil : Object
         catch (WebException)
         {
         }
+        catch (UriFormatException)
+        {
+        }
         finally
         {
             if (oResponse != null)

@@ -85,8 +85,8 @@
     <Compile Include="..\..\Common\SentenceConcatenator.cs">
       <Link>SentenceConcatenator.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\SocialNetwork\Twitter\TwitterStatusParser.cs">
-      <Link>SocialNetwork\Twitter\TwitterStatusParser.cs</Link>
+    <Compile Include="..\..\Common\SocialNetwork\Twitter\TwitterStatusTextParser.cs">
+      <Link>SocialNetwork\Twitter\TwitterStatusTextParser.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\StringUtil.cs">
       <Link>StringUtil.cs</Link>

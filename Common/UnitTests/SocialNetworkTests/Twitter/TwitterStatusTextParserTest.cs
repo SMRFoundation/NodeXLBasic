@@ -7,30 +7,30 @@ using Smrf.SocialNetworkLib.Twitter;
 namespace Smrf.Common.UnitTests
 {
 //*****************************************************************************
-//  Class: TwitterStatusParserTest
+//  Class: TwitterStatusTextParserTest
 //
 /// <summary>
 /// This is a Visual Studio test fixture for the <see
-/// cref="TwitterStatusParser" /> class.
+/// cref="TwitterStatusTextParser" /> class.
 /// </summary>
 //*****************************************************************************
 
 [TestClassAttribute]
 
-public class TwitterStatusParserTest : Object
+public class TwitterStatusTextParserTest : Object
 {
     //*************************************************************************
-    //  Constructor: TwitterStatusParserTest()
+    //  Constructor: TwitterStatusTextParserTest()
     //
     /// <summary>
     /// Initializes a new instance of the <see
-    /// cref="TwitterStatusParserTest" /> class.
+    /// cref="TwitterStatusTextParserTest" /> class.
     /// </summary>
     //*************************************************************************
 
-    public TwitterStatusParserTest()
+    public TwitterStatusTextParserTest()
     {
-        m_oTwitterStatusParser = null;
+        m_oTwitterStatusTextParser = null;
     }
 
     //*************************************************************************
@@ -46,7 +46,7 @@ public class TwitterStatusParserTest : Object
     public void
     SetUp()
     {
-        m_oTwitterStatusParser = new TwitterStatusParser();
+        m_oTwitterStatusTextParser = new TwitterStatusTextParser();
     }
 
     //*************************************************************************
@@ -62,7 +62,7 @@ public class TwitterStatusParserTest : Object
     public void
     TearDown()
     {
-        m_oTwitterStatusParser = null;
+        m_oTwitterStatusTextParser = null;
     }
 
     //*************************************************************************
@@ -99,7 +99,7 @@ public class TwitterStatusParserTest : Object
         String sRepliedToScreenName;
         String [] asUniqueMentionedScreenNames;
 
-        m_oTwitterStatusParser.GetScreenNames(String.Empty,
+        m_oTwitterStatusTextParser.GetScreenNames(String.Empty,
             out sRepliedToScreenName, out asUniqueMentionedScreenNames);
 
         Assert.IsNull(sRepliedToScreenName);
@@ -124,7 +124,7 @@ public class TwitterStatusParserTest : Object
         String sRepliedToScreenName;
         String [] asUniqueMentionedScreenNames;
 
-        m_oTwitterStatusParser.GetScreenNames("the tweet",
+        m_oTwitterStatusTextParser.GetScreenNames("the tweet",
             out sRepliedToScreenName, out asUniqueMentionedScreenNames);
 
         Assert.IsNull(sRepliedToScreenName);
@@ -149,7 +149,7 @@ public class TwitterStatusParserTest : Object
         String sRepliedToScreenName;
         String [] asUniqueMentionedScreenNames;
 
-        m_oTwitterStatusParser.GetScreenNames("@John the tweet",
+        m_oTwitterStatusTextParser.GetScreenNames("@John the tweet",
             out sRepliedToScreenName, out asUniqueMentionedScreenNames);
 
         Assert.AreEqual("john", sRepliedToScreenName);
@@ -174,7 +174,7 @@ public class TwitterStatusParserTest : Object
         String sRepliedToScreenName;
         String [] asUniqueMentionedScreenNames;
 
-        m_oTwitterStatusParser.GetScreenNames(
+        m_oTwitterStatusTextParser.GetScreenNames(
             "Hello the tweet @jack @jill @john",
             out sRepliedToScreenName, out asUniqueMentionedScreenNames);
 
@@ -203,7 +203,7 @@ public class TwitterStatusParserTest : Object
         String sRepliedToScreenName;
         String [] asUniqueMentionedScreenNames;
 
-        m_oTwitterStatusParser.GetScreenNames(
+        m_oTwitterStatusTextParser.GetScreenNames(
             "@John the tweet @jack @jill @john",
             out sRepliedToScreenName, out asUniqueMentionedScreenNames);
 
@@ -231,7 +231,7 @@ public class TwitterStatusParserTest : Object
         String sRepliedToScreenName;
         String [] asUniqueMentionedScreenNames;
 
-        m_oTwitterStatusParser.GetScreenNames(
+        m_oTwitterStatusTextParser.GetScreenNames(
             "@John, the tweet @jack, @jill, and @john.",
             out sRepliedToScreenName, out asUniqueMentionedScreenNames);
 
@@ -259,7 +259,7 @@ public class TwitterStatusParserTest : Object
         String sRepliedToScreenName;
         String [] asUniqueMentionedScreenNames;
 
-        m_oTwitterStatusParser.GetScreenNames(
+        m_oTwitterStatusTextParser.GetScreenNames(
             "@John, the tweet @jack, @jill, @JaCk @JIll and @john.",
             out sRepliedToScreenName, out asUniqueMentionedScreenNames);
 
@@ -287,7 +287,7 @@ public class TwitterStatusParserTest : Object
         String sRepliedToScreenName;
         String [] asUniqueMentionedScreenNames;
 
-        m_oTwitterStatusParser.GetScreenNames(
+        m_oTwitterStatusTextParser.GetScreenNames(
             "@john, the tweet @jack\r\n @bill, @sally \r\n@joe\r\n",
             out sRepliedToScreenName, out asUniqueMentionedScreenNames);
 
@@ -317,7 +317,7 @@ public class TwitterStatusParserTest : Object
         String sRepliedToScreenName;
         String [] asUniqueMentionedScreenNames;
 
-        m_oTwitterStatusParser.GetScreenNames(
+        m_oTwitterStatusTextParser.GetScreenNames(
             "@John: the tweet @jack: @jill: @john",
             out sRepliedToScreenName, out asUniqueMentionedScreenNames);
 
@@ -334,7 +334,7 @@ public class TwitterStatusParserTest : Object
 
     /// Object to test.
 
-    protected TwitterStatusParser m_oTwitterStatusParser;
+    protected TwitterStatusTextParser m_oTwitterStatusTextParser;
 }
 
 }

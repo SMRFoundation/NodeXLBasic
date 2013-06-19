@@ -192,7 +192,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(0, 69);
+            this.label2.Location = new System.Drawing.Point(0, 84);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(113, 13);
             this.label2.TabIndex = 3;
@@ -202,9 +202,9 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // 
             this.clbWhatEdgesToInclude.CheckOnClick = true;
             this.clbWhatEdgesToInclude.FormattingEnabled = true;
-            this.clbWhatEdgesToInclude.Location = new System.Drawing.Point(0, 88);
+            this.clbWhatEdgesToInclude.Location = new System.Drawing.Point(0, 103);
             this.clbWhatEdgesToInclude.Name = "clbWhatEdgesToInclude";
-            this.clbWhatEdgesToInclude.Size = new System.Drawing.Size(350, 94);
+            this.clbWhatEdgesToInclude.Size = new System.Drawing.Size(350, 64);
             this.clbWhatEdgesToInclude.TabIndex = 4;
             // 
             // chkExpandStatusUrls
@@ -239,7 +239,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // linkLabel1
             // 
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(0, 44);
+            this.linkLabel1.Location = new System.Drawing.Point(0, 59);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(114, 13);
             this.linkLabel1.TabIndex = 2;
@@ -253,14 +253,14 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.chkIncludeStatistics.AutoSize = true;
             this.chkIncludeStatistics.Location = new System.Drawing.Point(0, 275);
             this.chkIncludeStatistics.Name = "chkIncludeStatistics";
-            this.chkIncludeStatistics.Size = new System.Drawing.Size(287, 17);
+            this.chkIncludeStatistics.Size = new System.Drawing.Size(248, 17);
             this.chkIncludeStatistics.TabIndex = 11;
             this.chkIncludeStatistics.Text = "A&dd statistic columns to the Vertices worksheet";
             this.chkIncludeStatistics.UseVisualStyleBackColor = true;
             // 
             // txbSearchTerm
             // 
-            this.txbSearchTerm.Location = new System.Drawing.Point(0, 19);
+            this.txbSearchTerm.Location = new System.Drawing.Point(0, 34);
             this.txbSearchTerm.MaxLength = 1000;
             this.txbSearchTerm.Name = "txbSearchTerm";
             this.txbSearchTerm.Size = new System.Drawing.Size(350, 20);
@@ -268,12 +268,12 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(0, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(286, 13);
+            this.label1.Size = new System.Drawing.Size(350, 26);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Add a verte&x for each person whose recent tweet contains:";
+            this.label1.Text = "Add a verte&x for each person who tweeted this search term, or who was replied to" +
+                " or mentioned in those tweets:";
             // 
             // statusStrip1
             // 

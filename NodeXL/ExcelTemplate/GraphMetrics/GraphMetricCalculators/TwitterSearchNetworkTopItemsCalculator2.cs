@@ -67,7 +67,7 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
 
     public TwitterSearchNetworkTopItemsCalculator2()
     {
-        m_oTwitterStatusParser = new TwitterStatusParser();
+        m_oTwitterStatusTextParser = new TwitterStatusTextParser();
 
         AssertValid();
     }
@@ -405,7 +405,7 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
                     String sReplyToScreenName;
                     String [] asMentionedScreenNames;
 
-                    m_oTwitterStatusParser.GetScreenNames(sStatus,
+                    m_oTwitterStatusTextParser.GetScreenNames(sStatus,
                         out sReplyToScreenName, out asMentionedScreenNames);
 
                     if (sReplyToScreenName != null)
@@ -1921,7 +1921,7 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
     {
         base.AssertValid();
 
-        Debug.Assert(m_oTwitterStatusParser != null);
+        Debug.Assert(m_oTwitterStatusTextParser != null);
     }
 
 
@@ -1964,10 +1964,10 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
     //*************************************************************************
 
     /// Parses the text of a Twitter tweet.  This class uses only one instance
-    /// to avoid making TwitterStatusParser recompile all of its regular
+    /// to avoid making TwitterStatusTextParser recompile all of its regular
     /// expressions.
 
-    protected TwitterStatusParser m_oTwitterStatusParser;
+    protected TwitterStatusTextParser m_oTwitterStatusTextParser;
 }
 
 }

@@ -126,6 +126,26 @@ public class CountedWordPair : CountedTermBase
         }
     }
 
+    //*************************************************************************
+    //  Method: ToString()
+    //
+    /// <summary>
+    /// Formats the value of the current instance.
+    /// </summary>
+    ///
+    /// <returns>
+    /// The formatted string.  Sample: "President Obama".
+    /// </returns>
+    //*************************************************************************
+
+    public override String
+    ToString()
+    {
+        AssertValid();
+
+        return (m_sWord1 + " " + m_sWord2);
+    }
+
 
     //*************************************************************************
     //  Method: AssertValid()

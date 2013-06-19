@@ -861,6 +861,83 @@ public class WordCounterTest : Object
     }
 
     //*************************************************************************
+    //  Method: TestCountTermsInDocument12()
+    //
+    /// <summary>
+    /// Tests CountTermsInDocument() and CountedTerms.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestCountTermsInDocument12()
+    {
+        // Make sure URLs are not removed.
+
+        m_oWordCounter.SkipUrlsAndPunctuation = false;
+
+        m_oWordCounter.CountTermsInDocument(
+            "http://abc.com?a=b https://2.com brown fox\r\n"
+            + "http://3.net http://3.net  brown  fox"
+            );
+
+        Assert.AreEqual(1, m_oWordCounter.TotalDocuments);
+        Assert.AreEqual(8, m_oWordCounter.TotalWordsInDocuments);
+
+        IEnumerable<CountedWord> oCountedWords = m_oWordCounter.CountedTerms;
+
+        Assert.AreEqual( 5, oCountedWords.Count() );
+
+        oCountedWords.Single(
+            oCountedWord => (
+                oCountedWord.Word == "http://abc.com?a=b"
+                &&
+                oCountedWord.Count == 1
+                &&
+                oCountedWord.DocumentsInWhichTermWasCounted == 1
+            ) );
+
+        oCountedWords.Single(
+            oCountedWord => (
+                oCountedWord.Word == "https://2.com"
+                &&
+                oCountedWord.Count == 1
+                &&
+                oCountedWord.DocumentsInWhichTermWasCounted == 1
+            ) );
+
+
+        oCountedWords.Single(
+            oCountedWord => (
+                oCountedWord.Word == "brown"
+                &&
+                oCountedWord.Count == 2
+                &&
+                oCountedWord.DocumentsInWhichTermWasCounted == 1
+            ) );
+
+        oCountedWords.Single(
+            oCountedWord => (
+                oCountedWord.Word == "fox"
+                &&
+                oCountedWord.Count == 2
+                &&
+                oCountedWord.DocumentsInWhichTermWasCounted == 1
+            ) );
+
+        oCountedWords.Single(
+            oCountedWord => (
+                oCountedWord.Word == "http://3.net"
+                &&
+                oCountedWord.Count == 2
+                &&
+                oCountedWord.DocumentsInWhichTermWasCounted == 1
+            ) );
+
+    }
+
+    //*************************************************************************
     //  Method: TestClear()
     //
     /// <summary>

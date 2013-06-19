@@ -80,7 +80,7 @@
             this.radNoTwitterAccount.Name = "radNoTwitterAccount";
             this.radNoTwitterAccount.Size = new System.Drawing.Size(333, 36);
             this.radNoTwitterAccount.TabIndex = 0;
-            this.radNoTwitterAccount.Text = "&I don\'t have a Twitter account.  (Twitter discontinued this option in March 2013" +
+            this.radNoTwitterAccount.Text = "&I don\'t have a Twitter account.  (Twitter discontinued this option in June 2013" +
                 ".)";
             this.radNoTwitterAccount.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.radNoTwitterAccount.UseVisualStyleBackColor = true;

@@ -14,7 +14,7 @@ namespace Smrf.NodeXL.GraphDataProviders.YouTube
 ///
 /// <remarks>
 /// Call <see cref="GraphDataProviderBase.TryGetGraphDataAsTemporaryFile" /> to
-/// get GraphML that describes a network of related YouTube videos.
+/// get the network as a temporary GraphML file.
 /// </remarks>
 //*****************************************************************************
 

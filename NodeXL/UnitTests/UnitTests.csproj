@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DoNotAddExtraEdges</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -93,7 +93,6 @@
     <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\VertexShapeConverterTest.cs" />
     <Compile Include="ExcelTemplate\WorkbookReader\ValueConverters\VertexVisibilityConverterTest.cs" />
     <Compile Include="GraphDataProviders\NetworkAnalyzers\Twitter\Authorization\TwitterAccessTokenTest.cs" />
-    <Compile Include="GraphDataProviders\NetworkAnalyzers\Twitter\TwitterDateParserTest.cs" />
     <Compile Include="Layouts\Layouts\FruchtermanReingold\FruchtermanReingoldLayoutTest.cs" />
     <Compile Include="Layouts\Layouts\FruchtermanReingold\FruchtermanReingoldVertexInfoTest.cs" />
     <Compile Include="Layouts\Util\Groups\GroupLayoutDrawingInfoTest.cs" />

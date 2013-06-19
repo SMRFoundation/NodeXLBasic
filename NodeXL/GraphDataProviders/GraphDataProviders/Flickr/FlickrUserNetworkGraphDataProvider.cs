@@ -14,7 +14,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Flickr
 ///
 /// <remarks>
 /// Call <see cref="GraphDataProviderBase.TryGetGraphDataAsTemporaryFile" /> to
-/// get GraphML that describes a network of people related to a Flickr user.
+/// get the network as a temporary GraphML file.
 /// </remarks>
 //*****************************************************************************
 

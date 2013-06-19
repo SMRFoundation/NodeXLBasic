@@ -237,10 +237,30 @@ public class UrlUtilTest : Object
         // Real page, Location header is relative URL instead of the required
         // absolute URL.
 
-        Assert.AreEqual(
-            "http://www.marketwatch.com/Story/story/rescue?SourceUrl=http://www.marketwatch.com/story/hispanic-national-bar-association-statement-on-state-of-the-union-address-2012-01-26",
+        const String Url =
+            "http://www.marketwatch.com/Story/story/rescue?SourceUrl=http://www.marketwatch.com/story/hispanic-national-bar-association-statement-on-state-of-the-union-address-2012-01-26";
 
-            UrlUtil.ExpandUrl("http://www.marketwatch.com/story/hispanic-national-bar-association-statement-on-state-of-the-union-address-2012-01-26") );
+        Assert.AreEqual( Url, UrlUtil.ExpandUrl(Url) );
+    }
+
+    //*************************************************************************
+    //  Method: TestExpandUrl10()
+    //
+    /// <summary>
+    /// Tests the ExpandUrl() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestExpandUrl10()
+    {
+        // Bad URL found on Twitter on 5/28/2013.
+
+        const String Url = "twitter.com/nsm";
+
+        Assert.AreEqual( Url, UrlUtil.ExpandUrl(Url) );
     }
 
     //*************************************************************************

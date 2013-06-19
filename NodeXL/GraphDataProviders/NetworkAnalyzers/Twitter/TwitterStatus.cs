@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Diagnostics;
+using Smrf.SocialNetworkLib.Twitter;
 
 namespace Smrf.NodeXL.GraphDataProviders.Twitter
 {

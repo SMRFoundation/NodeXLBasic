@@ -600,7 +600,7 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
         // Get information about each of those people.
 
         foreach (Dictionary<String, Object> oUserValueDictionary in
-            EnumerateUserValueDictionaries(asOtherUserIDs,
+            EnumerateUserValueDictionaries(asOtherUserIDs, true,
                 oRequestStatistics) )
         {
             String sOtherScreenName, sOtherUserID;

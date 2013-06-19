@@ -1,9 +1,9 @@
 ﻿
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Smrf.NodeXL.GraphDataProviders.Twitter;
+using Smrf.SocialNetworkLib.Twitter;
 
-namespace Smrf.NodeXL.GraphDataProviders.Twitter.UnitTests
+namespace Smrf.Common.UnitTests
 {
 //*****************************************************************************
 //  Class: TwitterDateParserTest

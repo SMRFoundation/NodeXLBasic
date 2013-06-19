@@ -1,9 +1,8 @@
 ﻿
 using System;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text;
+using System.Web.Script.Serialization;
 using System.Diagnostics;
 
 namespace Smrf.SocialNetworkLib.Twitter
@@ -12,7 +11,7 @@ namespace Smrf.SocialNetworkLib.Twitter
 //  Class: TwitterStatusParser
 //
 /// <summary>
-/// Parses the text of a Twitter status (tweet).
+/// Parses a Twitter status.
 /// </summary>
 ///
 /// <remarks>
@@ -21,135 +20,176 @@ namespace Smrf.SocialNetworkLib.Twitter
 /// </remarks>
 //*****************************************************************************
 
-public class TwitterStatusParser : Object
+public static class TwitterStatusParser : Object
 {
     //*************************************************************************
-    //  Constructor: TwitterStatusParser()
+    //  Method: TryParseStatus()
     //
     /// <summary>
-    /// Initializes a new instance of the <see cref="TwitterStatusParser" />
-    /// class.
-    /// </summary>
-    //*************************************************************************
-
-    public TwitterStatusParser()
-    {
-        // "Starts with a screen name."
-
-        m_oRepliedToRegex = new Regex(@"^@(?<ScreenName>\w+)");
-
-        // "Contains a screen name."
-
-        m_oMentionedRegex = new Regex(@"(^|\s)@(?<ScreenName>\w+)",
-            RegexOptions.Multiline);
-
-        AssertValid();
-    }
-
-    //*************************************************************************
-    //  Method: GetScreenNames()
-    //
-    /// <summary>
-    /// Extracts the screen names from a status.
+    /// Attempts to parse a Twitter status.
     /// </summary>
     ///
-    /// <param name="status">
-    /// Status that might contain screen names.  Can't be null.
+    /// <param name="statusValueDictionary">
+    /// A status value dictionary, as returned by
+    /// TwitterUtil.EnumerateSearchStatuses().  The dictionary keys are names
+    /// and the dictionary values are the named values.
+    /// </param>
+    /// 
+    /// <param name="statusID">
+    /// Where the status ID gets stored if true is returned.
     /// </param>
     ///
-    /// <param name="repliedToScreenName">
-    /// If the status is a reply-to, this gets set to the replied-to screen
-    /// name, converted to lower case.  Otherwise, this gets set to null.
+    /// <param name="statusDateUtc">
+    /// Where the date the user tweeted the status gets stored if true is
+    /// returned.
     /// </param>
     ///
-    /// <param name="uniqueMentionedScreenNames">
-    /// If the status mentions other screen names, they gets stored here,
-    /// converted to lower case.  Otherwise, this gets set to an empty array.
+    /// <param name="screenName">
+    /// Where the screen name of the user who tweeted the status gets stored if
+    /// true is returned.
     /// </param>
     ///
-    /// <remarks>
-    /// The <paramref name="repliedToScreenName" />, if there is one, is NOT
-    /// also included in <paramref name="uniqueMentionedScreenNames" />.
+    /// <param name="text">
+    /// Where the status's text gets stored if true is returned.
+    /// </param>
     ///
-    /// <para>
-    /// If a screen name is mentioned more than once, the duplicates are
-    /// ignored.  Screen names are not considered case-sensitive.
-    /// </para>
-    ///
-    /// </remarks>
+    /// <param name="rawStatusJson">
+    /// Where the complete, raw status returned by Twitter gets stored if true
+    /// is returned, in JSON format.  Includes the surrounding braces.
+    /// </param>
+    /// 
+    /// <param name="userValueDictionary">
+    /// Where a dictionary of values for the user who tweeted the status gets
+    /// stored if true is returned.
+    /// </param>
+    /// 
+    /// <returns>
+    /// true if successful.
+    /// </returns>
     //*************************************************************************
 
-    public void
-    GetScreenNames
+    public static Boolean
+    TryParseStatus
     (
-        String status,
-        out String repliedToScreenName,
-        out String [] uniqueMentionedScreenNames
+        Dictionary<String, Object> statusValueDictionary,
+        out Int64 statusID,
+        out DateTime statusDateUtc,
+        out String screenName,
+        out String text,
+        out String rawStatusJson,
+        out Dictionary<String, Object> userValueDictionary
     )
     {
-        Debug.Assert(status != null);
-        AssertValid();
+        Debug.Assert(statusValueDictionary != null);
 
-        repliedToScreenName = null;
-        Match oRepliedToMatch = m_oRepliedToRegex.Match(status);
+        statusID = Int64.MinValue;
+        statusDateUtc = DateTime.MinValue;
+        screenName = null;
+        text = null;
+        rawStatusJson = null;
+        userValueDictionary = null;
 
-        if (oRepliedToMatch.Success)
+        String statusDateUtcString;
+
+        if (
+            !TwitterUtil.TryGetJsonValueFromDictionary(statusValueDictionary,
+                "id", out statusID)
+            ||
+            !TwitterUtil.TryGetJsonValueFromDictionary(statusValueDictionary,
+                "created_at", out statusDateUtcString)
+            ||
+            !TwitterDateParser.TryParseTwitterDate(statusDateUtcString,
+                out statusDateUtc)
+            ||
+            !TwitterUtil.TryGetJsonValueFromDictionary(statusValueDictionary,
+                "text", out text)
+            )
         {
-            repliedToScreenName =
-                oRepliedToMatch.Groups["ScreenName"].Value.ToLower();
+            return (false);
         }
 
-        HashSet<String> oUniqueMentionedScreenNames = new HashSet<String>();
-        Match oMentionedMatch = m_oMentionedRegex.Match(status);
+        userValueDictionary =
+            ( Dictionary<String, Object> )statusValueDictionary["user"];
 
-        while (oMentionedMatch.Success)
+        if (
+            userValueDictionary == null
+            ||
+            !TwitterUtil.TryGetJsonValueFromDictionary(userValueDictionary,
+                "screen_name", out screenName)
+            )
         {
-            String sMentionedScreenName =
-                oMentionedMatch.Groups["ScreenName"].Value.ToLower();
-
-            // A "reply-to is not also a "mentions."
-
-            if (sMentionedScreenName != repliedToScreenName)
-            {
-                oUniqueMentionedScreenNames.Add(sMentionedScreenName);
-            }
-
-            oMentionedMatch = oMentionedMatch.NextMatch();
+            return (false);
         }
 
-        uniqueMentionedScreenNames = oUniqueMentionedScreenNames.ToArray();
+        rawStatusJson = ValueDictionaryToRawJson(statusValueDictionary);
+
+        return (true);
     }
 
-
     //*************************************************************************
-    //  Method: AssertValid()
+    //  Method: UserValueDictionaryToRawJson()
     //
     /// <summary>
-    /// Asserts if the object is in an invalid state.  Debug-only.
+    /// Converts a user value dictionary to a JSON string.
     /// </summary>
+    ///
+    /// <param name="userValueDictionary">
+    /// A user value dictionary, as returned by <see cref="TryParseStatus" />.
+    /// The dictionary keys are names and the dictionary values are the named
+    /// values.
+    /// </param>
+    /// 
+    /// <returns>
+    /// The user value dictionary as a JSON string.
+    /// </returns>
     //*************************************************************************
 
-    [Conditional("DEBUG")]
-
-    public void
-    AssertValid()
+    public static String
+    UserValueDictionaryToRawJson
+    (
+        Dictionary<String, Object> userValueDictionary
+    )
     {
-        Debug.Assert(m_oRepliedToRegex != null);
-        Debug.Assert(m_oMentionedRegex != null);
+        Debug.Assert(userValueDictionary != null);
+
+        return ( ValueDictionaryToRawJson(userValueDictionary) );
     }
 
-
     //*************************************************************************
-    //  Protected fields
+    //  Method: ValueDictionaryToRawJson()
+    //
+    /// <summary>
+    /// Converts a value dictionary to a JSON string.
+    /// </summary>
+    ///
+    /// <param name="valueDictionary">
+    /// A value dictionary obtained by parsing a JSON string.  The dictionary
+    /// keys are names and the dictionary values are the named values.
+    /// </param>
+    /// 
+    /// <returns>
+    /// The value dictionary as a JSON string.
+    /// </returns>
     //*************************************************************************
 
-    /// Regex for finding a "reply-to."
+    private static String
+    ValueDictionaryToRawJson
+    (
+        Dictionary<String, Object> valueDictionary
+    )
+    {
+        Debug.Assert(valueDictionary != null);
 
-    protected Regex m_oRepliedToRegex;
+        // We don't have access to the original string response, so rebuild the
+        // complete JSON string from the value dictionary.
 
-    /// Regex for finding a "mentions."
+        StringBuilder stringBuilder = new StringBuilder();
 
-    protected Regex m_oMentionedRegex;
+        ( new JavaScriptSerializer() ).Serialize(
+            valueDictionary, stringBuilder);
+
+        return ( stringBuilder.ToString() );
+    }
 }
 
 }

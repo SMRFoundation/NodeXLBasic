@@ -1917,34 +1917,29 @@ public static class ExcelUtil
             {
                 Object oValue = aoValues[iRowOneBased, iColumnOneBased];
 
-                if (oValue is String)
+                if ( ValueIsHyperlink(oValue) )
                 {
-                    String sValue = (String)oValue;
+                    String sHyperlink = (String)oValue;
 
-                    // If the cell contains one word that appears to be an URL,
-                    // convert it to a hyperlink.
-
-                    if (sValue.StartsWith("http") && sValue.IndexOf(" ") == -1)
+                    try
                     {
-                        try
-                        {
-                            oHyperlinks.Add(
-                                range.Cells[iRowOneBased, iColumnOneBased],
-                                sValue, Missing.Value, Missing.Value, sValue);
-                        }
-                        catch (Exception)
-                        {
-                            // Skip anything Excel says isn't a legitimate
-                            // hyperlink: "http://a.com\r\nhttp://b.com", for
-                            // example.  It's easier to just catch and ignore
-                            // the exception than to try to detect every
-                            // possible bad hyperlink.
-                            //
-                            // COMException and ArgumentException are two of
-                            // the exceptions that Excel can throw here, but
-                            // there may be others.  This certainly isn't
-                            // documented, so just catch everything.
-                        }
+                        oHyperlinks.Add(
+                            range.Cells[iRowOneBased, iColumnOneBased],
+                            sHyperlink, Missing.Value, Missing.Value,
+                            sHyperlink);
+                    }
+                    catch (Exception)
+                    {
+                        // Skip anything Excel says isn't a legitimate
+                        // hyperlink: "http://a.com\r\nhttp://b.com", for
+                        // example.  It's easier to just catch and ignore the
+                        // exception than to try to detect every possible bad
+                        // hyperlink.
+                        //
+                        // COMException and ArgumentException are two of the
+                        // exceptions that Excel can throw here, but there may
+                        // be others.  This certainly isn't documented, so just
+                        // catch everything.
                     }
                 }
             }
@@ -3165,6 +3160,56 @@ public static class ExcelUtil
             worksheet.get_Range(oFirstCell, oLastCell) );
 
         return (true);
+    }
+
+    //*************************************************************************
+    //  Method: ValueIsHyperlink()
+    //
+    /// <summary>
+    /// Determines whether a cell value appears to be a hyperlink.
+    /// </summary>
+    ///
+    /// <param name="oValue">
+    /// The value to check.  Can be null.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if <paramref name="oValue" /> appears to be a hyperlink.
+    /// </returns>
+    //*************************************************************************
+
+    private static Boolean
+    ValueIsHyperlink
+    (
+        Object oValue
+    )
+    {
+        if (oValue is String)
+        {
+            String sValue = (String)oValue;
+            Int32 iLength = sValue.Length;
+
+            // Exclude "http://" by checking the length.  This was found in a
+            // Twitter GraphML file.  Worksheet.Hyperlinks.Add() doesn't raise
+            // an exception for it, but Excel refuses to save the resulting
+            // workbook, saying the workbook appears to be corrupted.
+            //
+            // Exclude "https://" also, for good measure.
+
+            if (
+                (sValue.StartsWith("http://") && iLength > 7)
+                ||
+                (sValue.StartsWith("https://") && iLength > 8)
+                )
+            {
+                if (sValue.IndexOf(" ") == -1)
+                {
+                    return (true);
+                }
+            }
+        }
+
+        return (false);
     }
 
 

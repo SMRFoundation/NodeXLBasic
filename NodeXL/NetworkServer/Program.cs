@@ -285,14 +285,15 @@ class Program
             TwitterSearchNetworkAnalyzer.WhatToInclude.None;
 
         Int32 iMaximumTweets = Int32.MinValue;
+        Int32 iSharedWordUserThreshold = Int32.MinValue;
 
         try
         {
             oNetworkConfigurationFileParser.
                 GetTwitterSearchNetworkConfiguration(out sSearchTerm,
                 out eWhatToInclude, out iMaximumTweets,
-                out sNetworkFileFolderPath, out eNetworkFileFormats,
-                out sNodeXLWorkbookSettingsFilePath,
+                out iSharedWordUserThreshold, out sNetworkFileFolderPath,
+                out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
                 out bAutomateNodeXLWorkbook);
         }
         catch (XmlException oXmlException)
@@ -317,17 +318,11 @@ class Program
             sSearchTerm
             );
 
-        // Note that this program has not been tested with the newer shared
-        // word and shared word pair edges options.  Just use a constant value
-        // for the user threshold for now.
-
-        const Int32 SharedWordUserThreshold = 2;
-
         try
         {
             oXmlDocument = oTwitterSearchNetworkAnalyzer.GetNetwork(
                 sSearchTerm, eWhatToInclude, iMaximumTweets,
-                SharedWordUserThreshold);
+                iSharedWordUserThreshold);
         }
         catch (PartialNetworkException oPartialNetworkException)
         {

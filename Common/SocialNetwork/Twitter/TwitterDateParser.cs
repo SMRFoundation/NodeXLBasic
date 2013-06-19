@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Diagnostics;
 using Smrf.DateTimeLib;
 
-namespace Smrf.NodeXL.GraphDataProviders.Twitter
+namespace Smrf.SocialNetworkLib.Twitter
 {
 //*****************************************************************************
 //  Class: TwitterDateParser

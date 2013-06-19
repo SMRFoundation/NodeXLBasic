@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;XAddExtraEdges</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;DoNotAddExtraEdges</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Smrf.NodeXL.GraphDataProviders.xml</DocumentationFile>
@@ -27,7 +27,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;AddExtraEdges</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -38,6 +38,12 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.ServiceModel">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -94,6 +100,9 @@
     <Compile Include="..\..\Common\SocialNetwork\Twitter\TwitterApiUrls.cs">
       <Link>Util\SocialNetwork\Twitter\TwitterApiUrls.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\SocialNetwork\Twitter\TwitterDateParser.cs">
+      <Link>Util\SocialNetwork\Twitter\TwitterDateParser.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\SocialNetwork\Twitter\TwitterUtil.cs">
       <Link>Util\SocialNetwork\Twitter\TwitterUtil.cs</Link>
     </Compile>
@@ -148,6 +157,12 @@
     <Compile Include="Dialogs\GraphDataProviderDialogBase.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Dialogs\GraphServer\GraphServerGetNetworkDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\GraphServer\GraphServerGetNetworkDialog.designer.cs">
+      <DependentUpon>GraphServerGetNetworkDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\PartialNetwork\PartialNetworkDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -200,6 +215,9 @@
     <Compile Include="GraphDataProviders\Flickr\FlickrRelatedTagNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\Flickr\FlickrUserNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\GraphDataProviderBase.cs" />
+    <Compile Include="GraphDataProviders\GraphServer\GraphServerNetworkGraphDataProvider.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="GraphDataProviders\Twitter\TwitterListNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\Twitter\TwitterSearchNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\Twitter\TwitterUserNetworkGraphDataProvider.cs" />
@@ -211,11 +229,12 @@
     <Compile Include="NetworkAnalyzers\Flickr\FlickrNetworkAnalyzerBase.cs" />
     <Compile Include="NetworkAnalyzers\Flickr\FlickrRelatedTagNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\Flickr\FlickrUserNetworkAnalyzer.cs" />
+    <Compile Include="NetworkAnalyzers\GraphServer\GraphServerNetworkAnalyzer.cs" />
+    <Compile Include="NetworkAnalyzers\GraphServer\GraphService.cs" />
     <Compile Include="NetworkAnalyzers\HttpNetworkAnalyzerBase.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\Authorization\TwitterAccessToken.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\Authorization\TwitterAuthorizationStatus.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\SharedTermEdgeAppender.cs" />
-    <Compile Include="NetworkAnalyzers\Twitter\TwitterDateParser.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TwitterListNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TwitterNetworkAnalyzerBase.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TwitterSearchNetworkAnalyzer.cs" />
@@ -249,6 +268,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\Flickr\FlickrGetUserNetwork\FlickrGetUserNetworkDialog.resx">
       <DependentUpon>FlickrGetUserNetworkDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\GraphServer\GraphServerGetNetworkDialog.resx">
+      <DependentUpon>GraphServerGetNetworkDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\PartialNetwork\PartialNetworkDialog.resx">
       <DependentUpon>PartialNetworkDialog.cs</DependentUpon>

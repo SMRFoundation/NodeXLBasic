@@ -316,7 +316,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         OnNetworkObtained(oGraphMLXmlDocument, oRequestStatistics, 
 
             GetNetworkDescription(sSearchTerm, eWhatToInclude,
-                iMaximumStatuses, oGraphMLXmlDocument),
+                iMaximumStatuses, iSharedWordUserThreshold,
+                oGraphMLXmlDocument),
 
             "Twitter Search " + sSearchTerm
             );
@@ -383,10 +384,21 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Dictionary<String, TwitterUser> oUserIDDictionary =
             new Dictionary<String, TwitterUser>();
 
-        // First, add a vertex for each person who has tweeted the search term.
+        // First, append a vertex for each person who has tweeted the search
+        // term.
 
-        AppendVertexXmlNodes(sSearchTerm, eWhatToInclude, iMaximumStatuses,
+        AppendVertexXmlNodesForSearchTerm(sSearchTerm, eWhatToInclude,
+            iMaximumStatuses, oGraphMLXmlDocument, oUserIDDictionary,
+            oRequestStatistics);
+
+        // Now append a vertex for each person who was mentioned or replied to
+        // by the first set of people, but who didn't tweet the search term
+        // himself.
+
+        AppendVertexXmlNodesForMentionsAndRepliesTo(eWhatToInclude,
             oGraphMLXmlDocument, oUserIDDictionary, oRequestStatistics);
+
+        AppendVertexTooltipXmlNodes(oGraphMLXmlDocument, oUserIDDictionary);
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.FollowedEdges) )
@@ -416,8 +428,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 WhatToInclude.Statuses)
             );
 
-        #if AddExtraEdges
-        #endif
+        AppendSharedTermEdges(sSearchTerm, oUserIDDictionary, eWhatToInclude,
+            oGraphMLXmlDocument);
     }
 
     //*************************************************************************
@@ -445,6 +457,9 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     {
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
+
+        oGraphMLXmlDocument.DefineVertexStringGraphMLAttributes(
+            TweetedSearchTermID, "Tweeted Search Term?");
 
         oGraphMLXmlDocument.DefineVertexStringGraphMLAttributes(
             TooltipID, "Tooltip");
@@ -496,7 +511,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: AppendVertexXmlNodes()
+    //  Method: AppendVertexXmlNodesForSearchTerm()
     //
     /// <summary>
     /// Appends a vertex XML node for each person who has tweeted a specified
@@ -532,7 +547,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     //*************************************************************************
 
     protected void
-    AppendVertexXmlNodes
+    AppendVertexXmlNodesForSearchTerm
     (
         String sSearchTerm,
         WhatToInclude eWhatToInclude,
@@ -573,44 +588,38 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
                     this.CheckCancellationPending)
                 ) )
         {
+            const String UserKeyName = "user";
+
+            if ( !oStatusValueDictionary.ContainsKey(UserKeyName) )
+            {
+                // This has actually happened--Twitter occasionally sends a
+                // status without user information.
+
+                continue;
+            }
+
             Dictionary<String, Object> oUserValueDictionary =
-                ( Dictionary<String, Object> )oStatusValueDictionary["user"];
+                ( Dictionary<String, Object> )
+                oStatusValueDictionary[UserKeyName];
 
-            String sScreenName, sUserID;
+            TwitterUser oTwitterUser;
 
-            if (
-                oUserValueDictionary == null
-                ||
-                !TryGetJsonValueFromDictionary(oUserValueDictionary,
-                    "screen_name", out sScreenName)
-                ||
-                !TryGetJsonValueFromDictionary(oUserValueDictionary,
-                    "id_str", out sUserID)
-                )
+            if ( !TryAppendVertexXmlNode(oUserValueDictionary, eWhatToInclude,
+                oGraphMLXmlDocument, oUserIDDictionary, out oTwitterUser) )
             {
                 continue;
             }
 
-            TwitterUser oTwitterUser;
-
-            Boolean bIsFirstTweetForAuthor = TryAppendVertexXmlNode(
-                sScreenName, sUserID, oGraphMLXmlDocument, oUserIDDictionary,
-                out oTwitterUser);
-
-            if (bIsFirstTweetForAuthor)
-            {
-                AppendUserInformationFromValueDictionary(oUserValueDictionary,
-                    oGraphMLXmlDocument, oTwitterUser, bIncludeStatistics,
-                    false, false, false);
-            }
+            AppendTweetedSearchTermGraphMLAttributeValue(oGraphMLXmlDocument,
+                oTwitterUser, true);
 
             // Get the status information.
 
-            String sID, sStatus;
+            String sStatusID, sStatus;
 
             if (
                 TryGetJsonValueFromDictionary(oStatusValueDictionary, "id_str",
-                    out sID)
+                    out sStatusID)
                 &&
                 TryGetJsonValueFromDictionary(oStatusValueDictionary, "text",
                     out sStatus)
@@ -640,12 +649,326 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 // acceptable here.
 
                 oTwitterUser.Statuses.Add( new TwitterStatus(
-                    sID, sStatus, sStatusDateUtc, sLatitude, sLongitude,
+                    sStatusID, sStatus, sStatusDateUtc, sLatitude, sLongitude,
                     sStatusUrls, sStatusHashtags) );
             }
         }
+    }
 
-        AppendVertexTooltipXmlNodes(oGraphMLXmlDocument, oUserIDDictionary);
+    //*************************************************************************
+    //  Method: AppendVertexXmlNodesForMentionsAndRepliesTo()
+    //
+    /// <summary>
+    /// Appends a vertex XML node for each person who was mentioned or replied
+    /// to but who didn't tweet the search term himself.
+    /// </summary>
+    ///
+    /// <param name="eWhatToInclude">
+    /// Specifies what should be included in the network.
+    /// </param>
+    ///
+    /// <param name="oGraphMLXmlDocument">
+    /// The GraphMLXmlDocument being populated.
+    /// </param>
+    ///
+    /// <param name="oUserIDDictionary">
+    /// The key is the Twitter user ID and the value is the corresponding
+    /// TwitterUser.  The dictionary is populated with users who tweeted the
+    /// search term when this method is called, and this method adds more
+    /// users.
+    /// </param>
+    ///
+    /// <param name="oRequestStatistics">
+    /// A <see cref="RequestStatistics" /> object that is keeping track of
+    /// requests made while getting the network.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AppendVertexXmlNodesForMentionsAndRepliesTo
+    (
+        WhatToInclude eWhatToInclude,
+        GraphMLXmlDocument oGraphMLXmlDocument,
+        Dictionary<String, TwitterUser> oUserIDDictionary,
+        RequestStatistics oRequestStatistics
+    )
+    {
+        Debug.Assert(oGraphMLXmlDocument != null);
+        Debug.Assert(oUserIDDictionary != null);
+        Debug.Assert(oRequestStatistics != null);
+        AssertValid();
+
+        ReportProgress("Getting replied to and mentioned users.");
+
+        // Get the screen names that were mentioned or replied to by the people
+        // who tweeted the search term.
+
+        String[] asUniqueMentionsAndRepliesToScreenNames =
+            GetMentionsAndRepliesToScreenNames(
+                oGraphMLXmlDocument, oUserIDDictionary);
+
+        // Get information about each of those screen names and append vertex
+        // XML nodes for them if necessary.
+
+        foreach ( Dictionary<String, Object> oUserValueDictionary in
+            EnumerateUserValueDictionaries(
+                asUniqueMentionsAndRepliesToScreenNames, false,
+                oRequestStatistics) )
+        {
+            TwitterUser oTwitterUser;
+
+            if ( TryAppendVertexXmlNode(oUserValueDictionary, eWhatToInclude,
+                oGraphMLXmlDocument, oUserIDDictionary, out oTwitterUser) )
+            {
+                AppendTweetedSearchTermGraphMLAttributeValue(
+                    oGraphMLXmlDocument, oTwitterUser, false);
+            }
+        }
+    }
+
+    //*************************************************************************
+    //  Method: AppendSharedTermEdges()
+    //
+    /// <summary>
+    /// Appends edge XML nodes for terms that were tweeted by pairs of Twitter
+    /// users.
+    /// </summary>
+    ///
+    /// <param name="sSearchTerm">
+    /// The term to search for.
+    /// </param>
+    ///
+    /// <param name="oUserIDDictionary">
+    /// The key is the Twitter user ID and the value is the corresponding
+    /// TwitterUser.
+    /// </param>
+    ///
+    /// <param name="eWhatToInclude">
+    /// Specifies what should be included in the network.
+    /// </param>
+    ///
+    /// <param name="oGraphMLXmlDocument">
+    /// The GraphMLXmlDocument to populate with the requested network.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AppendSharedTermEdges
+    (
+        String sSearchTerm,
+        Dictionary<String, TwitterUser> oUserIDDictionary,
+        WhatToInclude eWhatToInclude,
+        GraphMLXmlDocument oGraphMLXmlDocument
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
+        Debug.Assert(oUserIDDictionary != null);
+        Debug.Assert(oGraphMLXmlDocument != null);
+        AssertValid();
+
+        #if AddExtraEdges
+        #endif
+    }
+
+    //*************************************************************************
+    //  Method: GetMentionsAndRepliesToScreenNames()
+    //
+    /// <summary>
+    /// Gets the screen names that were mentioned or replied to by the people
+    /// who tweeted the search term.
+    /// </summary>
+    ///
+    /// <param name="oGraphMLXmlDocument">
+    /// The GraphMLXmlDocument being populated.
+    /// </param>
+    ///
+    /// <param name="oUserIDDictionary">
+    /// The key is the Twitter user ID and the value is the corresponding
+    /// TwitterUser.
+    /// </param>
+    ///
+    /// <returns>
+    /// An array of screen names.  The names are unique.
+    /// </returns>
+    //*************************************************************************
+
+    protected String[]
+    GetMentionsAndRepliesToScreenNames
+    (
+        GraphMLXmlDocument oGraphMLXmlDocument,
+        Dictionary<String, TwitterUser> oUserIDDictionary
+    )
+    {
+        Debug.Assert(oGraphMLXmlDocument != null);
+        Debug.Assert(oUserIDDictionary != null);
+        AssertValid();
+
+        HashSet<String> oUniqueScreenNamesWhoTweetedSearchTerm =
+            TwitterUsersToUniqueScreenNames(oUserIDDictionary.Values);
+
+        HashSet<String> oUniqueMentionsAndRepliesToScreenNames =
+            new HashSet<String>();
+
+        foreach (TwitterUser oTwitterUser in oUserIDDictionary.Values)
+        {
+            foreach (TwitterStatus oTwitterStatus in oTwitterUser.Statuses)
+            {
+                String sRepliedToScreenName;
+                String [] asUniqueMentionedScreenNames;
+
+                m_oTwitterStatusTextParser.GetScreenNames(oTwitterStatus.Text,
+                    out sRepliedToScreenName, out asUniqueMentionedScreenNames);
+
+                if (
+                    sRepliedToScreenName != null
+                    &&
+                    !oUniqueScreenNamesWhoTweetedSearchTerm.Contains(
+                        sRepliedToScreenName) )
+                {
+                    oUniqueMentionsAndRepliesToScreenNames.Add(
+                        sRepliedToScreenName);
+                }
+
+                foreach (String sUniqueMentionedScreenName in
+                    asUniqueMentionedScreenNames)
+                {
+                    if ( !oUniqueScreenNamesWhoTweetedSearchTerm.Contains(
+                        sUniqueMentionedScreenName) )
+                    {
+                        oUniqueMentionsAndRepliesToScreenNames.Add(
+                            sUniqueMentionedScreenName);
+                    }
+                }
+            }
+        }
+
+        return ( oUniqueMentionsAndRepliesToScreenNames.ToArray() );
+    }
+
+    //*************************************************************************
+    //  Method: TryAppendVertexXmlNode()
+    //
+    /// <summary>
+    /// Appends a vertex XML node to the GraphML document for a person if such
+    /// a node doesn't already exist.
+    /// </summary>
+    ///
+    /// <param name="oUserValueDictionary">
+    /// Name/value pairs parsed from a Twitter JSON response.  Contains
+    /// information about a user.
+    /// </param>
+    ///
+    /// <param name="eWhatToInclude">
+    /// Specifies what should be included in the network.
+    /// </param>
+    ///
+    /// <param name="oGraphMLXmlDocument">
+    /// The GraphMLXmlDocument being populated.
+    /// </param>
+    ///
+    /// <param name="oUserIDDictionary">
+    /// The key is the Twitter user ID and the value is the corresponding
+    /// TwitterUser.
+    /// </param>
+    ///
+    /// <param name="oTwitterUser">
+    /// If true is returned, this is where the TwitterUser that represents the
+    /// user gets stored.  This gets set regardless of whether the node already
+    /// existed.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if <paramref name="oUserValueDictionary" /> contained a valid
+    /// user.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    TryAppendVertexXmlNode
+    (
+        Dictionary<String, Object> oUserValueDictionary,
+        WhatToInclude eWhatToInclude,
+        GraphMLXmlDocument oGraphMLXmlDocument,
+        Dictionary<String, TwitterUser> oUserIDDictionary,
+        out TwitterUser oTwitterUser
+    )
+    {
+        Debug.Assert(oUserValueDictionary != null);
+        Debug.Assert(oGraphMLXmlDocument != null);
+        Debug.Assert(oUserIDDictionary != null);
+        AssertValid();
+
+        oTwitterUser = null;
+
+        String sScreenName, sUserID;
+
+        if (
+            !TryGetJsonValueFromDictionary(oUserValueDictionary,
+                "screen_name", out sScreenName)
+            ||
+            !TryGetJsonValueFromDictionary(oUserValueDictionary,
+                "id_str", out sUserID)
+            )
+        {
+            return (false);
+        }
+
+        sScreenName = sScreenName.ToLower();
+
+        Boolean bIsFirstTweetForAuthor = TryAppendVertexXmlNode(
+            sScreenName, sUserID, oGraphMLXmlDocument, oUserIDDictionary,
+            out oTwitterUser);
+
+        if (bIsFirstTweetForAuthor)
+        {
+            Boolean bIncludeStatistics = WhatToIncludeFlagIsSet(
+                eWhatToInclude, WhatToInclude.Statistics);
+
+            AppendUserInformationFromValueDictionary(oUserValueDictionary,
+                oGraphMLXmlDocument, oTwitterUser, bIncludeStatistics,
+                false, false, false);
+        }
+
+        return (true);
+    }
+
+    //*************************************************************************
+    //  Method: AppendTweetedSearchTermGraphMLAttributeValue()
+    //
+    /// <summary>
+    /// Appends a GraphML attribute value to a vertex XML node that indicates
+    /// whether the user tweeted the search term.
+    /// </summary>
+    ///
+    /// <param name="oGraphMLXmlDocument">
+    /// GraphMLXmlDocument being populated.
+    /// </param>
+    ///
+    /// <param name="oTwitterUser">
+    /// Contains the vertex XML node from <paramref
+    /// name="oGraphMLXmlDocument" /> to add the GraphML attribute value to.
+    /// </param>
+    ///
+    /// <param name="bTweetedSearchTerm">
+    /// true if the user tweeted the search term.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AppendTweetedSearchTermGraphMLAttributeValue
+    (
+        GraphMLXmlDocument oGraphMLXmlDocument,
+        TwitterUser oTwitterUser,
+        Boolean bTweetedSearchTerm
+    )
+    {
+        Debug.Assert(oGraphMLXmlDocument != null);
+        Debug.Assert(oTwitterUser != null);
+        AssertValid();
+
+        oGraphMLXmlDocument.AppendGraphMLAttributeValue(
+            oTwitterUser.VertexXmlNode, TweetedSearchTermID,
+            bTweetedSearchTerm ? "Yes" : "No");
     }
 
     //*************************************************************************
@@ -754,6 +1077,11 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// Maximum number of tweets to request.  Can't be Int32.MaxValue.
     /// </param>
     ///
+    /// <param name="iSharedWordUserThreshold">
+    /// Edge XML nodes are appended for a word only if at least this many users
+    /// have tweeted the word.
+    /// </param>
+    ///
     /// <param name="oGraphMLXmlDocument">
     /// The GraphMLXmlDocument that contains the network.
     /// </param>
@@ -769,12 +1097,14 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         String sSearchTerm,
         WhatToInclude eWhatToInclude,
         Int32 iMaximumStatuses,
+        Int32 iSharedWordUserThreshold,
         GraphMLXmlDocument oGraphMLXmlDocument
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
         Debug.Assert(iMaximumStatuses > 0);
         Debug.Assert(iMaximumStatuses != Int32.MaxValue);
+        Debug.Assert(iSharedWordUserThreshold >= 2);
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
@@ -837,6 +1167,9 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 + " \"replies-to\" or \"mentions\"."
                 );
         }
+
+        #if AddExtraEdges
+        #endif
 
         if (bIncludeRepliesToEdges && bIncludeMentionsEdges &&
             bIncludeNonRepliesToNonMentionsEdges)
@@ -1091,6 +1424,9 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     //*************************************************************************
     //  Public constants
     //*************************************************************************
+
+    ///
+    public const String TweetedSearchTermID = "TweetedSearchTerm";
 
     #if AddExtraEdges
     #endif
