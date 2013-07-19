@@ -1,6 +1,8 @@
 ﻿
 using System;
 using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using Ionic.Zip;
@@ -63,6 +65,65 @@ public static class ZipUtil
             oZipFile.Save(oMemoryStream);
 
             return ( oMemoryStream.ToArray() );
+        }
+    }
+
+    //*************************************************************************
+    //  Method: UnzipOneTextFile()
+    //
+    /// <summary>
+    /// Unzips a text file contained in a Zip file.
+    /// </summary>
+    ///
+    /// <param name="zipFileContents">
+    /// A Zip file that contains one text file.  The text file can have any
+    /// name.
+    /// </param>
+    ///
+    /// <returns>
+    /// The unziped text file, as a String.
+    /// </returns>
+    //*************************************************************************
+
+    public static String
+    UnzipOneTextFile
+    (
+        Byte [] zipFileContents
+    )
+    {
+        Debug.Assert(zipFileContents != null);
+        Debug.Assert(zipFileContents.Length > 0);
+
+        using ( MemoryStream oZippedMemoryStream =
+            new MemoryStream(zipFileContents) )
+        {
+            ReadOptions oReadOptions = new ReadOptions();
+            oReadOptions.Encoding = Encoding.UTF8;
+
+            using ( ZipFile oZipFile =
+                ZipFile.Read(oZippedMemoryStream, oReadOptions) )
+            {
+                ICollection<ZipEntry> oEntries = oZipFile.Entries;
+
+                if (oEntries.Count != 1)
+                {
+                    throw new ApplicationException(
+                        "The Zip file does not contain one and only one"
+                        + " text file."
+                        );
+                }
+
+                ZipEntry oTextEntry = oEntries.First();
+
+                using ( MemoryStream oUnzippedMemoryStream =
+                    new MemoryStream() )
+                {
+                    oTextEntry.Extract(oUnzippedMemoryStream);
+
+                    return ( Encoding.UTF8.GetString(
+                        oUnzippedMemoryStream.ToArray() ) );
+                }
+            }
         }
     }
 }

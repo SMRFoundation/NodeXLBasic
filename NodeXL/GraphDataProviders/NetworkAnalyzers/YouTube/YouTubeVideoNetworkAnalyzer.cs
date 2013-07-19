@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using Smrf.XmlLib;
 using Smrf.SocialNetworkLib;
+using Smrf.NodeXL.GraphMLLib;
 
 namespace Smrf.NodeXL.GraphDataProviders.YouTube
 {
@@ -326,7 +327,8 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
 
         GraphMLXmlDocument oGraphMLXmlDocument = new GraphMLXmlDocument(false);
 
-        DefineRelationshipGraphMLAttribute(oGraphMLXmlDocument);
+        NodeXLGraphMLUtil.DefineEdgeRelationshipGraphMLAttribute(
+            oGraphMLXmlDocument);
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.SharedCategoryEdges) )
@@ -364,8 +366,11 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
             CommentsID, "Comments"
             );
 
-        DefineImageFileGraphMLAttribute(oGraphMLXmlDocument);
-        DefineCustomMenuGraphMLAttributes(oGraphMLXmlDocument);
+        NodeXLGraphMLUtil.DefineVertexImageFileGraphMLAttribute(
+            oGraphMLXmlDocument);
+
+        NodeXLGraphMLUtil.DefineVertexCustomMenuGraphMLAttributes(
+            oGraphMLXmlDocument);
 
         return (oGraphMLXmlDocument);
     }
@@ -518,14 +523,17 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
 
             AppendStringGraphMLAttributeValue(oEntryXmlNode,
                 "media:group/media:thumbnail/@url", oXmlNamespaceManager,
-                oGraphMLXmlDocument, oVertexXmlNode, ImageFileID);
+                oGraphMLXmlDocument, oVertexXmlNode,
+                NodeXLGraphMLUtil.VertexImageFileID);
 
             if ( AppendStringGraphMLAttributeValue(oEntryXmlNode,
                     "media:group/media:player/@url", oXmlNamespaceManager,
-                    oGraphMLXmlDocument, oVertexXmlNode, MenuActionID) )
+                    oGraphMLXmlDocument, oVertexXmlNode,
+                    NodeXLGraphMLUtil.VertexMenuActionID) )
             {
                 oGraphMLXmlDocument.AppendGraphMLAttributeValue(oVertexXmlNode,
-                    MenuTextID, "Play Video in Browser");
+                    NodeXLGraphMLUtil.VertexMenuTextID,
+                    "Play Video in Browser");
             }
 
             if (oCategoryDictionary != null)
@@ -832,7 +840,7 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
                         oSubsequentVideoIDWithThisKey.Next
                     )
                 {
-                    XmlNode oEdgeXmlNode = AppendEdgeXmlNode(
+                    XmlNode oEdgeXmlNode = NodeXLGraphMLUtil.AppendEdgeXmlNode(
                         oGraphMLXmlDocument, oVideoIDWithThisKey.Value,
                         oSubsequentVideoIDWithThisKey.Value, sRelationship);
 

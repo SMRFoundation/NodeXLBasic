@@ -9,6 +9,7 @@ using Smrf.SocialNetworkLib;
 using Smrf.AppLib;
 using Smrf.XmlLib;
 using Smrf.DateTimeLib;
+using Smrf.NodeXL.GraphMLLib;
 
 namespace Smrf.NodeXL.GraphDataProviders.Flickr
 {
@@ -556,16 +557,18 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
 
                 if (bIncludeContactsThisCall)
                 {
-                    oEdgeXmlNode = AppendEdgeXmlNode(oGraphMLXmlDocument,
-                        sScreenName, sOtherScreenName, "Contact");
+                    oEdgeXmlNode = NodeXLGraphMLUtil.AppendEdgeXmlNode(
+                        oGraphMLXmlDocument, sScreenName, sOtherScreenName,
+                        "Contact");
                 }
                 else
                 {
                     // (Note the swapping of screen names in the commenter
                     // case.)
 
-                    oEdgeXmlNode = AppendEdgeXmlNode(oGraphMLXmlDocument,
-                        sOtherScreenName, sScreenName, "Commenter");
+                    oEdgeXmlNode = NodeXLGraphMLUtil.AppendEdgeXmlNode(
+                        oGraphMLXmlDocument, sOtherScreenName, sScreenName,
+                        "Commenter");
 
                     UInt32 uCommentDateUtc;
 
@@ -642,7 +645,8 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
 
         GraphMLXmlDocument oGraphMLXmlDocument = new GraphMLXmlDocument(true);
 
-        DefineRelationshipGraphMLAttribute(oGraphMLXmlDocument);
+        NodeXLGraphMLUtil.DefineEdgeRelationshipGraphMLAttribute(
+            oGraphMLXmlDocument);
 
         if (bIncludeCommenterVertices)
         {
@@ -662,8 +666,11 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
                 IsProfessionalID, "Is Professional"
                 );
 
-            DefineImageFileGraphMLAttribute(oGraphMLXmlDocument);
-            DefineCustomMenuGraphMLAttributes(oGraphMLXmlDocument);
+            NodeXLGraphMLUtil.DefineVertexImageFileGraphMLAttribute(
+                oGraphMLXmlDocument);
+
+            NodeXLGraphMLUtil.DefineVertexCustomMenuGraphMLAttributes(
+                oGraphMLXmlDocument);
         }
 
         return (oGraphMLXmlDocument);
@@ -1252,14 +1259,16 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
         }
 
         oGraphMLXmlDocument.AppendGraphMLAttributeValue(
-            oVertexXmlNode, ImageFileID, sBuddyIconUrl);
+            oVertexXmlNode, NodeXLGraphMLUtil.VertexImageFileID,
+            sBuddyIconUrl);
 
         if ( AppendStringGraphMLAttributeValue(oXmlDocument,
             XPathRoot + "photosurl/text()", null, oGraphMLXmlDocument,
-            oVertexXmlNode, MenuActionID) )
+            oVertexXmlNode, NodeXLGraphMLUtil.VertexMenuActionID))
         {
             oGraphMLXmlDocument.AppendGraphMLAttributeValue(oVertexXmlNode,
-                MenuTextID, "Open Flickr Page for This Person");
+                NodeXLGraphMLUtil.VertexMenuTextID,
+                "Open Flickr Page for This Person");
         }
     }
 

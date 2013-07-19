@@ -8,6 +8,7 @@ using System.Diagnostics;
 using Smrf.AppLib;
 using Smrf.XmlLib;
 using Smrf.SocialNetworkLib;
+using Smrf.NodeXL.GraphMLLib;
 
 namespace Smrf.NodeXL.GraphDataProviders.Flickr
 {
@@ -522,7 +523,8 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
                 out sSampleImageUrl) )
             {
                 oGraphMLXmlDocument.AppendGraphMLAttributeValue(
-                    oKeyValuePair.Value, ImageFileID, sSampleImageUrl);
+                    oKeyValuePair.Value, NodeXLGraphMLUtil.VertexImageFileID,
+                    sSampleImageUrl);
             }
         }
     }
@@ -646,13 +648,14 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
                 sTag);
 
             oGraphMLXmlDocument.AppendGraphMLAttributeValue(oVertexXmlNode,
-                LabelID, sTag);
+                NodeXLGraphMLUtil.VertexLabelID, sTag);
 
             oGraphMLXmlDocument.AppendGraphMLAttributeValue(oVertexXmlNode,
-                MenuTextID, "Open Flickr Page for This Tag");
+                NodeXLGraphMLUtil.VertexMenuTextID,
+                "Open Flickr Page for This Tag");
 
             oGraphMLXmlDocument.AppendGraphMLAttributeValue( oVertexXmlNode,
-                MenuActionID,
+                NodeXLGraphMLUtil.VertexMenuActionID,
                 
                 String.Format(
                     "http://www.flickr.com/photos/tags/{0}/"
@@ -694,12 +697,16 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
 
         GraphMLXmlDocument oGraphMLXmlDocument = new GraphMLXmlDocument(true);
 
-        DefineLabelGraphMLAttribute(oGraphMLXmlDocument);
-        DefineCustomMenuGraphMLAttributes(oGraphMLXmlDocument);
+        NodeXLGraphMLUtil.DefineVertexLabelGraphMLAttribute(
+            oGraphMLXmlDocument);
+
+        NodeXLGraphMLUtil.DefineVertexCustomMenuGraphMLAttributes(
+            oGraphMLXmlDocument);
 
         if (bIncludeSampleThumbnails)
         {
-            DefineImageFileGraphMLAttribute(oGraphMLXmlDocument);
+            NodeXLGraphMLUtil.DefineVertexImageFileGraphMLAttribute(
+                oGraphMLXmlDocument);
         }
 
         return (oGraphMLXmlDocument);

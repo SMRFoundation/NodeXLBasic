@@ -1,9 +1,16 @@
 ﻿
+
+// Define UseLocalGraphService to use a local GraphService WCF service instead
+// of the real service.
+
+// #define UseLocalGraphService
+
 using System;
 using System.Xml;
 using System.ComponentModel;
 using System.ServiceModel;
 using System.Diagnostics;
+using Smrf.AppLib;
 using Smrf.XmlLib;
 using Smrf.SocialNetworkLib;
 using Smrf.GraphServer.WcfService;
@@ -71,6 +78,10 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
     /// Maximum status date, in UTC.
     /// </param>
     ///
+    /// <param name="expandStatusUrls">
+    /// true to expand the URLs in each status.
+    /// </param>
+    ///
     /// <param name="graphServerUserName">
     /// User name for the account to use on the NodeXL Graph Server.
     /// </param>
@@ -99,6 +110,7 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
         String searchTerm,
         DateTime minimumStatusDateUtc,
         DateTime maximumStatusDateUtc,
+        Boolean expandStatusUrls,
         String graphServerUserName,
         String graphServerPassword
     )
@@ -120,6 +132,7 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
         oGetNetworkAsyncArgs.SearchTerm = searchTerm;
         oGetNetworkAsyncArgs.MinimumStatusDateUtc = minimumStatusDateUtc;
         oGetNetworkAsyncArgs.MaximumStatusDateUtc = maximumStatusDateUtc;
+        oGetNetworkAsyncArgs.ExpandStatusUrls = expandStatusUrls;
         oGetNetworkAsyncArgs.GraphServerUserName = graphServerUserName;
         oGetNetworkAsyncArgs.GraphServerPassword = graphServerPassword;
 
@@ -146,6 +159,10 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
     /// Maximum status date, in UTC.
     /// </param>
     ///
+    /// <param name="expandStatusUrls">
+    /// true to expand the URLs in each status.
+    /// </param>
+    ///
     /// <param name="graphServerUserName">
     /// User name for the account to use on the NodeXL Graph Server.
     /// </param>
@@ -165,6 +182,7 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
         String searchTerm,
         DateTime minimumStatusDateUtc,
         DateTime maximumStatusDateUtc,
+        Boolean expandStatusUrls,
         String graphServerUserName,
         String graphServerPassword
     )
@@ -176,7 +194,8 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
         AssertValid();
 
         return ( GetNetworkInternal(searchTerm, minimumStatusDateUtc,
-            maximumStatusDateUtc, graphServerUserName, graphServerPassword) );
+            maximumStatusDateUtc, expandStatusUrls, graphServerUserName,
+            graphServerPassword) );
     }
 
     //*************************************************************************
@@ -205,7 +224,23 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
         Debug.Assert(oException != null);
         AssertValid();
 
-        return ("TODO: " + oException.Message);
+        String message;
+
+        if ( oException is FaultException<String> )
+        {
+            // The GraphService throws a FaultException<String> with a friendly
+            // error message when the graph can't be obtained for a known
+            // reason.
+
+            message = ( ( FaultException<String> )oException ).Detail;
+        }
+        else
+        {
+            message = "An unexpected problem occurred.\r\n\r\n"
+                + ExceptionUtil.GetMessageTrace(oException);
+        }
+
+        return (message);
     }
 
     //*************************************************************************
@@ -231,6 +266,10 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
     /// Maximum status date, in UTC.
     /// </param>
     ///
+    /// <param name="bExpandStatusUrls">
+    /// true to expand the URLs in each status.
+    /// </param>
+    ///
     /// <param name="sGraphServerUserName">
     /// User name for the account to use on the NodeXL Graph Server.
     /// </param>
@@ -250,6 +289,7 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
         String sSearchTerm,
         DateTime oMinimumStatusDateUtc,
         DateTime oMaximumStatusDateUtc,
+        Boolean bExpandStatusUrls,
         String sGraphServerUserName,
         String sGraphServerPassword
     )
@@ -267,7 +307,7 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
         {
             oGraphMLXmlDocument = GetNetworkInternal(
                 sSearchTerm, oMinimumStatusDateUtc, oMaximumStatusDateUtc,
-                sGraphServerUserName, sGraphServerPassword,
+                bExpandStatusUrls, sGraphServerUserName, sGraphServerPassword,
                 oRequestStatistics);
         }
         catch (Exception oException)
@@ -307,6 +347,10 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
     /// Maximum status date, in UTC.
     /// </param>
     ///
+    /// <param name="bExpandStatusUrls">
+    /// true to expand the URLs in each status.
+    /// </param>
+    ///
     /// <param name="sGraphServerUserName">
     /// User name for the account to use on the NodeXL Graph Server.
     /// </param>
@@ -331,6 +375,7 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
         String sSearchTerm,
         DateTime oMinimumStatusDateUtc,
         DateTime oMaximumStatusDateUtc,
+        Boolean bExpandStatusUrls,
         String sGraphServerUserName,
         String sGraphServerPassword,
         RequestStatistics oRequestStatistics
@@ -343,20 +388,23 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
         Debug.Assert(oRequestStatistics != null);
         AssertValid();
 
-        // TODO: Use real URL.
-
-        const String GraphServiceUrl =
-            "http://localhost/GraphService/GraphService.svc";
-
         GraphServiceClient oClient = new GraphServiceClient(
             GetWcfServiceBinding(), new EndpointAddress(GraphServiceUrl) );
 
-        String sGraphML = oClient.GetTwitterSearchNetworkAsGraphML(
-            sSearchTerm, oMinimumStatusDateUtc, oMaximumStatusDateUtc,
-            sGraphServerUserName, sGraphServerPassword);
+        Byte [] abtZippedGraphML =
+            oClient.GetTwitterSearchNetworkAsZippedGraphML(
+                sSearchTerm, oMinimumStatusDateUtc, oMaximumStatusDateUtc,
+                bExpandStatusUrls, sGraphServerUserName, sGraphServerPassword);
+
+        String sGraphML = ZipUtil.UnzipOneTextFile(abtZippedGraphML);
+        abtZippedGraphML = null;
 
         XmlDocument oXmlDocument = new XmlDocument();
-        oXmlDocument.LoadXml(sGraphML);
+
+        // Note: When the DotNetZip library used by ZipUtil unzips the GraphML,
+        // it includes a BOM as the first character.  Remove that character.
+
+        oXmlDocument.LoadXml( sGraphML.Substring(1) );
 
         return (oXmlDocument);
     }
@@ -441,6 +489,49 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
     }
 
     //*************************************************************************
+    //  Method: GetWcfServiceBinding()
+    //
+    /// <summary>
+    /// Returns the binding to use for communicating with the Graph Server's
+    /// WCF service.
+    /// </summary>
+    ///
+    /// <returns>
+    /// A <see cref="BasicHttpBinding" /> object.
+    /// </returns>
+    //*************************************************************************
+
+    protected BasicHttpBinding
+    GetWcfServiceBinding()
+    {
+        BasicHttpBinding oBasicHttpBinding = new BasicHttpBinding();
+
+        // These settings were copied from the NodeXLGraphGalleryExporter
+        // class, which uses a similar binding.
+
+        oBasicHttpBinding.Name = "BasicHttpBinding";
+
+        oBasicHttpBinding.SendTimeout =
+            new TimeSpan(0, SendTimeoutMinutes, 0);
+
+        oBasicHttpBinding.ReceiveTimeout =
+            new TimeSpan(0, ReceiveTimeoutMinutes, 0);
+
+        oBasicHttpBinding.MaxBufferSize = MaximumBytes;
+        oBasicHttpBinding.MaxReceivedMessageSize = MaximumBytes;
+        oBasicHttpBinding.TransferMode = TransferMode.Buffered;
+
+        XmlDictionaryReaderQuotas oReaderQuotas =
+            new XmlDictionaryReaderQuotas();
+
+        oReaderQuotas.MaxArrayLength = MaximumBytes;
+        oReaderQuotas.MaxStringContentLength = MaximumBytes;
+        oBasicHttpBinding.ReaderQuotas = oReaderQuotas;
+
+        return (oBasicHttpBinding);
+    }
+
+    //*************************************************************************
     //  Method: BackgroundWorker_DoWork()
     //
     /// <summary>
@@ -474,6 +565,7 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
                 oGetNetworkAsyncArgs.SearchTerm,
                 oGetNetworkAsyncArgs.MinimumStatusDateUtc,
                 oGetNetworkAsyncArgs.MaximumStatusDateUtc,
+                oGetNetworkAsyncArgs.ExpandStatusUrls,
                 oGetNetworkAsyncArgs.GraphServerUserName,
                 oGetNetworkAsyncArgs.GraphServerPassword
                 );
@@ -482,43 +574,6 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
         {
             e.Cancel = true;
         }
-    }
-
-    //*************************************************************************
-    //  Method: GetWcfServiceBinding()
-    //
-    /// <summary>
-    /// Returns the binding to use for communicating with the Graph Server's
-    /// WCF service.
-    /// </summary>
-    ///
-    /// <returns>
-    /// A <see cref="BasicHttpBinding" /> object.
-    /// </returns>
-    //*************************************************************************
-
-    protected BasicHttpBinding
-    GetWcfServiceBinding()
-    {
-        BasicHttpBinding oBasicHttpBinding = new BasicHttpBinding();
-
-        // These settings were copied from the NodeXLGraphGalleryExporter
-        // class, which uses a similar binding.
-
-        oBasicHttpBinding.Name = "BasicHttpBinding";
-        oBasicHttpBinding.ReceiveTimeout = new TimeSpan(0, 1, 0);
-        oBasicHttpBinding.MaxBufferSize = MaximumBytes;
-        oBasicHttpBinding.MaxReceivedMessageSize = MaximumBytes;
-        oBasicHttpBinding.TransferMode = TransferMode.Buffered;
-
-        XmlDictionaryReaderQuotas oReaderQuotas =
-            new XmlDictionaryReaderQuotas();
-
-        oReaderQuotas.MaxArrayLength = MaximumBytes;
-        oReaderQuotas.MaxStringContentLength = MaximumBytes;
-        oBasicHttpBinding.ReaderQuotas = oReaderQuotas;
-
-        return (oBasicHttpBinding);
     }
 
 
@@ -544,6 +599,26 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
     //*************************************************************************
     //  Protected constants
     //*************************************************************************
+
+    /// URL of the Graph Server.  This is an Elastic IP address created within
+    /// Amazon EC2 and assigned to the Graph Server EC2 instance.
+
+    protected const String GraphServiceUrl =
+
+    #if UseLocalGraphService
+        "http://localhost/GraphService/GraphService.svc";
+    #else
+        "http://184.72.239.155/GraphService/GraphService.svc";
+    #endif
+
+    /// Send timeout, in minutes.
+
+    protected const Int32 SendTimeoutMinutes = 20;
+
+    /// Receive timeout, in minutes.
+
+    protected const Int32 ReceiveTimeoutMinutes = 20;
+
 
     /// Maximum number of bytes that can be received from the WCF service.
     /// This is the value to use for length-related parameters in the WCF
@@ -586,6 +661,8 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
         public DateTime MinimumStatusDateUtc;
         ///
         public DateTime MaximumStatusDateUtc;
+        ///
+        public Boolean ExpandStatusUrls;
         ///
         public String GraphServerUserName;
         ///

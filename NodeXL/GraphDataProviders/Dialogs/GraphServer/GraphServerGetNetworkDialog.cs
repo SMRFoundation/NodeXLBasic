@@ -41,6 +41,7 @@ public partial class GraphServerGetNetworkDialog : GraphDataProviderDialogBase
         // m_sSearchTerm
         // m_oMinimumStatusDateUtc
         // m_oMaximumStatusDateUtc
+        // m_bExpandStatusUrls
         // m_sGraphServerUserName
         // m_sGraphServerPassword
 
@@ -128,6 +129,8 @@ public partial class GraphServerGetNetworkDialog : GraphDataProviderDialogBase
                 return (false);
             }
 
+            m_bExpandStatusUrls = chkExpandStatusUrls.Checked;
+
             if (
                 !ValidateRequiredTextBox(txbGraphServerUserName,
 
@@ -152,6 +155,7 @@ public partial class GraphServerGetNetworkDialog : GraphDataProviderDialogBase
             txbSearchTerm.Text = m_sSearchTerm;
             dtpMinimumStatusDateUtc.Value = m_oMinimumStatusDateUtc;
             dtpMaximumStatusDateUtc.Value = m_oMaximumStatusDateUtc;
+            chkExpandStatusUrls.Checked = m_bExpandStatusUrls;
             txbGraphServerUserName.Text = m_sGraphServerUserName;
             txbGraphServerPassword.Text = m_sGraphServerPassword;
 
@@ -185,7 +189,8 @@ public partial class GraphServerGetNetworkDialog : GraphDataProviderDialogBase
         ( (GraphServerNetworkAnalyzer)m_oHttpNetworkAnalyzer ).
             GetNetworkAsync(m_sSearchTerm, m_oMinimumStatusDateUtc,
                 AddDayToMaximumStatusDateUtc(m_oMaximumStatusDateUtc),
-                m_sGraphServerUserName, m_sGraphServerPassword);
+                m_bExpandStatusUrls, m_sGraphServerUserName,
+                m_sGraphServerPassword);
     }
 
     //*************************************************************************
@@ -267,7 +272,7 @@ public partial class GraphServerGetNetworkDialog : GraphDataProviderDialogBase
         Debug.Assert(oMaximumStatusDateUtc.TimeOfDay == TimeSpan.Zero);
         AssertValid();
 
-		return ( oMaximumStatusDateUtc.AddDays(1).AddSeconds(-1) );
+        return ( oMaximumStatusDateUtc.AddDays(1).AddSeconds(-1) );
     }
 
     //*************************************************************************
@@ -317,6 +322,7 @@ public partial class GraphServerGetNetworkDialog : GraphDataProviderDialogBase
         Debug.Assert(m_sSearchTerm != null);
         // m_oMinimumStatusDateUtc
         // m_oMaximumStatusDateUtc
+        // m_bExpandStatusUrls
         Debug.Assert(m_sGraphServerUserName != null);
         Debug.Assert(m_sGraphServerPassword != null);
     }
@@ -343,6 +349,10 @@ public partial class GraphServerGetNetworkDialog : GraphDataProviderDialogBase
     /// Maximum status date, in UTC.
 
     protected static DateTime m_oMaximumStatusDateUtc = DateTime.Now.Date;
+
+    /// true to expand the URLs in each status.
+
+    protected static Boolean m_bExpandStatusUrls = false;
 
     /// User name for the account to use on the NodeXL Graph Server.
 

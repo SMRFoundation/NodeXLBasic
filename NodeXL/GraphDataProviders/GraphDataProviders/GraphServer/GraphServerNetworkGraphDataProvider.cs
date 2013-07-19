@@ -32,8 +32,9 @@ public class GraphServerNetworkGraphDataProvider : GraphDataProviderBase
     public GraphServerNetworkGraphDataProvider()
     :
     base(GraphDataProviderName,
-        "get the network of people whose tweets contain a specified word,"
-        + " using the NodeXL Graph Server"
+        "get the network of people whose tweets contain a specified word."
+        + "  The network is obtained from the NodeXL Graph Server, not"
+        + " directly from Twitter"
         )
     {
         // (Do nothing.)
@@ -88,7 +89,7 @@ public class GraphServerNetworkGraphDataProvider : GraphDataProviderBase
     /// Value of the Name property.
 
     public const String GraphDataProviderName =
-        "Twitter Search Network (NodeXL Graph Server)";
+        "NodeXL Graph Server";
 
 
     //*************************************************************************

@@ -10,6 +10,7 @@ using System.Diagnostics;
 using Smrf.SocialNetworkLib;
 using Smrf.AppLib;
 using Smrf.XmlLib;
+using Smrf.NodeXL.GraphMLLib;
 
 namespace Smrf.NodeXL.GraphDataProviders.YouTube
 {
@@ -538,8 +539,8 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
                     }
                 }
 
-                AppendEdgeXmlNode(oGraphMLXmlDocument, sUserName,
-                    sOtherUserName, sRelationship);
+                NodeXLGraphMLUtil.AppendEdgeXmlNode(oGraphMLXmlDocument,
+                    sUserName, sOtherUserName, sRelationship);
             }
         }
 
@@ -583,8 +584,11 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
 
         GraphMLXmlDocument oGraphMLXmlDocument = new GraphMLXmlDocument(true);
 
-        DefineCustomMenuGraphMLAttributes(oGraphMLXmlDocument);
-        DefineRelationshipGraphMLAttribute(oGraphMLXmlDocument);
+        NodeXLGraphMLUtil.DefineVertexCustomMenuGraphMLAttributes(
+            oGraphMLXmlDocument);
+        
+        NodeXLGraphMLUtil.DefineEdgeRelationshipGraphMLAttribute(
+            oGraphMLXmlDocument);
 
         if (bIncludeAllStatistics)
         {
@@ -599,7 +603,8 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
             oGraphMLXmlDocument.DefineVertexStringGraphMLAttributes(
                 JoinedDateUtcID, "Joined YouTube Date (UTC)");
 
-            DefineImageFileGraphMLAttribute(oGraphMLXmlDocument);
+            NodeXLGraphMLUtil.DefineVertexImageFileGraphMLAttribute(
+                oGraphMLXmlDocument);
         }
 
         return (oGraphMLXmlDocument);
@@ -848,10 +853,12 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         oUserNameDictionary.Add(sUserName, oVertexXmlNode);
 
         oGraphMLXmlDocument.AppendGraphMLAttributeValue(oVertexXmlNode,
-            MenuTextID, "Open YouTube Page for This Person");
+            NodeXLGraphMLUtil.VertexMenuTextID,
+            "Open YouTube Page for This Person");
 
         oGraphMLXmlDocument.AppendGraphMLAttributeValue( oVertexXmlNode,
-            MenuActionID, String.Format(WebPageUrlPattern, sUserName) );
+            NodeXLGraphMLUtil.VertexMenuActionID,
+            String.Format(WebPageUrlPattern, sUserName));
 
         return (true);
     }
@@ -971,7 +978,8 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
 
             AppendStringGraphMLAttributeValue(oXmlDocument,
                 "a:entry/media:thumbnail/@url", oXmlNamespaceManager,
-                oGraphMLXmlDocument, oVertexXmlNode, ImageFileID);
+                oGraphMLXmlDocument, oVertexXmlNode,
+                NodeXLGraphMLUtil.VertexImageFileID);
 
             XmlNode oStatisticsXmlNode;
 

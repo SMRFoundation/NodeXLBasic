@@ -581,10 +581,8 @@ public class SubgraphImageCreator : Object
         {
             // Save the bitmap in the specified folder.
 
-            SaveSubgraphImage(oBitmap,
-                oCreateSubgraphImagesAsyncArgs.Folder,
-                sVertexName, oCreateSubgraphImagesAsyncArgs
-                );
+            SaveSubgraphImage(oBitmap, oCreateSubgraphImagesAsyncArgs.Folder,
+                sVertexName, oCreateSubgraphImagesAsyncArgs);
         }
         finally
         {
@@ -660,8 +658,7 @@ public class SubgraphImageCreator : Object
 
             String sTemporaryFileName = SaveSubgraphImage(oBitmap,
                 oThumbnailImages.Folder, sVertexName,
-                oCreateSubgraphImagesAsyncArgs
-                );
+                oCreateSubgraphImagesAsyncArgs);
 
             // Add the file name to the dictionary.  They key is the vertex
             // name and the value is the file name, without a path.
@@ -933,8 +930,8 @@ public class SubgraphImageCreator : Object
     /// Full path to the folder to save the image to.
     /// </param>
     ///
-    /// <param name="sFileNameNoExtension">
-    /// Name of the file to save the image to, without a path or extension.
+    /// <param name="sVertexName">
+    /// Name of the vertex the subgraph is for.
     /// </param>
     ///
     /// <param name="oCreateSubgraphImagesAsyncArgs">
@@ -951,27 +948,40 @@ public class SubgraphImageCreator : Object
     (
         Bitmap oBitmap,
         String sFolder,
-        String sFileNameNoExtension,
+        String sVertexName,
         CreateSubgraphImagesAsyncArgs oCreateSubgraphImagesAsyncArgs
     )
     {
         Debug.Assert(oBitmap != null);
         Debug.Assert( !String.IsNullOrEmpty(sFolder) );
-        Debug.Assert( !String.IsNullOrEmpty(sFileNameNoExtension) );
+        Debug.Assert( !String.IsNullOrEmpty(sVertexName) );
         Debug.Assert(oCreateSubgraphImagesAsyncArgs != null);
         AssertValid();
 
         ImageFormat eImageFormat = oCreateSubgraphImagesAsyncArgs.ImageFormat;
 
-        String sFileNameWithoutPath =
-            FileUtil.EncodeIllegalFileNameChars(sFileNameNoExtension)
-            + "." + SaveableImageFormats.GetFileExtension(eImageFormat);
+        // The "Img-" prefix is to prevent a vertex name like "con" or "lpt"
+        // from causing the following exception when
+        // System.Drawing.Image.Save() is called:
+        //
+        //   [ExternalException]: A generic error occurred in GDI+.
+        //
+        // The exception occurs because "con" (console), "lpt" (line printer)
+        // and some other names are reserved file names in Windows.
 
-        String sFileNameWithPath = Path.Combine(sFolder, sFileNameWithoutPath);
+        String sFileNameNoPath = String.Format(
+
+            "Img-{0}.{1}"
+            ,
+            FileUtil.EncodeIllegalFileNameChars(sVertexName),
+            SaveableImageFormats.GetFileExtension(eImageFormat)
+            );
+
+        String sFileNameWithPath = Path.Combine(sFolder, sFileNameNoPath);
 
         SaveBitmap(oBitmap, sFileNameWithPath, eImageFormat);
 
-        return (sFileNameWithoutPath);
+        return (sFileNameNoPath);
     }
 
     //*************************************************************************

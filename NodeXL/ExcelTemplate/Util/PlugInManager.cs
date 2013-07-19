@@ -86,13 +86,6 @@ public static class PlugInManager
                             typeof(IGraphDataProvider).IsAssignableFrom(oType)
                             )
                         {
-                            // TODO: This is to prevent the inclusion of the
-                            // Graph Server graph data provider, which as of
-                            // June 2013 is not fully implemented.
-
-                            if (oType.Name !=
-                                "GraphServerNetworkGraphDataProvider")
-
                             oGraphDataProviders.Add(
                                 Activator.CreateInstance(oType) );
                         }

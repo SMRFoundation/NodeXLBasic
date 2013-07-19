@@ -16,6 +16,7 @@ using Smrf.XmlLib;
 using Smrf.DateTimeLib;
 using Smrf.SocialNetworkLib;
 using Smrf.SocialNetworkLib.Twitter;
+using Smrf.NodeXL.GraphMLLib;
 
 namespace Smrf.NodeXL.GraphDataProviders.Twitter
 {
@@ -120,7 +121,9 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                 {
                     case HttpStatusCode.Unauthorized:  // HTTP 401.
 
-                        sMessage = RefusedMessage;
+                        sMessage = RefusedMessage
+                            + "  The stated reason was \"unauthorized.\"";
+
                         break;
 
                     case HttpStatusCode.NotFound:  // HTTP 404.
@@ -138,7 +141,9 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
                     case HttpStatusCode.Forbidden:  // HTTP 403.
 
-                        sMessage = RefusedMessage;
+                        sMessage = RefusedMessage
+                            + "  The stated reason was \"forbidden.\"";
+
                         break;
 
                     default:
@@ -205,114 +210,6 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         m_oTwitterUtil = new TwitterUtil(sToken, sSecret,
             HttpNetworkAnalyzerBase.UserAgent,
             HttpNetworkAnalyzerBase.HttpWebRequestTimeoutMs);
-    }
-
-    //*************************************************************************
-    //  Method: CreateGraphMLXmlDocument()
-    //
-    /// <summary>
-    /// Creates a GraphMLXmlDocument representing a network of Twitter users.
-    /// </summary>
-    ///
-    /// <param name="bIncludeStatistics">
-    /// true to include each user's statistics.
-    /// </param>
-    ///
-    /// <param name="bIncludeLatestStatuses">
-    /// true to include each user's latest status.
-    /// </param>
-    ///
-    /// <returns>
-    /// A GraphMLXmlDocument representing a network of Twitter users.  The
-    /// document includes GraphML-attribute definitions but no vertices or
-    /// edges.
-    /// </returns>
-    //*************************************************************************
-
-    protected GraphMLXmlDocument
-    CreateGraphMLXmlDocument
-    (
-        Boolean bIncludeStatistics,
-        Boolean bIncludeLatestStatuses
-    )
-    {
-        AssertValid();
-
-        GraphMLXmlDocument oGraphMLXmlDocument = new GraphMLXmlDocument(true);
-
-        if (bIncludeStatistics)
-        {
-            oGraphMLXmlDocument.DefineGraphMLAttributes(false, "int",
-                FollowedID, "Followed",
-                FollowersID, "Followers",
-                StatusesID, "Tweets",
-                FavoritesID, "Favorites",
-                UtcOffsetID, "Time Zone UTC Offset (Seconds)"
-                );
-
-            oGraphMLXmlDocument.DefineVertexStringGraphMLAttributes(
-                DescriptionID, "Description",
-                LocationID, "Location",
-                UrlID, "Web",
-                TimeZoneID, "Time Zone",
-                JoinedDateUtcID, "Joined Twitter Date (UTC)"
-                );
-        }
-
-        if (bIncludeLatestStatuses)
-        {
-            oGraphMLXmlDocument.DefineVertexStringGraphMLAttributes(
-                LatestStatusID, "Latest Tweet",
-                LatestStatusUrlsID, "URLs in Latest Tweet",
-                LatestStatusDomainsID, "Domains in Latest Tweet",
-                LatestStatusHashtagsID, "Hashtags in Latest Tweet",
-                LatestStatusDateUtcID, "Latest Tweet Date (UTC)"
-                );
-
-            DefineLatitudeAndLongitudeGraphMLAttributes(oGraphMLXmlDocument,
-                false);
-        }
-
-        DefineImageFileGraphMLAttribute(oGraphMLXmlDocument);
-        DefineCustomMenuGraphMLAttributes(oGraphMLXmlDocument);
-        DefineRelationshipGraphMLAttribute(oGraphMLXmlDocument);
-
-        oGraphMLXmlDocument.DefineEdgeStringGraphMLAttributes(
-            RelationshipDateUtcID, "Relationship Date (UTC)");
-
-        return (oGraphMLXmlDocument);
-    }
-
-    //*************************************************************************
-    //  Method: DefineLatitudeAndLongitudeGraphMLAttributes()
-    //
-    /// <summary>
-    /// Defines GraphML-Attributes for latitude and longitude.
-    /// </summary>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
-    /// </param>
-    ///
-    /// <param name="bForEdge">
-    /// true if the attributes are for edges, false if they are for vertices.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    DefineLatitudeAndLongitudeGraphMLAttributes
-    (
-        GraphMLXmlDocument oGraphMLXmlDocument,
-        Boolean bForEdge
-    )
-    {
-        Debug.Assert(oGraphMLXmlDocument != null);
-        AssertValid();
-
-        oGraphMLXmlDocument.DefineStringGraphMLAttributes(bForEdge,
-            LatitudeID, "Latitude",
-            LongitudeID, "Longitude"
-            );
     }
 
     //*************************************************************************
@@ -707,7 +604,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         {
             String sUserID;
 
-            if ( TwitterUtil.TryConvertJsonValueToString(
+            if ( TwitterJsonUtil.TryConvertJsonValueToString(
                 oUserIDAsObject, out sUserID) )
             {
                 yield return (sUserID);
@@ -923,7 +820,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Debug.Assert( !String.IsNullOrEmpty(sName) );
         AssertValid();
 
-        return ( TwitterUtil.TryGetJsonValueFromDictionary(
+        return ( TwitterJsonUtil.TryGetJsonValueFromDictionary(
             oValueDictionary, sName, out sValue) );
     }
 
@@ -1000,390 +897,11 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: GetUrlsAndHashtagsFromStatusValueDictionary()
-    //
-    /// <summary>
-    /// Attempts to get URLs and hashtags from the entities in a JSON value
-    /// dictionary.
-    /// </summary>
-    ///
-    /// <param name="oStatusValueDictionary">
-    /// Name/value pairs parsed from a Twitter JSON response.  Contains
-    /// information about a status.
-    /// </param>
-    ///
-    /// <param name="bExpandUrls">
-    /// true to expand all URLs that might be shortened URLs.
-    /// </param>
-    ///
-    /// <param name="sUrls">
-    /// Where the space-delimited URLs get stored if they are available.  If
-    /// they are not available, this gets set to null.
-    /// </param>
-    ///
-    /// <param name="sHashtags">
-    /// Where the space-delimited hashtags get stored if they are available.
-    /// If they are not available, this gets set to null.  The hashtags are all
-    /// in lower case and do not include a leading pound sign.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    GetUrlsAndHashtagsFromStatusValueDictionary
-    (
-        Dictionary<String, Object> oStatusValueDictionary,
-        Boolean bExpandUrls,
-        out String sUrls,
-        out String sHashtags
-    )
-    {
-        Debug.Assert(oStatusValueDictionary != null);
-
-        sUrls = sHashtags = null;
-        Object oEntitiesAsObject;
-
-        if (
-            oStatusValueDictionary.TryGetValue("entities",
-                out oEntitiesAsObject)
-            &&
-            oEntitiesAsObject is Dictionary<String, Object>
-            )
-        {
-            Dictionary<String, Object> oEntityValueDictionary =
-                ( Dictionary<String, Object> )oEntitiesAsObject;
-
-            EntityFilter oUrlFilter = null;
-
-            if (bExpandUrls)
-            {
-                // If there is an (illegal) space in the expanded URL, escape
-                // it to prevent it from being interpreted by the caller as a
-                // space between URLs.
-
-                oUrlFilter =
-                    ( sUrl => UrlUtil.ExpandUrl(sUrl).Replace(" ", "%20") );
-            }
-
-            GetEntities(oEntityValueDictionary, "urls", "expanded_url",
-                oUrlFilter, out sUrls);
-
-            GetEntities(oEntityValueDictionary, "hashtags", "text",
-                null, out sHashtags);
-
-            if (sHashtags != null)
-            {
-                sHashtags = sHashtags.ToLower();
-            }
-        }
-    }
-
-    //*************************************************************************
-    //  Method: GetLatitudeAndLongitudeFromStatusValueDictionary()
-    //
-    /// <summary>
-    /// Attempts to get a latitude and longitude from a JSON value dictionary.
-    /// </summary>
-    ///
-    /// <param name="oStatusValueDictionary">
-    /// Name/value pairs parsed from a Twitter JSON response.  Contains
-    /// information about a status.
-    /// </param>
-    ///
-    /// <param name="sLatitude">
-    /// Where the latitude gets stored if it is available.  If it is not
-    /// available, this gets set to null.
-    /// </param>
-    ///
-    /// <param name="sLongitude">
-    /// Where the longitude gets stored if it is available.  If it is not
-    /// available, this gets set to null.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    GetLatitudeAndLongitudeFromStatusValueDictionary
-    (
-        Dictionary<String, Object> oStatusValueDictionary,
-        out String sLatitude,
-        out String sLongitude
-    )
-    {
-        Debug.Assert(oStatusValueDictionary != null);
-
-        Object oGeoAsObject;
-
-        if (
-            oStatusValueDictionary.TryGetValue("geo", out oGeoAsObject)
-            &&
-            oGeoAsObject is Dictionary<String, Object>
-            )
-        {
-            Dictionary<String, Object> oGeoValueDictionary =
-                ( Dictionary<String, Object> )oGeoAsObject;
-
-            Object oCoordinatesAsObject;
-
-            if (
-                oGeoValueDictionary.TryGetValue("coordinates",
-                    out oCoordinatesAsObject)
-                &&
-                oCoordinatesAsObject is Object[]
-                )
-            {
-                Object [] aoCoordinates = ( Object[] )oCoordinatesAsObject;
-
-                if (aoCoordinates.Length == 2)
-                {
-                    TwitterUtil.TryConvertJsonValueToString(
-                        aoCoordinates[0], out sLatitude);
-
-                    TwitterUtil.TryConvertJsonValueToString(
-                        aoCoordinates[1], out sLongitude);
-
-                    return;
-                }
-            }
-        }
-
-        sLatitude = sLongitude = null;
-    }
-
-    //*************************************************************************
-    //  Delegate: EntityFilter
-    //
-    /// <summary>
-    /// Represents a method that filters an entity parsed from a Twitter JSON
-    /// response.
-    /// </summary>
-    ///
-    /// <param name="sEntity">
-    /// The entity to filter.
-    /// </param>
-    ///
-    /// <returns>
-    /// The filtered entity.
-    /// </returns>
-    //*************************************************************************
-
-    protected delegate String
-    EntityFilter
-    (
-        String sEntity
-    );
-
-    //*************************************************************************
-    //  Method: GetEntities()
-    //
-    /// <summary>
-    /// Attempts to get entities from a JSON value dictionary.
-    /// </summary>
-    ///
-    /// <param name="oEntityValueDictionary">
-    /// Name/value pairs parsed from a Twitter JSON response.  Contains all
-    /// entities for a status.
-    /// </param>
-    ///
-    /// <param name="sEntityName">
-    /// Name of the value in <paramref name="oEntityValueDictionary" />
-    /// containing the entities to get.  Sample: "urls".  The value is assumed
-    /// to contain an array of entity objects; an array of URL objects, for
-    /// example. 
-    /// </param>
-    ///
-    /// <param name="sEntityChildName">
-    /// Name of the child value in each entity to get.  Sample: "expanded_url".
-    /// </param>
-    ///
-    /// <param name="oEntityFilter">
-    /// Method that filters each entity before it is appended to <paramref
-    /// name="sChildValues" />, or null for no filtering.
-    /// </param>
-    ///
-    /// <param name="sChildValues">
-    /// Where the space-delimited child values get stored if they are
-    /// available.  If they are not available, this gets set to null.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    GetEntities
-    (
-        Dictionary<String, Object> oEntityValueDictionary,
-        String sEntityName,
-        String sEntityChildName,
-        EntityFilter oEntityFilter,
-        out String sChildValues
-    )
-    {
-        Debug.Assert(oEntityValueDictionary != null);
-        Debug.Assert( !String.IsNullOrEmpty(sEntityName) );
-        Debug.Assert( !String.IsNullOrEmpty(sEntityChildName) );
-
-        StringBuilder oStringBuilder = new StringBuilder();
-        Object oEntitiesAsObject;
-
-        if (
-            oEntityValueDictionary.TryGetValue(sEntityName,
-                out oEntitiesAsObject)
-            &&
-            oEntitiesAsObject is Object[]
-            )
-        {
-            foreach (Object oEntityAsObject in ( Object [] )oEntitiesAsObject)
-            {
-                String sChildValue;
-
-                if (
-                    oEntityAsObject is Dictionary<String, Object>
-                    &&
-                    TryGetJsonValueFromDictionary(
-                        ( Dictionary<String, Object> )oEntityAsObject,
-                        sEntityChildName, out sChildValue)
-                    )
-                {
-                    if (oEntityFilter != null)
-                    {
-                        sChildValue = oEntityFilter(sChildValue);
-                    }
-
-                    if (oStringBuilder.Length > 0)
-                    {
-                        oStringBuilder.Append(' ');
-                    }
-
-                    oStringBuilder.Append(sChildValue);
-                }
-            }
-        }
-
-        if (oStringBuilder.Length == 0)
-        {
-            sChildValues = null;
-        }
-        else
-        {
-            sChildValues = oStringBuilder.ToString();
-        }
-    }
-
-    //*************************************************************************
-    //  Method: TwitterUsersToUniqueScreenNames()
-    //
-    /// <summary>
-    /// Creates a collection of unique screen names from a collection of
-    /// TwitterUser objects.
-    /// </summary>
-    ///
-    /// <param name="oTwitterUsers">
-    /// Collection of the TwitterUsers in the network.
-    /// </param>
-    ///
-    /// <returns>
-    /// A collection of unique screen names. 
-    /// </returns>
-    //*************************************************************************
-
-    protected HashSet<String>
-    TwitterUsersToUniqueScreenNames
-    (
-        IEnumerable<TwitterUser> oTwitterUsers
-    )
-    {
-        Debug.Assert(oTwitterUsers != null);
-        AssertValid();
-
-        HashSet<String> oUniqueScreenNames = new HashSet<String>();
-
-        foreach (TwitterUser oTwitterUser in oTwitterUsers)
-        {
-            oUniqueScreenNames.Add(oTwitterUser.ScreenName);
-        }
-
-        return (oUniqueScreenNames);
-    }
-
-    //*************************************************************************
-    //  Method: TryAppendVertexXmlNode()
-    //
-    /// <summary>
-    /// Appends a vertex XML node to the GraphML document for a person if such
-    /// a node doesn't already exist.
-    /// </summary>
-    ///
-    /// <param name="sScreenName">
-    /// Screen name to add a vertex XML node for.
-    /// </param>
-    ///
-    /// <param name="sUserID">
-    /// Twitter user ID to add a vertex XML node for.
-    /// </param>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
-    /// </param>
-    ///
-    /// <param name="oUserIDDictionary">
-    /// The key is the Twitter user ID and the value is the corresponding
-    /// TwitterUser.
-    /// </param>
-    ///
-    /// <param name="oTwitterUser">
-    /// Where the TwitterUser that represents the user gets stored.  This gets
-    /// set regardless of whether the node already existed.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if a vertex XML node was added, false if a vertex XML node already
-    /// exists.
-    /// </returns>
-    //*************************************************************************
-
-    protected Boolean
-    TryAppendVertexXmlNode
-    (
-        String sScreenName,
-        String sUserID,
-        GraphMLXmlDocument oGraphMLXmlDocument,
-        Dictionary<String, TwitterUser> oUserIDDictionary,
-        out TwitterUser oTwitterUser
-    )
-    {
-        Debug.Assert( !String.IsNullOrEmpty(sScreenName) );
-        Debug.Assert( !String.IsNullOrEmpty(sUserID) );
-        Debug.Assert(oGraphMLXmlDocument != null);
-        Debug.Assert(oUserIDDictionary != null);
-
-        oTwitterUser = null;
-
-        if ( oUserIDDictionary.TryGetValue(sUserID, out oTwitterUser) )
-        {
-            return (false);
-        }
-
-        XmlNode oVertexXmlNode = oGraphMLXmlDocument.AppendVertexXmlNode(
-            sScreenName);
-
-        oTwitterUser = new TwitterUser(sScreenName, oVertexXmlNode);
-        oUserIDDictionary.Add(sUserID, oTwitterUser);
-
-        oGraphMLXmlDocument.AppendGraphMLAttributeValue(oVertexXmlNode,
-            MenuTextID, "Open Twitter Page for This Person");
-
-        oGraphMLXmlDocument.AppendGraphMLAttributeValue(
-            oVertexXmlNode,
-            MenuActionID,
-            String.Format(TwitterApiUrls.UserWebPageUrlPattern, sScreenName)
-            );
-
-        return (true);
-    }
-
-    //*************************************************************************
     //  Method: AppendUserInformationFromValueDictionary()
     //
     /// <summary>
-    /// Appends GraphML-Attribute values for a user from a value dictionary
-    /// returned by Twitter to a vertex XML node.
+    /// Appends GraphML-Attribute values from a user value dictionary returned
+    /// by Twitter to a vertex XML node.
     /// </summary>
     ///
     /// <param name="oUserValueDictionary">
@@ -1413,11 +931,6 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// URLs.
     /// </param>
     ///
-    /// <param name="bAddLatestStatusToTwitterUser">
-    /// If true, the user's latest status gets added to <paramref
-    /// name="oTwitterUser" />.
-    /// </param>
-    ///
     /// <remarks>
     /// This method reads information from a value dictionary returned by
     /// Twitter and appends the information to a vertex XML node in the GraphML
@@ -1433,8 +946,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         TwitterUser oTwitterUser,
         Boolean bIncludeStatistics,
         Boolean bIncludeLatestStatus,
-        Boolean bExpandLatestStatusUrls,
-        Boolean bAddLatestStatusToTwitterUser
+        Boolean bExpandLatestStatusUrls
     )
     {
         Debug.Assert(oUserValueDictionary != null);
@@ -1442,58 +954,13 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Debug.Assert(oTwitterUser != null);
         AssertValid();
 
-        XmlNode oVertexXmlNode = oTwitterUser.VertexXmlNode;
-
-        // Always include an image file.
-
-        AppendValueFromValueDictionary(oUserValueDictionary,
-            "profile_image_url", oGraphMLXmlDocument, oVertexXmlNode,
-            ImageFileID);
+        TwitterGraphMLUtil.AppendCommonUserInformationFromValueDictionary(
+            oUserValueDictionary, oGraphMLXmlDocument, oTwitterUser);
 
         if (bIncludeStatistics)
         {
-            AppendValueFromValueDictionary(oUserValueDictionary,
-                "friends_count", oGraphMLXmlDocument, oVertexXmlNode,
-                FollowedID);
-
-            AppendValueFromValueDictionary(oUserValueDictionary,
-                "followers_count", oGraphMLXmlDocument, oVertexXmlNode,
-                FollowersID);
-
-            AppendValueFromValueDictionary(oUserValueDictionary,
-                "statuses_count", oGraphMLXmlDocument, oVertexXmlNode,
-                StatusesID);
-
-            AppendValueFromValueDictionary(oUserValueDictionary,
-                "favourites_count", oGraphMLXmlDocument,
-                oVertexXmlNode, FavoritesID);
-
-            AppendValueFromValueDictionary(oUserValueDictionary,
-                "description", oGraphMLXmlDocument, oVertexXmlNode,
-                DescriptionID);
-
-            AppendValueFromValueDictionary(oUserValueDictionary,
-                "location", oGraphMLXmlDocument, oVertexXmlNode, LocationID);
-
-            AppendValueFromValueDictionary(oUserValueDictionary,
-                "url", oGraphMLXmlDocument, oVertexXmlNode, UrlID);
-
-            AppendValueFromValueDictionary(oUserValueDictionary,
-                "time_zone", oGraphMLXmlDocument, oVertexXmlNode, TimeZoneID);
-
-            AppendValueFromValueDictionary(oUserValueDictionary,
-                "utc_offset", oGraphMLXmlDocument, oVertexXmlNode,
-                UtcOffsetID);
-
-            String sJoinedDateUtc;
-
-            if ( TryGetJsonValueFromDictionary(oUserValueDictionary,
-                "created_at", out sJoinedDateUtc) )
-            {
-                oGraphMLXmlDocument.AppendGraphMLAttributeValue(
-                    oVertexXmlNode, JoinedDateUtcID,
-                    TwitterDateParser.ParseTwitterDate(sJoinedDateUtc) );
-            }
+            TwitterGraphMLUtil.AppendUserStatisticsFromValueDictionary(
+                oUserValueDictionary, oGraphMLXmlDocument, oTwitterUser);
         }
 
         // Process the user's latest status if requested.
@@ -1501,7 +968,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Object oStatusValueDictionaryAsObject;
 
         if (
-            (bIncludeLatestStatus || bAddLatestStatusToTwitterUser)
+            bIncludeLatestStatus
             &&
             oUserValueDictionary.TryGetValue("status",
                 out oStatusValueDictionaryAsObject)
@@ -1512,14 +979,14 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             Dictionary<String, Object> oStatusValueDictionary =
                 ( Dictionary<String, Object> )oStatusValueDictionaryAsObject;
 
-            AppendStatusInformationFromValueDictionary(oStatusValueDictionary,
-                oGraphMLXmlDocument, oTwitterUser, bIncludeLatestStatus,
-                bExpandLatestStatusUrls, bAddLatestStatusToTwitterUser);
+            AppendLatestStatusInformationFromValueDictionary(
+                oStatusValueDictionary, oGraphMLXmlDocument, oTwitterUser,
+                bIncludeLatestStatus, bExpandLatestStatusUrls);
         }
     }
 
     //*************************************************************************
-    //  Method: AppendStatusInformationFromValueDictionary()
+    //  Method: AppendLatestStatusInformationFromValueDictionary()
     //
     /// <summary>
     /// Appends GraphML-Attribute values for a user's latest status from a
@@ -1549,27 +1016,22 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// URLs.
     /// </param>
     ///
-    /// <param name="bAddLatestStatusToTwitterUser">
-    /// If true, the user's latest status gets added to <paramref
-    /// name="oTwitterUser" />.
-    /// </param>
-    ///
     /// <remarks>
     /// This method reads latest status information from a value dictionary
     /// returned by Twitter and appends the information to a vertex XML node in
-    /// the GraphML document.
+    /// the GraphML document.  It also adds the latest status to the status
+    /// collection of the <paramref name="oTwitterUser" /> object.
     /// </remarks>
     //*************************************************************************
 
     protected void
-    AppendStatusInformationFromValueDictionary
+    AppendLatestStatusInformationFromValueDictionary
     (
         Dictionary<String, Object> oStatusValueDictionary,
         GraphMLXmlDocument oGraphMLXmlDocument,
         TwitterUser oTwitterUser,
         Boolean bIncludeLatestStatus,
-        Boolean bExpandLatestStatusUrls,
-        Boolean bAddLatestStatusToTwitterUser
+        Boolean bExpandLatestStatusUrls
     )
     {
         Debug.Assert(oStatusValueDictionary != null);
@@ -1601,7 +1063,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
         String sLatitude, sLongitude;
 
-        GetLatitudeAndLongitudeFromStatusValueDictionary(
+        TwitterGraphMLUtil.GetLatitudeAndLongitudeFromStatusValueDictionary(
             oStatusValueDictionary, out sLatitude, out sLongitude);
 
         XmlNode oVertexXmlNode = oTwitterUser.VertexXmlNode;
@@ -1614,119 +1076,51 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             // Add the status to the vertex XML node.
 
             oGraphMLXmlDocument.AppendGraphMLAttributeValue(
-                oVertexXmlNode, LatestStatusID, sLatestStatus);
+                oVertexXmlNode, TwitterGraphMLUtil.VertexLatestStatusID,
+                sLatestStatus);
 
-            GetUrlsAndHashtagsFromStatusValueDictionary(oStatusValueDictionary, 
-                bExpandLatestStatusUrls, out sLatestStatusUrls,
-                out sLatestStatusHashtags);
+            TwitterGraphMLUtil.GetUrlsAndHashtagsFromStatusValueDictionary(
+                oStatusValueDictionary, bExpandLatestStatusUrls,
+                out sLatestStatusUrls, out sLatestStatusHashtags);
 
             if ( !String.IsNullOrEmpty(sLatestStatusUrls) )
             {
                 oGraphMLXmlDocument.AppendGraphMLAttributeValue(
-                    oVertexXmlNode, LatestStatusUrlsID,
+                    oVertexXmlNode,
+                    TwitterGraphMLUtil.VertexLatestStatusUrlsID,
                     sLatestStatusUrls);
 
                 oGraphMLXmlDocument.AppendGraphMLAttributeValue(
-                    oVertexXmlNode, LatestStatusDomainsID,
-                    UrlsToDomains(sLatestStatusUrls) ); 
+                    oVertexXmlNode,
+                    TwitterGraphMLUtil.VertexLatestStatusDomainsID,
+                    TwitterGraphMLUtil.UrlsToDomains(sLatestStatusUrls) ); 
             }
 
             if ( !String.IsNullOrEmpty(sLatestStatusHashtags) )
             {
                 oGraphMLXmlDocument.AppendGraphMLAttributeValue(
-                    oVertexXmlNode, LatestStatusHashtagsID,
+                    oVertexXmlNode,
+                    TwitterGraphMLUtil.VertexLatestStatusHashtagsID,
                     sLatestStatusHashtags);
             }
 
             if ( !String.IsNullOrEmpty(sLatestStatusDateUtc) )
             {
                 oGraphMLXmlDocument.AppendGraphMLAttributeValue(
-                    oVertexXmlNode, LatestStatusDateUtcID,
+                    oVertexXmlNode,
+                    TwitterGraphMLUtil.VertexLatestStatusDateUtcID,
                     sLatestStatusDateUtc);
             }
 
-            AppendLatitudeAndLongitudeGraphMLAttributeValues(
-                oGraphMLXmlDocument, oVertexXmlNode, sLatitude, sLongitude);
+            TwitterGraphMLUtil.
+                AppendLatitudeAndLongitudeGraphMLAttributeValues(
+                    oGraphMLXmlDocument, oVertexXmlNode, sLatitude,
+                    sLongitude);
         }
 
-        if (bAddLatestStatusToTwitterUser)
-        {
-            oTwitterUser.Statuses.Add( new TwitterStatus(sID, sLatestStatus,
-                sLatestStatusDateUtc, sLatitude, sLongitude, sLatestStatusUrls,
-                sLatestStatusHashtags) );
-        }
-    }
-
-    //*************************************************************************
-    //  Method: AppendValueFromValueDictionary()
-    //
-    /// <summary>
-    /// Appends a GraphML-Attribute value from a value dictionary returned by
-    /// Twitter to an edge or vertex XML node.
-    /// </summary>
-    ///
-    /// <param name="oValueDictionary">
-    /// Name/value pairs parsed from a Twitter JSON response.
-    /// </param>
-    /// 
-    /// <param name="sName">
-    /// The name of the value to get from <paramref name="oValueDictionary" />.
-    /// </param>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
-    /// </param>
-    ///
-    /// <param name="oEdgeOrVertexXmlNode">
-    /// The edge or vertex XML node from <paramref
-    /// name="oGraphMLXmlDocument" /> to add the GraphML attribute value to.
-    /// </param>
-    ///
-    /// <param name="sGraphMLAttributeID">
-    /// GraphML ID of the GraphML-Attribute.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the GraphML-Attribute was appended.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// This method looks for a value named <paramref name="sName" /> in
-    /// <paramref name="oValueDictionary" />.  If the value is found, it gets
-    /// stored on <paramref name="oEdgeOrVertexXmlNode" /> as a
-    /// GraphML-Attribute.
-    /// </remarks>
-    //*************************************************************************
-
-    protected Boolean
-    AppendValueFromValueDictionary
-    (
-        Dictionary<String, Object> oValueDictionary,
-        String sName,
-        GraphMLXmlDocument oGraphMLXmlDocument,
-        XmlNode oEdgeOrVertexXmlNode,
-        String sGraphMLAttributeID
-    )
-    {
-        Debug.Assert(oValueDictionary != null);
-        Debug.Assert( !String.IsNullOrEmpty(sName) );
-        Debug.Assert(oGraphMLXmlDocument != null);
-        Debug.Assert(oEdgeOrVertexXmlNode != null);
-        Debug.Assert( !String.IsNullOrEmpty(sGraphMLAttributeID) );
-        AssertValid();
-
-        String sValue;
-
-        if ( TryGetJsonValueFromDictionary(oValueDictionary, sName,
-            out sValue) )
-        {
-            oGraphMLXmlDocument.AppendGraphMLAttributeValue(
-                oEdgeOrVertexXmlNode, sGraphMLAttributeID, sValue);
-
-            return (true);
-        }
-
-        return (false);
+        oTwitterUser.Statuses.Add( new TwitterStatus(sID, sLatestStatus,
+            sLatestStatusDateUtc, sLatitude, sLongitude, sLatestStatusUrls,
+            sLatestStatusHashtags) );
     }
 
     //*************************************************************************
@@ -1766,62 +1160,12 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         AssertValid();
 
         oGraphMLXmlDocument.AppendGraphMLAttributeValue(oEdgeXmlNode,
-            RelationshipDateUtcID, 
+
+            TwitterGraphMLUtil.EdgeRelationshipDateUtcID, 
 
             DateTimeUtil2.ToCultureInvariantString(
                 oRequestStatistics.StartTimeUtc)
             );
-    }
-
-    //*************************************************************************
-    //  Method: AppendLatitudeAndLongitudeGraphMLAttributeValues()
-    //
-    /// <summary>
-    /// Appends GraphML attribute values for latitude and longitude to an edge
-    /// or vertex XML node.
-    /// </summary>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
-    /// </param>
-    ///
-    /// <param name="oEdgeOrVertexXmlNode">
-    /// The edge or vertex XML node to add the Graph-ML attribute values to.
-    /// </param>
-    ///
-    /// <param name="sLatitude">
-    /// The latitude.  Can be null or empty.
-    /// </param>
-    ///
-    /// <param name="sLongitude">
-    /// The longitude.  Can be null or empty.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    AppendLatitudeAndLongitudeGraphMLAttributeValues
-    (
-        GraphMLXmlDocument oGraphMLXmlDocument,
-        XmlNode oEdgeOrVertexXmlNode,
-        String sLatitude,
-        String sLongitude
-    )
-    {
-        Debug.Assert(oGraphMLXmlDocument != null);
-        Debug.Assert(oEdgeOrVertexXmlNode != null);
-        AssertValid();
-
-        if ( !String.IsNullOrEmpty(sLatitude) )
-        {
-            oGraphMLXmlDocument.AppendGraphMLAttributeValue(
-                oEdgeOrVertexXmlNode, LatitudeID, sLatitude);
-        }
-
-        if ( !String.IsNullOrEmpty(sLongitude) )
-        {
-            oGraphMLXmlDocument.AppendGraphMLAttributeValue(
-                oEdgeOrVertexXmlNode, LongitudeID, sLongitude);
-        }
     }
 
     //*************************************************************************
@@ -1882,263 +1226,12 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Debug.Assert(oUniqueScreenNames != null);
         AssertValid();
 
-        if (!bIncludeRepliesToEdges && !bIncludeMentionsEdges &&
-            !bIncludeNonRepliesToNonMentionsEdges)
-        {
-            return;
-        }
-
         ReportProgress("Examining relationships.");
 
-        // Loop through each status for each user.
-
-        foreach (TwitterUser oTwitterUser in oTwitterUsers)
-        {
-            foreach (TwitterStatus oTwitterStatus in oTwitterUser.Statuses)
-            {
-                AppendRepliesToAndMentionsEdgeXmlNodes(oGraphMLXmlDocument,
-                    oUniqueScreenNames, bIncludeRepliesToEdges,
-                    bIncludeMentionsEdges,
-                    bIncludeNonRepliesToNonMentionsEdges,
-                    oTwitterUser.ScreenName, oTwitterStatus, bIncludeStatuses);
-            }
-        }
-    }
-
-    //*************************************************************************
-    //  Method: AppendRepliesToAndMentionsEdgeXmlNodes()
-    //
-    /// <summary>
-    /// Appends edge XML nodes for replies-to and mentions relationships for
-    /// one status.
-    /// </summary>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
-    /// </param>
-    ///
-    /// <param name="oUniqueScreenNames">
-    /// Collection of the unique screen names in the network.
-    /// </param>
-    ///
-    /// <param name="bIncludeRepliesToEdges">
-    /// true to append edges for replies-to relationships.
-    /// </param>
-    ///
-    /// <param name="bIncludeMentionsEdges">
-    /// true to append edges for mentions relationships.
-    /// </param>
-    ///
-    /// <param name="bIncludeNonRepliesToNonMentionsEdges">
-    /// true to append edges for tweets that don't reply to or mention anyone.
-    /// </param>
-    ///
-    /// <param name="sScreenName">
-    /// The user's screen name.
-    /// </param>
-    ///
-    /// <param name="oTwitterStatus">
-    /// One of the user's statuses.
-    /// </param>
-    ///
-    /// <param name="bIncludeStatus">
-    /// true to include the status in the edge XML nodes.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    AppendRepliesToAndMentionsEdgeXmlNodes
-    (
-        GraphMLXmlDocument oGraphMLXmlDocument,
-        HashSet<String> oUniqueScreenNames,
-        Boolean bIncludeRepliesToEdges,
-        Boolean bIncludeMentionsEdges,
-        Boolean bIncludeNonRepliesToNonMentionsEdges,
-        String sScreenName,
-        TwitterStatus oTwitterStatus,
-        Boolean bIncludeStatus
-    )
-    {
-        Debug.Assert(oGraphMLXmlDocument != null);
-        Debug.Assert(oUniqueScreenNames != null);
-        Debug.Assert( !String.IsNullOrEmpty(sScreenName) );
-        Debug.Assert(oTwitterStatus != null);
-        AssertValid();
-
-        String sStatus = oTwitterStatus.Text;
-        String sParsedDateUtc = oTwitterStatus.ParsedDateUtc;
-        Boolean bIsReplyTo = false;
-        Boolean bIsMentions = false;
-
-        Debug.Assert( !String.IsNullOrEmpty(sStatus) );
-
-        String sRepliedToScreenName;
-        String [] asUniqueMentionedScreenNames;
-
-        m_oTwitterStatusTextParser.GetScreenNames(sStatus,
-            out sRepliedToScreenName, out asUniqueMentionedScreenNames);
-
-        if (sRepliedToScreenName != null)
-        {
-            if (
-                sRepliedToScreenName != sScreenName
-                &&
-                oUniqueScreenNames.Contains(sRepliedToScreenName)
-                )
-            {
-                bIsReplyTo = true;
-
-                if (bIncludeRepliesToEdges)
-                {
-                    AppendRepliesToAndMentionsEdgeXmlNode(oGraphMLXmlDocument,
-                        sScreenName, sRepliedToScreenName,
-                        RepliesToRelationship, oTwitterStatus, bIncludeStatus);
-                }
-            }
-        }
-
-        foreach (String sMentionedScreenName in asUniqueMentionedScreenNames)
-        {
-            if (
-                sMentionedScreenName != sScreenName
-                &&
-                oUniqueScreenNames.Contains(sMentionedScreenName)
-                )
-            {
-                bIsMentions = true;
-
-                if (bIncludeMentionsEdges)
-                {
-                    AppendRepliesToAndMentionsEdgeXmlNode(oGraphMLXmlDocument,
-                        sScreenName, sMentionedScreenName,
-                        MentionsRelationship, oTwitterStatus, bIncludeStatus);
-                }
-            }
-        }
-
-        if (bIncludeNonRepliesToNonMentionsEdges && !bIsReplyTo &&
-            !bIsMentions)
-        {
-            // Append a self-loop edge to represent the tweet.
-
-            AppendRepliesToAndMentionsEdgeXmlNode(oGraphMLXmlDocument,
-                sScreenName, sScreenName, NonRepliesToNonMentionsRelationship,
-                oTwitterStatus, bIncludeStatus);
-        }
-    }
-
-    //*************************************************************************
-    //  Method: AppendRepliesToAndMentionsEdgeXmlNode()
-    //
-    /// <summary>
-    /// Appends an edge XML node for a replies-to, mentions, or non-replies-to-
-    /// non-mentions relationship for one status.
-    /// </summary>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
-    /// </param>
-    ///
-    /// <param name="sScreenName1">
-    /// The edge's first screen name.
-    /// </param>
-    ///
-    /// <param name="sScreenName2">
-    /// The edge's second screen name.
-    /// </param>
-    ///
-    /// <param name="sRelationship">
-    /// A description of the relationship represented by the edge.
-    /// </param>
-    ///
-    /// <param name="oTwitterStatus">
-    /// A twitter status.
-    /// </param>
-    ///
-    /// <param name="bIncludeStatus">
-    /// true to include the status in the edge XML node.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    AppendRepliesToAndMentionsEdgeXmlNode
-    (
-        GraphMLXmlDocument oGraphMLXmlDocument,
-        String sScreenName1,
-        String sScreenName2,
-        String sRelationship,
-        TwitterStatus oTwitterStatus,
-        Boolean bIncludeStatus
-    )
-    {
-        Debug.Assert(oGraphMLXmlDocument != null);
-        Debug.Assert( !String.IsNullOrEmpty(sScreenName1) );
-        Debug.Assert( !String.IsNullOrEmpty(sScreenName2) );
-        Debug.Assert( !String.IsNullOrEmpty(sRelationship) );
-        Debug.Assert(oTwitterStatus != null);
-        AssertValid();
-
-        XmlNode oEdgeXmlNode = AppendEdgeXmlNode(oGraphMLXmlDocument,
-            sScreenName1, sScreenName2, sRelationship);
-
-        String sStatusDateUtc = oTwitterStatus.ParsedDateUtc;
-        Boolean bHasStatusDateUtc = !String.IsNullOrEmpty(sStatusDateUtc);
-
-        if (bHasStatusDateUtc)
-        {
-            // The status's date is the relationship date.
-
-            oGraphMLXmlDocument.AppendGraphMLAttributeValue(oEdgeXmlNode,
-                RelationshipDateUtcID, sStatusDateUtc);
-        }
-
-        if (bIncludeStatus)
-        {
-            String sStatus = oTwitterStatus.Text;
-
-            oGraphMLXmlDocument.AppendGraphMLAttributeValue(oEdgeXmlNode,
-                StatusID, sStatus);
-
-            String sUrls = oTwitterStatus.Urls;
-
-            if ( !String.IsNullOrEmpty(sUrls) )
-            {
-                oGraphMLXmlDocument.AppendGraphMLAttributeValue(oEdgeXmlNode,
-                    StatusUrlsID, sUrls);
-
-                oGraphMLXmlDocument.AppendGraphMLAttributeValue( oEdgeXmlNode,
-                    StatusDomainsID, UrlsToDomains(sUrls) );
-            }
-
-            if ( !String.IsNullOrEmpty(oTwitterStatus.Hashtags) )
-            {
-                oGraphMLXmlDocument.AppendGraphMLAttributeValue(oEdgeXmlNode,
-                    StatusHashtagsID, oTwitterStatus.Hashtags);
-            }
-
-            if (bHasStatusDateUtc)
-            {
-                oGraphMLXmlDocument.AppendGraphMLAttributeValue(oEdgeXmlNode,
-                    StatusDateUtcID, sStatusDateUtc);
-            }
-
-            oGraphMLXmlDocument.AppendGraphMLAttributeValue(oEdgeXmlNode,
-                StatusWebPageUrlID, 
-
-                FormatStatusWebPageUrl(sScreenName1, oTwitterStatus)
-                );
-
-            AppendLatitudeAndLongitudeGraphMLAttributeValues(
-                oGraphMLXmlDocument, oEdgeXmlNode, oTwitterStatus.Latitude,
-                oTwitterStatus.Longitude);
-
-            // Precede the ID with a single quote to force Excel to treat the
-            // ID as text.  Otherwise, it formats the ID, which is a large
-            // number, in scientific notation.
-
-            oGraphMLXmlDocument.AppendGraphMLAttributeValue(oEdgeXmlNode,
-                ImportedIDID, "'" + oTwitterStatus.ID);
-        }
+        TwitterGraphMLUtil.AppendRepliesToAndMentionsEdgeXmlNodes(
+            oGraphMLXmlDocument, oTwitterUsers, oUniqueScreenNames,
+            bIncludeRepliesToEdges, bIncludeMentionsEdges,
+            bIncludeNonRepliesToNonMentionsEdges, bIncludeStatuses);
     }
 
     //*************************************************************************
@@ -2194,7 +1287,10 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         AssertValid();
 
         AppendFollowedOrFollowingEdgeXmlNodes(
-            TwitterUsersToUniqueScreenNames(oUserIDDictionary.Values),
+
+            TwitterGraphMLUtil.TwitterUsersToUniqueScreenNames(
+                oUserIDDictionary.Values),
+
             oUserIDDictionary, bFollowed, iMaximumPeoplePerRequest,
             oGraphMLXmlDocument, oRequestStatistics);
     }
@@ -2329,97 +1425,19 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
         if (bFollowed)
         {
-            oEdgeXmlNode = AppendEdgeXmlNode(oGraphMLXmlDocument,
-                sScreenName, sOtherScreenName, "Followed");
+            oEdgeXmlNode = NodeXLGraphMLUtil.AppendEdgeXmlNode(
+                oGraphMLXmlDocument, sScreenName, sOtherScreenName,
+                "Followed");
         }
         else
         {
-            oEdgeXmlNode = AppendEdgeXmlNode(oGraphMLXmlDocument,
-                sOtherScreenName, sScreenName, "Follower");
+            oEdgeXmlNode = NodeXLGraphMLUtil.AppendEdgeXmlNode(
+                oGraphMLXmlDocument, sOtherScreenName, sScreenName,
+                "Follower");
         }
 
         AppendStartTimeRelationshipDateUtcGraphMLAttributeValue(
             oGraphMLXmlDocument, oEdgeXmlNode, oRequestStatistics);
-    }
-
-    //*************************************************************************
-    //  Method: FormatStatusWebPageUrl()
-    //
-    /// <summary>
-    /// Formats a string to use for a status Web page URL.
-    /// </summary>
-    ///
-    /// <param name="sScreenName">
-    /// The status's author.
-    /// </param>
-    ///
-    /// <param name="oTwitterStatus">
-    /// The twitter status.
-    /// </param>
-    //*************************************************************************
-
-    protected String
-    FormatStatusWebPageUrl
-    (
-        String sScreenName,
-        TwitterStatus oTwitterStatus
-    )
-    {
-        Debug.Assert( !String.IsNullOrEmpty(sScreenName) );
-        Debug.Assert(oTwitterStatus != null);
-        AssertValid();
-
-        return ( String.Format(
-            TwitterApiUrls.StatusWebPageUrlPattern
-            ,
-            sScreenName,
-            oTwitterStatus.ID
-            ) );
-    }
-
-    //*************************************************************************
-    //  Method: UrlsToDomains()
-    //
-    /// <summary>
-    /// Extracts the domains from a string of space-delimited URLs.
-    /// </summary>
-    ///
-    /// <param name="sSpaceDelimitedUrls">
-    /// URLs delimited by spaces.  Can't be null.
-    /// </param>
-    ///
-    /// <returns>
-    /// Space-delimited domains, one per space-delimited URL.
-    /// </returns>
-    //*************************************************************************
-
-    protected String
-    UrlsToDomains
-    (
-        String sSpaceDelimitedUrls
-    )
-    {
-        Debug.Assert(sSpaceDelimitedUrls != null);
-        AssertValid();
-
-        StringBuilder oDomains = new StringBuilder();
-
-        foreach ( String sUrl in sSpaceDelimitedUrls.Split(new Char[]{' '},
-            StringSplitOptions.RemoveEmptyEntries) )
-        {
-            String sDomain;
-
-            if ( UrlUtil.TryGetDomainFromUrl(sUrl, out sDomain) )
-            {
-                oDomains.AppendFormat(
-                    "{0}{1}",
-                    oDomains.Length > 0 ? " " : String.Empty,
-                    sDomain
-                    );
-            }
-        }
-
-        return ( oDomains.ToString() );
     }
 
 
@@ -2489,57 +1507,6 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
             HttpStatusCode.Forbidden,
         };
-
-
-    /// GraphML-attribute IDs.
-
-    protected const String StatusesID = "Statuses";
-    ///
-    protected const String FavoritesID = "Favorites";
-    ///
-    protected const String FollowedID = "Followed";
-    ///
-    protected const String FollowersID = "Followers";
-    ///
-    protected const String LatestStatusID = "LatestStatus";
-    ///
-    protected const String LatestStatusUrlsID = "LatestStatusUrls";
-    ///
-    protected const String LatestStatusDomainsID = "LatestStatusDomains";
-    ///
-    protected const String LatestStatusHashtagsID = "LatestStatusHashtags";
-    ///
-    protected const String LatestStatusDateUtcID = "LatestStatusDateUtc";
-    ///
-    protected const String StatusID = "Status";
-    ///
-    protected const String StatusDateUtcID = "StatusDateUtc";
-    ///
-    protected const String StatusUrlsID = "StatusUrls";
-    ///
-    protected const String StatusDomainsID = "StatusDomains";
-    ///
-    protected const String StatusHashtagsID = "StatusHashtags";
-    ///
-    protected const String StatusWebPageUrlID = "StatusWebPageUrl";
-    ///
-    protected const String LatitudeID = "Latitude";
-    ///
-    protected const String LongitudeID = "Longitude";
-    ///
-    protected const String DescriptionID = "Description";
-    ///
-    protected const String LocationID = "Location";
-    ///
-    protected const String UrlID = "Url";
-    ///
-    protected const String TimeZoneID = "TimeZone";
-    ///
-    protected const String UtcOffsetID = "UtcOffset";
-    ///
-    protected const String JoinedDateUtcID = "JoinedDateUtc";
-    ///
-    protected const String RelationshipDateUtcID = "RelationshipDateUtc";
 
 
     //*************************************************************************

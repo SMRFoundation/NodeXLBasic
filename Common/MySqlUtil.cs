@@ -21,10 +21,10 @@ namespace Smrf.AppLib
 public static class MySqlUtil
 {
     //*************************************************************************
-    //  Method: CallStoredProcedure()
+    //  Method: ExecuteStoredProcedureNonQuery()
     //
     /// <summary>
-    /// Calls a MySql stored procedure.
+    /// Executes a MySql stored procedure that does not return results.
     /// </summary>
     ///
     /// <param name="connectionString">
@@ -42,7 +42,7 @@ public static class MySqlUtil
     //*************************************************************************
 
     public static void
-    CallStoredProcedure
+    ExecuteStoredProcedureNonQuery
     (
         String connectionString,
         String storedProcedureName,
@@ -53,42 +53,129 @@ public static class MySqlUtil
         Debug.Assert( !String.IsNullOrEmpty(storedProcedureName) );
         Debug.Assert(nameValuePairs.Length % 2 == 0);
 
-        using ( MySqlConnection connection =
-            new MySqlConnection(connectionString) )
+        MySqlConnection mySqlConnection;
+        MySqlCommand mySqlCommand;
+
+        GetMySqlConnectionAndCommand(connectionString, storedProcedureName,
+            out mySqlConnection, out mySqlCommand, nameValuePairs);
+
+        using (mySqlConnection)
         {
-            connection.Open();
+            mySqlConnection.Open();
+            mySqlCommand.ExecuteNonQuery();
+        }
+    }
 
-            MySqlCommand command = new MySqlCommand(
-                storedProcedureName, connection);
+    //*************************************************************************
+    //  Method: GetMySqlConnectionAndCommand()
+    //
+    /// <summary>
+    /// Creates new MySqlConnection and MySqlCommand objects for executing a
+    /// stored procedure.
+    /// </summary>
+    ///
+    /// <param name="connectionString">
+    /// Database connection string.
+    /// </param>
+    ///
+    /// <param name="storedProcedureName">
+    /// Name of the stored procedure.
+    /// </param>
+    ///
+    /// <param name="mySqlConnection">
+    /// Where the new SqlConnection object gets stored.  The connection is not
+    /// opened by this method.
+    /// </param>
+    ///
+    /// <param name="mySqlCommand">
+    /// Where the new SqlCommand object gets stored.
+    /// </param>
+    ///
+    /// <param name="nameValuePairs">
+    /// Zero or stored procedure parameter name/value pairs.  Each parameter
+    /// name must start with "@".  A parameter value can be null.
+    /// </param>
+    //*************************************************************************
 
-            command.CommandType = CommandType.StoredProcedure;
+    public static void
+    GetMySqlConnectionAndCommand
+    (
+        String connectionString,
+        String storedProcedureName,
+        out MySqlConnection mySqlConnection,
+        out MySqlCommand mySqlCommand,
+        params Object [] nameValuePairs
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(connectionString) );
+        Debug.Assert( !String.IsNullOrEmpty(storedProcedureName) );
+        Debug.Assert(nameValuePairs.Length % 2 == 0);
 
-            MySqlParameterCollection parameters = command.Parameters;
+        mySqlConnection = new MySqlConnection(connectionString);
+        mySqlCommand = new MySqlCommand(storedProcedureName, mySqlConnection);
+        mySqlCommand.CommandType = CommandType.StoredProcedure;
+        MySqlParameterCollection parameters = mySqlCommand.Parameters;
 
-            for (Int32 i = 0; i < nameValuePairs.Length; i += 2)
+        for (Int32 i = 0; i < nameValuePairs.Length; i += 2)
+        {
+            Debug.Assert(nameValuePairs[i + 0] is String);
+
+            String name = (String)nameValuePairs[i + 0];
+
+            Debug.Assert( !String.IsNullOrEmpty(name) );
+            Debug.Assert(name[0] == '@');
+
+            Object value = nameValuePairs[i + 1];
+
+            if (value == null)
             {
-                Debug.Assert(nameValuePairs[i + 0] is String);
+                // You cannot set a MySqlParameter to null.  It must be
+                // DBNull.Value.
 
-                String name = (String)nameValuePairs[i + 0];
-
-                Debug.Assert( !String.IsNullOrEmpty(name) );
-                Debug.Assert(name[0] == '@');
-
-                Object value = nameValuePairs[i + 1];
-
-                if (value == null)
-                {
-                    // You cannot set a MySqlParameter to null.  It must be
-                    // DBNull.Value.
-
-                    value = DBNull.Value;
-                }
-
-                parameters.AddWithValue(name, value);
+                value = DBNull.Value;
             }
 
-            command.ExecuteNonQuery();
+            parameters.AddWithValue(name, value);
         }
+    }
+
+    //*************************************************************************
+    //  Method: GetNullableString()
+    //
+    /// <summary>
+    /// Gets a column value that can be either DBNull or a string.
+    /// </summary>
+    ///
+    /// <param name="mySqlDataReader">
+    /// The MySqlDataReader object to use, already positioned to a record.
+    /// </param>
+    ///
+    /// <param name="columnIndex">
+    /// Index of the column to get the value from.
+    /// </param>
+    ///
+    /// <returns>
+    /// The string in the column, or null if the column contains DBNull.
+    /// </returns>
+    //*************************************************************************
+
+    static public String
+    GetNullableString
+    (
+        MySqlDataReader mySqlDataReader,
+        Int32 columnIndex
+    )
+    {
+        Debug.Assert(mySqlDataReader != null);
+        Debug.Assert(mySqlDataReader.HasRows);
+        Debug.Assert(columnIndex >= 0);
+
+        if ( mySqlDataReader.IsDBNull(columnIndex) )
+        {
+            return (null);
+        }
+
+        return ( mySqlDataReader.GetString(columnIndex) );
     }
 }
 

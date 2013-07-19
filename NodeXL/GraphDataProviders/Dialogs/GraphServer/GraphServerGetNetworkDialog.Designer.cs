@@ -33,6 +33,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.pnlUserInputs = new System.Windows.Forms.Panel();
+            this.chkExpandStatusUrls = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.txbGraphServerPassword = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -53,7 +54,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(208, 250);
+            this.btnOK.Location = new System.Drawing.Point(208, 280);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
             this.btnOK.TabIndex = 1;
@@ -64,7 +65,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(294, 251);
+            this.btnCancel.Location = new System.Drawing.Point(294, 281);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
             this.btnCancel.TabIndex = 2;
@@ -73,6 +74,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             // 
             // pnlUserInputs
             // 
+            this.pnlUserInputs.Controls.Add(this.chkExpandStatusUrls);
             this.pnlUserInputs.Controls.Add(this.groupBox1);
             this.pnlUserInputs.Controls.Add(this.dtpMaximumStatusDateUtc);
             this.pnlUserInputs.Controls.Add(this.label3);
@@ -82,8 +84,18 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.pnlUserInputs.Controls.Add(this.label1);
             this.pnlUserInputs.Location = new System.Drawing.Point(12, 12);
             this.pnlUserInputs.Name = "pnlUserInputs";
-            this.pnlUserInputs.Size = new System.Drawing.Size(365, 232);
+            this.pnlUserInputs.Size = new System.Drawing.Size(365, 262);
             this.pnlUserInputs.TabIndex = 0;
+            // 
+            // chkExpandStatusUrls
+            // 
+            this.chkExpandStatusUrls.AutoSize = true;
+            this.chkExpandStatusUrls.Location = new System.Drawing.Point(0, 100);
+            this.chkExpandStatusUrls.Name = "chkExpandStatusUrls";
+            this.chkExpandStatusUrls.Size = new System.Drawing.Size(176, 17);
+            this.chkExpandStatusUrls.TabIndex = 6;
+            this.chkExpandStatusUrls.Text = "&Expand URLs in tweets (slower)";
+            this.chkExpandStatusUrls.UseVisualStyleBackColor = true;
             // 
             // groupBox1
             // 
@@ -91,10 +103,10 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.txbGraphServerUserName);
             this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Location = new System.Drawing.Point(0, 106);
+            this.groupBox1.Location = new System.Drawing.Point(0, 136);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(362, 121);
-            this.groupBox1.TabIndex = 6;
+            this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Your NodeXL Graph Server account";
             // 
@@ -188,7 +200,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.slStatusLabel});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 284);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 314);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(389, 22);
             this.statusStrip1.SizingGrip = false;
@@ -208,7 +220,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(389, 306);
+            this.ClientSize = new System.Drawing.Size(389, 336);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.pnlUserInputs);
             this.Controls.Add(this.btnCancel);
@@ -247,5 +259,6 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txbGraphServerUserName;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.CheckBox chkExpandStatusUrls;
     }
 }

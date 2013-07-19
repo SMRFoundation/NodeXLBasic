@@ -8,6 +8,7 @@ using System.Diagnostics;
 using Smrf.XmlLib;
 using Smrf.SocialNetworkLib;
 using Smrf.SocialNetworkLib.Twitter;
+using Smrf.NodeXL.GraphMLLib;
 
 namespace Smrf.NodeXL.GraphDataProviders.Twitter
 {
@@ -381,6 +382,56 @@ public class TwitterListNetworkAnalyzer : TwitterNetworkAnalyzerBase
     }
 
     //*************************************************************************
+    //  Method: CreateGraphMLXmlDocument()
+    //
+    /// <summary>
+    /// Creates a GraphMLXmlDocument representing a network of Twitter users.
+    /// </summary>
+    ///
+    /// <param name="bIncludeStatistics">
+    /// true to include each user's statistics.
+    /// </param>
+    ///
+    /// <param name="bIncludeLatestStatuses">
+    /// true to include each user's latest status.
+    /// </param>
+    ///
+    /// <returns>
+    /// A GraphMLXmlDocument representing a network of Twitter users.  The
+    /// document includes GraphML-attribute definitions but no vertices or
+    /// edges.
+    /// </returns>
+    //*************************************************************************
+
+    protected GraphMLXmlDocument
+    CreateGraphMLXmlDocument
+    (
+        Boolean bIncludeStatistics,
+        Boolean bIncludeLatestStatuses
+    )
+    {
+        AssertValid();
+
+        GraphMLXmlDocument oGraphMLXmlDocument = new GraphMLXmlDocument(true);
+
+        if (bIncludeStatistics)
+        {
+            TwitterGraphMLUtil.DefineVertexStatisticsGraphMLAttributes(
+                oGraphMLXmlDocument);
+        }
+
+        if (bIncludeLatestStatuses)
+        {
+            TwitterGraphMLUtil.DefineVertexLatestStatusGraphMLAttributes(
+                oGraphMLXmlDocument);
+        }
+
+        TwitterGraphMLUtil.DefineCommonGraphMLAttributes(oGraphMLXmlDocument);
+
+        return (oGraphMLXmlDocument);
+    }
+
+    //*************************************************************************
     //  Method: GetNetworkInternal()
     //
     /// <summary>
@@ -456,7 +507,9 @@ public class TwitterListNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         AppendRepliesToAndMentionsEdgeXmlNodes(oGraphMLXmlDocument,
             oUserIDDictionary.Values,
-            TwitterUsersToUniqueScreenNames(oUserIDDictionary.Values),
+
+            TwitterGraphMLUtil.TwitterUsersToUniqueScreenNames(
+                oUserIDDictionary.Values),
 
             WhatToIncludeFlagIsSet(eWhatToInclude,
                 WhatToInclude.RepliesToEdges),
@@ -684,12 +737,12 @@ public class TwitterListNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         TwitterUser oTwitterUser;
 
-        TryAppendVertexXmlNode(sScreenName, sUserID, oGraphMLXmlDocument,
-            oUserIDDictionary, out oTwitterUser);
+        TwitterGraphMLUtil.TryAppendVertexXmlNode(sScreenName, sUserID,
+            oGraphMLXmlDocument, oUserIDDictionary, out oTwitterUser);
 
         AppendUserInformationFromValueDictionary(oUserValueDictionary,
             oGraphMLXmlDocument, oTwitterUser, bIncludeStatistics,
-            bIncludeLatestStatus, bExpandLatestStatusUrls, true);
+            bIncludeLatestStatus, bExpandLatestStatusUrls);
     }
 
     //*************************************************************************

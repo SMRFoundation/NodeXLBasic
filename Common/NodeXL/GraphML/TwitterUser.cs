@@ -4,7 +4,7 @@ using System.Xml;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Smrf.NodeXL.GraphDataProviders.Twitter
+namespace Smrf.NodeXL.GraphMLLib
 {
 //*****************************************************************************
 //  Class: TwitterUser
@@ -16,6 +16,12 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
 /// <remarks>
 /// This class wraps the GraphML XML node that represents a user in a Twitter
 /// network, together with one or more statuses for the user.
+///
+/// <para>
+/// This is meant for use while creating Twitter GraphML XML documents for use
+/// with the NodeXL Excel Template.
+/// </para>
+///
 /// </remarks>
 //*****************************************************************************
 
@@ -44,9 +50,9 @@ public class TwitterUser : Object
         XmlNode vertexXmlNode
     )
     {
-        m_sScreenName = screenName;
-        m_oVertexXmlNode = vertexXmlNode;
-        m_oStatuses = new LinkedList<TwitterStatus>();
+        m_ScreenName = screenName;
+        m_VertexXmlNode = vertexXmlNode;
+        m_Statuses = new LinkedList<TwitterStatus>();
 
         AssertValid();
     }
@@ -70,7 +76,7 @@ public class TwitterUser : Object
         {
             AssertValid();
 
-            return (m_oVertexXmlNode);
+            return (m_VertexXmlNode);
         }
     }
 
@@ -93,7 +99,7 @@ public class TwitterUser : Object
         {
             AssertValid();
 
-            return (m_sScreenName);
+            return (m_ScreenName);
         }
     }
 
@@ -116,7 +122,7 @@ public class TwitterUser : Object
         {
             AssertValid();
 
-            return (m_oStatuses);
+            return (m_Statuses);
         }
     }
 
@@ -134,9 +140,9 @@ public class TwitterUser : Object
     public void
     AssertValid()
     {
-        Debug.Assert( !String.IsNullOrEmpty(m_sScreenName) );
-        Debug.Assert(m_oVertexXmlNode != null);
-        Debug.Assert(m_oStatuses != null);
+        Debug.Assert( !String.IsNullOrEmpty(m_ScreenName) );
+        Debug.Assert(m_VertexXmlNode != null);
+        Debug.Assert(m_Statuses != null);
     }
 
 
@@ -146,16 +152,16 @@ public class TwitterUser : Object
 
     /// The user's screen name.
 
-    protected String m_sScreenName;
+    protected String m_ScreenName;
 
     /// The vertex XmlNode from a GraphMLXmlDocument that represents the user
     /// in a Twitter network.
 
-    protected XmlNode m_oVertexXmlNode;
+    protected XmlNode m_VertexXmlNode;
 
     /// Zero or more statuses associated with the user.
 
-    protected LinkedList<TwitterStatus> m_oStatuses;
+    protected LinkedList<TwitterStatus> m_Statuses;
 }
 
 }

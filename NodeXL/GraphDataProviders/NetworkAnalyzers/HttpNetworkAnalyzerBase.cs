@@ -14,6 +14,7 @@ using Smrf.SocialNetworkLib;
 using Smrf.AppLib;
 using Smrf.XmlLib;
 using Smrf.DateTimeLib;
+using Smrf.NodeXL.GraphMLLib;
 
 namespace Smrf.NodeXL.GraphDataProviders
 {
@@ -309,143 +310,6 @@ public abstract class HttpNetworkAnalyzerBase : Object
     }
 
     //*************************************************************************
-    //  Method: DefineImageFileGraphMLAttribute()
-    //
-    /// <summary>
-    /// Defines a GraphML-Attribute for vertex image files.
-    /// </summary>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    DefineImageFileGraphMLAttribute
-    (
-        GraphMLXmlDocument oGraphMLXmlDocument
-    )
-    {
-        Debug.Assert(oGraphMLXmlDocument != null);
-        AssertValid();
-
-        oGraphMLXmlDocument.DefineVertexStringGraphMLAttributes(
-            ImageFileID, ImageColumnName
-            );
-    }
-
-    //*************************************************************************
-    //  Method: DefineLabelGraphMLAttribute()
-    //
-    /// <summary>
-    /// Defines a GraphML-Attribute for vertex labels.
-    /// </summary>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    DefineLabelGraphMLAttribute
-    (
-        GraphMLXmlDocument oGraphMLXmlDocument
-    )
-    {
-        Debug.Assert(oGraphMLXmlDocument != null);
-        AssertValid();
-
-        oGraphMLXmlDocument.DefineVertexStringGraphMLAttributes(
-            LabelID, LabelColumnName);
-    }
-
-    //*************************************************************************
-    //  Method: DefineCustomMenuGraphMLAttributes()
-    //
-    /// <summary>
-    /// Defines the GraphML-Attributes for custom menu items.
-    /// </summary>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    DefineCustomMenuGraphMLAttributes
-    (
-        GraphMLXmlDocument oGraphMLXmlDocument
-    )
-    {
-        Debug.Assert(oGraphMLXmlDocument != null);
-        AssertValid();
-
-        oGraphMLXmlDocument.DefineVertexStringGraphMLAttributes(
-            MenuTextID, MenuTextColumnName, 
-            MenuActionID, MenuActionColumnName
-            );
-    }
-
-    //*************************************************************************
-    //  Method: DefineRelationshipGraphMLAttribute()
-    //
-    /// <summary>
-    /// Defines a GraphML-Attribute for edge relationships.
-    /// </summary>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    DefineRelationshipGraphMLAttribute
-    (
-        GraphMLXmlDocument oGraphMLXmlDocument
-    )
-    {
-        Debug.Assert(oGraphMLXmlDocument != null);
-        AssertValid();
-
-        oGraphMLXmlDocument.DefineEdgeStringGraphMLAttributes(
-            RelationshipID, "Relationship");
-    }
-
-    //*************************************************************************
-    //  Method: DefineImportedIDGraphMLAttribute()
-    //
-    /// <summary>
-    /// Defines a GraphML-Attribute for imported IDs.
-    /// </summary>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
-    /// </param>
-    ///
-    /// <param name="bForEdges">
-    /// true if the attribute is for edges, false if it is for vertices.
-    /// </param>
-    ///
-    /// <remarks>
-    /// See the definition of ImportedIDID for more details.
-    /// </remarks>
-    //*************************************************************************
-
-    protected void
-    DefineImportedIDGraphMLAttribute
-    (
-        GraphMLXmlDocument oGraphMLXmlDocument,
-        Boolean bForEdges
-    )
-    {
-        Debug.Assert(oGraphMLXmlDocument != null);
-        AssertValid();
-
-        oGraphMLXmlDocument.DefineStringGraphMLAttributes(bForEdges,
-            ImportedIDID, "Imported ID");
-    }
-
-    //*************************************************************************
     //  Method: AppendStringGraphMLAttributeValue()
     //
     /// <summary>
@@ -674,58 +538,6 @@ public abstract class HttpNetworkAnalyzerBase : Object
         }
 
         return (false);
-    }
-
-    //*************************************************************************
-    //  Method: AppendEdgeXmlNode()
-    //
-    /// <summary>
-    /// Appends an edge XML node to a GraphML document.
-    /// </summary>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
-    /// </param>
-    ///
-    /// <param name="sVertex1ID">
-    /// ID of the edge's first vertex.
-    /// </param>
-    ///
-    /// <param name="sVertex2ID">
-    /// ID of the edge's second vertex.
-    /// </param>
-    ///
-    /// <param name="sRelationship">
-    /// The value of the edge's RelationshipID GraphML-attribute.
-    /// </param>
-    ///
-    /// <returns>
-    /// The new edge XML node.
-    /// </returns>
-    //*************************************************************************
-
-    protected XmlNode
-    AppendEdgeXmlNode
-    (
-        GraphMLXmlDocument oGraphMLXmlDocument,
-        String sVertex1ID,
-        String sVertex2ID,
-        String sRelationship
-    )
-    {
-        Debug.Assert(oGraphMLXmlDocument != null);
-        Debug.Assert( !String.IsNullOrEmpty(sVertex1ID) );
-        Debug.Assert( !String.IsNullOrEmpty(sVertex2ID) );
-        Debug.Assert( !String.IsNullOrEmpty(sRelationship) );
-        AssertValid();
-
-        XmlNode oEdgeXmlNode = oGraphMLXmlDocument.AppendEdgeXmlNode(
-            sVertex1ID, sVertex2ID);
-
-        oGraphMLXmlDocument.AppendGraphMLAttributeValue(oEdgeXmlNode,
-            RelationshipID, sRelationship);
-
-        return (oEdgeXmlNode);
     }
 
     //*************************************************************************
@@ -1247,46 +1059,6 @@ public abstract class HttpNetworkAnalyzerBase : Object
     /// The timeout to use for HTTP Web requests, in milliseconds.
 
     public const Int32 HttpWebRequestTimeoutMs = 30000;
-
-    /// GraphML-attribute IDs for edges.
-
-    public const String RelationshipID = "Relationship";
-
-
-    //*************************************************************************
-    //  Protected constants
-    //*************************************************************************
-
-    /// GraphML-attribute IDs for vertices.
-
-    protected const String ImageFileID = "Image";
-    ///
-    protected const String LabelID = "Label";
-    ///
-    protected const String MenuTextID = "MenuText";
-    ///
-    protected const String MenuActionID = "MenuAction";
-
-    /// This is a special GraphML-attribute that specifies the unique imported
-    /// ID for an imported edge or vertex.  It is used by the Excel Template to
-    /// skip over multiple rows that represent the same edge or vertex.
-    ///
-    /// For example, the Twitter search network can create multiple edges for
-    /// the same tweet.  It sets the ImportedIDID GraphML-attribute on the
-    /// edges to a tweet ID, so the Excel Template can determine which edges
-    /// represent the same tweet.
-
-    protected const String ImportedIDID = "ImportedID";
-
-    /// NodeXL Excel template column names.
-
-    protected const String ImageColumnName = "Image File";
-    ///
-    protected const String LabelColumnName = "Label";
-    ///
-    protected const String MenuTextColumnName = "Custom Menu Item Text";
-    ///
-    protected const String MenuActionColumnName = "Custom Menu Item Action";
 
 
     //*************************************************************************

@@ -71,7 +71,7 @@ public partial class TwitterRateLimitsControl : UserControl
             + " until Twitter resets the limit.  These pauses can add up to a"
             + " long delay before the entire Twitter network is imported."
             + "\r\n\r\n"
-            + "(As of March 2013, Twitter no longer offers higher limits to"
+            + "(As of June 2013, Twitter no longer offers higher limits to"
             + " \"whitelisted\" users.  Whitelisting has been discontinued.)"
             );
     }

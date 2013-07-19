@@ -304,6 +304,33 @@ public static class UrlUtil : Object
     }
 
     //*************************************************************************
+    //  Method: EscapeSpacesInUrl()
+    //
+    /// <summary>
+    /// Escapes any illegal spaces found in an URL.
+    /// </summary>
+    ///
+    /// <param name="url">
+    /// The URL.
+    /// </param>
+    ///
+    /// <returns>
+    /// The URL with escaped spaces.
+    /// </returns>
+    //*************************************************************************
+
+    public static String
+    EscapeSpacesInUrl
+    (
+        String url
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(url) );
+
+        return ( url.Replace(" ", "%20") );
+    }
+
+    //*************************************************************************
     //  Method: MakeLocationAbsolute()
     //
     /// <summary>

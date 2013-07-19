@@ -12,6 +12,7 @@ using Smrf.XmlLib;
 using Smrf.DateTimeLib;
 using Smrf.SocialNetworkLib;
 using Smrf.SocialNetworkLib.Twitter;
+using Smrf.NodeXL.GraphMLLib;
 
 namespace Smrf.NodeXL.GraphDataProviders.Twitter
 {
@@ -294,10 +295,15 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Boolean bIncludeStatistics = WhatToIncludeFlagIsSet(
             eWhatToInclude, WhatToInclude.Statistics);
 
-        GraphMLXmlDocument oGraphMLXmlDocument = CreateGraphMLXmlDocument(
-            bIncludeStatistics, false);
+        Boolean bIncludeStatuses = WhatToIncludeFlagIsSet(eWhatToInclude,
+            WhatToInclude.Statuses);
 
-        DefineGraphMLAttributes(eWhatToInclude, oGraphMLXmlDocument);
+        GraphMLXmlDocument oGraphMLXmlDocument =
+            TwitterSearchNetworkGraphMLUtil.CreateGraphMLXmlDocument(
+                bIncludeStatistics, bIncludeStatuses);
+
+        DefineSharedTermEdgeGraphMLAttributes(eWhatToInclude,
+            oGraphMLXmlDocument);
 
         RequestStatistics oRequestStatistics = new RequestStatistics();
 
@@ -398,7 +404,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         AppendVertexXmlNodesForMentionsAndRepliesTo(eWhatToInclude,
             oGraphMLXmlDocument, oUserIDDictionary, oRequestStatistics);
 
-        AppendVertexTooltipXmlNodes(oGraphMLXmlDocument, oUserIDDictionary);
+        TwitterSearchNetworkGraphMLUtil.AppendVertexTooltipXmlNodes(
+            oGraphMLXmlDocument, oUserIDDictionary);
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.FollowedEdges) )
@@ -413,7 +420,9 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         AppendRepliesToAndMentionsEdgeXmlNodes(oGraphMLXmlDocument,
             oUserIDDictionary.Values,
-            TwitterUsersToUniqueScreenNames(oUserIDDictionary.Values),
+
+            TwitterGraphMLUtil.TwitterUsersToUniqueScreenNames(
+                oUserIDDictionary.Values),
 
             WhatToIncludeFlagIsSet(eWhatToInclude,
                 WhatToInclude.RepliesToEdges),
@@ -433,10 +442,10 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: DefineGraphMLAttributes()
+    //  Method: DefineSharedTermEdgeGraphMLAttributes()
     //
     /// <summary>
-    /// Defines GraphML-Attributes for the network.
+    /// Defines GraphML-Attributes for the network's shared term edges.
     /// </summary>
     ///
     /// <param name="eWhatToInclude">
@@ -449,7 +458,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     //*************************************************************************
 
     protected void
-    DefineGraphMLAttributes
+    DefineSharedTermEdgeGraphMLAttributes
     (
         WhatToInclude eWhatToInclude,
         GraphMLXmlDocument oGraphMLXmlDocument
@@ -458,56 +467,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
-        oGraphMLXmlDocument.DefineVertexStringGraphMLAttributes(
-            TweetedSearchTermID, "Tweeted Search Term?");
-
-        oGraphMLXmlDocument.DefineVertexStringGraphMLAttributes(
-            TooltipID, "Tooltip");
-
-        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.Statuses) )
-        {
-            DefineStatusGraphMLAttributes(oGraphMLXmlDocument);
-        }
-
         #if AddExtraEdges
         #endif
-    }
-
-    //*************************************************************************
-    //  Method: DefineStatusGraphMLAttributes()
-    //
-    /// <summary>
-    /// Defines GraphML-Attributes for statuses.
-    /// </summary>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// The GraphMLXmlDocument to populate with the requested network.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    DefineStatusGraphMLAttributes
-    (
-        GraphMLXmlDocument oGraphMLXmlDocument
-    )
-    {
-        Debug.Assert(oGraphMLXmlDocument != null);
-        AssertValid();
-
-        oGraphMLXmlDocument.DefineEdgeStringGraphMLAttributes(
-            StatusID, "Tweet",
-            StatusUrlsID, "URLs in Tweet",
-            StatusDomainsID, "Domains in Tweet",
-            StatusHashtagsID, "Hashtags in Tweet",
-            StatusDateUtcID, "Tweet Date (UTC)",
-            StatusWebPageUrlID, "Twitter Page for Tweet"
-            );
-
-        DefineLatitudeAndLongitudeGraphMLAttributes(oGraphMLXmlDocument,
-            true);
-
-        DefineImportedIDGraphMLAttribute(oGraphMLXmlDocument, true);
     }
 
     //*************************************************************************
@@ -604,53 +565,24 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
             TwitterUser oTwitterUser;
 
-            if ( !TryAppendVertexXmlNode(oUserValueDictionary, eWhatToInclude,
-                oGraphMLXmlDocument, oUserIDDictionary, out oTwitterUser) )
+            if ( !TwitterSearchNetworkGraphMLUtil.
+                TryAppendVertexXmlNode(oUserValueDictionary,
+                    bIncludeStatistics, oGraphMLXmlDocument, oUserIDDictionary,
+                    out oTwitterUser) )
             {
                 continue;
             }
 
-            AppendTweetedSearchTermGraphMLAttributeValue(oGraphMLXmlDocument,
-                oTwitterUser, true);
+            TwitterSearchNetworkGraphMLUtil.
+                AppendTweetedSearchTermGraphMLAttributeValue(
+                    oGraphMLXmlDocument, oTwitterUser, true);
 
-            // Get the status information.
+            // Parse the status and add it to the user's status collection.
 
-            String sStatusID, sStatus;
-
-            if (
-                TryGetJsonValueFromDictionary(oStatusValueDictionary, "id_str",
-                    out sStatusID)
-                &&
-                TryGetJsonValueFromDictionary(oStatusValueDictionary, "text",
-                    out sStatus)
-                )
+            if ( !TwitterSearchNetworkGraphMLUtil.TryAddStatusToUser(
+                oStatusValueDictionary, oTwitterUser, bExpandStatusUrls) )
             {
-                String sStatusDateUtc;
-
-                if ( TryGetJsonValueFromDictionary(oStatusValueDictionary,
-                    "created_at", out sStatusDateUtc) )
-                {
-                    sStatusDateUtc = TwitterDateParser.ParseTwitterDate(
-                        sStatusDateUtc);
-                }
-
-                String sLatitude, sLongitude;
-
-                GetLatitudeAndLongitudeFromStatusValueDictionary(
-                    oStatusValueDictionary, out sLatitude, out sLongitude);
-
-                String sStatusUrls, sStatusHashtags;
-
-                GetUrlsAndHashtagsFromStatusValueDictionary(
-                    oStatusValueDictionary, bExpandStatusUrls, out sStatusUrls,
-                    out sStatusHashtags);
-
-                // Note that null date, coordinates, URLs and hashtags are
-                // acceptable here.
-
-                oTwitterUser.Statuses.Add( new TwitterStatus(
-                    sStatusID, sStatus, sStatusDateUtc, sLatitude, sLongitude,
-                    sStatusUrls, sStatusHashtags) );
+                continue;
             }
         }
     }
@@ -707,6 +639,9 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             GetMentionsAndRepliesToScreenNames(
                 oGraphMLXmlDocument, oUserIDDictionary);
 
+        Boolean bIncludeStatistics = WhatToIncludeFlagIsSet(
+            eWhatToInclude, WhatToInclude.Statistics);
+
         // Get information about each of those screen names and append vertex
         // XML nodes for them if necessary.
 
@@ -717,11 +652,14 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         {
             TwitterUser oTwitterUser;
 
-            if ( TryAppendVertexXmlNode(oUserValueDictionary, eWhatToInclude,
-                oGraphMLXmlDocument, oUserIDDictionary, out oTwitterUser) )
+            if ( TwitterSearchNetworkGraphMLUtil.
+                TryAppendVertexXmlNode(oUserValueDictionary,
+                    bIncludeStatistics, oGraphMLXmlDocument, oUserIDDictionary,
+                    out oTwitterUser) )
             {
-                AppendTweetedSearchTermGraphMLAttributeValue(
-                    oGraphMLXmlDocument, oTwitterUser, false);
+                TwitterSearchNetworkGraphMLUtil.
+                    AppendTweetedSearchTermGraphMLAttributeValue(
+                        oGraphMLXmlDocument, oTwitterUser, false);
             }
         }
     }
@@ -804,7 +742,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         AssertValid();
 
         HashSet<String> oUniqueScreenNamesWhoTweetedSearchTerm =
-            TwitterUsersToUniqueScreenNames(oUserIDDictionary.Values);
+            TwitterGraphMLUtil.TwitterUsersToUniqueScreenNames(
+                oUserIDDictionary.Values);
 
         HashSet<String> oUniqueMentionsAndRepliesToScreenNames =
             new HashSet<String>();
@@ -843,187 +782,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         }
 
         return ( oUniqueMentionsAndRepliesToScreenNames.ToArray() );
-    }
-
-    //*************************************************************************
-    //  Method: TryAppendVertexXmlNode()
-    //
-    /// <summary>
-    /// Appends a vertex XML node to the GraphML document for a person if such
-    /// a node doesn't already exist.
-    /// </summary>
-    ///
-    /// <param name="oUserValueDictionary">
-    /// Name/value pairs parsed from a Twitter JSON response.  Contains
-    /// information about a user.
-    /// </param>
-    ///
-    /// <param name="eWhatToInclude">
-    /// Specifies what should be included in the network.
-    /// </param>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// The GraphMLXmlDocument being populated.
-    /// </param>
-    ///
-    /// <param name="oUserIDDictionary">
-    /// The key is the Twitter user ID and the value is the corresponding
-    /// TwitterUser.
-    /// </param>
-    ///
-    /// <param name="oTwitterUser">
-    /// If true is returned, this is where the TwitterUser that represents the
-    /// user gets stored.  This gets set regardless of whether the node already
-    /// existed.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if <paramref name="oUserValueDictionary" /> contained a valid
-    /// user.
-    /// </returns>
-    //*************************************************************************
-
-    protected Boolean
-    TryAppendVertexXmlNode
-    (
-        Dictionary<String, Object> oUserValueDictionary,
-        WhatToInclude eWhatToInclude,
-        GraphMLXmlDocument oGraphMLXmlDocument,
-        Dictionary<String, TwitterUser> oUserIDDictionary,
-        out TwitterUser oTwitterUser
-    )
-    {
-        Debug.Assert(oUserValueDictionary != null);
-        Debug.Assert(oGraphMLXmlDocument != null);
-        Debug.Assert(oUserIDDictionary != null);
-        AssertValid();
-
-        oTwitterUser = null;
-
-        String sScreenName, sUserID;
-
-        if (
-            !TryGetJsonValueFromDictionary(oUserValueDictionary,
-                "screen_name", out sScreenName)
-            ||
-            !TryGetJsonValueFromDictionary(oUserValueDictionary,
-                "id_str", out sUserID)
-            )
-        {
-            return (false);
-        }
-
-        sScreenName = sScreenName.ToLower();
-
-        Boolean bIsFirstTweetForAuthor = TryAppendVertexXmlNode(
-            sScreenName, sUserID, oGraphMLXmlDocument, oUserIDDictionary,
-            out oTwitterUser);
-
-        if (bIsFirstTweetForAuthor)
-        {
-            Boolean bIncludeStatistics = WhatToIncludeFlagIsSet(
-                eWhatToInclude, WhatToInclude.Statistics);
-
-            AppendUserInformationFromValueDictionary(oUserValueDictionary,
-                oGraphMLXmlDocument, oTwitterUser, bIncludeStatistics,
-                false, false, false);
-        }
-
-        return (true);
-    }
-
-    //*************************************************************************
-    //  Method: AppendTweetedSearchTermGraphMLAttributeValue()
-    //
-    /// <summary>
-    /// Appends a GraphML attribute value to a vertex XML node that indicates
-    /// whether the user tweeted the search term.
-    /// </summary>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
-    /// </param>
-    ///
-    /// <param name="oTwitterUser">
-    /// Contains the vertex XML node from <paramref
-    /// name="oGraphMLXmlDocument" /> to add the GraphML attribute value to.
-    /// </param>
-    ///
-    /// <param name="bTweetedSearchTerm">
-    /// true if the user tweeted the search term.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    AppendTweetedSearchTermGraphMLAttributeValue
-    (
-        GraphMLXmlDocument oGraphMLXmlDocument,
-        TwitterUser oTwitterUser,
-        Boolean bTweetedSearchTerm
-    )
-    {
-        Debug.Assert(oGraphMLXmlDocument != null);
-        Debug.Assert(oTwitterUser != null);
-        AssertValid();
-
-        oGraphMLXmlDocument.AppendGraphMLAttributeValue(
-            oTwitterUser.VertexXmlNode, TweetedSearchTermID,
-            bTweetedSearchTerm ? "Yes" : "No");
-    }
-
-    //*************************************************************************
-    //  Method: AppendVertexTooltipXmlNodes()
-    //
-    /// <summary>
-    /// Appends a vertex tooltip XML node for each person in the network.
-    /// </summary>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// The GraphMLXmlDocument being populated.
-    /// </param>
-    ///
-    /// <param name="oUserIDDictionary">
-    /// The key is the user ID and the value is the corresponding TwitterUser.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    AppendVertexTooltipXmlNodes
-    (
-        GraphMLXmlDocument oGraphMLXmlDocument,
-        Dictionary<String, TwitterUser> oUserIDDictionary
-    )
-    {
-        Debug.Assert(oGraphMLXmlDocument != null);
-        Debug.Assert(oUserIDDictionary != null);
-        AssertValid();
-
-        foreach (TwitterUser oTwitterUser in oUserIDDictionary.Values)
-        {
-            // The tooltip is the user's screen name followed by the first
-            // tweet returned by Twitter.
-
-            ICollection<TwitterStatus> oStatuses = oTwitterUser.Statuses;
-
-            String sFirstStatus = oStatuses.Count > 0 ?
-                oStatuses.First().Text : String.Empty;
-
-            // The Excel template doesn't wrap long tooltip text.  Break the
-            // status into lines so the entire tooltip will show in the graph
-            // pane.
-
-            sFirstStatus = StringUtil.BreakIntoLines(sFirstStatus, 30);
-
-            String sTooltip = String.Format(
-                "{0}\n\n{1}"
-                ,
-                oTwitterUser.ScreenName,
-                sFirstStatus
-                );
-
-            oGraphMLXmlDocument.AppendGraphMLAttributeValue(
-                oTwitterUser.VertexXmlNode, TooltipID, sTooltip);
-        }
     }
 
     //*************************************************************************
@@ -1231,7 +989,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             String sRelationship;
 
             if ( !TryGetEdgeGraphMLAttributeValue(oEdgeXmlNode,
-                RelationshipID, oXmlNamespaceManager, out sRelationship) )
+                NodeXLGraphMLUtil.EdgeRelationshipID, oXmlNamespaceManager,
+                out sRelationship) )
             {
                 continue;
             }
@@ -1248,8 +1007,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
                     String sRelationshipDateUtc;
 
                     if ( !TryGetEdgeGraphMLAttributeValue(oEdgeXmlNode,
-                        RelationshipDateUtcID, oXmlNamespaceManager,
-                        out sRelationshipDateUtc) )
+                        TwitterGraphMLUtil.EdgeRelationshipDateUtcID,
+                        oXmlNamespaceManager, out sRelationshipDateUtc) )
                     {
                         break;
                     }
@@ -1425,8 +1184,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     //  Public constants
     //*************************************************************************
 
-    ///
-    public const String TweetedSearchTermID = "TweetedSearchTerm";
 
     #if AddExtraEdges
     #endif
@@ -1435,10 +1192,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     //*************************************************************************
     //  Protected constants
     //*************************************************************************
-
-    /// GraphML-attribute IDs.
-
-    protected const String TooltipID = "Tooltip";
 
     /// Maximum number of followers to request.  This is arbitrarily set to the
     /// number of followers returned in one page of the Twitter friends/ids

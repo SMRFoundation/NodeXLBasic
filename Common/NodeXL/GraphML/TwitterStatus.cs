@@ -1,9 +1,8 @@
 ﻿
 using System;
 using System.Diagnostics;
-using Smrf.SocialNetworkLib.Twitter;
 
-namespace Smrf.NodeXL.GraphDataProviders.Twitter
+namespace Smrf.NodeXL.GraphMLLib
 {
 //*****************************************************************************
 //  Class: TwitterStatus
@@ -11,6 +10,11 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
 /// <summary>
 /// Stores information about a Twitter status.
 /// </summary>
+///
+/// <remarks>
+/// This is meant for use while creating Twitter GraphML XML documents for use
+/// with the NodeXL Excel Template.
+/// </remarks>
 //*****************************************************************************
 
 public class TwitterStatus : Object
@@ -32,7 +36,8 @@ public class TwitterStatus : Object
     ///
     /// <param name="parsedDateUtc">
     /// The parsed status date as a culture-invariant UTC string.  See <see
-    /// cref="TwitterDateParser.ParseTwitterDate" />.  Can be null or empty.
+    /// cref="Smrf.SocialNetworkLib.Twitter.TwitterDateParser.ParseTwitterDate"
+    /// />.  Can be null or empty.
     /// </param>
     ///
     /// <param name="latitude">
@@ -63,13 +68,13 @@ public class TwitterStatus : Object
         String hashtags
     )
     {
-        m_sID = ID;
-        m_sText = text;
-        m_sParsedDateUtc = parsedDateUtc;
-        m_sLatitude = latitude;
-        m_sLongitude = longitude;
-        m_sUrls = urls;
-        m_sHashtags = hashtags;
+        m_ID = ID;
+        m_Text = text;
+        m_ParsedDateUtc = parsedDateUtc;
+        m_Latitude = latitude;
+        m_Longitude = longitude;
+        m_Urls = urls;
+        m_Hashtags = hashtags;
 
         AssertValid();
     }
@@ -93,7 +98,7 @@ public class TwitterStatus : Object
         {
             AssertValid();
 
-            return (m_sID);
+            return (m_ID);
         }
     }
 
@@ -116,7 +121,7 @@ public class TwitterStatus : Object
         {
             AssertValid();
 
-            return (m_sText);
+            return (m_Text);
         }
     }
 
@@ -129,7 +134,8 @@ public class TwitterStatus : Object
     ///
     /// <value>
     /// The parsed status date as a culture-invariant UTC string.  See <see
-    /// cref="TwitterDateParser.ParseTwitterDate" />.  Can be null or empty.
+    /// cref="Smrf.SocialNetworkLib.Twitter.TwitterDateParser.ParseTwitterDate"
+    /// />.  Can be null or empty.
     /// </value>
     //*************************************************************************
 
@@ -140,7 +146,7 @@ public class TwitterStatus : Object
         {
             AssertValid();
 
-            return (m_sParsedDateUtc);
+            return (m_ParsedDateUtc);
         }
     }
 
@@ -148,7 +154,7 @@ public class TwitterStatus : Object
     //  Property: Latitude
     //
     /// <summary>
-    /// Get's the status's latitude.
+    /// Gets the status's latitude.
     /// </summary>
     ///
     /// <value>
@@ -163,7 +169,7 @@ public class TwitterStatus : Object
         {
             AssertValid();
 
-            return (m_sLatitude);
+            return (m_Latitude);
         }
     }
 
@@ -171,7 +177,7 @@ public class TwitterStatus : Object
     //  Property: Longitude
     //
     /// <summary>
-    /// Get's the status's longitude.
+    /// Gets the status's longitude.
     /// </summary>
     ///
     /// <value>
@@ -186,7 +192,7 @@ public class TwitterStatus : Object
         {
             AssertValid();
 
-            return (m_sLongitude);
+            return (m_Longitude);
         }
     }
 
@@ -194,7 +200,7 @@ public class TwitterStatus : Object
     //  Property: Urls
     //
     /// <summary>
-    /// Get's the status's space-delimited URLs.
+    /// Gets or sets the status's space-delimited URLs.
     /// </summary>
     ///
     /// <value>
@@ -209,15 +215,22 @@ public class TwitterStatus : Object
         {
             AssertValid();
 
-            return (m_sUrls);
+            return (m_Urls);
         }
+
+		set
+		{
+			m_Urls = value;
+
+			AssertValid();
+		}
     }
 
     //*************************************************************************
     //  Property: Hashtags
     //
     /// <summary>
-    /// Get's the status's space-delimited hashtags.
+    /// Gets the status's space-delimited hashtags.
     /// </summary>
     ///
     /// <value>
@@ -232,7 +245,7 @@ public class TwitterStatus : Object
         {
             AssertValid();
 
-            return (m_sHashtags);
+            return (m_Hashtags);
         }
     }
 
@@ -250,13 +263,13 @@ public class TwitterStatus : Object
     public void
     AssertValid()
     {
-        Debug.Assert( !String.IsNullOrEmpty(m_sID) );
-        Debug.Assert( !String.IsNullOrEmpty(m_sText) );
-        // m_sParsedDateUtc
-        // m_sLatitude
-        // m_sLongitude
-        // m_sUrls
-        // m_sHashtags
+        Debug.Assert( !String.IsNullOrEmpty(m_ID) );
+        Debug.Assert( !String.IsNullOrEmpty(m_Text) );
+        // m_ParsedDateUtc
+        // m_Latitude
+        // m_Longitude
+        // m_Urls
+        // m_Hashtags
     }
 
 
@@ -266,29 +279,29 @@ public class TwitterStatus : Object
 
     /// The status ID.
 
-    protected String m_sID;
+    protected String m_ID;
 
     /// The status text.
 
-    protected String m_sText;
+    protected String m_Text;
 
     /// The parsed status date as a culture-invariant UTC string.
 
-    protected String m_sParsedDateUtc;
+    protected String m_ParsedDateUtc;
 
     /// The status's latitude and longitude.
 
-    protected String m_sLatitude;
+    protected String m_Latitude;
     ///
-    protected String m_sLongitude;
+    protected String m_Longitude;
 
     /// The status's space-delimited URLs.
 
-    protected String m_sUrls;
+    protected String m_Urls;
 
     /// The status's space-delimited hashtags.
 
-    protected String m_sHashtags;
+    protected String m_Hashtags;
 }
 
 }
