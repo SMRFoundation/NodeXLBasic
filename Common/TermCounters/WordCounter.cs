@@ -22,8 +22,9 @@ namespace Smrf.AppLib
 /// the words that were counted in all the documents.
 ///
 /// <para>
-/// When words are counted, the words "B" and "b" are considered the same word.
-/// The <see cref="CountedWord.Word" /> string is always in lower case.
+/// If you use the single-argument constructor, then when words are counted,
+/// the words "B" and "b" are considered the same word, and the <see
+/// cref="CountedWord.Word" /> string is always in lower case.
 /// </para>
 ///
 /// </remarks>
@@ -34,13 +35,18 @@ public class WordCounter : TermCounterBase<CountedWord>
     //*************************************************************************
     //  Constructor: WordCounter()
     //
-    /// <summary>
+    /// <overloads>
     /// Initializes a new instance of the <see cref="WordCounter" /> class.
+    /// </overloads>
+    ///
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WordCounter" /> class that
+    /// converts all terms to lower case.
     /// </summary>
     ///
     /// <param name="wordsToSkip">
     /// An array of words that should be skipped when counting words.  Can be
-    /// empty but not null.  The case of the words is irrelevant.
+    /// empty but not null.
     /// </param>
     //*************************************************************************
 
@@ -48,7 +54,36 @@ public class WordCounter : TermCounterBase<CountedWord>
     (
         String [] wordsToSkip
     )
-    : base(wordsToSkip)
+    : base(true, wordsToSkip)
+    {
+        // (Do nothing else.)
+
+        AssertValid();
+    }
+
+    //*************************************************************************
+    //  Constructor: WordCounter()
+    //
+    /// <summary>
+    /// Initializes a new instance of the <see cref="WordCounter" /> class.
+    /// </summary>
+    ///
+    /// <param name="convertToLowerCase">
+    /// true if terms should all be converted to lower case.
+    /// </param>
+    ///
+    /// <param name="wordsToSkip">
+    /// An array of words that should be skipped when counting words.  Can be
+    /// empty but not null.
+    /// </param>
+    //*************************************************************************
+
+    public WordCounter
+    (
+        Boolean convertToLowerCase,
+        String [] wordsToSkip
+    )
+    : base(convertToLowerCase, wordsToSkip)
     {
         // (Do nothing else.)
 

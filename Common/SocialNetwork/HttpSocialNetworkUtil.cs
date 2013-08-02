@@ -245,7 +245,15 @@ public static class HttpSocialNetworkUtil
                     oStream.Close();
                 }
 
-                if ( !(oException is WebException) )
+                // The IOException "Unable to read data from the transport"
+                // connection: The connection was closed." can occur when
+                // requesting data from Twitter, for example.
+
+                if ( !(
+                    oException is WebException
+                    ||
+                    oException is IOException
+                    ) )
                 {
                     throw oException;
                 }

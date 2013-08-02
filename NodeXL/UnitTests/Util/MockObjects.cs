@@ -180,6 +180,18 @@ internal class MockEdge : IEdge
         return (false);
     }
 
+    public Boolean
+    TryGetNonEmptyStringValue
+    (
+        String key,
+        out String value
+    )
+    {
+        value = null;
+
+        return (false);
+    }
+
     public Object
     GetValue
     (
@@ -478,6 +490,18 @@ internal class MockVertex : IVertex
     (
         String key,
         out Object value
+    )
+    {
+        value = null;
+
+        return (false);
+    }
+
+    public Boolean
+    TryGetNonEmptyStringValue
+    (
+        String key,
+        out String value
     )
     {
         value = null;
@@ -804,6 +828,16 @@ internal class MockMetadataProvider : IMetadataProvider, IIdentityProvider
     (
         String key,
         out Object value
+    )
+    {
+        throw new ApplicationException("Don't bother testing this overload.");
+    }
+
+    public Boolean
+    TryGetNonEmptyStringValue
+    (
+        String key,
+        out String value
     )
     {
         throw new ApplicationException("Don't bother testing this overload.");

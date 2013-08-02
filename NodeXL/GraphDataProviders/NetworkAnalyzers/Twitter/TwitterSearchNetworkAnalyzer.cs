@@ -873,6 +873,13 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         oNetworkDescriber.AddSentence(
 
+            // WARNING:
+            //
+            // If you change this first sentence, you may also have to change
+            // the code in
+			// TwitterSearchNetworkTopItemsCalculator2.GetSearchTerm(), which
+			// attempts to extract the search term from the graph description.
+
             "The graph represents a network of {0} Twitter {1} whose recent"
             + " tweets contained \"{2}\", taken from a data set limited to a"
             + " maximum of {3} tweets."

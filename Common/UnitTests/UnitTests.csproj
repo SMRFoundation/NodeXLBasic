@@ -104,6 +104,9 @@
     <Compile Include="..\SocialNetwork\Twitter\TwitterDateParser.cs">
       <Link>Util\SocialNetwork\Twitter\TwitterDateParser.cs</Link>
     </Compile>
+    <Compile Include="..\SocialNetwork\Twitter\TwitterJsonUtil.cs">
+      <Link>Util\SocialNetwork\Twitter\TwitterJsonUtil.cs</Link>
+    </Compile>
     <Compile Include="..\SocialNetwork\Twitter\TwitterStatusParser.cs">
       <Link>Util\SocialNetwork\Twitter\TwitterStatusParser.cs</Link>
     </Compile>

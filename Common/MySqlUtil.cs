@@ -34,6 +34,11 @@ public static class MySqlUtil
     /// <param name="storedProcedureName">
     /// Name of the stored procedure.
     /// </param>
+	///
+    /// <param name="commandTimeoutSeconds">
+    /// Time to wait for the command to complete before timing out, in seconds.
+    /// Can't be zero.
+    /// </param>
     ///
     /// <param name="nameValuePairs">
     /// Zero or stored procedure parameter name/value pairs.  Each parameter
@@ -46,18 +51,21 @@ public static class MySqlUtil
     (
         String connectionString,
         String storedProcedureName,
+        Int32 commandTimeoutSeconds,
         params Object [] nameValuePairs
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(connectionString) );
         Debug.Assert( !String.IsNullOrEmpty(storedProcedureName) );
+        Debug.Assert(commandTimeoutSeconds > 0);
         Debug.Assert(nameValuePairs.Length % 2 == 0);
 
         MySqlConnection mySqlConnection;
         MySqlCommand mySqlCommand;
 
         GetMySqlConnectionAndCommand(connectionString, storedProcedureName,
-            out mySqlConnection, out mySqlCommand, nameValuePairs);
+            commandTimeoutSeconds, out mySqlConnection, out mySqlCommand,
+			nameValuePairs);
 
         using (mySqlConnection)
         {
@@ -82,6 +90,11 @@ public static class MySqlUtil
     /// Name of the stored procedure.
     /// </param>
     ///
+    /// <param name="commandTimeoutSeconds">
+    /// Time to wait for the command to complete before timing out, in seconds.
+    /// Can't be zero.
+    /// </param>
+    ///
     /// <param name="mySqlConnection">
     /// Where the new SqlConnection object gets stored.  The connection is not
     /// opened by this method.
@@ -102,6 +115,7 @@ public static class MySqlUtil
     (
         String connectionString,
         String storedProcedureName,
+        Int32 commandTimeoutSeconds,
         out MySqlConnection mySqlConnection,
         out MySqlCommand mySqlCommand,
         params Object [] nameValuePairs
@@ -109,11 +123,13 @@ public static class MySqlUtil
     {
         Debug.Assert( !String.IsNullOrEmpty(connectionString) );
         Debug.Assert( !String.IsNullOrEmpty(storedProcedureName) );
+        Debug.Assert(commandTimeoutSeconds > 0);
         Debug.Assert(nameValuePairs.Length % 2 == 0);
 
         mySqlConnection = new MySqlConnection(connectionString);
         mySqlCommand = new MySqlCommand(storedProcedureName, mySqlConnection);
         mySqlCommand.CommandType = CommandType.StoredProcedure;
+        mySqlCommand.CommandTimeout = commandTimeoutSeconds;
         MySqlParameterCollection parameters = mySqlCommand.Parameters;
 
         for (Int32 i = 0; i < nameValuePairs.Length; i += 2)

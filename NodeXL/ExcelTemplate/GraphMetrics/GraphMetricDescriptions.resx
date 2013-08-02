@@ -331,7 +331,11 @@ and P(*,y) is the number of word pairs that share this word pair's second word
   </data>
   <data name="TwitterSearchNetworkTopItems" xml:space="preserve">
     <value>&lt;p&gt;
-If the workbook contains a Twitter search network imported via NodeXL, Data, Import, From Twitter Search Network, you can have NodeXL find the top 10 replied-to usernames, mentioned usernames, URLs, hashtags, words and word pairs within the network's tweets, and the top tweeters in the network.  These items get inserted into the Twitter Search Ntwrk Top Items* worksheet, which gets added to the workbook the first time you calculate Twitter search network top items.
+If the workbook contains a Twitter search network imported via NodeXL, Data, Import, From Twitter Search Network, you can have NodeXL find the top URLs, domains, hashtags, words, word pairs, replied-to usernames, and mentioned usernames within the network's tweets, and the top tweeters in the network. These items get inserted into the Twitter Search Ntwrk Top Items* worksheet, which gets added to the workbook the first time you calculate Twitter search network top items.
+&lt;/p&gt;
+
+&lt;p&gt;
+Similar top item information gets added to each vertex on the Vertices worksheet, and to each group on the Groups worksheet.
 &lt;/p&gt;
 
 &lt;div style="font-size: 90%;"&gt;

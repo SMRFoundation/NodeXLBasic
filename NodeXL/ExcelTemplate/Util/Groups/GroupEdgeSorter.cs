@@ -78,7 +78,8 @@ public static class GroupEdgeSorter
 
         // Filter out duplicate edges.
 
-        IEnumerable<IEdge> oFilteredEdges = FilterEdges(graph.Edges);
+        IEnumerable<IEdge> oFilteredEdges =
+            EdgeFilter.FilterEdgesByImportedID(graph.Edges);
 
         // Sort the filtered edges by group.
 
@@ -213,70 +214,6 @@ public static class GroupEdgeSorter
         }
 
         return (oGroupEdgeInfos);
-    }
-
-    //*************************************************************************
-    //  Method: FilterEdges()
-    //
-    /// <summary>
-    /// Filters out multiple edges that have the same imported IDs.
-    /// </summary>
-    ///
-    /// <param name="oEdges">
-    /// The collection of edges to filter.
-    /// </param>
-    ///
-    /// <returns>
-    /// A filtered collection.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// If multiple edges have the same imported ID values, this method filters
-    /// out all but one of them.
-    /// </remarks>
-    //*************************************************************************
-
-    private static IEnumerable<IEdge>
-    FilterEdges
-    (
-        IEnumerable<IEdge> oEdges
-    )
-    {
-        Debug.Assert(oEdges != null);
-
-        List<IEdge> oFilteredEdges = new List<IEdge>();
-        HashSet<String> oImportedIDs = new HashSet<String>();
-
-        foreach (IEdge oEdge in oEdges)
-        {
-            Object oImportedIDAsObject;
-
-            if (
-                oEdge.TryGetValue(CommonTableColumnNames.ImportedID,
-                    typeof(String), out oImportedIDAsObject)
-                &&
-                oImportedIDAsObject != null
-                )
-            {
-                String sImportedID = (String)oImportedIDAsObject;
-
-                if (
-                    sImportedID.Length > 0
-                    &&
-                    !oImportedIDs.Add(sImportedID)
-                    )
-                {
-                    // The edge has an imported ID that has already been found
-                    // on another edge.  Skip it.
-
-                    continue;
-                }
-            }
-
-            oFilteredEdges.Add(oEdge);
-        }
-
-        return ( oFilteredEdges.ToArray() );
     }
 
     //*************************************************************************

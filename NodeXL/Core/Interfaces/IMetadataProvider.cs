@@ -381,6 +381,43 @@ public interface IMetadataProvider
     );
 
     //*************************************************************************
+    //  Method: TryGetNonEmptyStringValue
+    //
+    /// <summary>
+    /// Attempts to get the non-empty string metadata value associated with a
+    /// specified key.
+    /// </summary>
+    ///
+    /// <param name="key">
+    /// The value's key.  Can't be null or empty, and can't start with a
+    /// tilde (~).
+    /// </param>
+    ///
+    /// <param name="value">
+    /// Where the metadata value associated with <paramref name="key" /> gets
+    /// stored if true is returned, as a non-empty <see cref="String" />.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the metadata value associated with <paramref name="key" />
+    /// exists and is a non-empty string, or false if not.
+    /// </returns>
+    ///
+    /// <seealso cref="ContainsKey" />
+    /// <seealso cref="SetValue" />
+    /// <seealso cref="GetValue(String)" />
+    /// <seealso cref="GetRequiredValue(String, Type)" />
+    /// <seealso cref="Tag" />
+    //*************************************************************************
+
+    Boolean
+    TryGetNonEmptyStringValue
+    (
+        String key,
+        out String value
+    );
+
+    //*************************************************************************
     //  Method: GetValue
     //
     /// <overloads>

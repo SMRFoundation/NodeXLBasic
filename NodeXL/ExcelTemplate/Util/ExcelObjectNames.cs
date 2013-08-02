@@ -531,6 +531,97 @@ public static class VertexTableColumnNames
 
     public const String EdgeCrossings = "Edge Crossing Readability";
 
+    /// <summary>
+    /// Name of the optional table column containing the vertex's top URLs in
+    /// tweets, by count.  This gets added to the table on demand by <see
+    /// cref="TwitterSearchNetworkTopItemsCalculator2" />.
+    /// </summary>
+
+    public const String TopUrlsInTweetByCount =
+        "Top URLs in Tweet by Count";
+
+    /// <summary>
+    /// Name of the optional table column containing the vertex's top URLs in
+    /// tweets, by salience.  This gets added to the table on demand by <see
+    /// cref="TwitterSearchNetworkTopItemsCalculator2" />.
+    /// </summary>
+
+    public const String TopUrlsInTweetBySalience =
+        "Top URLs in Tweet by Salience";
+
+    /// <summary>
+    /// Name of the optional table column containing the vertex's top domains
+    /// in tweets, by count.  This gets added to the table on demand by <see
+    /// cref="TwitterSearchNetworkTopItemsCalculator2" />.
+    /// </summary>
+
+    public const String TopDomainsInTweetByCount =
+        "Top Domains in Tweet by Count";
+
+    /// <summary>
+    /// Name of the optional table column containing the vertex's top domains
+    /// in tweets, by salience.  This gets added to the table on demand by <see
+    /// cref="TwitterSearchNetworkTopItemsCalculator2" />.
+    /// </summary>
+
+    public const String TopDomainsInTweetBySalience =
+        "Top Domains in Tweet by Salience";
+
+    /// <summary>
+    /// Name of the optional table column containing the vertex's top hashtags
+    /// in tweets, by count.  This gets added to the table on demand by <see
+    /// cref="TwitterSearchNetworkTopItemsCalculator2" />.
+    /// </summary>
+
+    public const String TopHashtagsInTweetByCount =
+        "Top Hashtags in Tweet by Count";
+
+    /// <summary>
+    /// Name of the optional table column containing the vertex's top hashtags
+    /// in tweets, by salience.  This gets added to the table on demand by <see
+    /// cref="TwitterSearchNetworkTopItemsCalculator2" />.
+    /// </summary>
+
+    public const String TopHashtagsInTweetBySalience =
+        "Top Hashtags in Tweet by Salience";
+
+    /// <summary>
+    /// Name of the optional table column containing the vertex's top words
+    /// in tweets, by count.  This gets added to the table on demand by <see
+    /// cref="TwitterSearchNetworkTopItemsCalculator2" />.
+    /// </summary>
+
+    public const String TopWordsInTweetByCount =
+        "Top Words in Tweet by Count";
+
+    /// <summary>
+    /// Name of the optional table column containing the vertex's top words
+    /// in tweets, by salience.  This gets added to the table on demand by <see
+    /// cref="TwitterSearchNetworkTopItemsCalculator2" />.
+    /// </summary>
+
+    public const String TopWordsInTweetBySalience =
+        "Top Words in Tweet by Salience";
+
+    /// <summary>
+    /// Name of the optional table column containing the vertex's top word
+    /// pairs in tweets, by count.  This gets added to the table on demand by
+    /// <see cref="TwitterSearchNetworkTopItemsCalculator2" />.
+    /// </summary>
+
+    public const String TopWordPairsInTweetByCount =
+        "Top Word Pairs in Tweet by Count";
+
+    /// <summary>
+    /// Name of the optional table column containing the vertex's top word
+    /// pairs in tweets, by salience.  This gets added to the table on demand
+    /// by <see cref="TwitterSearchNetworkTopItemsCalculator2" />.
+    /// </summary>
+
+    public const String TopWordPairsInTweetBySalience =
+        "Top Word Pairs in Tweet by Salience";
+
+
     // IMPORTANT NOTES:
     //
     // 1. If a new column name is added, VertexColumnComboBox may need to be

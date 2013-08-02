@@ -1335,6 +1335,42 @@ public class GraphVertexEdgeBaseTest : Object
     }
 
     //*************************************************************************
+    //  Method: TestTryGetNonEmptyStringValue()
+    //
+    /// <summary>
+    /// Tests the TestTryGetNonEmptyStringValue() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestTryGetNonEmptyStringValue()
+    {
+        const String Key = "TheKey";
+        const String Value = "jkrejkrejke";
+
+        m_oGraphVertexEdgeBase.SetValue(Key, Value);
+
+        String sValue;
+
+        Assert.IsTrue( m_oGraphVertexEdgeBase.TryGetNonEmptyStringValue(
+            Key, out sValue) );
+
+        Assert.AreEqual(Value, sValue);
+
+        m_oGraphVertexEdgeBase.SetValue(Key, String.Empty);
+
+        Assert.IsFalse( m_oGraphVertexEdgeBase.TryGetNonEmptyStringValue(
+            Key, out sValue) );
+
+        m_oGraphVertexEdgeBase.SetValue(Key, null);
+
+        Assert.IsFalse( m_oGraphVertexEdgeBase.TryGetNonEmptyStringValue(
+            Key, out sValue) );
+    }
+
+    //*************************************************************************
     //  Method: TestRemoveKey()
     //
     /// <summary>

@@ -130,7 +130,10 @@ public class GraphMetricCalculationManager : Object
                 new IntergroupEdgeCalculator2(),
                 new OverallMetricCalculator2(),
                 new WordMetricCalculator2(),
-                new TwitterSearchNetworkTopItemsCalculator2(),
+
+                new TwitterSearchNetworkTopItemsCalculator2(
+                    ( new PerWorkbookSettings(workbook) ).GraphHistory),
+
                 new ReciprocatedVertexPairRatioCalculator2(),
                 };
 

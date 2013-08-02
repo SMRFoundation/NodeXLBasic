@@ -22,7 +22,7 @@
     <InstallUrl>
     </InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.1.246</ApplicationVersion>
+    <ApplicationVersion>1.0.1.247</ApplicationVersion>
     <AutoIncrementApplicationRevision>false</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>0</UpdateInterval>
@@ -667,7 +667,10 @@
     <Compile Include="GraphMetrics\GraphMetricCalculators\ReciprocatedVertexPairRatioCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\TopItemsCalculatorBase2.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\TopNByMetricCalculator2.cs" />
-    <Compile Include="GraphMetrics\GraphMetricCalculators\TwitterSearchNetworkTopItemsCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\TwitterSearchNetworkTopItems\TwitterSearchNetworkStringUtil.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\TwitterSearchNetworkTopItems\TwitterSearchNetworkTopItemsCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\TwitterSearchNetworkTopItems\TwitterSearchNetworkVertexMetricUtil.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\TwitterSearchNetworkTopItems\TwitterSearchNetworkWordMetricUtil.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\VertexDegreeCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\WordMetricCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricColumns\GraphMetricColumn.cs" />
@@ -865,6 +868,7 @@
     <Compile Include="Util\DynamicFilters\DynamicFilterUtil.cs" />
     <Compile Include="Util\DynamicFilters\NumericFilterParameters.cs" />
     <Compile Include="Util\DynamicFilters\RangeFilterParameters.cs" />
+    <Compile Include="Util\EdgeFilter.cs" />
     <Compile Include="Util\ErrorUtil.cs" />
     <Compile Include="Util\ExcelObjectNames.cs" />
     <Compile Include="Util\GraphExporters\EmailExceptionHandler.cs" />

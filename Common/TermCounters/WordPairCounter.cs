@@ -63,7 +63,7 @@ public class WordPairCounter : TermCounterBase<CountedWordPair>
     (
         String [] wordsToSkip
     )
-    : base(wordsToSkip)
+    : base(true, wordsToSkip)
     {
         // (Do nothing else.)
 

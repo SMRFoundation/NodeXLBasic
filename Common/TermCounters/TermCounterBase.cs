@@ -40,25 +40,32 @@ public abstract class TermCounterBase<TCountedTerm> : Object
     /// Initializes a new instance of the TermCounterBase class.
     /// </summary>
     ///
+    /// <param name="convertToLower">
+    /// true if terms should all be converted to lower case.
+    /// </param>
+    ///
     /// <param name="wordsToSkip">
     /// An array of words that should be skipped when counting terms.  Can be
-    /// empty but not null.  The case of the words is irrelevant.
+    /// empty but not null.
     /// </param>
     //*************************************************************************
 
     public TermCounterBase
     (
+        Boolean convertToLower,
         String [] wordsToSkip
     )
     {
         Debug.Assert(wordsToSkip != null);
 
+        m_bConvertToLower = convertToLower;
         m_oWordsToSkip = new HashSet<String>();
         m_bSkipUrlsAndPunctuation = true;
 
         foreach (String sWordToSkip in wordsToSkip)
         {
-            m_oWordsToSkip.Add( sWordToSkip.ToLower() );
+            m_oWordsToSkip.Add(
+                m_bConvertToLower ? sWordToSkip.ToLower() : sWordToSkip);
         }
 
         // This is a simple, dumb regular expression that doesn't attempt to
@@ -426,11 +433,11 @@ public abstract class TermCounterBase<TCountedTerm> : Object
 
         foreach (String sWord in oWords)
         {
-            String sWordLower = sWord.ToLower();
+            String sWordToTest = m_bConvertToLower ? sWord.ToLower() : sWord;
 
-            if ( !m_oWordsToSkip.Contains(sWordLower) )
+            if ( !m_oWordsToSkip.Contains(sWordToTest) )
             {
-                oFilteredWords.Add(sWordLower);
+                oFilteredWords.Add(sWordToTest);
             }
         }
 
@@ -451,6 +458,7 @@ public abstract class TermCounterBase<TCountedTerm> : Object
     public void
     AssertValid()
     {
+        // m_bConvertToLower
         Debug.Assert(m_oWordsToSkip != null);
         // m_bSkipUrlsAndPunctuation
         Debug.Assert(m_oUrlRemover != null);
@@ -463,6 +471,10 @@ public abstract class TermCounterBase<TCountedTerm> : Object
     //*************************************************************************
     //  Protected fields
     //*************************************************************************
+
+    /// true if terms should all be converted to lower case.
+
+    protected Boolean m_bConvertToLower;
 
     /// The words that should be skipped when counting terms.
 

@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.ComponentModel;
+using System.Text.RegularExpressions;
 using System.Diagnostics;
-using Microsoft.Office.Interop.Excel;
 using Smrf.NodeXL.Core;
 using Smrf.AppLib;
 using Smrf.SocialNetworkLib.Twitter;
@@ -15,30 +15,13 @@ namespace Smrf.NodeXL.ExcelTemplate
 //  Class: TwitterSearchNetworkTopItemsCalculator2
 //
 /// <summary>
-/// Calculates the top items in the tweets within a Twitter search network.
+/// Calculates the top items within a Twitter search network.
 /// </summary>
 ///
 /// <remarks>
-/// This class calculates the top URLs, hashtags, replies-to and mentions in
-/// the tweets within a Twitter search network, as well as the top tweeters.
-/// It does so for the entire graph, as well as for the graph's top groups,
-/// ranked by vertex count.
-///
-/// <para>
-/// These top items will get written later to a new worksheet by the <see
-/// cref="GraphMetricWriter" /> class.
-/// </para>
-///
-/// <para>
-/// This class also calculates top hashtags for each of the graph's groups, not
-/// just the top groups.  These top hashtags will get written later to the
-/// group worksheet.
-/// </para>
-///
-/// <para>
-/// If the workbook doesn't contain a Twitter search network, this class does
-/// nothing.
-/// </para>
+/// This class calculates various top-item metrics for a Twitter search
+/// network.  If the workbook doesn't contain a Twitter search network, this
+/// class does nothing.
 ///
 /// <para>
 /// This graph metric calculator differs from most other calculators in that it
@@ -49,6 +32,38 @@ namespace Smrf.NodeXL.ExcelTemplate
 /// the <see cref="Smrf.NodeXL.Algorithms" /> namespace, and the top items in a
 /// Twitter search network cannot be calculated outside of this ExcelTemplate
 /// project.
+/// </para>
+///
+/// <para>
+/// Here are the metrics calculated by this class.
+/// </para>
+///
+/// <para>
+/// For the Twitter Search network top items worksheet:
+/// </para>
+///
+/// <para>
+/// Top URLs, domains, hashtags, words, word pairs, replies-to, and mentions in
+/// tweets; and top tweeters.  These get calculated for the entire graph, as
+/// well as for the graph's top groups, ranked by vertex count.
+/// </para>
+///
+/// <para>
+/// For the group worksheet:
+/// </para>
+///
+/// <para>
+/// Top URLs, domains, hashtags, words, word pairs, replies-to, and mentions in
+/// tweets; and top tweeters.  These get calculated for each group.
+/// </para>
+///
+/// <para>
+/// For the vertex worksheet:
+/// </para>
+///
+/// <para>
+/// Top URLs, domains, hashtags, words, and word pairs in tweets, by both count
+/// and salience.  These get calculated for each vertex.
 /// </para>
 ///
 /// </remarks>
@@ -63,10 +78,18 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
     /// Initializes a new instance of the <see
     /// cref="TwitterSearchNetworkTopItemsCalculator2" /> class.
     /// </summary>
+    ///
+    /// <param name="graphHistory">
+    /// Describes how the graph was created.
+    /// </param>
     //*************************************************************************
 
-    public TwitterSearchNetworkTopItemsCalculator2()
+    public TwitterSearchNetworkTopItemsCalculator2
+    (
+        GraphHistory graphHistory
+    )
     {
+        m_oGraphHistory = graphHistory;
         m_oTwitterStatusTextParser = new TwitterStatusTextParser();
 
         AssertValid();
@@ -136,6 +159,62 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
         Debug.Assert(oGraphMetricColumns != null);
         AssertValid();
 
+        return (
+            TryCalculateTopItemAndGroupMetrics(
+                oGraph, oCalculateGraphMetricsContext, oGraphMetricColumns)
+            &&
+            TryCalculateVertexMetrics(
+                oGraph, oCalculateGraphMetricsContext, oGraphMetricColumns)
+            );
+    }
+
+    //*************************************************************************
+    //  Method: TryCalculateTopItemAndGroupMetrics()
+    //
+    /// <summary>
+    /// Attempts to calculate metrics for the Twitter search network top items
+    /// and group worksheets.
+    /// </summary>
+    ///
+    /// <param name="oGraph">
+    /// The graph to calculate metrics for.  The graph may contain duplicate
+    /// edges and self-loops.
+    /// </param>
+    ///
+    /// <param name="oCalculateGraphMetricsContext">
+    /// Provides access to objects needed for calculating graph metrics.
+    /// </param>
+    ///
+    /// <param name="oGraphMetricColumns">
+    /// Collection of GraphMetricColumn objects that gets populated by this
+    /// method if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the graph metrics were calculated, false if the user wants to
+    /// cancel.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    TryCalculateTopItemAndGroupMetrics
+    (
+        IGraph oGraph,
+        CalculateGraphMetricsContext oCalculateGraphMetricsContext,
+        List<GraphMetricColumn> oGraphMetricColumns
+    )
+    {
+        Debug.Assert(oGraph != null);
+        Debug.Assert(oCalculateGraphMetricsContext != null);
+        Debug.Assert(oGraphMetricColumns != null);
+        AssertValid();
+
+        if ( !ReportProgressAndCheckCancellationPending(
+            oCalculateGraphMetricsContext) )
+        {
+            return (false);
+        }
+
         // Get information about each of the graph's groups, including a
         // "dummy" group for the entire graph.
 
@@ -145,22 +224,17 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
 
         Int32 iTableIndex = 1;
 
-        // Add the columns for the top URLs, domains and hashtags.
-
-        AddColumnsForTweetContent(ref iTableIndex, oAllGroupEdgeInfos,
+        AddColumnsForStatusContent(ref iTableIndex, oAllGroupEdgeInfos,
             UrlsInTweetColumnName, true,
             GroupTableColumnNames.TopUrlsInTweet, oGraphMetricColumns);
 
-        AddColumnsForTweetContent(ref iTableIndex, oAllGroupEdgeInfos,
+        AddColumnsForStatusContent(ref iTableIndex, oAllGroupEdgeInfos,
             DomainsInTweetColumnName, false,
             GroupTableColumnNames.TopDomainsInTweet, oGraphMetricColumns);
 
-        AddColumnsForTweetContent(ref iTableIndex, oAllGroupEdgeInfos,
+        AddColumnsForStatusContent(ref iTableIndex, oAllGroupEdgeInfos,
             HashtagsInTweetColumnName, false,
             GroupTableColumnNames.TopHashtagsInTweet, oGraphMetricColumns);
-
-        // Add the columns for the top words and top word pair tables on the
-        // Twitter search network top items worksheet.
 
         if ( !TryAddColumnsForWordsAndWordPairs(ref iTableIndex, oGraph,
             oAllGroupEdgeInfos, oCalculateGraphMetricsContext,
@@ -169,12 +243,8 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
             return (false);
         }
 
-        // Add the columns for the top replied-to and top mentioned.
-
         AddColumnsForRepliesToAndMentions(ref iTableIndex, oAllGroupEdgeInfos,
             oGraphMetricColumns);
-
-        // Add the columns for the top tweeters.
 
         AddColumnsForTweeters(ref iTableIndex, oGraph, oGraphMetricColumns);
 
@@ -184,10 +254,201 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
     }
 
     //*************************************************************************
-    //  Method: AddColumnsForTweetContent()
+    //  Method: TryCalculateVertexMetrics()
     //
     /// <summary>
-    /// Adds "tweet content" columns.
+    /// Attempts to calculate metrics for the vertex worksheet.
+    /// </summary>
+    ///
+    /// <param name="oGraph">
+    /// The graph to calculate metrics for.  The graph may contain duplicate
+    /// edges and self-loops.
+    /// </param>
+    ///
+    /// <param name="oCalculateGraphMetricsContext">
+    /// Provides access to objects needed for calculating graph metrics.
+    /// </param>
+    ///
+    /// <param name="oGraphMetricColumns">
+    /// Collection of GraphMetricColumn objects that gets populated by this
+    /// method if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the graph metrics were calculated, false if the user wants to
+    /// cancel.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    TryCalculateVertexMetrics
+    (
+        IGraph oGraph,
+        CalculateGraphMetricsContext oCalculateGraphMetricsContext,
+        List<GraphMetricColumn> oGraphMetricColumns
+    )
+    {
+        Debug.Assert(oGraph != null);
+        Debug.Assert(oCalculateGraphMetricsContext != null);
+        Debug.Assert(oGraphMetricColumns != null);
+        AssertValid();
+
+        if ( !ReportProgressAndCheckCancellationPending(
+            oCalculateGraphMetricsContext) )
+        {
+            return (false);
+        }
+
+        // The key is a screen name and the value is a list of zero or more
+        // unique edges belonging to that user.
+
+        Dictionary< String, List<IEdge> > oUniqueEdgesByUser =
+            TwitterSearchNetworkVertexMetricUtil.GetUniqueEdgesByUser(oGraph);
+
+        List<GraphMetricValueWithID>
+            oTopUrlsInTweetByCountGraphMetricValues =
+                new List<GraphMetricValueWithID>();
+
+        List<GraphMetricValueWithID>
+            oTopUrlsInTweetBySalienceGraphMetricValues =
+                new List<GraphMetricValueWithID>();
+
+        List<GraphMetricValueWithID>
+            oTopDomainsInTweetByCountGraphMetricValues =
+                new List<GraphMetricValueWithID>();
+
+        List<GraphMetricValueWithID>
+            oTopDomainsInTweetBySalienceGraphMetricValues =
+                new List<GraphMetricValueWithID>();
+
+        List<GraphMetricValueWithID>
+            oTopHashtagsInTweetByCountGraphMetricValues =
+                new List<GraphMetricValueWithID>();
+
+        List<GraphMetricValueWithID>
+            oTopHashtagsInTweetBySalienceGraphMetricValues =
+                new List<GraphMetricValueWithID>();
+
+        List<GraphMetricValueWithID>
+            oTopWordsInTweetByCountGraphMetricValues =
+                new List<GraphMetricValueWithID>();
+
+        List<GraphMetricValueWithID>
+            oTopWordsInTweetBySalienceGraphMetricValues =
+                new List<GraphMetricValueWithID>();
+
+        List<GraphMetricValueWithID>
+            oTopWordPairsInTweetByCountGraphMetricValues =
+                new List<GraphMetricValueWithID>();
+
+        List<GraphMetricValueWithID>
+            oTopWordPairsInTweetBySalienceGraphMetricValues =
+                new List<GraphMetricValueWithID>();
+
+        // For efficiency, these counters are created once only.
+
+        WordCounter oWordCounter;
+        WordPairCounter oWordPairCounter;
+
+        TwitterSearchNetworkVertexMetricUtil
+            .CreateCountersForWordsAndWordPairs(
+                GetSearchTerm(), oCalculateGraphMetricsContext,
+                out oWordCounter, out oWordPairCounter);
+
+        foreach (IVertex oVertex in oGraph.Vertices)
+        {
+            Int32 iRowID;
+            List<IEdge> oUniqueEdgesForUser;
+
+            if (
+                TryGetRowID(oVertex, out iRowID)
+                &&
+                !String.IsNullOrEmpty(oVertex.Name)
+                &&
+                oUniqueEdgesByUser.TryGetValue(
+                    oVertex.Name, out oUniqueEdgesForUser)
+                )
+            {
+                TwitterSearchNetworkVertexMetricUtil
+                    .AddGraphMetricValueForTopStrings(
+                        oUniqueEdgesForUser, UrlsInTweetColumnName,
+                        MaximumTopItems, iRowID,
+                        oTopUrlsInTweetByCountGraphMetricValues,
+                        oTopUrlsInTweetBySalienceGraphMetricValues
+                        );
+
+                TwitterSearchNetworkVertexMetricUtil
+                    .AddGraphMetricValueForTopStrings(
+                        oUniqueEdgesForUser, DomainsInTweetColumnName,
+                        MaximumTopItems, iRowID,
+                        oTopDomainsInTweetByCountGraphMetricValues,
+                        oTopDomainsInTweetBySalienceGraphMetricValues
+                        );
+
+                TwitterSearchNetworkVertexMetricUtil
+                    .AddGraphMetricValueForTopStrings(
+                        oUniqueEdgesForUser, HashtagsInTweetColumnName,
+                        MaximumTopItems, iRowID,
+                        oTopHashtagsInTweetByCountGraphMetricValues,
+                        oTopHashtagsInTweetBySalienceGraphMetricValues
+                        );
+
+                TwitterSearchNetworkVertexMetricUtil
+                    .AddGraphMetricValuesForTopWordsAndWordPairs(
+                        oUniqueEdgesForUser, StatusColumnName,
+                        MaximumTopItems, oWordCounter, oWordPairCounter,
+                        iRowID,
+                        oTopWordsInTweetByCountGraphMetricValues,
+                        oTopWordsInTweetBySalienceGraphMetricValues,
+                        oTopWordPairsInTweetByCountGraphMetricValues,
+                        oTopWordPairsInTweetBySalienceGraphMetricValues
+                        );
+            }
+        }
+
+        TwitterSearchNetworkVertexMetricUtil.AddGraphMetricColumns(
+
+            oGraphMetricColumns,
+
+            oTopUrlsInTweetByCountGraphMetricValues,
+            VertexTableColumnNames.TopUrlsInTweetByCount,
+
+            oTopUrlsInTweetBySalienceGraphMetricValues,
+            VertexTableColumnNames.TopUrlsInTweetBySalience,
+
+            oTopDomainsInTweetByCountGraphMetricValues,
+            VertexTableColumnNames.TopDomainsInTweetByCount,
+
+            oTopDomainsInTweetBySalienceGraphMetricValues,
+            VertexTableColumnNames.TopDomainsInTweetBySalience,
+
+            oTopHashtagsInTweetByCountGraphMetricValues,
+            VertexTableColumnNames.TopHashtagsInTweetByCount,
+
+            oTopHashtagsInTweetBySalienceGraphMetricValues,
+            VertexTableColumnNames.TopHashtagsInTweetBySalience,
+
+            oTopWordsInTweetByCountGraphMetricValues,
+            VertexTableColumnNames.TopWordsInTweetByCount,
+
+            oTopWordsInTweetBySalienceGraphMetricValues,
+            VertexTableColumnNames.TopWordsInTweetBySalience,
+
+            oTopWordPairsInTweetByCountGraphMetricValues,
+            VertexTableColumnNames.TopWordPairsInTweetByCount,
+
+            oTopWordPairsInTweetBySalienceGraphMetricValues,
+            VertexTableColumnNames.TopWordPairsInTweetBySalience
+            );
+
+        return (true);
+    }
+
+    //*************************************************************************
+    //  Method: AddColumnsForStatusContent()
+    //
+    /// <summary>
+    /// Adds "status content" columns.
     /// </summary>
     ///
     /// <param name="iTableIndex">
@@ -240,7 +501,7 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
     //*************************************************************************
 
     protected void
-    AddColumnsForTweetContent
+    AddColumnsForStatusContent
     (
         ref Int32 iTableIndex,
         List<GroupEdgeInfo> oAllGroupEdgeInfos,
@@ -272,7 +533,8 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
             // found in the edges.
 
             Dictionary<String, Int32> oStringCounts =
-                CountDelimitedStringsInEdgeColumn(oGroupEdgeInfo.Edges,
+                TwitterSearchNetworkStringUtil
+                .CountDelimitedStringsInEdgeColumn(oGroupEdgeInfo.Edges,
                     sEdgeColumnName);
 
             // (The extra "1" is for the dummy group that represents the entire
@@ -285,7 +547,8 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
 
                 List<GraphMetricValueOrdered> oTopStrings, oTopStringCounts;
 
-                GetGraphMetricValues(oStringCounts, out oTopStrings,
+                TwitterSearchNetworkStringUtil.GetTopGraphMetricValues(
+                    oStringCounts, MaximumTopItems, out oTopStrings,
                     out oTopStringCounts);
 
                 String sGraphMetricColumn1Name, sGraphMetricColumn2Name;
@@ -309,7 +572,9 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
 
                 oTopStringsForGroupWorksheet.Add( new GraphMetricValueWithID(
                     GetGroupRowID(oGroupEdgeInfo),
-                    ConcatenateTopStrings(oStringCounts) ) );
+
+                    TwitterSearchNetworkStringUtil.ConcatenateTopStrings(
+                        oStringCounts, MaximumTopItems) ) );
             }
         }
 
@@ -399,8 +664,8 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
             {
                 String sStatus;
 
-                if ( TryGetStringValueForEdge(oEdge, StatusColumnName,
-                    out sStatus) )
+                if ( oEdge.TryGetNonEmptyStringValue(
+                    StatusColumnName, out sStatus) )
                 {
                     String sReplyToScreenName;
                     String [] asMentionedScreenNames;
@@ -410,13 +675,15 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
 
                     if (sReplyToScreenName != null)
                     {
-                        CountString(sReplyToScreenName, oRepliesToCounts);
+                        TwitterSearchNetworkStringUtil.CountString(
+                            sReplyToScreenName, oRepliesToCounts);
                     }
 
                     foreach (String sMentionedScreenName in
                         asMentionedScreenNames)
                     {
-                        CountString(sMentionedScreenName, oMentionsCounts);
+                        TwitterSearchNetworkStringUtil.CountString(
+                            sMentionedScreenName, oMentionsCounts);
                     }
                 }
             }
@@ -434,7 +701,8 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
                 List<GraphMetricValueOrdered> oTopStrings, oTopStringCounts;
                 String sGraphMetricColumn1Name, sGraphMetricColumn2Name;
 
-                GetGraphMetricValues(oRepliesToCounts, out oTopStrings,
+                TwitterSearchNetworkStringUtil.GetTopGraphMetricValues(
+                    oRepliesToCounts, MaximumTopItems, out oTopStrings,
                     out oTopStringCounts);
 
                 GetGraphMetricColumnNames("Replied-To", sGroupName,
@@ -446,7 +714,8 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
 
                 // Repeat for mentions.
 
-                GetGraphMetricValues(oMentionsCounts, out oTopStrings,
+                TwitterSearchNetworkStringUtil.GetTopGraphMetricValues(
+                    oMentionsCounts, MaximumTopItems, out oTopStrings,
                     out oTopStringCounts);
 
                 GetGraphMetricColumnNames("Mentioned", sGroupName,
@@ -464,11 +733,15 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
 
                 oTopRepliesToForGroupWorksheet.Add( new GraphMetricValueWithID(
                     GetGroupRowID(oGroupEdgeInfo),
-                    ConcatenateTopStrings(oRepliesToCounts) ) );
+
+                    TwitterSearchNetworkStringUtil.ConcatenateTopStrings(
+                        oRepliesToCounts, MaximumTopItems) ) );
 
                 oTopMentionsForGroupWorksheet.Add( new GraphMetricValueWithID(
                     GetGroupRowID(oGroupEdgeInfo),
-                    ConcatenateTopStrings(oMentionsCounts) ) );
+
+                    TwitterSearchNetworkStringUtil.ConcatenateTopStrings(
+                        oMentionsCounts, MaximumTopItems) ) );
             }
         }
 
@@ -558,7 +831,8 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
 
         GraphMetricColumn [] oWordMetricColumns;
 
-        if ( !TryCalculateWordMetrics(oGraph, oCalculateGraphMetricsContext,
+        if ( !TwitterSearchNetworkWordMetricUtil.TryCalculateWordMetrics(
+            oGraph, oCalculateGraphMetricsContext, StatusColumnName,
             out oWordMetricColumns) )
         {
             return (false);
@@ -673,8 +947,14 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
                     oGroupInfo.RowID.Value, 
 
                     String.Join( " ",
+
+                        TwitterSearchNetworkStringUtil.TakeTopStringsAsArray(
+
                         (from oItem in oItems
-                        select oItem.Name).Take(MaximumTopItems).ToArray() )
+                        select oItem.Name),
+                        
+                        MaximumTopItems
+                        ) )
                     ) );
 
                 iGroup++;
@@ -797,94 +1077,6 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
                         dMaximumColumnWidthChars;
                 }
             }
-        }
-    }
-
-    //*************************************************************************
-    //  Method: TryCalculateWordMetrics()
-    //
-    /// <summary>
-    /// Attempts to calculate word metrics.
-    /// </summary>
-    ///
-    /// <param name="oGraph">
-    /// The graph to calculate metrics for.  The graph may contain duplicate
-    /// edges and self-loops.
-    /// </param>
-    ///
-    /// <param name="oCalculateGraphMetricsContext">
-    /// Provides access to objects needed for calculating graph metrics.
-    /// </param>
-    ///
-    /// <param name="oWordMetricColumns">
-    /// Where the calculated word metric columns get stored if true is
-    /// returned.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the word metrics were calculated, false if the user wants to
-    /// cancel.
-    /// </returns>
-    //*************************************************************************
-
-    protected Boolean
-    TryCalculateWordMetrics
-    (
-        IGraph oGraph,
-        CalculateGraphMetricsContext oCalculateGraphMetricsContext,
-        out GraphMetricColumn [] oWordMetricColumns
-    )
-    {
-        Debug.Assert(oGraph != null);
-        Debug.Assert(oCalculateGraphMetricsContext != null);
-        AssertValid();
-
-        // Use the WordMetricCalculator2() class to calculate word metrics for
-        // all groups.
-        //
-        // This is somewhat wasteful, because we don't actually need all the
-        // word metrics for all groups.  A future version might refactor common
-        // code out of WordMetricCalculator2() that can be called by that class
-        // and this one.
-
-        GraphMetricUserSettings oGraphMetricUserSettings =
-            oCalculateGraphMetricsContext.GraphMetricUserSettings;
-
-        WordMetricUserSettings oWordMetricUserSettings =
-            oGraphMetricUserSettings.WordMetricUserSettings;
-
-        GraphMetrics eOriginalGraphMetricsToCalculate =
-            oGraphMetricUserSettings.GraphMetricsToCalculate;
-
-        Boolean bOriginalTextColumnIsOnEdgeWorksheet =
-            oWordMetricUserSettings.TextColumnIsOnEdgeWorksheet;
-
-        String sOriginalTextColumnName =
-            oWordMetricUserSettings.TextColumnName;
-
-        Boolean bOriginalCountByGroup = oWordMetricUserSettings.CountByGroup;
-
-        oGraphMetricUserSettings.GraphMetricsToCalculate = GraphMetrics.Words;
-        oWordMetricUserSettings.TextColumnIsOnEdgeWorksheet = true;
-        oWordMetricUserSettings.TextColumnName = StatusColumnName;
-        oWordMetricUserSettings.CountByGroup = true;
-
-        try
-        {
-            return ( ( new WordMetricCalculator2() ).TryCalculateGraphMetrics(
-                oGraph, oCalculateGraphMetricsContext,
-                out oWordMetricColumns) );
-        }
-        finally
-        {
-            oGraphMetricUserSettings.GraphMetricsToCalculate =
-                eOriginalGraphMetricsToCalculate;
-
-            oWordMetricUserSettings.TextColumnIsOnEdgeWorksheet =
-                bOriginalTextColumnIsOnEdgeWorksheet;
-
-            oWordMetricUserSettings.TextColumnName = sOriginalTextColumnName;
-            oWordMetricUserSettings.CountByGroup = bOriginalCountByGroup;
         }
     }
 
@@ -1095,7 +1287,8 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
         // for that group.
 
         Dictionary<String, Int32> oGroupNameIndexes =
-            GetGroupNameIndexesFromWordMetrics(aoGroupNameValues);
+            TwitterSearchNetworkWordMetricUtil
+            .GetGroupNameIndexesFromWordMetrics(aoGroupNameValues);
 
         Int32 iGroups = oAllGroupEdgeInfos.Count;
         String sTableName = GetTableName(ref iTableIndex);
@@ -1123,10 +1316,10 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
             if ( oGroupNameIndexes.TryGetValue(sGroupNameOrDummyGroupName,
                 out iFirstRowForGroup) )
             {
-                CopyWordMetricsForGroup(sGroupNameOrDummyGroupName,
-                    aoWord1Values, aoWord2Values, aoCountValues,
-                    aoGroupNameValues, iFirstRowForGroup, oTopWordsOrWordPairs,
-                    oTopCounts);
+                TwitterSearchNetworkWordMetricUtil.CopyWordMetricsForGroup(
+                    sGroupNameOrDummyGroupName, aoWord1Values, aoWord2Values,
+                    aoCountValues, aoGroupNameValues, iFirstRowForGroup,
+                    MaximumTopItems, oTopWordsOrWordPairs, oTopCounts);
             }
 
             // (The extra "1" is for the dummy group that represents the entire
@@ -1154,8 +1347,10 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
                         GetGroupRowID(oGroupEdgeInfo),
 
                         ExcelUtil.ForceCellText(
-                            ConcatenateTopWordsOrWordPairs(oTopWordsOrWordPairs,
-                                bIsForWords) )
+                            TwitterSearchNetworkWordMetricUtil
+                            .ConcatenateTopWordsOrWordPairs(
+                                oTopWordsOrWordPairs, bIsForWords,
+                                MaximumTopItems) )
                     ) );
             }
         }
@@ -1164,309 +1359,6 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
             WorksheetNames.Groups, TableNames.Groups, sGroupTableColumnName,
             ExcelTableUtil.AutoColumnWidth, null, null,
             oTopWordsOrWordPairsForGroupWorksheet.ToArray() ) );
-    }
-
-    //*************************************************************************
-    //  Method: GetGroupNameIndexesFromWordMetrics()
-    //
-    /// <summary>
-    /// Gets the indexes of the start of each group for words or word pairs.
-    /// </summary>
-    ///
-    /// <param name="aoGroupNameValues">
-    /// The group name values for words or word pairs.
-    /// </param>
-    ///
-    /// <returns>
-    /// The key is a group name from the word or word pair table created by
-    /// WordMetricCalculator2 and the value is the index of the first row for
-    /// that group.
-    ///
-    /// <para>
-    /// Note that the group name for the "dummy" group that represents the
-    /// entire graph is <see
-    /// cref="GroupEdgeSorter.DummyGroupNameForEntireGraph" />.
-    /// </para>
-    ///
-    /// </returns>
-    //*************************************************************************
-
-    protected Dictionary<String, Int32>
-    GetGroupNameIndexesFromWordMetrics
-    (
-        GraphMetricValueOrdered [] aoGroupNameValues
-    )
-    {
-        Debug.Assert(aoGroupNameValues != null);
-        AssertValid();
-
-        Dictionary<String, Int32> oGroupNameIndexes =
-            new Dictionary<String, Int32>();
-
-        Int32 iRows = aoGroupNameValues.Length;
-        String sCurrentGroupName = String.Empty;
-
-        for (Int32 iRow = 0; iRow < iRows; iRow++)
-        {
-            Object oGroupNameAsObject = aoGroupNameValues[iRow].Value;
-
-            if (oGroupNameAsObject is String)
-            {
-                String sGroupName = (String)oGroupNameAsObject;
-
-                if (sGroupName != sCurrentGroupName)
-                {
-                    oGroupNameIndexes.Add(sGroupName, iRow);
-                    sCurrentGroupName = sGroupName;
-                }
-            }
-        }
-
-        return (oGroupNameIndexes);
-    }
-
-    //*************************************************************************
-    //  Method: CopyWordMetricsForGroup()
-    //
-    /// <summary>
-    /// Copies calculated metrics for words or word pairs.
-    /// </summary>
-    ///
-    /// <param name="sGroupNameOrDummyGroupName">
-    /// Name of the group, or the dummy name if the group is the "dummy" group
-    /// for the entire graph.
-    /// </param>
-    ///
-    /// <param name="aoWord1Values">
-    /// Values that were calculated for either the word (for words) or word 1
-    /// (for word pairs).
-    /// </param>
-    ///
-    /// <param name="aoWord2Values">
-    /// Values that were calculated for word 2, or null if this is being called
-    /// for words.
-    /// </param>
-    ///
-    /// <param name="aoCountValues">
-    /// Values that were calculated for the word or word pair count.
-    /// </param>
-    ///
-    /// <param name="aoGroupNameValues">
-    /// Values that were calculated for the group name.
-    /// </param>
-    ///
-    /// <param name="iFirstRowForGroup">
-    /// The first row for the group in the calculated values.
-    /// </param>
-    ///
-    /// <param name="oTopWordsOrWordPairs">
-    /// The collection of words or word pairs that this method fills in.
-    /// </param>
-    ///
-    /// <param name="oTopCounts">
-    /// The collection of counts that this method fills in.
-    /// </param>
-    ///
-    /// <remarks>
-    /// This method copies the word or word pair metrics that were calculated
-    /// for a group to new collections.
-    /// </remarks>
-    //*************************************************************************
-
-    protected void
-    CopyWordMetricsForGroup
-    (
-        String sGroupNameOrDummyGroupName,
-        GraphMetricValueOrdered [] aoWord1Values,
-        GraphMetricValueOrdered [] aoWord2Values,
-        GraphMetricValueOrdered [] aoCountValues,
-        GraphMetricValueOrdered [] aoGroupNameValues,
-        Int32 iFirstRowForGroup,
-        List<GraphMetricValueOrdered> oTopWordsOrWordPairs,
-        List<GraphMetricValueOrdered> oTopCounts
-    )
-    {
-        Debug.Assert( !String.IsNullOrEmpty(sGroupNameOrDummyGroupName) );
-        Debug.Assert(aoWord1Values != null);
-        // aoWord2Values
-        Debug.Assert(aoCountValues != null);
-        Debug.Assert(aoGroupNameValues != null);
-        Debug.Assert(iFirstRowForGroup >= 0);
-        Debug.Assert(oTopWordsOrWordPairs != null);
-        Debug.Assert(oTopCounts != null);
-        AssertValid();
-
-        Int32 iRows = aoGroupNameValues.Length;
-
-        for (Int32 iRow = iFirstRowForGroup, iItems = 0;
-            iRow < iRows && iItems < MaximumTopItems;
-            iRow++, iItems++)
-        {
-            Object oWord1AsObject = aoWord1Values[iRow].Value;
-            Object oCountAsObject = aoCountValues[iRow].Value;
-            Object oGroupNameAsObject = aoGroupNameValues[iRow].Value;
-
-            if (
-                !(oGroupNameAsObject is String)
-                ||
-                (String)oGroupNameAsObject != sGroupNameOrDummyGroupName
-                ||
-                !(oWord1AsObject is String)
-                ||
-                !(oCountAsObject is Int32)
-                )
-            {
-                break;
-            }
-
-            String sWordOrWordPair = ExcelUtil.UnforceCellText(
-                (String)oWord1AsObject );
-
-            if (aoWord2Values != null)
-            {
-                Object oWord2AsObject = aoWord2Values[iRow].Value;
-
-                if ( !(oWord2AsObject is String) )
-                {
-                    break;
-                }
-
-                sWordOrWordPair = FormatWordPair( sWordOrWordPair,
-                    ExcelUtil.UnforceCellText( (String)oWord2AsObject ) );
-            }
-
-            oTopWordsOrWordPairs.Add( new GraphMetricValueOrdered(
-                ExcelUtil.ForceCellText(sWordOrWordPair) ) );
-
-            oTopCounts.Add( new GraphMetricValueOrdered(oCountAsObject) );
-        }
-    }
-
-    //*************************************************************************
-    //  Method: ConcatenateTopWordsOrWordPairs()
-    //
-    /// <summary>
-    /// Concatenates a list of top words or word pairs.
-    /// </summary>
-    ///
-    /// <param name="oTopWordsOrWordPairs">
-    /// The top words or word pairs to concatenate.
-    /// </param>
-    ///
-    /// <param name="bWords">
-    /// true if <paramref name="oTopWordsOrWordPairs" /> contains words, false
-    /// if it contains word pairs.
-    /// </param>
-    ///
-    /// <returns>
-    /// The top words or word pairs concatenated with a space.
-    /// </returns>
-    //*************************************************************************
-
-    protected String
-    ConcatenateTopWordsOrWordPairs
-    (
-        List<GraphMetricValueOrdered> oTopWordsOrWordPairs,
-        Boolean bWords
-    )
-    {
-        Debug.Assert(oTopWordsOrWordPairs != null);
-        AssertValid();
-
-        // An extra space is added between word pairs for legibility.
-
-        return ( String.Join( bWords ? " " : "  ",
-
-            (from oGroupMetricValueWithID in oTopWordsOrWordPairs
-            select ExcelUtil.UnforceCellText(
-                (String)oGroupMetricValueWithID.Value ) ).Take(
-                    MaximumTopItems).ToArray() ) );
-    }
-
-    //*************************************************************************
-    //  Method: FormatWordPair()
-    //
-    /// <summary>
-    /// Formats a word pair.
-    /// </summary>
-    ///
-    /// <param name="sWord1">
-    /// The first word.
-    /// </param>
-    ///
-    /// <param name="sWord2">
-    /// The second word.
-    /// </param>
-    ///
-    /// <returns>
-    /// A formatted word pair.
-    /// </returns>
-    //*************************************************************************
-
-    protected String
-    FormatWordPair
-    (
-        String sWord1,
-        String sWord2
-    )
-    {
-        Debug.Assert( !String.IsNullOrEmpty(sWord1) );
-        Debug.Assert( !String.IsNullOrEmpty(sWord2) );
-        AssertValid();
-
-        return (sWord1 + "," + sWord2);
-    }
-
-    //*************************************************************************
-    //  Method: TryGetStringValueForEdge()
-    //
-    /// <summary>
-    /// Attempts to get a non-empty String metadata value from an edge.
-    /// </summary>
-    ///
-    /// <param name="oEdge">
-    /// The edge to get the metadata value from.
-    /// </param>
-    ///
-    /// <param name="sKey">
-    /// The value's key.
-    /// </param>
-    ///
-    /// <param name="sValue">
-    /// Where the non-empty string value gets stored if true is returned.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the value was found.
-    /// </returns>
-    //*************************************************************************
-
-    protected Boolean
-    TryGetStringValueForEdge
-    (
-        IEdge oEdge,
-        String sKey,
-        out String sValue
-    )
-    {
-        Debug.Assert(oEdge != null);
-        Debug.Assert( !String.IsNullOrEmpty(sKey) );
-        AssertValid();
-
-        Object oValue;
-
-        if (
-            oEdge.TryGetValue(sKey, typeof(String), out oValue)
-            &&
-            oValue != null
-            )
-        {
-            sValue = (String)oValue;
-            return (sValue.Length > 0);
-        }
-
-        sValue = null;
-        return (false);
     }
 
     //*************************************************************************
@@ -1610,55 +1502,6 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
     }
 
     //*************************************************************************
-    //  Method: GetGraphMetricValues()
-    //
-    /// <summary>
-    /// Gets a pair of GraphMetricValueOrdered collections populated with top
-    /// strings and their counts.
-    /// </summary>
-    ///
-    /// <param name="oStringCounts">
-    /// The key is a string being counted and the value is the number of times
-    /// the string was found.
-    /// </param>
-    ///
-    /// <param name="oTopStrings">
-    /// Where this method stores the top strings in <paramref
-    /// name="oStringCounts" />.
-    /// </param>
-    ///
-    /// <param name="oTopStringCounts">
-    /// Where this method stores the counts for the top strings in <paramref
-    /// name="oStringCounts" />.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    GetGraphMetricValues
-    (
-        Dictionary<String, Int32> oStringCounts,
-        out List<GraphMetricValueOrdered> oTopStrings,
-        out List<GraphMetricValueOrdered> oTopStringCounts
-    )
-    {
-        Debug.Assert(oStringCounts != null);
-        AssertValid();
-
-        oTopStrings = new List<GraphMetricValueOrdered>();
-        oTopStringCounts = new List<GraphMetricValueOrdered>();
-
-        // Sort the Dictionary by descending string counts.
-
-        foreach ( String sKey in GetTopStrings(oStringCounts) )
-        {
-            oTopStrings.Add( new GraphMetricValueOrdered(sKey) );
-
-            oTopStringCounts.Add(
-                new GraphMetricValueOrdered( oStringCounts[sKey] ) );
-        }
-    }
-
-    //*************************************************************************
     //  Method: AddGraphMetricColumnPair()
     //
     /// <summary>
@@ -1735,174 +1578,100 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
     }
 
     //*************************************************************************
-    //  Method: CountDelimitedStringsInEdgeColumn()
+    //  Method: GetSearchTerm()
     //
     /// <summary>
-    /// Counts the number of times each string was found in a specified edge
-    /// column.
+    /// Attempts to get the search term that was used to create the network.
     /// </summary>
-    ///
-    /// <param name="oEdges">
-    /// The edges to calculate the metrics from.
-    /// </param>
-    ///
-    /// <param name="sEdgeColumnName">
-    /// Name of the edge column to calculate the metric from.  The column must
-    /// contain space-delimited strings.  Sample: "URLs in Tweet", in which
-    /// case the column contains space-delimited URLs that this method counts
-    /// and ranks.
-    /// </param>
     ///
     /// <returns>
-    /// A Dictionary in which the key is a string being counted (an URL in the
-    /// tweets, for example), and the value is the number of times the string
-    /// was found in the edge column.
+    /// The search term, or null if not available.
     /// </returns>
-    //*************************************************************************
-
-    protected Dictionary<String, Int32>
-    CountDelimitedStringsInEdgeColumn
-    (
-        IEnumerable<IEdge> oEdges,
-        String sEdgeColumnName
-    )
-    {
-        Debug.Assert(oEdges != null);
-        Debug.Assert( !String.IsNullOrEmpty(sEdgeColumnName) );
-        AssertValid();
-
-        // The key is a string being counted (an URL in a Tweet, for example),
-        // and the value is the number of times the string was found in the
-        // edge column.
-
-        Dictionary<String, Int32> oStringCounts =
-            new Dictionary<String, Int32>();
-
-        foreach (IEdge oEdge in oEdges)
-        {
-            String sSpaceDelimitedCellValue;
-
-            if ( TryGetStringValueForEdge(oEdge, sEdgeColumnName, 
-                out sSpaceDelimitedCellValue) )
-            {
-                foreach ( String sString in sSpaceDelimitedCellValue.Split(
-                    new Char[] {' '}, StringSplitOptions.RemoveEmptyEntries) )
-                {
-                    CountString(sString, oStringCounts);
-                }
-            }
-        }
-
-        return (oStringCounts);
-    }
-
-    //*************************************************************************
-    //  Method: GetTopStrings()
-    //
-    /// <summary>
-    /// Gets the top string counts in a dictionary of strings.
-    /// </summary>
-    ///
-    /// <param name="oStringCounts">
-    /// The key is a string being counted (an URL in the tweets, for example),
-    /// and the value is the number of times the string was found in the edge
-    /// column.
-    /// </param>
-    ///
-    /// <returns>
-    /// The top strings being counted, sorted by the number of times the string
-    /// was found in the edge column.
-    /// </returns>
-    //*************************************************************************
-
-    protected IEnumerable<String>
-    GetTopStrings
-    (
-        Dictionary<String, Int32> oStringCounts
-    )
-    {
-        Debug.Assert(oStringCounts != null);
-        AssertValid();
-
-        // Sort the Dictionary by descending string counts.
-
-        return (
-            (from sKey in oStringCounts.Keys
-            orderby oStringCounts[sKey] descending
-            select sKey).Take(MaximumTopItems)
-            );
-    }
-
-    //*************************************************************************
-    //  Method: ConcatenateTopStrings()
-    //
-    /// <summary>
-    /// Concatenates the top strings from a dictionary of string counts.
-    /// </summary>
-    ///
-    /// <param name="oStringCounts">
-    /// The key is a string and the value is the number of times the string was
-    /// found.
-    /// </param>
-    ///
-    /// <remarks>
-    /// The top strings in <paramref name="oStringCounts" />, separated by
-    /// spaces.
-    /// </remarks>
     //*************************************************************************
 
     protected String
-    ConcatenateTopStrings
-    (
-        Dictionary<String, Int32> oStringCounts
-    )
+    GetSearchTerm()
     {
-        Debug.Assert(oStringCounts != null);
         AssertValid();
 
-        return ( String.Join( " ", GetTopStrings(oStringCounts).ToArray() ) );
+        // If the user opted to add a description of the imported data to the
+        // graph history, then the graph history has an import description in
+        // this format:
+        //
+        //   The graph represents a network of {0} Twitter {1} whose recent
+        //   tweets contained \"{2}\", taken from...
+        //
+        // This description was created by the TwitterSearchNetworkAnalyzer
+        // class.
+        //
+        // Parse the "{2}" argument.
+        //
+        // (This is fragile.  A more robust solution would store the raw search
+        // term in a separate metadata value.  For now, there is a comment in
+        // the TwitterSearchNetworkAnalyzer code warning about this
+        // dependency.)
+
+        String sImportDescription;
+
+        if ( m_oGraphHistory.TryGetValue(GraphHistoryKeys.ImportDescription,
+            out sImportDescription) )
+        {
+            const String Pattern =
+                "contained \"(?<SearchTerm>.+)\", taken from";
+
+            Match oMatch = Regex.Match(sImportDescription, Pattern);
+
+            if (oMatch.Success)
+            {
+                return (oMatch.Groups["SearchTerm"].Value);
+            }
+        }
+
+        return (null);
     }
 
     //*************************************************************************
-    //  Method: CountString()
+    //  Method: ReportProgressAndCheckCancellationPending()
     //
     /// <summary>
-    /// Adds 1 to the count for a string in a dictionary of string counts.
+    /// Reports progress to the calling thread and checks for cancellation if a
+    /// <see cref="BackgroundWorker" /> is in use.
     /// </summary>
     ///
-    /// <param name="sString">
-    /// The string to count.  Can't be null or empty.
+    /// <param name="oCalculateGraphMetricsContext">
+    /// Provides access to objects needed for calculating graph metrics.
     /// </param>
     ///
-    /// <param name="oStringCounts">
-    /// The key is a string being counted and the value is the number of times
-    /// the string was found.
-    /// </param>
+    /// <returns>
+    /// false if the user wants to cancel.
+    /// </returns>
     //*************************************************************************
 
-    protected void
-    CountString
+    protected Boolean
+    ReportProgressAndCheckCancellationPending
     (
-        String sString,
-        Dictionary<String, Int32> oStringCounts
+        CalculateGraphMetricsContext oCalculateGraphMetricsContext
     )
     {
-        Debug.Assert( !String.IsNullOrEmpty(sString) );
-        Debug.Assert(oStringCounts != null);
+        Debug.Assert(oCalculateGraphMetricsContext != null);
         AssertValid();
 
-        Int32 iStringCount;
+        BackgroundWorker oBackgroundWorker =
+            oCalculateGraphMetricsContext.BackgroundWorker;
 
-        if ( oStringCounts.TryGetValue(sString, out iStringCount) )
+        if (oBackgroundWorker != null)
         {
-            iStringCount++;
-        }
-        else
-        {
-            iStringCount = 1;
+            if (oBackgroundWorker.CancellationPending)
+            {
+                return (false);
+            }
+
+            oBackgroundWorker.ReportProgress(50,
+                "Calculating Twitter search network top items."
+                );
         }
 
-        oStringCounts[sString] = iStringCount;
+        return (true);
     }
 
 
@@ -1921,6 +1690,7 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
     {
         base.AssertValid();
 
+        Debug.Assert(m_oGraphHistory != null);
         Debug.Assert(m_oTwitterStatusTextParser != null);
     }
 
@@ -1962,6 +1732,10 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
     //*************************************************************************
     //  Protected fields
     //*************************************************************************
+
+    /// Describes how the graph was created.
+
+    protected GraphHistory m_oGraphHistory;
 
     /// Parses the text of a Twitter tweet.  This class uses only one instance
     /// to avoid making TwitterStatusTextParser recompile all of its regular

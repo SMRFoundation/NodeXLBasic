@@ -218,12 +218,12 @@ public class TwitterStatus : Object
             return (m_Urls);
         }
 
-		set
-		{
-			m_Urls = value;
+        set
+        {
+            m_Urls = value;
 
-			AssertValid();
-		}
+            AssertValid();
+        }
     }
 
     //*************************************************************************

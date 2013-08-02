@@ -938,6 +938,99 @@ public class WordCounterTest : Object
     }
 
     //*************************************************************************
+    //  Method: TestCountTermsInDocument13()
+    //
+    /// <summary>
+    /// Tests CountTermsInDocument() and CountedTerms.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestCountTermsInDocument13()
+    {
+        // Don't convert to lower case.
+
+        WordCounter oWordCounterForThisTest =
+            new WordCounter(false, WordsToSkip);
+
+        oWordCounterForThisTest.CountTermsInDocument("the brown jumping fox");
+        oWordCounterForThisTest.CountTermsInDocument("FOX JUMPING BROWN THE");
+
+        Assert.AreEqual(2, oWordCounterForThisTest.TotalDocuments);
+        Assert.AreEqual(7, oWordCounterForThisTest.TotalWordsInDocuments);
+
+        IEnumerable<CountedWord> oCountedWords =
+            oWordCounterForThisTest.CountedTerms;
+
+        Assert.AreEqual( 7, oCountedWords.Count() );
+
+        oCountedWords.Single(
+            oCountedWord => (
+                oCountedWord.Word == "brown"
+                &&
+                oCountedWord.Count == 1
+                &&
+                oCountedWord.DocumentsInWhichTermWasCounted == 1
+            ) );
+
+        oCountedWords.Single(
+            oCountedWord => (
+                oCountedWord.Word == "jumping"
+                &&
+                oCountedWord.Count == 1
+                &&
+                oCountedWord.DocumentsInWhichTermWasCounted == 1
+            ) );
+
+        oCountedWords.Single(
+            oCountedWord => (
+                oCountedWord.Word == "fox"
+                &&
+                oCountedWord.Count == 1
+                &&
+                oCountedWord.DocumentsInWhichTermWasCounted == 1
+            ) );
+
+        oCountedWords.Single(
+            oCountedWord => (
+                oCountedWord.Word == "BROWN"
+                &&
+                oCountedWord.Count == 1
+                &&
+                oCountedWord.DocumentsInWhichTermWasCounted == 1
+            ) );
+
+        oCountedWords.Single(
+            oCountedWord => (
+                oCountedWord.Word == "JUMPING"
+                &&
+                oCountedWord.Count == 1
+                &&
+                oCountedWord.DocumentsInWhichTermWasCounted == 1
+            ) );
+
+        oCountedWords.Single(
+            oCountedWord => (
+                oCountedWord.Word == "FOX"
+                &&
+                oCountedWord.Count == 1
+                &&
+                oCountedWord.DocumentsInWhichTermWasCounted == 1
+            ) );
+
+        oCountedWords.Single(
+            oCountedWord => (
+                oCountedWord.Word == "THE"
+                &&
+                oCountedWord.Count == 1
+                &&
+                oCountedWord.DocumentsInWhichTermWasCounted == 1
+            ) );
+    }
+
+    //*************************************************************************
     //  Method: TestClear()
     //
     /// <summary>
