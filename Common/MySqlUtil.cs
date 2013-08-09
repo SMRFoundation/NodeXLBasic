@@ -34,7 +34,7 @@ public static class MySqlUtil
     /// <param name="storedProcedureName">
     /// Name of the stored procedure.
     /// </param>
-	///
+    ///
     /// <param name="commandTimeoutSeconds">
     /// Time to wait for the command to complete before timing out, in seconds.
     /// Can't be zero.
@@ -65,7 +65,7 @@ public static class MySqlUtil
 
         GetMySqlConnectionAndCommand(connectionString, storedProcedureName,
             commandTimeoutSeconds, out mySqlConnection, out mySqlCommand,
-			nameValuePairs);
+            nameValuePairs);
 
         using (mySqlConnection)
         {

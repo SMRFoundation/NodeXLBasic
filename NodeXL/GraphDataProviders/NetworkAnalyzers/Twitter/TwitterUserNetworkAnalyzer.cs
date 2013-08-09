@@ -951,7 +951,9 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
             sScreenNameToAnalyze
             );
 
-        oNetworkDescriber.AddNetworkTime();
+        oNetworkDescriber.AddNetworkTime(NetworkSource);
+
+        oNetworkDescriber.StartNewParagraph();
 
         Boolean bFollowedVertices = WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.FollowedVertices);
@@ -974,6 +976,18 @@ public class TwitterUserNetworkAnalyzer : TwitterNetworkAnalyzerBase
         }
 
         oNetworkDescriber.AddNetworkLimit(iMaximumPeoplePerRequest, "people");
+
+        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
+
+            WhatToInclude.FollowedFollowerEdges
+            |
+            WhatToInclude.RepliesToEdges
+            |
+            WhatToInclude.MentionsEdges
+            ) )
+        {
+            oNetworkDescriber.StartNewParagraph();
+        }
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.FollowedFollowerEdges) )

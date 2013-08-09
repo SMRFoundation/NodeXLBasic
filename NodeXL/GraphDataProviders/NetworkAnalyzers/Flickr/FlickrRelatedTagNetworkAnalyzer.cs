@@ -791,7 +791,7 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
             sTag
             );
 
-        oNetworkDescriber.AddNetworkTime();
+        oNetworkDescriber.AddNetworkTime(NetworkSource);
 
         return ( oNetworkDescriber.ConcatenateSentences() );
     }

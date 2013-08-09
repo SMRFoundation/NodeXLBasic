@@ -590,6 +590,8 @@ public class TwitterUtil
         // be made again, in seconds since 1/1/1970, in UTC.  If this header is
         // available, use it.  Otherwise, use a default pause time.
 
+        Int32 iRateLimitPauseMs = DefaultRateLimitPauseMs;
+
         WebResponse oWebResponse = oWebException.Response;
 
         if (oWebResponse != null)
@@ -616,12 +618,22 @@ public class TwitterUtil
                 if (dRateLimitPauseMs > 0 &&
                     dRateLimitPauseMs <= 2 * 60 * 60 * 1000)
                 {
-                    return ( (Int32)dRateLimitPauseMs );
+                    iRateLimitPauseMs = (Int32)dRateLimitPauseMs;
                 }
             }
         }
 
-        return (DefaultRateLimitPauseMs);
+        // The extra time added to the calculated pause time is an attempt to
+        // work around a problem where Twitter occasionally returns 429 ("rate
+        // limit exceeded") a second time, after GetTwitterResponseAsString()
+        // pauses once for the time specified by Twitter.
+        //
+        // Is this a server-client clock synchronization problem?  A question
+        // posted on the Twitter API forums went unanswered:
+        //
+        //   http://dev.twitter.com/discussions/18999
+
+        return (iRateLimitPauseMs + ExtraRateLimitPauseMs);
     }
 
 
@@ -683,6 +695,10 @@ public class TwitterUtil
     /// limits kick in, in milliseconds.
 
     private const Int32 DefaultRateLimitPauseMs = 15 * 60 * 1000;
+
+    /// Extra time to add to the pause, in milliseconds.
+
+    private const Int32 ExtraRateLimitPauseMs = 15 * 1000;
 
 
     //*************************************************************************

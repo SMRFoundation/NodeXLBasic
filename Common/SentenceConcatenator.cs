@@ -69,6 +69,60 @@ public class SentenceConcatenator : List<String>
     }
 
     //*************************************************************************
+    //  Method: AddSentenceNewParagraph()
+    //
+    /// <summary>
+    /// Formats a sentence and adds it to the collection as the start of a new
+    /// paragraph.
+    /// </summary>
+    ///
+    /// <param name="format">
+    /// A composite format string.
+    /// </param>
+    ///
+    /// <param name="args">
+    /// An Object array containing zero or more objects to format. 
+    /// </param>
+    //*************************************************************************
+
+    public void
+    AddSentenceNewParagraph
+    (
+        String format,
+        params Object [] args
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(format) );
+        Debug.Assert(args != null);
+        AssertValid();
+
+        this.StartNewParagraph();
+        this.AddSentence(format, args);
+    }
+
+    //*************************************************************************
+    //  Method: StartNewParagraph()
+    //
+    /// <summary>
+    /// Starts a new paragraph.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// Use this method to add two line breaks to the collection.  The next
+    /// sentence added with <see cref="AddSentence" /> will then start on a new
+    /// paragraph.
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    StartNewParagraph()
+    {
+        AssertValid();
+
+        this.Add(ParagraphStarter);
+    }
+
+    //*************************************************************************
     //  Method: ConcatenateSentences()
     //
     /// <summary>
@@ -87,15 +141,31 @@ public class SentenceConcatenator : List<String>
         AssertValid();
 
         StringBuilder oStringBuilder = new StringBuilder();
+        Boolean bPreviousSentenceWasParagraphStarter = false;
 
         foreach (String sSentence in this)
         {
-            if (oStringBuilder.Length > 0)
+            // Add spaces between sentences if neither sentence is a paragraph
+            // starter.
+
+            Boolean bThisSentenceIsParagraphStarter =
+                (sSentence == ParagraphStarter);
+
+            if (
+                !bPreviousSentenceWasParagraphStarter
+                &&
+                !bThisSentenceIsParagraphStarter
+                &&
+                oStringBuilder.Length > 0
+                )
             {
                 oStringBuilder.Append("  ");
             }
 
             oStringBuilder.Append(sSentence);
+
+            bPreviousSentenceWasParagraphStarter =
+                bThisSentenceIsParagraphStarter;
         }
 
         return ( oStringBuilder.ToString() );
@@ -117,6 +187,15 @@ public class SentenceConcatenator : List<String>
     {
         // (Do nothing.)
     }
+
+
+    //*************************************************************************
+    //  Protected constants
+    //*************************************************************************
+
+    /// String that starts a new paragraph.
+
+    protected const String ParagraphStarter = "\r\n\r\n";
 
 
     //*************************************************************************

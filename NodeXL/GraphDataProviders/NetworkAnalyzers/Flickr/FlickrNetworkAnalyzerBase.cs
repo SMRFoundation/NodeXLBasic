@@ -561,6 +561,10 @@ public abstract class FlickrNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     //  Protected constants
     //*************************************************************************
 
+    /// The source of Flickr networks, used in network descriptions.
+
+    protected const String NetworkSource = "Flickr";
+
     /// HTTP status codes that have special meaning with Flickr.  When they
     /// occur, the requests are not retried.
 

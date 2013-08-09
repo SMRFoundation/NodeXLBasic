@@ -743,6 +743,10 @@ public abstract class YouTubeNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     //  Protected constants
     //*************************************************************************
 
+    /// The source of YouTube networks, used in network descriptions.
+
+    protected const String NetworkSource = "YouTube";
+
     /// HTTP status codes that have special meaning with YouTube.  When they
     /// occur, the requests are not retried.
 

@@ -1462,21 +1462,12 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
 
     //*************************************************************************
-    //  Relationship descriptions
-    //*************************************************************************
-
-    /// Values for the edge's RelationshipID GraphML-attribute.
-
-    protected const String RepliesToRelationship = "Replies to";
-    ///
-    protected const String MentionsRelationship = "Mentions";
-    ///
-    protected const String NonRepliesToNonMentionsRelationship = "Tweet";
-
-
-    //*************************************************************************
     //  Protected constants
     //*************************************************************************
+
+    /// The source of Twitter networks, used in network descriptions.
+
+    protected const String NetworkSource = "Twitter";
 
     /// HTTP status codes that have special meaning with Twitter.  When they
     /// occur, the requests are not retried.

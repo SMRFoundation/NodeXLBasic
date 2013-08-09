@@ -82,7 +82,10 @@ public class SentenceConcatenatorTest : Object
         String sConcatenatedSentences =
             m_oSentenceConcatenator.ConcatenateSentences();
 
-        Assert.AreEqual(String.Empty, sConcatenatedSentences);
+        Assert.AreEqual(
+            String.Empty,
+            sConcatenatedSentences
+            );
     }
 
     //*************************************************************************
@@ -105,7 +108,10 @@ public class SentenceConcatenatorTest : Object
         String sConcatenatedSentences =
             m_oSentenceConcatenator.ConcatenateSentences();
 
-        Assert.AreEqual("The answer is yes.", sConcatenatedSentences);
+        Assert.AreEqual(
+            "The answer is yes.",
+            sConcatenatedSentences
+            );
     }
 
     //*************************************************************************
@@ -129,8 +135,90 @@ public class SentenceConcatenatorTest : Object
         String sConcatenatedSentences =
             m_oSentenceConcatenator.ConcatenateSentences();
 
-        Assert.AreEqual("The answer is yes.  This has no arguments.",
-            sConcatenatedSentences);
+        Assert.AreEqual(
+            "The answer is yes.  This has no arguments.",
+            sConcatenatedSentences
+            );
+    }
+
+    //*************************************************************************
+    //  Method: TestAddSentence4()
+    //
+    /// <summary>
+    /// Tests the AddSentence(), StartNewParagraph(), and
+    /// ConcatenateSentences() methods.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestAddSentence4()
+    {
+        // Several sentences with paragraphs.
+
+        m_oSentenceConcatenator.AddSentence("The answer is {0}.", "yes");
+        m_oSentenceConcatenator.AddSentence("This has no arguments.");
+
+        m_oSentenceConcatenator.StartNewParagraph();
+        m_oSentenceConcatenator.AddSentence("This is paragraph 2.");
+        m_oSentenceConcatenator.AddSentence("Second sentence in paragraph 2.");
+
+        m_oSentenceConcatenator.StartNewParagraph();
+        m_oSentenceConcatenator.AddSentence("This is paragraph 3.");
+        m_oSentenceConcatenator.AddSentence("Third sentence in paragraph 3.");
+
+        String sConcatenatedSentences =
+            m_oSentenceConcatenator.ConcatenateSentences();
+
+        Assert.AreEqual(
+            "The answer is yes.  This has no arguments."
+            + "\r\n\r\n"
+            + "This is paragraph 2.  Second sentence in paragraph 2."
+            + "\r\n\r\n"
+            + "This is paragraph 3.  Third sentence in paragraph 3."
+            ,
+            sConcatenatedSentences
+            );
+    }
+
+    //*************************************************************************
+    //  Method: TestAddSentence5()
+    //
+    /// <summary>
+    /// Tests the AddSentence(), AddSentenceNewParagraph(), and
+    /// ConcatenateSentences() methods.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestAddSentence5()
+    {
+        // Several sentences with paragraphs.
+
+        m_oSentenceConcatenator.AddSentence("The answer is {0}.", "yes");
+        m_oSentenceConcatenator.AddSentence("This has no arguments.");
+
+        m_oSentenceConcatenator.AddSentenceNewParagraph("This is paragraph 2.");
+        m_oSentenceConcatenator.AddSentence("Second sentence in paragraph 2.");
+
+        m_oSentenceConcatenator.AddSentenceNewParagraph("This is paragraph 3.");
+        m_oSentenceConcatenator.AddSentence("Third sentence in paragraph 3.");
+
+        String sConcatenatedSentences =
+            m_oSentenceConcatenator.ConcatenateSentences();
+
+        Assert.AreEqual(
+            "The answer is yes.  This has no arguments."
+            + "\r\n\r\n"
+            + "This is paragraph 2.  Second sentence in paragraph 2."
+            + "\r\n\r\n"
+            + "This is paragraph 3.  Third sentence in paragraph 3."
+            ,
+            sConcatenatedSentences
+            );
     }
 
 

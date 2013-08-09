@@ -41,14 +41,23 @@ public class NetworkDescriber : SentenceConcatenator
     /// Adds a sentence to the network description that says when the network
     /// was obtained.
     /// </summary>
+    ///
+    /// <param name="networkSource">
+    /// Where the network came from.  Sample: "Twitter".
+    /// </param>
     //*************************************************************************
 
     public void
-    AddNetworkTime()
+    AddNetworkTime
+    (
+        String networkSource
+    )
     {
+        Debug.Assert( !String.IsNullOrEmpty(networkSource) );
         AssertValid();
 
-        AddEventTime("The network was obtained", DateTime.UtcNow);
+        AddEventTime("The network was obtained from " + networkSource,
+            DateTime.UtcNow);
     }
 
     //*************************************************************************
@@ -60,7 +69,8 @@ public class NetworkDescriber : SentenceConcatenator
     /// </summary>
     ///
     /// <param name="prefix">
-    /// Description of the event.  Sample: "The network was obtained".
+    /// Description of the event.  Sample: "The network was obtained from
+    /// Twitter".
     /// </param>
     ///
     /// <param name="dateTimeUtc">
@@ -78,8 +88,8 @@ public class NetworkDescriber : SentenceConcatenator
         Debug.Assert( !String.IsNullOrEmpty(prefix) );
         AssertValid();
 
-        // Sample: "The network was obtained on Monday, 05 March 2012 at
-        // 22:13 UTC."
+        // Sample: "The network was obtained from Twitter on Monday,
+        // 05 March 2012 at 22:13 UTC."
 
         this.AddSentence(
 

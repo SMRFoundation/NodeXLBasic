@@ -90,6 +90,8 @@ public class TwitterStatusTextParser : Object
         Debug.Assert(statusText != null);
         AssertValid();
 
+        statusText = ReplacePunctuationWithSpaces(statusText);
+
         repliedToScreenName = null;
         Match oRepliedToMatch = m_oRepliedToRegex.Match(statusText);
 
@@ -118,6 +120,59 @@ public class TwitterStatusTextParser : Object
         }
 
         uniqueMentionedScreenNames = oUniqueMentionedScreenNames.ToArray();
+    }
+
+    //*************************************************************************
+    //  Method: ReplacePunctuationWithSpaces()
+    //
+    /// <summary>
+    /// Replaces most punctuation characters in status text with spaces.
+    /// </summary>
+    ///
+    /// <param name="sStatusText">
+    /// Status text that might contain screen names.  Can't be null.
+    /// </param>
+    ///
+    /// <returns>
+    /// <paramref name="sStatusText" /> with most punctuation replaced.
+    /// </returns>
+    //*************************************************************************
+
+    protected String
+    ReplacePunctuationWithSpaces
+    (
+        String sStatusText
+    )
+    {
+        Debug.Assert(sStatusText != null);
+        AssertValid();
+
+        StringBuilder oStringBuilder = new StringBuilder();
+
+        // It's more straightforward to do this with a StringBuilder than with
+        // a regular expression.
+
+        foreach (Char c in sStatusText)
+        {
+            oStringBuilder.Append(
+
+                (
+                    // Don't replace "@", which signals the start of a screen
+                    // name.
+
+                    c == '@'
+
+                    // Don't replace alphanumeric characters.
+
+                    ||
+                    Char.IsLetterOrDigit(c)
+                )
+
+                ? c : ' '
+                );
+        }
+
+        return ( oStringBuilder.ToString() );
     }
 
 

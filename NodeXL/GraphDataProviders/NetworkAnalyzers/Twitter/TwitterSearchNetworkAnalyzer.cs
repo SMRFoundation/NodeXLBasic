@@ -877,8 +877,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             //
             // If you change this first sentence, you may also have to change
             // the code in
-			// TwitterSearchNetworkTopItemsCalculator2.GetSearchTerm(), which
-			// attempts to extract the search term from the graph description.
+            // TwitterSearchNetworkTopItemsCalculator2.GetSearchTerm(), which
+            // attempts to extract the search term from the graph description.
 
             "The graph represents a network of {0} Twitter {1} whose recent"
             + " tweets contained \"{2}\", taken from a data set limited to a"
@@ -890,18 +890,44 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             iMaximumStatuses.ToString(Int32FormatString)
             );
 
-        oNetworkDescriber.AddNetworkTime();
+        oNetworkDescriber.AddNetworkTime(NetworkSource);
 
-        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.FollowedEdges) )
+        Boolean bIncludeFollowedEdges = WhatToIncludeFlagIsSet(eWhatToInclude,
+            WhatToInclude.FollowedEdges);
+
+        Boolean bIncludeRepliesToEdges = WhatToIncludeFlagIsSet(eWhatToInclude,
+            WhatToInclude.RepliesToEdges);
+
+        Boolean bIncludeMentionsEdges = WhatToIncludeFlagIsSet(eWhatToInclude,
+            WhatToInclude.MentionsEdges);
+
+        Boolean bIncludeNonRepliesToNonMentionsEdges = WhatToIncludeFlagIsSet(
+            eWhatToInclude, WhatToInclude.NonRepliesToNonMentionsEdges);
+
+        if (bIncludeRepliesToEdges && bIncludeMentionsEdges &&
+            bIncludeNonRepliesToNonMentionsEdges)
+        {
+            // Every collected tweet has an edge that contains the date of the
+            // tweet, so the range of tweet dates can be determined.
+
+            oNetworkDescriber.StartNewParagraph();
+
+            TweetDateRangeAnalyzer.AddTweetDateRangeToNetworkDescription(
+                oGraphMLXmlDocument, oNetworkDescriber);
+        }
+
+        if (bIncludeFollowedEdges || bIncludeRepliesToEdges ||
+            bIncludeMentionsEdges || bIncludeNonRepliesToNonMentionsEdges)
+        {
+            oNetworkDescriber.StartNewParagraph();
+        }
+
+        if (bIncludeFollowedEdges)
         {
             oNetworkDescriber.AddSentence(
                 "There is an edge for each follows relationship."
                 );
         }
-
-        Boolean bIncludeRepliesToEdges = WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.RepliesToEdges);
 
         if (bIncludeRepliesToEdges)
         {
@@ -911,9 +937,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 );
         }
 
-        Boolean bIncludeMentionsEdges = WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.MentionsEdges);
-
         if (bIncludeMentionsEdges)
         {
             oNetworkDescriber.AddSentence(
@@ -921,9 +944,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 + " tweet."
                 );
         }
-
-        Boolean bIncludeNonRepliesToNonMentionsEdges = WhatToIncludeFlagIsSet(
-            eWhatToInclude, WhatToInclude.NonRepliesToNonMentionsEdges);
 
         if (bIncludeNonRepliesToNonMentionsEdges)
         {
@@ -936,192 +956,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         #if AddExtraEdges
         #endif
 
-        if (bIncludeRepliesToEdges && bIncludeMentionsEdges &&
-            bIncludeNonRepliesToNonMentionsEdges)
-        {
-            // Every collected tweet has an edge that contains the date of the
-            // tweet, so the range of tweet dates can be determined.
-
-            AddTweetDateRangeToNetworkDescription(
-                oGraphMLXmlDocument, oNetworkDescriber);
-        }
-
         return ( oNetworkDescriber.ConcatenateSentences() );
-    }
-
-    //*************************************************************************
-    //  Method: AddTweetDateRangeToNetworkDescription()
-    //
-    /// <summary>
-    /// Adds the range of tweet dates to a network description.
-    /// </summary>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// The GraphMLXmlDocument that contains the network.
-    /// </param>
-    ///
-    /// <param name="oNetworkDescriber">
-    /// Contcatenates sentences into a network description.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    AddTweetDateRangeToNetworkDescription
-    (
-        GraphMLXmlDocument oGraphMLXmlDocument,
-        NetworkDescriber oNetworkDescriber
-    )
-    {
-        AssertValid();
-        Debug.Assert(oGraphMLXmlDocument != null);
-        Debug.Assert(oNetworkDescriber != null);
-
-        XmlNamespaceManager oXmlNamespaceManager = new XmlNamespaceManager(
-            oGraphMLXmlDocument.NameTable);
-
-        oXmlNamespaceManager.AddNamespace("g",
-            GraphMLXmlDocument.GraphMLNamespaceUri);
-
-        DateTime oMinimumRelationshipDateUtc = DateTime.MaxValue;
-        DateTime oMaximumRelationshipDateUtc = DateTime.MinValue;
-
-        // Loop through the graph's edges.
-
-        foreach ( XmlNode oEdgeXmlNode in
-            oGraphMLXmlDocument.DocumentElement.SelectNodes(
-                "g:graph/g:edge", oXmlNamespaceManager) )
-        {
-            // Get the value of the edge's "relationship" GraphML-Attribute.
-
-            String sRelationship;
-
-            if ( !TryGetEdgeGraphMLAttributeValue(oEdgeXmlNode,
-                NodeXLGraphMLUtil.EdgeRelationshipID, oXmlNamespaceManager,
-                out sRelationship) )
-            {
-                continue;
-            }
-
-            switch (sRelationship)
-            {
-                case RepliesToRelationship:
-                case MentionsRelationship:
-                case NonRepliesToNonMentionsRelationship:
-
-                    // Get the value of the edge's "relationship date"
-                    // GraphML-Attribute.
-
-                    String sRelationshipDateUtc;
-
-                    if ( !TryGetEdgeGraphMLAttributeValue(oEdgeXmlNode,
-                        TwitterGraphMLUtil.EdgeRelationshipDateUtcID,
-                        oXmlNamespaceManager, out sRelationshipDateUtc) )
-                    {
-                        break;
-                    }
-
-                    DateTime oRelationshipDateUtc;
-
-                    try
-                    {
-                        // Note that the relationship date may be in an
-                        // unrecognized format.
-
-                        oRelationshipDateUtc =
-                            DateTimeUtil2.FromCultureInvariantString(
-                                sRelationshipDateUtc);
-                    }
-                    catch (FormatException)
-                    {
-                        break;
-                    }
-
-                    if (oRelationshipDateUtc < oMinimumRelationshipDateUtc)
-                    {
-                        oMinimumRelationshipDateUtc = oRelationshipDateUtc;
-                    }
-
-                    if (oRelationshipDateUtc > oMaximumRelationshipDateUtc)
-                    {
-                        oMaximumRelationshipDateUtc = oRelationshipDateUtc;
-                    }
-
-                    break;
-
-                default:
-
-                    break;
-            }
-        }
-
-        if (oMinimumRelationshipDateUtc != DateTime.MaxValue)
-        {
-            oNetworkDescriber.AddSentence(
-                "The tweets were made over the {0} period from {1} to {2}."
-                ,
-                oNetworkDescriber.FormatDuration(oMinimumRelationshipDateUtc, 
-                    oMaximumRelationshipDateUtc),
-
-                oNetworkDescriber.FormatEventTime(oMinimumRelationshipDateUtc),
-                oNetworkDescriber.FormatEventTime(oMaximumRelationshipDateUtc)
-                );
-        }
-    }
-
-    //*************************************************************************
-    //  Method: TryGetEdgeGraphMLAttributeValue()
-    //
-    /// <summary>
-    /// Attempts to get the value of a specified GraphML-Attribute.
-    /// </summary>
-    ///
-    /// <param name="oEdgeXmlNode">
-    /// The XmlNode that represents the edge.
-    /// </param>
-    ///
-    /// <param name="sAttributeID">
-    /// The GraphML-Attribute's ID.
-    /// </param>
-    ///
-    /// <param name="oXmlNamespaceManager">
-    /// The XmlNamespaceManager to use.  It's assumed that "g" is used as the
-    /// GraphML namespace prefix.
-    /// </param>
-    ///
-    /// <param name="sAttributeValue">
-    /// Where the value of the specified GraphML-Attribute gets stored if true
-    /// is returned.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the specified value was found and was a non-empty string.
-    /// </returns>
-    //*************************************************************************
-
-    protected Boolean
-    TryGetEdgeGraphMLAttributeValue
-    (
-        XmlNode oEdgeXmlNode,
-        String sAttributeID,
-        XmlNamespaceManager oXmlNamespaceManager,
-        out String sAttributeValue
-    )
-    {
-        Debug.Assert(oEdgeXmlNode != null);
-        Debug.Assert( !String.IsNullOrEmpty(sAttributeID) );
-        Debug.Assert(oXmlNamespaceManager != null);
-
-        AssertValid();
-
-        String sXPath = String.Format(
-
-            "g:data[@key=\"{0}\"]/text()"
-            ,
-            sAttributeID
-            );
-
-        return ( XmlUtil2.TrySelectSingleNodeAsString(
-            oEdgeXmlNode, sXPath, oXmlNamespaceManager, out sAttributeValue) );
     }
 
     //*************************************************************************

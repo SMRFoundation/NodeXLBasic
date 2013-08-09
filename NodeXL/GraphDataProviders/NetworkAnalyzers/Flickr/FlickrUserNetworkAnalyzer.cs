@@ -762,7 +762,9 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
             sScreenName
             );
 
-        oNetworkDescriber.AddNetworkTime();
+        oNetworkDescriber.AddNetworkTime(NetworkSource);
+
+        oNetworkDescriber.StartNewParagraph();
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.ContactVertices) )

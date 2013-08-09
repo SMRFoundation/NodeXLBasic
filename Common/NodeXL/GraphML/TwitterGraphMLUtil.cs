@@ -1136,6 +1136,18 @@ public static class TwitterGraphMLUtil : Object
 
 
     //*************************************************************************
+    //  Public GraphML-attribute values for relationship descriptions
+    //*************************************************************************
+
+    ///
+    public const String RepliesToRelationship = "Replies to";
+    ///
+    public const String MentionsRelationship = "Mentions";
+    ///
+    public const String NonRepliesToNonMentionsRelationship = "Tweet";
+
+
+    //*************************************************************************
     //  Private GraphML-attribute IDs for edges and vertices
     //*************************************************************************
 
@@ -1181,20 +1193,6 @@ public static class TwitterGraphMLUtil : Object
     private const String LatitudeID = "Latitude";
     ///
     private const String LongitudeID = "Longitude";
-
-
-    //*************************************************************************
-    //  Relationship descriptions
-    //*************************************************************************
-
-    /// Values for the edge's RelationshipID GraphML-attribute.
-
-    private const String RepliesToRelationship = "Replies to";
-    ///
-    private const String MentionsRelationship = "Mentions";
-    ///
-    private const String NonRepliesToNonMentionsRelationship = "Tweet";
-
 }
 
 }

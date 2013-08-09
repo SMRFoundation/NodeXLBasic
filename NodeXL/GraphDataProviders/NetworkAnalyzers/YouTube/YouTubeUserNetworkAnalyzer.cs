@@ -696,7 +696,9 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
             sUserNameToAnalyze
             );
 
-        oNetworkDescriber.AddNetworkTime();
+        oNetworkDescriber.AddNetworkTime(NetworkSource);
+
+        oNetworkDescriber.StartNewParagraph();
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.FriendVertices) )

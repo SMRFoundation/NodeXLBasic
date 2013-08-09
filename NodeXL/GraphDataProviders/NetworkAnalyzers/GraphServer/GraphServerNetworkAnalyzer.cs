@@ -14,6 +14,7 @@ using Smrf.AppLib;
 using Smrf.XmlLib;
 using Smrf.SocialNetworkLib;
 using Smrf.GraphServer.WcfService;
+using Smrf.NodeXL.GraphDataProviders.Twitter;
 
 namespace Smrf.NodeXL.GraphDataProviders.GraphServer
 {
@@ -467,13 +468,15 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
 
         oNetworkDescriber.AddSentence(
 
-            "The graph represents a network of Twitter users whose recent"
-            + " tweets contained \"{0}\"."
+            "The graph represents a network of Twitter users whose tweets in"
+            + " the requested date range contained \"{0}\"."
             ,
             sSearchTerm
             );
 
-        oNetworkDescriber.AddSentence(
+        oNetworkDescriber.AddNetworkTime(NetworkSource);
+
+        oNetworkDescriber.AddSentenceNewParagraph(
 
             "The requested date range was from {0} through {1}."
             ,
@@ -481,8 +484,16 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
             oNetworkDescriber.FormatEventTime(oMaximumStatusDateUtc)
             );
 
-        oNetworkDescriber.AddSentence(
-            "The network was obtained from the NodeXL Graph Server."
+        oNetworkDescriber.StartNewParagraph();
+
+        TweetDateRangeAnalyzer.AddTweetDateRangeToNetworkDescription(
+            oGraphMLXmlDocument, oNetworkDescriber);
+
+        oNetworkDescriber.AddSentenceNewParagraph(
+            "There is an edge for each \"replies-to\" relationship in a tweet,"
+            + " an edge for each \"mentions\" relationship in a tweet, and a"
+            + " self-loop edge for each tweet that is not a \"replies-to\" or"
+            + " \"mentions\"."
             );
 
         return ( oNetworkDescriber.ConcatenateSentences() );
@@ -618,6 +629,11 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
     /// Receive timeout, in minutes.
 
     protected const Int32 ReceiveTimeoutMinutes = 20;
+
+
+    /// The source of Graph Server networks, used in network descriptions.
+
+    protected const String NetworkSource = "the NodeXL Graph Server";
 
 
     /// Maximum number of bytes that can be received from the WCF service.

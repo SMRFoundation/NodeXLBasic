@@ -930,8 +930,22 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
             sSearchTerm
             );
 
+        oNetworkDescriber.AddNetworkTime(NetworkSource);
+
+        oNetworkDescriber.StartNewParagraph();
         oNetworkDescriber.AddNetworkLimit(iMaximumVideos, "videos");
-        oNetworkDescriber.AddNetworkTime();
+
+        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
+
+            WhatToInclude.SharedCategoryEdges
+            |
+            WhatToInclude.SharedCommenterEdges
+            |
+            WhatToInclude.SharedVideoResponderEdges
+            ) )
+        {
+            oNetworkDescriber.StartNewParagraph();
+        }
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.SharedCategoryEdges) )

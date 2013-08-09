@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Smrf.SocialNetworkLib.Twitter;
@@ -325,6 +326,270 @@ public class TwitterStatusTextParserTest : Object
         Assert.AreEqual(2, asUniqueMentionedScreenNames.Length);
         Assert.IsTrue( asUniqueMentionedScreenNames.Contains("jack") );
         Assert.IsTrue( asUniqueMentionedScreenNames.Contains("jill") );
+    }
+
+    //*************************************************************************
+    //  Method: TestGetScreenNames10()
+    //
+    /// <summary>
+    /// Tests the GetScreenNames() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetScreenNames10()
+    {
+        // Reply-to, mentions, with email addresses that shouldn't be counted
+        // as mentions.
+
+        String sRepliedToScreenName;
+        String [] asUniqueMentionedScreenNames;
+
+        m_oTwitterStatusTextParser.GetScreenNames(
+
+            "@John joe@a.com the bill99@nowhere.com tweet @jack @jill @john"
+            + " sally@yahoo.com",
+
+            out sRepliedToScreenName, out asUniqueMentionedScreenNames);
+
+        Assert.AreEqual("john", sRepliedToScreenName);
+        Assert.AreEqual(2, asUniqueMentionedScreenNames.Length);
+        Assert.IsTrue( asUniqueMentionedScreenNames.Contains("jack") );
+        Assert.IsTrue( asUniqueMentionedScreenNames.Contains("jill") );
+    }
+
+    //*************************************************************************
+    //  Method: TestGetScreenNames11()
+    //
+    /// <summary>
+    /// Tests the GetScreenNames() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetScreenNames11()
+    {
+        // Mentions, with email addresses that shouldn't be counted as
+        // mentions.
+
+        String sRepliedToScreenName;
+        String [] asUniqueMentionedScreenNames;
+
+        m_oTwitterStatusTextParser.GetScreenNames(
+
+            "joe@a.com the bill99@nowhere.com tweet @jack @jill @john"
+            + " sally@yahoo.com",
+
+            out sRepliedToScreenName, out asUniqueMentionedScreenNames);
+
+        Assert.IsNull(sRepliedToScreenName);
+        Assert.AreEqual(3, asUniqueMentionedScreenNames.Length);
+        Assert.IsTrue( asUniqueMentionedScreenNames.Contains("jack") );
+        Assert.IsTrue( asUniqueMentionedScreenNames.Contains("jill") );
+        Assert.IsTrue( asUniqueMentionedScreenNames.Contains("john") );
+    }
+
+    //*************************************************************************
+    //  Method: TestGetScreenNames12()
+    //
+    /// <summary>
+    /// Tests the GetScreenNames() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetScreenNames12()
+    {
+        // User names preceeded by alpha characters and numbers.
+
+        String sRepliedToScreenName;
+        String [] asUniqueMentionedScreenNames;
+
+        m_oTwitterStatusTextParser.GetScreenNames(
+            "x@John the tweet y@jack b@jill 3@john",
+            out sRepliedToScreenName, out asUniqueMentionedScreenNames);
+
+        Assert.IsNull(sRepliedToScreenName);
+        Assert.AreEqual(0, asUniqueMentionedScreenNames.Length);
+    }
+
+    //*************************************************************************
+    //  Method: TestGetScreenNames13()
+    //
+    /// <summary>
+    /// Tests the GetScreenNames() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetScreenNames13()
+    {
+        // Reply-to, mentions, with punctuation preceeding the @ character in
+        // mentions.  The mentions are separated by spaces.
+
+        String [] asScreenNamesPreceededByPunctuation =
+            GetScreenNamesPreceededByPunctuation();
+
+        Int32 iScreenNamesPreceededByPunctuation =
+            asScreenNamesPreceededByPunctuation.Length;
+
+        String sRepliedToScreenName;
+        String [] asUniqueMentionedScreenNames;
+
+        m_oTwitterStatusTextParser.GetScreenNames(
+
+            "@John"
+            + " "
+            + String.Join(" ", asScreenNamesPreceededByPunctuation)
+            ,
+
+            out sRepliedToScreenName, out asUniqueMentionedScreenNames);
+
+        Assert.AreEqual("john", sRepliedToScreenName);
+
+        Assert.AreEqual(iScreenNamesPreceededByPunctuation,
+            asUniqueMentionedScreenNames.Length);
+
+        for (Int32 i = 0; i < iScreenNamesPreceededByPunctuation; i++)
+        {
+            Assert.IsTrue( asUniqueMentionedScreenNames.Contains(
+                "screenname" + i) );
+        }
+    }
+
+    //*************************************************************************
+    //  Method: TestGetScreenNames14()
+    //
+    /// <summary>
+    /// Tests the GetScreenNames() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetScreenNames14()
+    {
+        // Reply-to, mentions, with punctuation preceeding the @ character in
+        // mentions.  The mentions are NOT separated by spaces.
+
+        String [] asScreenNamesPreceededByPunctuation =
+            GetScreenNamesPreceededByPunctuation();
+
+        Int32 iScreenNamesPreceededByPunctuation =
+            asScreenNamesPreceededByPunctuation.Length;
+
+        String sRepliedToScreenName;
+        String [] asUniqueMentionedScreenNames;
+
+        m_oTwitterStatusTextParser.GetScreenNames(
+
+            "@John"
+            + String.Join(String.Empty, asScreenNamesPreceededByPunctuation)
+            ,
+
+            out sRepliedToScreenName, out asUniqueMentionedScreenNames);
+
+        Assert.AreEqual("john", sRepliedToScreenName);
+
+        Assert.AreEqual(iScreenNamesPreceededByPunctuation,
+            asUniqueMentionedScreenNames.Length);
+
+        for (Int32 i = 0; i < iScreenNamesPreceededByPunctuation; i++)
+        {
+            Assert.IsTrue( asUniqueMentionedScreenNames.Contains(
+                "screenname" + i) );
+        }
+    }
+
+    //*************************************************************************
+    //  Method: TestGetScreenNames15()
+    //
+    /// <summary>
+    /// Tests the GetScreenNames() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetScreenNames15()
+    {
+        // Reply-to, mentions, with punctuation preceeding the @ character in
+        // reply-to and mentions.
+
+        String [] asScreenNamesPreceededByPunctuation =
+            GetScreenNamesPreceededByPunctuation();
+
+        Int32 iScreenNamesPreceededByPunctuation =
+            asScreenNamesPreceededByPunctuation.Length;
+
+        String sRepliedToScreenName;
+        String [] asUniqueMentionedScreenNames;
+
+        m_oTwitterStatusTextParser.GetScreenNames(
+
+            // Note that the "!" here should get replaced with a space, which
+            // should cause John to be counted as a mentions, not a reply-to.
+
+            "!@John"
+            + " "
+            + String.Join(" ", asScreenNamesPreceededByPunctuation)
+            ,
+
+            out sRepliedToScreenName, out asUniqueMentionedScreenNames);
+
+        Assert.IsNull(sRepliedToScreenName);
+
+        Assert.AreEqual(iScreenNamesPreceededByPunctuation + 1,
+            asUniqueMentionedScreenNames.Length);
+
+        Assert.IsTrue( asUniqueMentionedScreenNames.Contains("john") );
+
+        for (Int32 i = 0; i < iScreenNamesPreceededByPunctuation; i++)
+        {
+            Assert.IsTrue( asUniqueMentionedScreenNames.Contains(
+                "screenname" + i) );
+        }
+    }
+
+    //*************************************************************************
+    //  Method: GetScreenNamesPreceededByPunctuation()
+    //
+    /// <summary>
+    /// Gets an array of screen names, each one preceeded by a different
+    /// punctuation character.
+    /// </summary>
+    ///
+    /// <returns>
+    /// An array of screen names.  The screen names, without the punctuation
+    /// character, have the format "@screennameN".
+    /// </returns>
+    //*************************************************************************
+
+    protected String []
+    GetScreenNamesPreceededByPunctuation()
+    {
+        List<String> oScreenNames = new List<String>();
+        Int32 i = 0;
+
+        // Note the absence of "@".
+
+        foreach (Char cPunctuation in "!#$%^&*()-_=+\\|`~[{]};:'\",<.>/?")
+        {
+            oScreenNames.Add(cPunctuation + "@screenname" + i);
+            i++;
+        }
+
+        return ( oScreenNames.ToArray() );
     }
 
 

@@ -263,6 +263,7 @@
     <Compile Include="NetworkAnalyzers\Twitter\Authorization\TwitterAccessToken.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\Authorization\TwitterAuthorizationStatus.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\SharedTermEdgeAppender.cs" />
+    <Compile Include="NetworkAnalyzers\Twitter\TweetDateRangeAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TwitterListNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TwitterNetworkAnalyzerBase.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TwitterSearchNetworkAnalyzer.cs" />

@@ -846,7 +846,19 @@ public class TwitterListNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 );
         }
 
-        oNetworkDescriber.AddNetworkTime();
+        oNetworkDescriber.AddNetworkTime(NetworkSource);
+
+        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
+
+            WhatToInclude.FollowedEdges
+            |
+            WhatToInclude.RepliesToEdges
+            |
+            WhatToInclude.MentionsEdges
+            ) )
+        {
+            oNetworkDescriber.StartNewParagraph();
+        }
 
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.FollowedEdges) )
