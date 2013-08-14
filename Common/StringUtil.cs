@@ -281,6 +281,42 @@ public static class StringUtil
     }
 
     //*************************************************************************
+    //  Method: IsAscii()
+    //
+    /// <summary>
+    /// Determines whether all characters in a string are ASCII.
+    /// </summary>
+    ///
+    /// <param name="stringToTest">
+    /// String to test.  Can't be null.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if <paramref name="stringToTest" /> contains all ASCII characters.
+    /// </returns>
+    //*************************************************************************
+
+    public static Boolean
+    IsAscii
+    (
+        String stringToTest
+    )
+    {
+        Debug.Assert(stringToTest != null);
+
+        // Encoding.ASCII.GetBytes() returns 63 decimal (a question mark) for a
+        // Unicode character, so a round-trip will change the string.
+
+        return (
+
+            stringToTest ==
+
+            Encoding.ASCII.GetString(
+                Encoding.ASCII.GetBytes(stringToTest) )
+            );
+    }
+
+    //*************************************************************************
     //  Method: AppendAfterEmptyLine()
     //
     /// <summary>

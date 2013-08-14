@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Smrf.AppLib;
@@ -545,6 +546,90 @@ public class StringUtilTest : Object
         StringUtil.AppendSectionSeparator(oStringBuilder);
 
         Assert.AreEqual( "abc\r\n\r\n", oStringBuilder.ToString() );
+    }
+
+    //*************************************************************************
+    //  Method: TestIsAscii()
+    //
+    /// <summary>
+    /// Tests the IsAscii() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestIsAscii()
+    {
+        // Empty string.
+
+        Assert.IsTrue( StringUtil.IsAscii(String.Empty) );
+    }
+
+    //*************************************************************************
+    //  Method: TestIsAscii2()
+    //
+    /// <summary>
+    /// Tests the IsAscii() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestIsAscii2()
+    {
+        // All ASCII.
+
+        const String StringToTest =
+            "abcABC123!@#$%^&*()-_=+\\|`~[{]};:'\",<.>/?"
+            ;
+
+        Assert.IsTrue( StringUtil.IsAscii(StringToTest) );
+    }
+
+    //*************************************************************************
+    //  Method: TestIsAscii3()
+    //
+    /// <summary>
+    /// Tests the IsAscii() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestIsAscii3()
+    {
+        // All Korean.
+
+        const String StringToTest =
+            "자살"
+            ;
+
+        Assert.IsFalse( StringUtil.IsAscii(StringToTest) );
+    }
+
+    //*************************************************************************
+    //  Method: TestIsAscii4()
+    //
+    /// <summary>
+    /// Tests the IsAscii() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestIsAscii4()
+    {
+        // Mixed.
+
+        const String StringToTest =
+            "abc자살def"
+            ;
+
+        Assert.IsFalse( StringUtil.IsAscii(StringToTest) );
     }
 
 

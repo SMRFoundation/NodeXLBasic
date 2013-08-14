@@ -6,6 +6,7 @@ using System.Net.Mime;
 using System.IO;
 using System.Text;
 using System.Diagnostics;
+using Smrf.AppLib;
 using Smrf.NodeXL.Visualization.Wpf;
 
 namespace Smrf.NodeXL.ExcelTemplate
@@ -759,14 +760,34 @@ public class EmailExporter : Object
         Debug.Assert(oWorkbook != null);
         AssertValid();
 
-        // If the workbook has been saved, used the file name.
+        const String DefaultFileNameNoExtension = "NodeXLGraph";
+
+        // If the workbook has been saved, try to use its file name.
 
         if ( !String.IsNullOrEmpty(oWorkbook.Path) )
         {
-            return ( Path.GetFileNameWithoutExtension(oWorkbook.Name) );
+            String sWorkbookName =
+                Path.GetFileNameWithoutExtension(oWorkbook.Name);
+
+            // Using non-ASCII characters in ContentDisposition.FileName causes
+            // an exception with the message "Failure sending mail" when the
+            // mail is sent.
+            //
+            // The considerable difficulties involved in using non-ASCII
+            // characters for the FileName property are discussed here:
+            //
+            //   http://stackoverflow.com/questions/93551/how-to-encode-the-filename-parameter-of-content-disposition-header-in-http
+            //
+            // The workaround here is to use a default file name if non-ASCII
+            // characters are detected.
+
+            if ( StringUtil.IsAscii(sWorkbookName) )
+            {
+                return (sWorkbookName);
+            }
         }
 
-        return ("NodeXLGraph");
+        return (DefaultFileNameNoExtension);
     }
 
     //*************************************************************************
