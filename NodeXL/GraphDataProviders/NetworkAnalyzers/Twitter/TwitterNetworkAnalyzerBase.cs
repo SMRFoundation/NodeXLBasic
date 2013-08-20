@@ -371,7 +371,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Debug.Assert(m_oTwitterUtil != null);
 
         return ( m_oTwitterUtil.GetTwitterResponseAsString(sUrl,
-            oRequestStatistics, new ReportProgressHandler(this.ReportProgress),
+            oRequestStatistics,
+            new ReportProgressHandler(this.ReportProgress),
             new CheckCancellationPendingHandler(this.CheckCancellationPending)
             ) );
     }
@@ -426,120 +427,16 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         RequestStatistics oRequestStatistics
     )
     {
-        // Note:
-        //
-        // The logic in this method is similar to the logic in
-        // TwitterUtil.EnumerateSearchStatuses().  In fact, at one time all
-        // enumeration was done through this EnumerateJsonValues() method.
-        // TwitterUtil.EnumerateSearchStatuses() was created only when
-        // version 1.1 of the Twitter API introduced yet another paging scheme,
-        // one that differs from the cursor scheme that this method handles.
-        //
-        // A possible work item is to recombine the two methods into one,
-        // possibly by using a delegate to handle the different paging schemes.
-
         Debug.Assert( !String.IsNullOrEmpty(sUrl) );
         Debug.Assert(iMaximumValues > 0);
         Debug.Assert(oRequestStatistics != null);
         AssertValid();
 
-        Int32 iPage = 1;
-        String sCursor = null;
-        Int32 iObjectsEnumerated = 0;
-
-        while (true)
-        {
-            if (iPage > 1)
-            {
-                ReportProgress("Getting page " + iPage + ".");
-            }
-
-            String sUrlWithCursor = AppendCursorToUrl(sUrl, sCursor);
-
-            Dictionary<String, Object> oValueDictionary = null;
-            Object [] aoObjectsThisPage;
-
-            try
-            {
-                Object oDeserializedTwitterResponse = 
-                    ( new JavaScriptSerializer() ).DeserializeObject(
-                        GetTwitterResponseAsString(sUrlWithCursor,
-                        oRequestStatistics) );
-
-                Object oObjectsThisPageAsObject;
-
-                if (sJsonName == null)
-                {
-                    // The top level of the Json response contains an array of
-                    // objects this method will enumerate.
-
-                    oObjectsThisPageAsObject = oDeserializedTwitterResponse;
-                }
-                else
-                {
-                    // The top level of the Json response contains a set of
-                    // name/value pairs.  The value for the specified name is
-                    // the array of objects this method will enumerate.
-
-                    oValueDictionary = ( Dictionary<String, Object> )
-                        oDeserializedTwitterResponse;
-
-                    oObjectsThisPageAsObject = oValueDictionary[sJsonName];
-                }
-
-                aoObjectsThisPage = ( Object [] )oObjectsThisPageAsObject;
-            }
-            catch (Exception oException)
-            {
-                // Rethrow the exception if appropriate.
-
-                TwitterUtil.OnExceptionWhileEnumeratingJsonValues(
-                    oException, iPage, bSkipMostPage1Errors);
-
-                // Otherwise, just halt the enumeration.
-
-                yield break;
-            }
-
-            Int32 iObjectsThisPage = aoObjectsThisPage.Length;
-
-            if (iObjectsThisPage == 0)
-            {
-                yield break;
-            }
-
-            for (Int32 i = 0; i < iObjectsThisPage; i++)
-            {
-                yield return ( aoObjectsThisPage[i] );
-
-                iObjectsEnumerated++;
-
-                if (iObjectsEnumerated == iMaximumValues)
-                {
-                    yield break;
-                }
-            }
-
-            iPage++;
-
-            // When the top level of the Json response contains a set of
-            // name/value pairs, a next_cursor_str value of "0" means "end of
-            // data."
-
-            if (
-                oValueDictionary == null
-                ||
-                !TryGetJsonValueFromDictionary(oValueDictionary,
-                    "next_cursor_str", out sCursor)
-                ||
-                sCursor == "0"
-                )
-            {
-                yield break;
-            }
-
-            // Get the next page...
-        }
+        return ( m_oTwitterUtil.EnumerateJsonValues(sUrl, sJsonName,
+            iMaximumValues, bSkipMostPage1Errors, oRequestStatistics,
+            new ReportProgressHandler(this.ReportProgress),
+            new CheckCancellationPendingHandler(this.CheckCancellationPending)
+            ) );
     }
 
     //*************************************************************************
@@ -659,169 +556,11 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Debug.Assert(oRequestStatistics != null);
         AssertValid();
 
-        // We'll use Twitter's users/lookup API, which gets extended
-        // information for up to 100 users in one call.
-
-        Int32 iUsers = asUserIDsOrScreenNames.Length;
-        Int32 iUsersProcessed = 0;
-        Int32 iCalls = 0;
-
-        while (iUsersProcessed < iUsers)
-        {
-            // For each call, ask for information about as many users as
-            // possible until either 100 is reached or the URL reaches an
-            // arbitrary maximum length.  Twitter recommends using a POST here
-            // (without specifying why), but it would require revising the
-            // base-class HTTP calls and isn't worth the trouble.
-
-            Int32 iUsersProcessedThisCall = 0;
-
-            StringBuilder oUrl = new StringBuilder();
-
-            oUrl.AppendFormat(
-                "{0}users/lookup.json?{1}&{2}="
-                ,
-                TwitterApiUrls.Rest,
-                TwitterApiUrlParameters.IncludeEntities,
-                bUserIDsSpecified ? "user_id" : "screen_name"
-                );
-
-            const Int32 MaxUsersPerCall = 100;
-            const Int32 MaxUrlLength = 2000;
-
-            // Construct the URL for this call.
-
-            while (
-                iUsersProcessed < iUsers
-                &&
-                iUsersProcessedThisCall < MaxUsersPerCall
-                &&
-                oUrl.Length < MaxUrlLength
-                )
-            {
-                if (iUsersProcessedThisCall > 0)
-                {
-                    // Append an encoded comma.  Using an unencoded comma 
-                    // causes Twitter to return a 401 "unauthorized" error.
-                    //
-                    // See this post for an explanation:
-                    //
-                    // https://dev.twitter.com/discussions/11399
-
-                    oUrl.Append("%2C");
-                }
-
-                oUrl.Append( asUserIDsOrScreenNames[iUsersProcessed] );
-                iUsersProcessed++;
-                iUsersProcessedThisCall++;
-            }
-
-            iCalls++;
-
-            if (iCalls > 1)
-            {
-                ReportProgress("Getting page " + iCalls + ".");
-            }
-
-            foreach ( Object oResult in EnumerateJsonValues(oUrl.ToString(),
-                null, Int32.MaxValue, true, oRequestStatistics) )
-            {
-                yield return ( ( Dictionary<String, Object> )oResult );
-            }
-        }
-    }
-
-    //*************************************************************************
-    //  Method: AppendCursorToUrl()
-    //
-    /// <summary>
-    /// Appends a cursor to a Twitter URL.
-    /// </summary>
-    ///
-    /// <param name="sUrl">
-    /// The URL to append to.  Can include URL parameters.
-    /// </param>
-    ///
-    /// <param name="sCursor">
-    /// The cursor to append, or null to not append a cursor.
-    /// </param>
-    ///
-    /// <returns>
-    /// <paramref name="sUrl" /> with a cursor appended to it if requested.
-    /// </returns>
-    //*************************************************************************
-
-    protected String
-    AppendCursorToUrl
-    (
-        String sUrl,
-        String sCursor
-    )
-    {
-        Debug.Assert( !String.IsNullOrEmpty(sUrl) );
-        AssertValid();
-
-        if (sCursor == null)
-        {
-            return (sUrl);
-        }
-
-        return ( String.Format(
-            
-            "{0}{1}cursor={2}"
-            ,
-            sUrl,
-            sUrl.IndexOf('?') == -1 ? '?' : '&',
-            sCursor
+        return ( m_oTwitterUtil.EnumerateUserValueDictionaries(
+            asUserIDsOrScreenNames, bUserIDsSpecified, oRequestStatistics,
+            new ReportProgressHandler(this.ReportProgress),
+            new CheckCancellationPendingHandler(this.CheckCancellationPending)
             ) );
-    }
-
-    //*************************************************************************
-    //  Method: TryGetJsonValueFromDictionary()
-    //
-    /// <summary>
-    /// Attempts to get a non-empty string value from a JSON value dictionary.
-    /// </summary>
-    ///
-    /// <param name="oValueDictionary">
-    /// Name/value pairs parsed from a Twitter JSON response.
-    /// </param>
-    ///
-    /// <param name="sName">
-    /// The name of the value to get.
-    /// </param>
-    ///
-    /// <param name="sValue">
-    /// Where the non-empty value gets stored if true is returned.  If false is
-    /// returned, this gets set to null.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the non-empty value was obtained.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// This method attempts to get the specified value, which can be of any
-    /// JSON type, from <paramref name="oValueDictionary" />.  If the value is
-    /// found, this method converts it to a string, stores it at <paramref
-    /// name="sValue" />, and returns true.
-    /// </remarks>
-    //*************************************************************************
-
-    protected Boolean
-    TryGetJsonValueFromDictionary
-    (
-        Dictionary<String, Object> oValueDictionary,
-        String sName,
-        out String sValue
-    )
-    {
-        Debug.Assert(oValueDictionary != null);
-        Debug.Assert( !String.IsNullOrEmpty(sName) );
-        AssertValid();
-
-        return ( TwitterJsonUtil.TryGetJsonValueFromDictionary(
-            oValueDictionary, sName, out sValue) );
     }
 
     //*************************************************************************
@@ -856,8 +595,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Debug.Assert(oUserValueDictionary != null);
         AssertValid();
 
-        return ( TryGetJsonValueFromDictionary(oUserValueDictionary, "id_str",
-            out sUserID) );
+        return ( TwitterJsonUtil.TryGetJsonValueFromDictionary(
+            oUserValueDictionary, "id_str", out sUserID) );
     }
 
     //*************************************************************************
@@ -892,8 +631,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Debug.Assert(oUserValueDictionary != null);
         AssertValid();
 
-        return ( TryGetJsonValueFromDictionary(oUserValueDictionary,
-            "screen_name", out sScreenName) );
+        return ( TwitterJsonUtil.TryGetJsonValueFromDictionary(
+            oUserValueDictionary, "screen_name", out sScreenName) );
     }
 
     //*************************************************************************
@@ -1042,11 +781,11 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         String sID, sLatestStatus;
 
         if (
-            !TryGetJsonValueFromDictionary(oStatusValueDictionary, "id_str",
-                out sID)
+            !TwitterJsonUtil.TryGetJsonValueFromDictionary(
+                oStatusValueDictionary, "id_str", out sID)
             ||
-            !TryGetJsonValueFromDictionary(oStatusValueDictionary, "text",
-                out sLatestStatus)
+            !TwitterJsonUtil.TryGetJsonValueFromDictionary(
+                oStatusValueDictionary, "text", out sLatestStatus)
             )
         {
             return;
@@ -1054,8 +793,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
         String sLatestStatusDateUtc;
 
-        if ( TryGetJsonValueFromDictionary(oStatusValueDictionary,
-            "created_at", out sLatestStatusDateUtc) )
+        if ( TwitterJsonUtil.TryGetJsonValueFromDictionary(
+            oStatusValueDictionary, "created_at", out sLatestStatusDateUtc) )
         {
             sLatestStatusDateUtc = TwitterDateParser.ParseTwitterDate(
                 sLatestStatusDateUtc);

@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Net;
 using System.Web.Script.Serialization;
 using System.IO;
@@ -179,6 +180,313 @@ public class TwitterUtil
 
             if ( !TryGetQueryParametersForNextSearchPage(oResponseDictionary,
                 out sQueryParametersForNextPage) )
+            {
+                yield break;
+            }
+
+            // Get the next page...
+        }
+    }
+
+    //*************************************************************************
+    //  Method: EnumerateUserValueDictionaries()
+    //
+    /// <summary>
+    /// Enumerates through a collection of dictionaries of values for a
+    /// collection of specified users.
+    /// </summary>
+    ///
+    /// <param name="userIDsOrScreenNames">
+    /// Array of user IDs or screen names to get user value dictionaries for.
+    /// </param>
+    ///
+    /// <param name="userIDsSpecified">
+    /// true if <paramref name="userIDsOrScreenNames" /> contains IDs, false if
+    /// it contains screen names.
+    /// </param>
+    ///
+    /// <param name="requestStatistics">
+    /// A <see cref="RequestStatistics" /> object that is keeping track of
+    /// requests made while getting the network.
+    /// </param>
+    ///
+    /// <param name="reportProgressHandler">
+    /// Method that will be called to report progress.  Can be null.
+    /// </param>
+    ///
+    /// <param name="checkCancellationPendingHandler">
+    /// Method that will be called to check for cancellation.  Can be null.
+    /// </param>
+    ///
+    /// <returns>
+    /// The enumerated values are returned one-by-one, as a dictionary.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// For each user ID or screen name in <paramref
+    /// name="userIDsOrScreenNames" />, this method gets information about
+    /// the user from Twitter and returns it as a dictionary of values.  The
+    /// order of the returned values is not necessarily the same as the order
+    /// of the user IDs or screen names.
+    /// </remarks>
+    //*************************************************************************
+
+    public IEnumerable< Dictionary<String, Object> >
+    EnumerateUserValueDictionaries
+    (
+        String [] userIDsOrScreenNames,
+        Boolean userIDsSpecified,
+        RequestStatistics requestStatistics,
+        ReportProgressHandler reportProgressHandler,
+        CheckCancellationPendingHandler checkCancellationPendingHandler
+    )
+    {
+        Debug.Assert(userIDsOrScreenNames != null);
+        Debug.Assert(requestStatistics != null);
+        AssertValid();
+
+        // We'll use Twitter's users/lookup API, which gets extended
+        // information for up to 100 users in one call.
+
+        Int32 iUsers = userIDsOrScreenNames.Length;
+        Int32 iUsersProcessed = 0;
+        Int32 iCalls = 0;
+
+        while (iUsersProcessed < iUsers)
+        {
+            // For each call, ask for information about as many users as
+            // possible until either 100 is reached or the URL reaches an
+            // arbitrary maximum length.  Twitter recommends using a POST here
+            // (without specifying why), but it would require revising the
+            // base-class HTTP calls and isn't worth the trouble.
+
+            Int32 iUsersProcessedThisCall = 0;
+
+            StringBuilder oUrl = new StringBuilder();
+
+            oUrl.AppendFormat(
+                "{0}users/lookup.json?{1}&{2}="
+                ,
+                TwitterApiUrls.Rest,
+                TwitterApiUrlParameters.IncludeEntities,
+                userIDsSpecified ? "user_id" : "screen_name"
+                );
+
+            const Int32 MaxUsersPerCall = 100;
+            const Int32 MaxUrlLength = 2000;
+
+            // Construct the URL for this call.
+
+            while (
+                iUsersProcessed < iUsers
+                &&
+                iUsersProcessedThisCall < MaxUsersPerCall
+                &&
+                oUrl.Length < MaxUrlLength
+                )
+            {
+                if (iUsersProcessedThisCall > 0)
+                {
+                    // Append an encoded comma.  Using an unencoded comma 
+                    // causes Twitter to return a 401 "unauthorized" error.
+                    //
+                    // See this post for an explanation:
+                    //
+                    // https://dev.twitter.com/discussions/11399
+
+                    oUrl.Append("%2C");
+                }
+
+                oUrl.Append( userIDsOrScreenNames[iUsersProcessed] );
+                iUsersProcessed++;
+                iUsersProcessedThisCall++;
+            }
+
+            iCalls++;
+
+            if (iCalls > 1 && reportProgressHandler != null)
+            {
+                reportProgressHandler("Getting page " + iCalls + ".");
+            }
+
+            foreach ( Object oResult in EnumerateJsonValues(oUrl.ToString(),
+                null, Int32.MaxValue, true, requestStatistics,
+                reportProgressHandler, checkCancellationPendingHandler) )
+            {
+                yield return ( ( Dictionary<String, Object> )oResult );
+            }
+        }
+    }
+
+    //*************************************************************************
+    //  Method: EnumerateJsonValues()
+    //
+    /// <summary>
+    /// Gets a JSON response from a Twitter URL, then enumerates a specified
+    /// set of values in the response.
+    /// </summary>
+    ///
+    /// <param name="url">
+    /// The URL to get the JSON from.  Can include URL parameters.
+    /// </param>
+    ///
+    /// <param name="jsonName">
+    /// If the top level of the JSON response contains a set of name/value
+    /// pairs, this parameter should be the name whose value is the array of
+    /// objects this method will enumerate.  If the top level of the JSON
+    /// response contains an array of objects this method will enumerate, this
+    /// parameter should be null. 
+    /// </param>
+    ///
+    /// <param name="maximumValues">
+    /// Maximum number of values to return, or Int32.MaxValue for no limit.
+    /// </param>
+    ///
+    /// <param name="skipMostPage1Errors">
+    /// If true, most page-1 errors are skipped over.  If false, they are
+    /// rethrown.  (Errors that occur on page 2 and above are always skipped,
+    /// unless they are due to rate limiting.)
+    /// </param>
+    ///
+    /// <param name="requestStatistics">
+    /// A <see cref="RequestStatistics" /> object that is keeping track of
+    /// requests made while getting the network.
+    /// </param>
+    ///
+    /// <param name="reportProgressHandler">
+    /// Method that will be called to report progress.  Can be null.
+    /// </param>
+    ///
+    /// <param name="checkCancellationPendingHandler">
+    /// Method that will be called to check for cancellation.  Can be null.
+    /// </param>
+    ///
+    /// <returns>
+    /// The enumerated values are returned one-by-one, as an Object.
+    /// </returns>
+    //*************************************************************************
+
+    public IEnumerable<Object>
+    EnumerateJsonValues
+    (
+        String url,
+        String jsonName,
+        Int32 maximumValues,
+        Boolean skipMostPage1Errors,
+        RequestStatistics requestStatistics,
+        ReportProgressHandler reportProgressHandler,
+        CheckCancellationPendingHandler checkCancellationPendingHandler
+    )
+    {
+        // Note:
+        //
+        // The logic in this method is similar to the logic in
+        // EnumerateSearchStatuses().  In fact, at one time all enumeration was
+        // done through this EnumerateJsonValues() method.
+        // EnumerateSearchStatuses() was created only when version 1.1 of the
+        // Twitter API introduced yet another paging scheme, one that differs
+        // from the cursor scheme that this method handles.
+        //
+        // A possible work item is to recombine the two methods into one,
+        // possibly by using a delegate to handle the different paging schemes.
+
+        Debug.Assert( !String.IsNullOrEmpty(url) );
+        Debug.Assert(maximumValues > 0);
+        Debug.Assert(requestStatistics != null);
+        AssertValid();
+
+        Int32 iPage = 1;
+        String sCursor = null;
+        Int32 iObjectsEnumerated = 0;
+
+        while (true)
+        {
+            if (iPage > 1 && reportProgressHandler != null)
+            {
+                reportProgressHandler("Getting page " + iPage + ".");
+            }
+
+            String sUrlWithCursor = AppendCursorToUrl(url, sCursor);
+
+            Dictionary<String, Object> oValueDictionary = null;
+            Object [] aoObjectsThisPage;
+
+            try
+            {
+                Object oDeserializedTwitterResponse = 
+                    ( new JavaScriptSerializer() ).DeserializeObject(
+                        GetTwitterResponseAsString(sUrlWithCursor,
+                        requestStatistics, reportProgressHandler,
+                        checkCancellationPendingHandler) );
+
+                Object oObjectsThisPageAsObject;
+
+                if (jsonName == null)
+                {
+                    // The top level of the Json response contains an array of
+                    // objects this method will enumerate.
+
+                    oObjectsThisPageAsObject = oDeserializedTwitterResponse;
+                }
+                else
+                {
+                    // The top level of the Json response contains a set of
+                    // name/value pairs.  The value for the specified name is
+                    // the array of objects this method will enumerate.
+
+                    oValueDictionary = ( Dictionary<String, Object> )
+                        oDeserializedTwitterResponse;
+
+                    oObjectsThisPageAsObject = oValueDictionary[jsonName];
+                }
+
+                aoObjectsThisPage = ( Object [] )oObjectsThisPageAsObject;
+            }
+            catch (Exception oException)
+            {
+                // Rethrow the exception if appropriate.
+
+                TwitterUtil.OnExceptionWhileEnumeratingJsonValues(
+                    oException, iPage, skipMostPage1Errors);
+
+                // Otherwise, just halt the enumeration.
+
+                yield break;
+            }
+
+            Int32 iObjectsThisPage = aoObjectsThisPage.Length;
+
+            if (iObjectsThisPage == 0)
+            {
+                yield break;
+            }
+
+            for (Int32 i = 0; i < iObjectsThisPage; i++)
+            {
+                yield return ( aoObjectsThisPage[i] );
+
+                iObjectsEnumerated++;
+
+                if (iObjectsEnumerated == maximumValues)
+                {
+                    yield break;
+                }
+            }
+
+            iPage++;
+
+            // When the top level of the Json response contains a set of
+            // name/value pairs, a next_cursor_str value of "0" means "end of
+            // data."
+
+            if (
+                oValueDictionary == null
+                ||
+                !TwitterJsonUtil.TryGetJsonValueFromDictionary(
+                    oValueDictionary, "next_cursor_str", out sCursor)
+                ||
+                sCursor == "0"
+                )
             {
                 yield break;
             }
@@ -556,6 +864,51 @@ public class TwitterUtil
                 oSearchMetadataDictionary, "next_results",
                 out sQueryParametersForNextPage)
             );
+    }
+
+    //*************************************************************************
+    //  Method: AppendCursorToUrl()
+    //
+    /// <summary>
+    /// Appends a cursor to a Twitter URL.
+    /// </summary>
+    ///
+    /// <param name="sUrl">
+    /// The URL to append to.  Can include URL parameters.
+    /// </param>
+    ///
+    /// <param name="sCursor">
+    /// The cursor to append, or null to not append a cursor.
+    /// </param>
+    ///
+    /// <returns>
+    /// <paramref name="sUrl" /> with a cursor appended to it if requested.
+    /// </returns>
+    //*************************************************************************
+
+    private String
+    AppendCursorToUrl
+    (
+        String sUrl,
+        String sCursor
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sUrl) );
+        AssertValid();
+
+        if (sCursor == null)
+        {
+            return (sUrl);
+        }
+
+        return ( String.Format(
+            
+            "{0}{1}cursor={2}"
+            ,
+            sUrl,
+            sUrl.IndexOf('?') == -1 ? '?' : '&',
+            sCursor
+            ) );
     }
 
     //*************************************************************************

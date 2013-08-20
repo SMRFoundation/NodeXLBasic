@@ -636,8 +636,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         // who tweeted the search term.
 
         String[] asUniqueMentionsAndRepliesToScreenNames =
-            GetMentionsAndRepliesToScreenNames(
-                oGraphMLXmlDocument, oUserIDDictionary);
+            GetMentionsAndRepliesToScreenNames(oUserIDDictionary);
 
         Boolean bIncludeStatistics = WhatToIncludeFlagIsSet(
             eWhatToInclude, WhatToInclude.Statistics);
@@ -716,10 +715,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// who tweeted the search term.
     /// </summary>
     ///
-    /// <param name="oGraphMLXmlDocument">
-    /// The GraphMLXmlDocument being populated.
-    /// </param>
-    ///
     /// <param name="oUserIDDictionary">
     /// The key is the Twitter user ID and the value is the corresponding
     /// TwitterUser.
@@ -733,11 +728,9 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     protected String[]
     GetMentionsAndRepliesToScreenNames
     (
-        GraphMLXmlDocument oGraphMLXmlDocument,
         Dictionary<String, TwitterUser> oUserIDDictionary
     )
     {
-        Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert(oUserIDDictionary != null);
         AssertValid();
 

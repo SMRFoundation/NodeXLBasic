@@ -562,6 +562,34 @@ public class TwitterStatusTextParserTest : Object
     }
 
     //*************************************************************************
+    //  Method: TestGetScreenNames16()
+    //
+    /// <summary>
+    /// Tests the GetScreenNames() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetScreenNames16()
+    {
+        // Reply-to, mentions, both with underscores.
+
+        String sRepliedToScreenName;
+        String [] asUniqueMentionedScreenNames;
+
+        m_oTwitterStatusTextParser.GetScreenNames(
+            "@John_smith the tweet @jack_jones @jill @john_smith",
+            out sRepliedToScreenName, out asUniqueMentionedScreenNames);
+
+        Assert.AreEqual("john_smith", sRepliedToScreenName);
+        Assert.AreEqual(2, asUniqueMentionedScreenNames.Length);
+        Assert.IsTrue( asUniqueMentionedScreenNames.Contains("jack_jones") );
+        Assert.IsTrue( asUniqueMentionedScreenNames.Contains("jill") );
+    }
+
+    //*************************************************************************
     //  Method: GetScreenNamesPreceededByPunctuation()
     //
     /// <summary>
@@ -581,9 +609,9 @@ public class TwitterStatusTextParserTest : Object
         List<String> oScreenNames = new List<String>();
         Int32 i = 0;
 
-        // Note the absence of "@".
+        // Note the absence of "@" and "_".
 
-        foreach (Char cPunctuation in "!#$%^&*()-_=+\\|`~[{]};:'\",<.>/?")
+        foreach (Char cPunctuation in "!#$%^&*()-=+\\|`~[{]};:'\",<.>/?")
         {
             oScreenNames.Add(cPunctuation + "@screenname" + i);
             i++;

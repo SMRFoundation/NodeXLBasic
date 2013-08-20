@@ -162,6 +162,12 @@ public class TwitterStatusTextParser : Object
 
                     c == '@'
 
+                    // Don't replace "_", which is the only punctuation allowed
+                    // in a twitter screen name.
+
+                    ||
+                    c == '_'
+
                     // Don't replace alphanumeric characters.
 
                     ||
