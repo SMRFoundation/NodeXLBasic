@@ -17,14 +17,14 @@ public static class TwitterApiUrls
     /// REST API.
     /// </summary>
 
-    public static readonly String Rest = "http://api.twitter.com/1.1/";
+    public static readonly String Rest = "https://api.twitter.com/1.1/";
 
     /// <summary>
     /// Search API.
     /// </summary>
 
     public static readonly String Search =
-        "http://api.twitter.com/1.1/search/tweets.json";
+        "https://api.twitter.com/1.1/search/tweets.json";
 
     /// <summary>
     /// OAuth API.
@@ -38,7 +38,7 @@ public static class TwitterApiUrls
     /// </summary>
 
     public static readonly String UserWebPageUrlPattern =
-        "http://twitter.com/{0}";
+        "https://twitter.com/{0}";
 
     /// <summary>
     /// Format pattern for the URL of the Web page for a Twitter status.  The

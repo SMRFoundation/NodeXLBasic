@@ -680,6 +680,8 @@ public class NetworkConfigurationFileParserTest : Object
     TestGetTwitterSearchNetworkConfiguration8()
     {
         #if AddExtraEdges
+
+
         #else
 
         Assert.Fail(

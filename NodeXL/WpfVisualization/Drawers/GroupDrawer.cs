@@ -801,8 +801,8 @@ public class GroupDrawer : DrawerBase
     /// </param>
     ///
     /// <param name="bUseMaximumContrast">
-    /// true to get a color that provides maximum contrast with <paramref
-    /// name="color" />, false to get a color that provides less contrast.
+    /// true to get a color that provides maximum contrast with the graph's
+    /// background, false to get a color that provides less contrast.
     /// </param>
     ///
     /// <returns>

@@ -118,6 +118,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         NonRepliesToNonMentionsEdges = 64,
 
         #if AddExtraEdges
+
+
         #endif
     }
 
@@ -468,6 +470,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         AssertValid();
 
         #if AddExtraEdges
+
+
         #endif
     }
 
@@ -567,15 +571,11 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
             if ( !TwitterSearchNetworkGraphMLUtil.
                 TryAppendVertexXmlNode(oUserValueDictionary,
-                    bIncludeStatistics, oGraphMLXmlDocument, oUserIDDictionary,
-                    out oTwitterUser) )
+                    bIncludeStatistics, true, oGraphMLXmlDocument,
+                    oUserIDDictionary, out oTwitterUser) )
             {
                 continue;
             }
-
-            TwitterSearchNetworkGraphMLUtil.
-                AppendTweetedSearchTermGraphMLAttributeValue(
-                    oGraphMLXmlDocument, oTwitterUser, true);
 
             // Parse the status and add it to the user's status collection.
 
@@ -636,7 +636,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         // who tweeted the search term.
 
         String[] asUniqueMentionsAndRepliesToScreenNames =
-            GetMentionsAndRepliesToScreenNames(oUserIDDictionary);
+            TwitterSearchNetworkGraphMLUtil.GetMentionsAndRepliesToScreenNames(
+                oUserIDDictionary);
 
         Boolean bIncludeStatistics = WhatToIncludeFlagIsSet(
             eWhatToInclude, WhatToInclude.Statistics);
@@ -651,15 +652,9 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         {
             TwitterUser oTwitterUser;
 
-            if ( TwitterSearchNetworkGraphMLUtil.
-                TryAppendVertexXmlNode(oUserValueDictionary,
-                    bIncludeStatistics, oGraphMLXmlDocument, oUserIDDictionary,
-                    out oTwitterUser) )
-            {
-                TwitterSearchNetworkGraphMLUtil.
-                    AppendTweetedSearchTermGraphMLAttributeValue(
-                        oGraphMLXmlDocument, oTwitterUser, false);
-            }
+            TwitterSearchNetworkGraphMLUtil.TryAppendVertexXmlNode(
+                oUserValueDictionary, bIncludeStatistics, false,
+                oGraphMLXmlDocument, oUserIDDictionary, out oTwitterUser);
         }
     }
 
@@ -704,77 +699,9 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         AssertValid();
 
         #if AddExtraEdges
+
+
         #endif
-    }
-
-    //*************************************************************************
-    //  Method: GetMentionsAndRepliesToScreenNames()
-    //
-    /// <summary>
-    /// Gets the screen names that were mentioned or replied to by the people
-    /// who tweeted the search term.
-    /// </summary>
-    ///
-    /// <param name="oUserIDDictionary">
-    /// The key is the Twitter user ID and the value is the corresponding
-    /// TwitterUser.
-    /// </param>
-    ///
-    /// <returns>
-    /// An array of screen names.  The names are unique.
-    /// </returns>
-    //*************************************************************************
-
-    protected String[]
-    GetMentionsAndRepliesToScreenNames
-    (
-        Dictionary<String, TwitterUser> oUserIDDictionary
-    )
-    {
-        Debug.Assert(oUserIDDictionary != null);
-        AssertValid();
-
-        HashSet<String> oUniqueScreenNamesWhoTweetedSearchTerm =
-            TwitterGraphMLUtil.TwitterUsersToUniqueScreenNames(
-                oUserIDDictionary.Values);
-
-        HashSet<String> oUniqueMentionsAndRepliesToScreenNames =
-            new HashSet<String>();
-
-        foreach (TwitterUser oTwitterUser in oUserIDDictionary.Values)
-        {
-            foreach (TwitterStatus oTwitterStatus in oTwitterUser.Statuses)
-            {
-                String sRepliedToScreenName;
-                String [] asUniqueMentionedScreenNames;
-
-                m_oTwitterStatusTextParser.GetScreenNames(oTwitterStatus.Text,
-                    out sRepliedToScreenName, out asUniqueMentionedScreenNames);
-
-                if (
-                    sRepliedToScreenName != null
-                    &&
-                    !oUniqueScreenNamesWhoTweetedSearchTerm.Contains(
-                        sRepliedToScreenName) )
-                {
-                    oUniqueMentionsAndRepliesToScreenNames.Add(
-                        sRepliedToScreenName);
-                }
-
-                foreach (String sUniqueMentionedScreenName in
-                    asUniqueMentionedScreenNames)
-                {
-                    if ( !oUniqueScreenNamesWhoTweetedSearchTerm.Contains(
-                        sUniqueMentionedScreenName) )
-                    {
-                        oUniqueMentionsAndRepliesToScreenNames.Add(
-                            sUniqueMentionedScreenName);
-                    }
-                }
-            }
-        }
-
-        return ( oUniqueMentionsAndRepliesToScreenNames.ToArray() );
     }
 
     //*************************************************************************
@@ -947,6 +874,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         }
 
         #if AddExtraEdges
+
+
         #endif
 
         return ( oNetworkDescriber.ConcatenateSentences() );
@@ -1021,6 +950,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
 
     #if AddExtraEdges
+
     #endif
 
 

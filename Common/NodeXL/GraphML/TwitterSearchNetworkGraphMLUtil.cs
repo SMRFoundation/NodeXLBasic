@@ -90,6 +90,10 @@ public static class TwitterSearchNetworkGraphMLUtil : Object
     /// true to include the user's statistics as GraphML-Attribute values.
     /// </param>
     ///
+    /// <param name="userTweetedSearchTerm">
+    /// true if the user tweeted the search term.
+    /// </param>
+    ///
     /// <param name="graphMLXmlDocument">
     /// The GraphMLXmlDocument being populated.
     /// </param>
@@ -115,6 +119,7 @@ public static class TwitterSearchNetworkGraphMLUtil : Object
     (
         Dictionary<String, Object> userValueDictionary,
         Boolean includeStatistics,
+        Boolean userTweetedSearchTerm,
         GraphMLXmlDocument graphMLXmlDocument,
         Dictionary<String, TwitterUser> userIDDictionary,
         out TwitterUser twitterUser
@@ -156,48 +161,12 @@ public static class TwitterSearchNetworkGraphMLUtil : Object
                 TwitterGraphMLUtil.AppendUserStatisticsFromValueDictionary(
                     userValueDictionary, graphMLXmlDocument, twitterUser);
             }
+
+            AppendTweetedSearchTermGraphMLAttributeValue(
+                graphMLXmlDocument, twitterUser, userTweetedSearchTerm);
         }
 
         return (true);
-    }
-
-    //*************************************************************************
-    //  Method: AppendTweetedSearchTermGraphMLAttributeValue()
-    //
-    /// <summary>
-    /// Appends a GraphML attribute value to a vertex XML node that indicates
-    /// whether the user tweeted the search term.
-    /// </summary>
-    ///
-    /// <param name="graphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
-    /// </param>
-    ///
-    /// <param name="twitterUser">
-    /// Contains the vertex XML node from <paramref
-    /// name="graphMLXmlDocument" /> to add the GraphML attribute value to.
-    /// </param>
-    ///
-    /// <param name="tweetedSearchTerm">
-    /// true if the user tweeted the search term.
-    /// </param>
-    //*************************************************************************
-
-    public static void
-    AppendTweetedSearchTermGraphMLAttributeValue
-    (
-        GraphMLXmlDocument graphMLXmlDocument,
-        TwitterUser twitterUser,
-        Boolean tweetedSearchTerm
-    )
-    {
-        Debug.Assert(graphMLXmlDocument != null);
-        Debug.Assert(twitterUser != null);
-
-        graphMLXmlDocument.AppendGraphMLAttributeValue(
-            twitterUser.VertexXmlNode,
-            VertexTweetedSearchTermID,
-            tweetedSearchTerm ? "Yes" : "No");
     }
 
     //*************************************************************************
@@ -332,6 +301,118 @@ public static class TwitterSearchNetworkGraphMLUtil : Object
             statusUrls, statusHashtags) );
 
         return (true);
+    }
+
+    //*************************************************************************
+    //  Method: GetMentionsAndRepliesToScreenNames()
+    //
+    /// <summary>
+    /// Gets the screen names that were mentioned or replied to by the people
+    /// who tweeted the search term.
+    /// </summary>
+    ///
+    /// <param name="userIDDictionary">
+    /// The key is the Twitter user ID and the value is the corresponding
+    /// TwitterUser.
+    /// </param>
+    ///
+    /// <returns>
+    /// An array of screen names.  The names are unique.
+    /// </returns>
+    //*************************************************************************
+
+    public static String[]
+    GetMentionsAndRepliesToScreenNames
+    (
+        Dictionary<String, TwitterUser> userIDDictionary
+    )
+    {
+        Debug.Assert(userIDDictionary != null);
+
+        HashSet<String> uniqueScreenNamesWhoTweetedSearchTerm =
+            TwitterGraphMLUtil.TwitterUsersToUniqueScreenNames(
+                userIDDictionary.Values);
+
+        HashSet<String> uniqueMentionsAndRepliesToScreenNames =
+            new HashSet<String>();
+
+        TwitterStatusTextParser twitterStatusTextParser =
+            new TwitterStatusTextParser();
+
+        foreach (TwitterUser twitterUser in userIDDictionary.Values)
+        {
+            foreach (TwitterStatus twitterStatus in twitterUser.Statuses)
+            {
+                String repliesToScreenName;
+                String [] uniqueMentionsScreenNames;
+
+                twitterStatusTextParser.GetScreenNames(twitterStatus.Text,
+                    out repliesToScreenName,
+                    out uniqueMentionsScreenNames);
+
+                if (
+                    repliesToScreenName != null
+                    &&
+                    !uniqueScreenNamesWhoTweetedSearchTerm.Contains(
+                        repliesToScreenName) )
+                {
+                    uniqueMentionsAndRepliesToScreenNames.Add(
+                        repliesToScreenName);
+                }
+
+                foreach (String uniqueMentionsScreenName in
+                    uniqueMentionsScreenNames)
+                {
+                    if ( !uniqueScreenNamesWhoTweetedSearchTerm.Contains(
+                        uniqueMentionsScreenName) )
+                    {
+                        uniqueMentionsAndRepliesToScreenNames.Add(
+                            uniqueMentionsScreenName);
+                    }
+                }
+            }
+        }
+
+        return ( uniqueMentionsAndRepliesToScreenNames.ToArray() );
+    }
+
+    //*************************************************************************
+    //  Method: AppendTweetedSearchTermGraphMLAttributeValue()
+    //
+    /// <summary>
+    /// Appends a GraphML attribute value to a vertex XML node that indicates
+    /// whether the user tweeted the search term.
+    /// </summary>
+    ///
+    /// <param name="graphMLXmlDocument">
+    /// GraphMLXmlDocument being populated.
+    /// </param>
+    ///
+    /// <param name="twitterUser">
+    /// Contains the vertex XML node from <paramref
+    /// name="graphMLXmlDocument" /> to add the GraphML attribute value to.
+    /// </param>
+    ///
+    /// <param name="userTweetedSearchTerm">
+    /// true if the user tweeted the search term.
+    /// </param>
+    //*************************************************************************
+
+    private static void
+    AppendTweetedSearchTermGraphMLAttributeValue
+    (
+        GraphMLXmlDocument graphMLXmlDocument,
+        TwitterUser twitterUser,
+        Boolean userTweetedSearchTerm
+    )
+    {
+        Debug.Assert(graphMLXmlDocument != null);
+        Debug.Assert(twitterUser != null);
+
+        graphMLXmlDocument.AppendGraphMLAttributeValue(
+            twitterUser.VertexXmlNode,
+            VertexTweetedSearchTermID,
+            userTweetedSearchTerm ? "Yes" : "No");
     }
 
 

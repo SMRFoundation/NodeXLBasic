@@ -54,7 +54,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(208, 280);
+            this.btnOK.Location = new System.Drawing.Point(208, 293);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
             this.btnOK.TabIndex = 1;
@@ -65,7 +65,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(294, 281);
+            this.btnCancel.Location = new System.Drawing.Point(294, 294);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
             this.btnCancel.TabIndex = 2;
@@ -84,13 +84,13 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.pnlUserInputs.Controls.Add(this.label1);
             this.pnlUserInputs.Location = new System.Drawing.Point(12, 12);
             this.pnlUserInputs.Name = "pnlUserInputs";
-            this.pnlUserInputs.Size = new System.Drawing.Size(365, 262);
+            this.pnlUserInputs.Size = new System.Drawing.Size(365, 275);
             this.pnlUserInputs.TabIndex = 0;
             // 
             // chkExpandStatusUrls
             // 
             this.chkExpandStatusUrls.AutoSize = true;
-            this.chkExpandStatusUrls.Location = new System.Drawing.Point(0, 100);
+            this.chkExpandStatusUrls.Location = new System.Drawing.Point(0, 113);
             this.chkExpandStatusUrls.Name = "chkExpandStatusUrls";
             this.chkExpandStatusUrls.Size = new System.Drawing.Size(176, 17);
             this.chkExpandStatusUrls.TabIndex = 6;
@@ -103,7 +103,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.txbGraphServerUserName);
             this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Location = new System.Drawing.Point(0, 136);
+            this.groupBox1.Location = new System.Drawing.Point(0, 149);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(362, 121);
             this.groupBox1.TabIndex = 7;
@@ -148,7 +148,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             // dtpMaximumStatusDateUtc
             // 
             this.dtpMaximumStatusDateUtc.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpMaximumStatusDateUtc.Location = new System.Drawing.Point(163, 67);
+            this.dtpMaximumStatusDateUtc.Location = new System.Drawing.Point(163, 80);
             this.dtpMaximumStatusDateUtc.Name = "dtpMaximumStatusDateUtc";
             this.dtpMaximumStatusDateUtc.Size = new System.Drawing.Size(108, 20);
             this.dtpMaximumStatusDateUtc.TabIndex = 5;
@@ -156,7 +156,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(114, 70);
+            this.label3.Location = new System.Drawing.Point(114, 83);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(43, 13);
             this.label3.TabIndex = 4;
@@ -165,7 +165,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             // dtpMinimumStatusDateUtc
             // 
             this.dtpMinimumStatusDateUtc.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpMinimumStatusDateUtc.Location = new System.Drawing.Point(0, 67);
+            this.dtpMinimumStatusDateUtc.Location = new System.Drawing.Point(0, 80);
             this.dtpMinimumStatusDateUtc.Name = "dtpMinimumStatusDateUtc";
             this.dtpMinimumStatusDateUtc.Size = new System.Drawing.Size(108, 20);
             this.dtpMinimumStatusDateUtc.TabIndex = 3;
@@ -173,7 +173,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(0, 48);
+            this.label2.Location = new System.Drawing.Point(0, 61);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(125, 13);
             this.label2.TabIndex = 2;
@@ -181,7 +181,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             // 
             // txbSearchTerm
             // 
-            this.txbSearchTerm.Location = new System.Drawing.Point(0, 19);
+            this.txbSearchTerm.Location = new System.Drawing.Point(0, 32);
             this.txbSearchTerm.MaxLength = 100;
             this.txbSearchTerm.Name = "txbSearchTerm";
             this.txbSearchTerm.Size = new System.Drawing.Size(271, 20);
@@ -189,18 +189,18 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(0, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(286, 13);
+            this.label1.Size = new System.Drawing.Size(362, 26);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Add a verte&x for each person whose recent tweet contains:";
+            this.label1.Text = "Add a verte&x for each person who tweeted this search term, or who was replied to" +
+                " or mentioned in those tweets:";
             // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.slStatusLabel});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 314);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 327);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(389, 22);
             this.statusStrip1.SizingGrip = false;
@@ -220,7 +220,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(389, 336);
+            this.ClientSize = new System.Drawing.Size(389, 349);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.pnlUserInputs);
             this.Controls.Add(this.btnCancel);
