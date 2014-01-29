@@ -58,7 +58,7 @@ public class SheetHelper : Object
 
     public SheetHelper
     (
-        Microsoft.Office.Tools.Excel.Worksheet worksheet,
+        Microsoft.Office.Tools.Excel.WorksheetBase worksheet,
         Microsoft.Office.Tools.Excel.ListObject table
     )
     {
@@ -1030,7 +1030,7 @@ public class SheetHelper : Object
 
     /// The worksheet that owns this object.
 
-    protected Microsoft.Office.Tools.Excel.Worksheet m_oWorksheet;
+    protected Microsoft.Office.Tools.Excel.WorksheetBase m_oWorksheet;
 
     /// The NodeXL table in the worksheet.
 

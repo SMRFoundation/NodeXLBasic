@@ -165,7 +165,7 @@ public static class ErrorUtil
             + " required worksheets, tables, and columns."
             ,
             ApplicationUtil.ApplicationName,
-            ApplicationUtil.TemplateName
+            ProjectInformation.ExcelTemplateName
             ) );
     }
 }

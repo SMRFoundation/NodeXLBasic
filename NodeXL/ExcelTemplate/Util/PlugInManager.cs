@@ -57,58 +57,11 @@ public static class PlugInManager
     GetGraphDataProviders()
     {
         List<Object> oGraphDataProviders = new List<Object>();
-        IEnumerable<String> oFileNames;
 
-        if ( TryGetFilesInPlugInFolder(out oFileNames) )
-        {
-            foreach (String sFileName in oFileNames)
-            {
-                // The techniques for checking types for a specified interface
-                // and instantiating instances of those types are from the
-                // article "Let Users Add Functionality to Your .NET
-                // Applications with Macros and Plug-Ins" in the October 2003
-                // issue of MSDN Magazine.
+        AddBuiltInGraphDataProviders(oGraphDataProviders);
+        AddPlugInFolderGraphDataProviders(oGraphDataProviders);
 
-                Type [] aoTypes;
-
-                if ( !TryGetTypesFromFile(sFileName, out aoTypes) )
-                {
-                    continue;
-                }
-
-                foreach (Type oType in aoTypes)
-                {
-                    if (!oType.IsAbstract)
-                    {
-                        if (
-                            typeof(IGraphDataProvider2).IsAssignableFrom(oType)
-                            ||
-                            typeof(IGraphDataProvider).IsAssignableFrom(oType)
-                            )
-                        {
-                            oGraphDataProviders.Add(
-                                Activator.CreateInstance(oType) );
-                        }
-                    }
-                }
-            }
-        }
-
-        oGraphDataProviders.Sort(
-            delegate
-            (
-                Object oGraphDataProviderA,
-                Object oGraphDataProviderB
-            )
-            {
-                Debug.Assert(oGraphDataProviderA != null);
-                Debug.Assert(oGraphDataProviderB != null);
-
-                return ( GetGraphDataProviderName(oGraphDataProviderA).
-                    CompareTo( GetGraphDataProviderName(oGraphDataProviderB) )
-                    );
-            }
-            );
+        SortGraphDataProviders(oGraphDataProviders);
 
         return ( oGraphDataProviders.ToArray() );
     }
@@ -257,14 +210,79 @@ public static class PlugInManager
     }
 
     //*************************************************************************
+    //  Method: AddPlugInFolderGraphDataProviders()
+    //
+    /// <summary>
+    /// Adds types in the plug-in folder that implement either the newer <see
+    /// cref="IGraphDataProvider2" /> interface or the older <see
+    /// cref="IGraphDataProvider" /> interface.
+    /// </summary>
+    ///
+    /// <param name="oGraphDataProviders">
+    /// Collection to add the types to if they implement one of the interfaces.
+    /// </param>
+    //*************************************************************************
+
+    private static void
+    AddPlugInFolderGraphDataProviders
+    (
+        List<Object> oGraphDataProviders
+    )
+    {
+        Debug.Assert(oGraphDataProviders != null);
+
+        IEnumerable<String> oFilePaths;
+
+        if ( TryGetFilesInPlugInFolder(out oFilePaths) )
+        {
+            foreach (String sFilePath in oFilePaths)
+            {
+                AddGraphDataProvidersFromFile(sFilePath, oGraphDataProviders);
+            }
+        }
+    }
+
+    //*************************************************************************
+    //  Method: AddBuiltInGraphDataProviders()
+    //
+    /// <summary>
+    /// Adds built-in types that implement either the newer <see
+    /// cref="IGraphDataProvider2" /> interface or the older <see
+    /// cref="IGraphDataProvider" /> interface.
+    /// </summary>
+    ///
+    /// <param name="oGraphDataProviders">
+    /// Collection to add the types to if they implement one of the interfaces.
+    /// </param>
+    //*************************************************************************
+
+    private static void
+    AddBuiltInGraphDataProviders
+    (
+        List<Object> oGraphDataProviders
+    )
+    {
+        Debug.Assert(oGraphDataProviders != null);
+
+        String sGraphDataProvidersFilePath = Path.Combine(
+            ApplicationUtil.GetApplicationFolder(), GraphDataProvidersFileName);
+
+        if ( File.Exists(sGraphDataProvidersFilePath) )
+        {
+            AddGraphDataProvidersFromFile(
+                sGraphDataProvidersFilePath, oGraphDataProviders);
+        }
+    }
+
+    //*************************************************************************
     //  Method: TryGetFilesInPlugInFolder()
     //
     /// <summary>
-    /// Attempts to get the full paths to the files in the folder where plug-in
-    /// assemblies are stored.
+    /// Attempts to get the full paths to the files in the folder where the
+    /// user can place plug-in assemblies.
     /// </summary>
     ///
-    /// <param name="oFileNames">
+    /// <param name="oFilePaths">
     /// Where the full paths get stored if true is returned.
     /// </param>
     ///
@@ -276,29 +294,74 @@ public static class PlugInManager
     private static Boolean
     TryGetFilesInPlugInFolder
     (
-        out IEnumerable<String> oFileNames
+        out IEnumerable<String> oFilePaths
     )
     {
-        oFileNames = null;
+        oFilePaths = null;
 
-        String sPlugInFolder = ApplicationUtil.GetPlugInFolder();
+        String sPlugInFolderPath =
+            ( new PlugInUserSettings() ).PlugInFolderPath;
 
-        if ( !Directory.Exists(sPlugInFolder) )
+        if (
+            String.IsNullOrEmpty(sPlugInFolderPath)
+            ||
+            !Directory.Exists(sPlugInFolderPath)
+            )
         {
             return (false);
         }
 
-        List<String> oFileNameList = new List<String>();
+        List<String> oFilePathList = new List<String>();
 
         foreach ( String sSearchPattern in new String[] {"*.dll", "*.exe"} )
         {
-            oFileNameList.AddRange( Directory.GetFiles(
-                sPlugInFolder, sSearchPattern) );
+            oFilePathList.AddRange( Directory.GetFiles(
+                sPlugInFolderPath, sSearchPattern) );
         }
 
-        oFileNames = oFileNameList;
+        oFilePaths = oFilePathList;
 
         return (true);
+    }
+
+    //*************************************************************************
+    //  Method: AddGraphDataProvidersFromFile()
+    //
+    /// <summary>
+    /// Adds types that implement either the newer <see
+    /// cref="IGraphDataProvider2" /> interface or the older <see
+    /// cref="IGraphDataProvider" /> interface.
+    /// </summary>
+    ///
+    /// <param name="sFilePath">
+    /// Full path to a file that might contains types that implement one of the
+    /// interfaces.
+    /// </param>
+    ///
+    /// <param name="oGraphDataProviders">
+    /// Collection to add the type to if they implement one of the interfaces.
+    /// </param>
+    //*************************************************************************
+
+    private static void
+    AddGraphDataProvidersFromFile
+    (
+        String sFilePath,
+        List<Object> oGraphDataProviders
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sFilePath) ); 
+        Debug.Assert(oGraphDataProviders != null);
+
+        Type [] aoTypes;
+
+        if ( TryGetTypesFromFile(sFilePath, out aoTypes) )
+        {
+            foreach (Type oType in aoTypes)
+            {
+                AddGraphDataProvidersFromType(oType, oGraphDataProviders);
+            }
+        }
     }
 
     //*************************************************************************
@@ -308,7 +371,7 @@ public static class PlugInManager
     /// Attempts to get an array of types implemented by an assembly.
     /// </summary>
     ///
-    /// <param name="sPath">
+    /// <param name="sFilePath">
     /// Full path to a file that might be an assembly.
     /// </param>
     ///
@@ -325,11 +388,11 @@ public static class PlugInManager
     private static Boolean
     TryGetTypesFromFile
     (
-        String sPath,
+        String sFilePath,
         out Type [] aoTypes
     )
     {
-        Debug.Assert( !String.IsNullOrEmpty(sPath) );
+        Debug.Assert( !String.IsNullOrEmpty(sFilePath) );
 
         aoTypes = null;
 
@@ -337,7 +400,7 @@ public static class PlugInManager
 
         try
         {
-            oAssembly = Assembly.LoadFile(sPath);
+            oAssembly = Assembly.LoadFrom(sFilePath);
         }
         catch (FileLoadException)
         {
@@ -362,5 +425,99 @@ public static class PlugInManager
 
         return (true);
     }
+
+    //*************************************************************************
+    //  Method: AddGraphDataProvidersFromType()
+    //
+    /// <summary>
+    /// Adds a type that implements either the newer <see
+    /// cref="IGraphDataProvider2" /> interface or the older <see
+    /// cref="IGraphDataProvider" /> interface.
+    /// </summary>
+    ///
+    /// <param name="oType">
+    /// The type that might implement one of the interfaces.
+    /// </param>
+    ///
+    /// <param name="oGraphDataProviders">
+    /// Collection to add the type to if it implements one of the interfaces.
+    /// </param>
+    //*************************************************************************
+
+    private static void
+    AddGraphDataProvidersFromType
+    (
+        Type oType,
+        List<Object> oGraphDataProviders
+    )
+    {
+        Debug.Assert(oType != null);
+        Debug.Assert(oGraphDataProviders != null);
+
+        // The techniques for checking types for a specified interface and
+        // instantiating instances of those types are from the article "Let
+        // Users Add Functionality to Your .NET Applications with Macros and
+        // Plug-Ins" in the October 2003 issue of MSDN Magazine.
+
+        if (!oType.IsAbstract)
+        {
+            if (
+                typeof(IGraphDataProvider2).IsAssignableFrom(oType)
+                ||
+                typeof(IGraphDataProvider).IsAssignableFrom(oType)
+                )
+            {
+                oGraphDataProviders.Add( Activator.CreateInstance(oType) );
+            }
+        }
+    }
+
+    //*************************************************************************
+    //  Method: SortGraphDataProviders()
+    //
+    /// <summary>
+    /// Sorts a list of graph data providers.
+    /// </summary>
+    ///
+    /// <param name="oGraphDataProviders">
+    /// The list to sort.
+    /// </param>
+    //*************************************************************************
+
+    private static void
+    SortGraphDataProviders
+    (
+        List<Object> oGraphDataProviders
+    )
+    {
+        Debug.Assert(oGraphDataProviders != null);
+
+        oGraphDataProviders.Sort(
+            delegate
+            (
+                Object oGraphDataProviderA,
+                Object oGraphDataProviderB
+            )
+            {
+                Debug.Assert(oGraphDataProviderA != null);
+                Debug.Assert(oGraphDataProviderB != null);
+
+                return ( GetGraphDataProviderName(oGraphDataProviderA).
+                    CompareTo( GetGraphDataProviderName(oGraphDataProviderB) )
+                    );
+            }
+            );
+    }
+
+
+    //*************************************************************************
+    //  Private members
+    //*************************************************************************
+
+    /// File name of the NodeXL assembly that implements built-in graph data
+    /// providers, without a path.
+
+    private const String GraphDataProvidersFileName =
+        "Smrf.NodeXL.GraphDataProviders.dll";
 }
 }

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,8 +10,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Smrf.NodeXL.GraphDataProviders</RootNamespace>
     <AssemblyName>Smrf.NodeXL.GraphDataProviders</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,6 +28,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Smrf.NodeXL.GraphDataProviders.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -30,6 +37,7 @@
     <DefineConstants>TRACE;DoNotAddExtraEdges</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ionic.Zip.Reduced, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
@@ -56,27 +64,6 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\Controls\ComboBoxPlus.cs">
-      <Link>Controls\ComboBoxPlus.cs</Link>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="..\..\Common\Controls\FormPlus.cs">
-      <Link>Controls\FormPlus.cs</Link>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="..\..\Common\Controls\ListControlUtil.cs">
-      <Link>Controls\ListControlUtil.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Controls\StartProcessLinkLabel.cs">
-      <Link>Controls\StartProcessLinkLabel.cs</Link>
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="..\..\Common\Excel\ExcelDateTimeUtil.cs">
-      <Link>Util\Excel\ExcelDateTimeUtil.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\ExceptionUtil.cs">
-      <Link>Util\ExceptionUtil.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\GraphMLXmlDocument.cs">
       <Link>Util\GraphMLXmlDocument.cs</Link>
     </Compile>
@@ -94,9 +81,6 @@
     </Compile>
     <Compile Include="..\..\Common\NodeXL\GraphML\TwitterUser.cs">
       <Link>Util\NodeXL\GraphML\TwitterUser.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\ObjectWithText.cs">
-      <Link>Util\ObjectWithText.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\SocialNetwork\HttpSocialNetworkUtil.cs">
       <Link>Util\SocialNetwork\HttpSocialNetworkUtil.cs</Link>
@@ -133,9 +117,6 @@
     </Compile>
     <Compile Include="..\..\Common\UrlUtil.cs">
       <Link>Util\UrlUtil.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\ZipUtil.cs">
-      <Link>Util\ZipUtil.cs</Link>
     </Compile>
     <Compile Include="Controls\FlickrApiKey\FlickrApiKeyControl.cs">
       <SubType>UserControl</SubType>
@@ -325,6 +306,10 @@
     <EmbeddedResource Include="Images\NetworkLevels\2.0.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ApplicationUtil\ApplicationUtil.csproj">
+      <Project>{f7845042-b212-4d74-9343-da2052f83234}</Project>
+      <Name>ApplicationUtil</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ExcelTemplatePlugIns\ExcelTemplatePlugIns.csproj">
       <Project>{8EB6F0BA-7774-4F22-8D28-D71C35B2F547}</Project>
       <Name>ExcelTemplatePlugIns</Name>

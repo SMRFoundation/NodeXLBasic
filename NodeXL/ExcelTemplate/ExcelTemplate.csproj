@@ -1,4 +1,6 @@
-﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <ProjectTypeGuids>{BAA0C2D2-18E2-41B9-852F-F413020CAA33};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -8,35 +10,45 @@
     <RootNamespace>Smrf.NodeXL.ExcelTemplate</RootNamespace>
     <AssemblyName>Smrf.NodeXL.ExcelTemplate</AssemblyName>
     <VSTO_HostDocumentName>NodeXLGraph.xltx</VSTO_HostDocumentName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <OfficeApplication>Excel</OfficeApplication>
     <ProjectGuid>{33AB75F0-43C2-4B1D-A0FC-2E682BC65386}</ProjectGuid>
     <SolutionID>aa51c0f3-62b4-4782-83a8-a15dcdd17698</SolutionID>
-    <ManifestCertificateThumbprint>AB8C474C1CEF00A125B2C188664E4CE759F944C0</ManifestCertificateThumbprint>
-    <ManifestKeyFile>ClickOnceSigningCertificate\NodeXLExcelTemplate.pfx</ManifestKeyFile>
+    <ManifestCertificateThumbprint>F41A6BF5D86832F049CDB31EBA26A8DC15B0462E</ManifestCertificateThumbprint>
+    <ManifestKeyFile>AuthenticodeCertificate-2014-01-05.pfx</ManifestKeyFile>
     <SignManifests>true</SignManifests>
-    <IsWebBootstrapper>False</IsWebBootstrapper>
-    <TargetFrameworkSubset>Full</TargetFrameworkSubset>
+    <IsWebBootstrapper>True</IsWebBootstrapper>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <VSTO_TrustAssembliesLocation>true</VSTO_TrustAssembliesLocation>
+    <TargetFrameworkProfile />
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <PublishUrl>E:\NodeXL\ExcelTemplate\Publish\</PublishUrl>
-    <InstallUrl>
-    </InstallUrl>
+    <PublishUrl>C:\PortNodeXL\NodeXL\ExcelTemplate\Publish\</PublishUrl>
+    <InstallUrl>http://www.nodexlgraphgallery.org/NodeXLSetup/</InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.1.251</ApplicationVersion>
+    <ApplicationVersion>1.0.1.317</ApplicationVersion>
     <AutoIncrementApplicationRevision>false</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
-    <UpdateInterval>0</UpdateInterval>
+    <UpdateInterval>1</UpdateInterval>
     <UpdateIntervalUnits>days</UpdateIntervalUnits>
+    <ProductName>NodeXL Excel Template</ProductName>
+    <PublisherName>Social Media Research Foundation</PublisherName>
+    <SupportUrl>http://nodexl.codeplex.com/discussions</SupportUrl>
+    <FriendlyName>NodeXL Excel Template</FriendlyName>
+    <OfficeApplicationDescription>NodeXL is a free, open-source template for Microsoft Excel that makes it easy to explore network graphs.  With NodeXL, you can enter a network edge list into a worksheet, click a button and see your graph, all in the familiar environment of the Excel window.</OfficeApplicationDescription>
   </PropertyGroup>
   <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
       <Visible>False</Visible>
-      <ProductName>.NET Framework Client Profile</ProductName>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
-      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
@@ -54,19 +66,14 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Office.PIARedist.2007">
+    <BootstrapperPackage Include="Microsoft.VSTORuntime.4.0">
       <Visible>False</Visible>
-      <ProductName>Microsoft Office 2007 Primary Interop Assemblies</ProductName>
+      <ProductName>Microsoft Visual Studio 2010 Tools for Office Runtime %28x86 and x64%29</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.VSTORuntime.3.0">
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
       <Visible>False</Visible>
-      <ProductName>Visual Studio Tools for the Office system 3.0 Runtime Service Pack 1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
+      <ProductName>Windows Installer 4.5</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
@@ -82,6 +89,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Smrf.NodeXL.ExcelTemplate.xml</DocumentationFile>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -90,10 +98,40 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ionic.Zip.Reduced">
+      <HintPath>..\..\Common\Assemblies\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.Office.Tools, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.Office.Tools.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.Office.Tools.Common.v4.0.Utilities, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Office.Tools.Excel, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.Office.Tools.Excel.v4.0.Utilities, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Office.Tools.v4.0.Framework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Vbe.Interop, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Tools.Applications.Runtime, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Tools.Applications.ServerDocument, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Office, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.AddIn, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -103,17 +141,8 @@
     <Reference Include="System.Data.DataSetExtensions">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="Microsoft.Office.Tools.v9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.Office.Tools.Common.v9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.Office.Tools.Excel.v9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.VisualStudio.Tools.Applications.Runtime.v9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Ionic.Zip.Reduced, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Common\Assemblies\Ionic.Zip.Reduced.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Tools.Applications.ServerDocument.v9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -127,18 +156,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>References\Smrf.WinFormsControls.dll</HintPath>
     </Reference>
-    <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Office, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Vbe.Interop, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.Office.Interop.Excel, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System.configuration" />
     <Reference Include="System.Printing">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
@@ -149,7 +166,9 @@
     <Reference Include="System.ServiceModel">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -208,9 +227,6 @@
     <Compile Include="..\..\Common\Excel\ExcelColumnHider.cs">
       <Link>Util\Excel\ExcelColumnHider.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Excel\ExcelDateTimeUtil.cs">
-      <Link>Util\Excel\ExcelDateTimeUtil.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\Excel\ExcelHiddenColumns.cs">
       <Link>Util\Excel\ExcelHiddenColumns.cs</Link>
     </Compile>
@@ -239,9 +255,6 @@
     <Compile Include="..\..\Common\Win32Window.cs">
       <Link>Util\Win32Window.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\ZipUtil.cs">
-      <Link>Util\GraphExporters\ZipUtil.cs</Link>
-    </Compile>
     <Compile Include="..\Common\Controls\RegisterUser\RegisterUserControl.cs">
       <Link>Controls\RegisterUser\RegisterUserControl.cs</Link>
       <SubType>UserControl</SubType>
@@ -249,9 +262,6 @@
     <Compile Include="..\Common\Controls\RegisterUser\RegisterUserControl.designer.cs">
       <Link>Controls\RegisterUser\RegisterUserControl.designer.cs</Link>
       <DependentUpon>RegisterUserControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="..\Common\ProjectInformation.cs">
-      <Link>Util\ProjectInformation.cs</Link>
     </Compile>
     <Compile Include="Controls\ColumnComboBoxes\ColumnComboBox.cs">
       <SubType>Component</SubType>
@@ -745,6 +755,16 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Content Include="..\Algorithms\SnapGraphMetricCalculator.exe">
+      <Link>SnapGraphMetricCalculator.exe</Link>
+    </Content>
+    <Content Include="..\Algorithms\SnapGraphMetricCalculatorForCliquesOnly.exe">
+      <Link>SnapGraphMetricCalculatorForCliquesOnly.exe</Link>
+    </Content>
+    <Content Include="..\Documents\Help\ExcelTemplate\NodeXLExcelTemplate.chm">
+      <Link>NodeXLExcelTemplate.chm</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="NodeXLGraph.xltx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -844,6 +864,7 @@
     <Compile Include="UserSettings\NotificationUserSettings.cs" />
     <Compile Include="UserSettings\PasswordUserSettings.cs">
     </Compile>
+    <Compile Include="UserSettings\PlugInUserSettings.cs" />
     <Compile Include="UserSettings\ReadabilityMetricUserSettings.cs" />
     <Compile Include="UserSettings\TaskAutomation\AutomatedGraphImageUserSettings.cs" />
     <Compile Include="UserSettings\TaskAutomation\AutomateTasksUserSettings.cs" />
@@ -941,6 +962,9 @@
     <Compile Include="WorkbookReader\WorksheetReaders\WorksheetReaderBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DeployedTemplate\NodeXLGraph.xltx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="ThisWorkbook.Designer.xml">
       <DependentUpon>ThisWorkbook.cs</DependentUpon>
     </None>
@@ -985,6 +1009,14 @@
     <ProjectReference Include="..\ExcelTemplatePlugIns\ExcelTemplatePlugIns.csproj">
       <Project>{8EB6F0BA-7774-4F22-8D28-D71C35B2F547}</Project>
       <Name>ExcelTemplatePlugIns</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExcelTemplatePostDeploymentAction\ExcelTemplatePostDeploymentAction.csproj">
+      <Project>{2cf47e62-1fc6-4e1c-a434-55b27fd6375d}</Project>
+      <Name>ExcelTemplatePostDeploymentAction</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GraphDataProviders\GraphDataProviders.csproj">
+      <Project>{64bd817e-c145-413c-bd58-9e053c4b20b5}</Project>
+      <Name>GraphDataProviders</Name>
     </ProjectReference>
     <ProjectReference Include="..\Layouts\Layouts.csproj">
       <Project>{76604C5F-9442-4E48-B7A9-212507550A27}</Project>
@@ -1199,11 +1231,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClickOnceSigningCertificate\NodeXLExcelTemplate.pfx" />
     <None Include="Images\Options16x16.png" />
-    <None Include="SampleNodeXLWorkbook\SampleNodeXLWorkbookAsGraphML.graphml">
+    <Content Include="SampleNodeXLWorkbook\SampleNodeXLWorkbookAsGraphML.graphml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="SampleNodeXLWorkbook\Images\Email.jpg">
@@ -1240,21 +1271,27 @@
   <ItemGroup>
     <Folder Include="Resources\" />
   </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestTimestampUrl>http://timestamp.comodoca.com/authenticode</ManifestTimestampUrl>
+  </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v9.0\OfficeTools\Microsoft.VisualStudio.Tools.Office.Office2007.targets" />
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{BAA0C2D2-18E2-41B9-852F-F413020CAA33}">
-        <ProjectProperties HostName="NodeXLGraph.xltx" HostPackage="{B284B16A-C42C-4438-BDCD-B72F4AC43CFB}" OfficeVersion="12.0" VstxVersion="3.0" ApplicationType="XLT" Language="CS" TemplatesPath="VSTOTemplates" DebugInfoExeName="C:\Program Files (x86)\Microsoft Office\Office12\Excel.exe" DebugInfoCommandLine="/t &quot;[$OUTPUT]NodeXLGraph.xltx&quot;" />
+        <ProjectProperties HostName="NodeXLGraph.xltx" HostPackage="{3F2B7691-D1D1-402F-9370-2704A737CF60}" OfficeVersion="15.0" VstxVersion="4.0" ApplicationType="XLT" Language="CS" TemplatesPath="VSTOTemplates" DebugInfoExeName="C:\Program Files (x86)\Microsoft Office\Office15\Excel.exe" DebugInfoCommandLine="/t /x &quot;[$OUTPUT]NodeXLGraph.xltx&quot;" />
         <Host Name="Excel Document" Path=".\NodeXLGraph.xltx" GeneratedCodeNamespace="Microsoft.NodeXL.ExcelTemplate" PublishedHash="4D8E879928CBA270A29ED7FD412557FCA49DBAF9">
-          <HostItem Name="Sheet1" Code="Sheet1.cs" CanonicalName="Sheet1" PublishedHash="245DB3698AC9C0D8DC43523F505F15A7AE65DDCD" DisplayName="Edges" Blueprint="Sheet1.Designer.xml" GeneratedCode="Sheet1.Designer.cs" />
-          <HostItem Name="Sheet2" Code="Sheet2.cs" CanonicalName="Sheet2" PublishedHash="20935715D8414903FE915B3D31F871FC468FDFCC" DisplayName="Vertices" Blueprint="Sheet2.Designer.xml" GeneratedCode="Sheet2.Designer.cs" />
-          <HostItem Name="Sheet3" Code="Sheet3.cs" CanonicalName="Sheet3" PublishedHash="04125E3672981A7C2AA07936FF737FD756F66CA4" CanActivate="false" DisplayName="Do Not Delete" Blueprint="Sheet3.Designer.xml" GeneratedCode="Sheet3.Designer.cs" />
-          <HostItem Name="Sheet4" Code="Sheet4.cs" CanonicalName="Sheet4" PublishedHash="9EE73D40BB7D145575B638D7A5861EFB589F4310" CanActivate="false" DisplayName="Misc" Blueprint="Sheet4.Designer.xml" GeneratedCode="Sheet4.Designer.cs" />
-          <HostItem Name="Sheet5" Code="Sheet5.cs" CanonicalName="Sheet5" PublishedHash="B9F9481DD9342D62DAAFD022A72DCB3E048E6185" DisplayName="Groups" Blueprint="Sheet5.Designer.xml" GeneratedCode="Sheet5.Designer.cs" />
-          <HostItem Name="Sheet6" Code="Sheet6.cs" CanonicalName="Sheet6" PublishedHash="8E55D4EEC9B06EB3369212C3F8D8B0755BF37057" DisplayName="Group Vertices" Blueprint="Sheet6.Designer.xml" GeneratedCode="Sheet6.Designer.cs" />
-          <HostItem Name="Sheet7" Code="Sheet7.cs" CanonicalName="Sheet7" PublishedHash="38D946713A47D3D95E270D765518A40A17CB2F97" DisplayName="Overall Metrics" Blueprint="Sheet7.Designer.xml" GeneratedCode="Sheet7.Designer.cs" />
-          <HostItem Name="ThisWorkbook" Code="ThisWorkbook.cs" CanonicalName="ThisWorkbook" PublishedHash="D0EA144E67D552625DC149C1653F9B8844BAE80B" Blueprint="ThisWorkbook.Designer.xml" GeneratedCode="ThisWorkbook.Designer.cs" />
+          <HostItem Name="Sheet1" Code="Sheet1.cs" CanonicalName="Sheet1" PublishedHash="4CF1B25FEF26A603DF87EF96983114D71B65927F" DisplayName="Edges" Blueprint="Sheet1.Designer.xml" GeneratedCode="Sheet1.Designer.cs" />
+          <HostItem Name="Sheet2" Code="Sheet2.cs" CanonicalName="Sheet2" PublishedHash="413A3833009CA1B9F98E55BF57BA329AD8E17ED9" DisplayName="Vertices" Blueprint="Sheet2.Designer.xml" GeneratedCode="Sheet2.Designer.cs" />
+          <HostItem Name="Sheet3" Code="Sheet3.cs" CanonicalName="Sheet3" PublishedHash="3A2189E412B35CB3DC47A515DAC133BF0943F3CD" CanActivate="false" DisplayName="Do Not Delete" Blueprint="Sheet3.Designer.xml" GeneratedCode="Sheet3.Designer.cs" />
+          <HostItem Name="Sheet4" Code="Sheet4.cs" CanonicalName="Sheet4" PublishedHash="FFC16A64724B8AAD6E2C6CF056FB1D6C657CD1A5" CanActivate="false" DisplayName="Misc" Blueprint="Sheet4.Designer.xml" GeneratedCode="Sheet4.Designer.cs" />
+          <HostItem Name="Sheet5" Code="Sheet5.cs" CanonicalName="Sheet5" PublishedHash="78509C28A6ED7B7DD821355EA5EC0A1EA847CAC3" DisplayName="Groups" Blueprint="Sheet5.Designer.xml" GeneratedCode="Sheet5.Designer.cs" />
+          <HostItem Name="Sheet6" Code="Sheet6.cs" CanonicalName="Sheet6" PublishedHash="C8F16508909B9E85F836334178A3CE8974756158" DisplayName="Group Vertices" Blueprint="Sheet6.Designer.xml" GeneratedCode="Sheet6.Designer.cs" />
+          <HostItem Name="Sheet7" Code="Sheet7.cs" CanonicalName="Sheet7" PublishedHash="BB4979DFD8D9911732EB8B54BEAA7DEE40130C2C" DisplayName="Overall Metrics" Blueprint="Sheet7.Designer.xml" GeneratedCode="Sheet7.Designer.cs" />
+          <HostItem Name="ThisWorkbook" Code="ThisWorkbook.cs" CanonicalName="ThisWorkbook" PublishedHash="5B6CF5DEB019A547C2940B4BC90918A1FA3514F8" Blueprint="ThisWorkbook.Designer.xml" GeneratedCode="ThisWorkbook.Designer.cs" />
         </Host>
       </FlavorProperties>
     </VisualStudio>
@@ -1268,6 +1305,8 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>(if not exist "$(TargetDir)PlugIns" md "$(TargetDir)PlugIns") &amp;&amp; copy "$(SolutionDir)GraphDataProviders\bin\Debug\Smrf.NodeXL.GraphDataProviders.dll" "$(TargetDir)PlugIns"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
+  <Import Project="$(VSToolsPath)\OfficeTools\Microsoft.VisualStudio.Tools.Office.targets" Condition="'$(VSToolsPath)' != ''" />
 </Project>

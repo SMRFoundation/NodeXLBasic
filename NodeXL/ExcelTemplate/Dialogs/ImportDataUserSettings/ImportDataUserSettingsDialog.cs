@@ -15,11 +15,11 @@ namespace Smrf.NodeXL.ExcelTemplate
 /// </summary>
 ///
 /// <remarks>
-/// Pass an <see cref="ImportDataUserSettings" /> object to the
-/// constructor.  If the user edits the object, <see
-/// cref="Form.ShowDialog()" /> returns DialogResult.OK.  Otherwise, the object
-/// is not modified and <see cref="Form.ShowDialog()" /> returns
-/// DialogResult.Cancel.
+/// Pass <see cref="ImportDataUserSettings" /> and <see
+/// cref="PlugInUserSettings" /> objects to the constructor.  If the user edits
+/// the objects, <see cref="Form.ShowDialog()" /> returns DialogResult.OK.
+/// Otherwise, the objects are not modified and
+/// <see cref="Form.ShowDialog()" /> returns DialogResult.Cancel.
 /// </remarks>
 //*****************************************************************************
 
@@ -37,6 +37,10 @@ public partial class ImportDataUserSettingsDialog : ExcelTemplateForm
     /// The object being edited.
     /// </param>
     ///
+    /// <param name="plugInUserSettings">
+    /// The object being edited.
+    /// </param>
+    ///
     /// <param name="thisWorkbook">
     /// Workbook containing the graph contents.
     /// </param>
@@ -45,6 +49,7 @@ public partial class ImportDataUserSettingsDialog : ExcelTemplateForm
     public ImportDataUserSettingsDialog
     (
         ImportDataUserSettings importDataUserSettings,
+        PlugInUserSettings plugInUserSettings,
         ThisWorkbook thisWorkbook
     )
     {
@@ -53,6 +58,7 @@ public partial class ImportDataUserSettingsDialog : ExcelTemplateForm
         Debug.Assert(thisWorkbook != null);
 
         m_oImportDataUserSettings = importDataUserSettings;
+		m_oPlugInUserSettings = plugInUserSettings;
         m_oThisWorkbook = thisWorkbook;
 
         // Instantiate an object that saves and retrieves the position of this
@@ -93,6 +99,11 @@ public partial class ImportDataUserSettingsDialog : ExcelTemplateForm
     {
         if (bFromControls)
         {
+            if ( !usrPlugInFolderPath.Validate() )
+            {
+                return (false);
+            }
+
             m_oImportDataUserSettings.ClearTablesBeforeImport =
                 this.chkClearTablesBeforeImport.Checked;
 
@@ -101,6 +112,9 @@ public partial class ImportDataUserSettingsDialog : ExcelTemplateForm
 
             m_oImportDataUserSettings.AutomateAfterImport =
                 this.chkAutomateAfterImport.Checked;
+
+            m_oPlugInUserSettings.PlugInFolderPath =
+                this.usrPlugInFolderPath.FolderPath;
         }
         else
         {
@@ -112,6 +126,9 @@ public partial class ImportDataUserSettingsDialog : ExcelTemplateForm
 
             this.chkAutomateAfterImport.Checked =
                 m_oImportDataUserSettings.AutomateAfterImport;
+
+            this.usrPlugInFolderPath.FolderPath =
+                m_oPlugInUserSettings.PlugInFolderPath;
         }
 
         return (true);
@@ -195,6 +212,7 @@ public partial class ImportDataUserSettingsDialog : ExcelTemplateForm
         base.AssertValid();
 
         Debug.Assert(m_oImportDataUserSettings != null);
+		Debug.Assert(m_oPlugInUserSettings != null);
         Debug.Assert(m_oThisWorkbook != null);
         Debug.Assert(m_oImportDataUserSettingsDialogUserSettings != null);
     }
@@ -207,6 +225,10 @@ public partial class ImportDataUserSettingsDialog : ExcelTemplateForm
     /// Object whose properties are being edited.
 
     protected ImportDataUserSettings m_oImportDataUserSettings;
+
+	/// The user's plug-in settings.
+
+	protected PlugInUserSettings m_oPlugInUserSettings;
 
     /// Workbook containing the graph contents.
 

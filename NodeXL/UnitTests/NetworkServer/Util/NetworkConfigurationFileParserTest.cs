@@ -681,6 +681,59 @@ public class NetworkConfigurationFileParserTest : Object
     {
         #if AddExtraEdges
 
+        // All WhatToInclude options.
+
+        WriteSampleNetworkConfigurationFile(
+            "<WhatToInclude>MentionsEdges,Statuses</WhatToInclude>",
+
+            "<WhatToInclude>Statuses,Statistics,FollowedEdges,RepliesToEdges,"
+            + "MentionsEdges,NonRepliesToNonMentionsEdges,SharedHashtagEdges,"
+            + "SharedUrlEdges,SharedWordEdges,SharedWordPairEdges"
+            + "</WhatToInclude>"
+            );
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        String sSearchTerm;
+        TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
+        Int32 iMaximumStatuses, iSharedWordUserThreshold;
+        String sNetworkFileFolder;
+        NetworkFileFormats eNetworkFileFormats;
+        String sNodeXLWorkbookSettingsFilePath;
+        Boolean bAutomateNodeXLWorkbook;
+
+        m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
+            out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
+            out iSharedWordUserThreshold, out sNetworkFileFolder,
+            out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
+            out bAutomateNodeXLWorkbook);
+
+        Assert.AreEqual("NodeXL", sSearchTerm);
+
+        Assert.AreEqual(
+            TwitterSearchNetworkAnalyzer.WhatToInclude.Statuses |
+            TwitterSearchNetworkAnalyzer.WhatToInclude.Statistics |
+            TwitterSearchNetworkAnalyzer.WhatToInclude.FollowedEdges |
+            TwitterSearchNetworkAnalyzer.WhatToInclude.RepliesToEdges |
+            TwitterSearchNetworkAnalyzer.WhatToInclude.MentionsEdges |
+
+            TwitterSearchNetworkAnalyzer
+                .WhatToInclude.NonRepliesToNonMentionsEdges |
+
+            TwitterSearchNetworkAnalyzer.WhatToInclude.SharedHashtagEdges |
+            TwitterSearchNetworkAnalyzer.WhatToInclude.SharedUrlEdges |
+            TwitterSearchNetworkAnalyzer.WhatToInclude.SharedWordEdges |
+            TwitterSearchNetworkAnalyzer.WhatToInclude.SharedWordPairEdges
+            ,
+
+            eWhatToInclude);
+
+        Assert.AreEqual(10, iMaximumStatuses);
+        Assert.AreEqual(@"C:\", sNetworkFileFolder);
+        Assert.AreEqual(NetworkFileFormats.GraphML, eNetworkFileFormats);
+        Assert.IsNull(sNodeXLWorkbookSettingsFilePath);
+        Assert.IsFalse(bAutomateNodeXLWorkbook);
 
         #else
 

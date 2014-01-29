@@ -196,6 +196,8 @@ public class PerWorkbookSettings : WorksheetReaderBase
         {
             Debug.Assert( !String.IsNullOrEmpty(value) );
 
+			value = PreserveWorkbookSettingsBackwardCompatibility(value);
+
             Int32 iWorkbookSettingsCellCount = 1;
 
             while (value.Length > 0)
@@ -611,6 +613,82 @@ public class PerWorkbookSettings : WorksheetReaderBase
         }
 
         this.GraphHistory = oNewGraphHistory;
+    }
+
+    //*************************************************************************
+    //  Method: PreserveWorkbookSettingsBackwardCompatibility()
+    //
+    /// <summary>
+    /// Preserves backward compatibility when a workbook created by a newer
+    /// version of NodeXL is opened in an older version.
+    /// </summary>
+    ///
+    /// <param name="sWorkbookSettings">
+    /// The workbook's user settings.
+    /// </param>
+    ///
+    /// <returns>
+    /// A modified copy of <paramref name="sWorkbookSettings" />.
+    /// </returns>
+    //*************************************************************************
+
+    protected String
+    PreserveWorkbookSettingsBackwardCompatibility
+    (
+        String sWorkbookSettings
+    )
+    {
+        AssertValid();
+        Debug.Assert( !String.IsNullOrEmpty(sWorkbookSettings) );
+
+        // This is to allow older versions of NodeXL to open workbooks created
+        // with newer versions of NodeXL.
+        //
+        // Older versions of NodeXL used .NET 3.5.  When a configuration file
+        // was created, the application settings framework created sectionGroup
+        // elements that looked like this:
+        //
+        //   <sectionGroup
+        //     name="userSettings"
+        //     type="System.Configuration.UserSettingsGroup, System,
+        //       Version=2.0.0.0, Culture=neutral,
+        //       PublicKeyToken=b77a5c561934e089">
+        //
+        // Note the "Version=2.0.0.0", which was the version of the
+        // UserSettingsGroup class in .NET 3.5.
+        //
+        // (The application settings framework also created section elements
+        // that used Version=2.0.0.0, so these comments about versions pertain
+        // to section elements as well.)
+        //
+        // Newer versions of NodeXL use .NET 4.0, which creates sectionGroup
+        // elements that look like this:
+        //
+        //   <sectionGroup
+        //     name="userSettings"
+        //     type="System.Configuration.UserSettingsGroup, System,
+        //       Version=4.0.0.0, Culture=neutral,
+        //       PublicKeyToken=b77a5c561934e089">
+        //
+        // Note the "Version=4.0.0.0", which is the version of the
+        // UserSettingsGroup class in .NET 4.0.
+        //
+        // .NET 4.0 can handle sectionGroup elements that specify
+        // Version=2.0.0.0, so newer versions of NodeXL can handle
+        // configurations created with older versions.  However, .NET 3.5
+        // CANNOT handle sectionGroup elements that specify Version=4.0.0.0.
+        // Therefore, this method replaces the "4.0.0.0" with "2.0.0.0" in case
+        // this workbook is ever opened with an older version of NodeXL.
+        //
+        // (Note that .NET 4.0 can also handle a configuration that specifies
+        // both Version=2.0.0.0 and Version=4.0.0.0, so no attempt is made to
+        // modify Versions that get saved in the standard settings file on this
+        // computer.)
+
+        return ( sWorkbookSettings.Replace(
+            "Version=4.0.0.0, Culture=",
+            "Version=2.0.0.0, Culture="
+            ) );
     }
 
     //*************************************************************************

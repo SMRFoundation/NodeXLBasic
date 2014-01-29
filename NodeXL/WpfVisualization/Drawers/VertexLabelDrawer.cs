@@ -76,10 +76,6 @@ public class VertexLabelDrawer : DrawerBase
     /// Describes how the vertex was drawn.
     /// </param>
     ///
-    /// <param name="vertexBounds">
-    /// The vertex's bounding rectangle.
-    /// </param>
-    ///
     /// <param name="formattedText">
     /// The FormattedText object to use.  Several properties get changed by
     /// this method.
@@ -96,7 +92,6 @@ public class VertexLabelDrawer : DrawerBase
         DrawingContext drawingContext,
         GraphDrawingContext graphDrawingContext,
         VertexDrawingHistory vertexDrawingHistory,
-        Rect vertexBounds,
         FormattedText formattedText,
         Color formattedTextColor
     )
@@ -108,8 +103,8 @@ public class VertexLabelDrawer : DrawerBase
         AssertValid();
 
         DrawLabel(drawingContext, graphDrawingContext, vertexDrawingHistory,
-            vertexBounds, GetLabelPosition(vertexDrawingHistory.Vertex),
-            formattedText, formattedTextColor, true);
+            GetLabelPosition(vertexDrawingHistory.Vertex), formattedText,
+            formattedTextColor, true);
     }
 
     //*************************************************************************
@@ -129,10 +124,6 @@ public class VertexLabelDrawer : DrawerBase
     ///
     /// <param name="vertexDrawingHistory">
     /// Describes how the vertex was drawn.
-    /// </param>
-    ///
-    /// <param name="vertexBounds">
-    /// The vertex's bounding rectangle.
     /// </param>
     ///
     /// <param name="labelPosition">
@@ -160,7 +151,6 @@ public class VertexLabelDrawer : DrawerBase
         DrawingContext drawingContext,
         GraphDrawingContext graphDrawingContext,
         VertexDrawingHistory vertexDrawingHistory,
-        Rect vertexBounds,
         VertexLabelPosition labelPosition,
         FormattedText formattedText,
         Color formattedTextColor,
@@ -192,29 +182,120 @@ public class VertexLabelDrawer : DrawerBase
 
         Double dLabelHeight = formattedText.Height;
 
-        Double dHalfVertexBoundsWidth = vertexBounds.Width / 2.0;
-        Double dHalfVertexBoundsHeight = vertexBounds.Height / 2.0;
-        Double dHalfLabelHeight = dLabelHeight / 2.0;
-        Double dHalfLabelWidth = dLabelWidth / 2.0;
-        Double dMaxTextWidth = formattedText.MaxTextWidth;
-        Double dHalfMaxTextWidth = dMaxTextWidth / 2.0;
-
-        // This is the point where the label will be drawn.  It initially
-        // assumes a text height of zero with no margin, but that will be
-        // adjusted within the switch statement below.
+        // This is the point where the label will be drawn using
+        // DrawingContext.Draw().  It initially assumes a text height of zero,
+        // a margin of zero, and no adjustment for alignment (see
+        // dAdjustmentForTextAlignmentX below), but this will be modified
+        // appropriately within the switch statement below.
 
         Point oDraw = vertexDrawingHistory.GetLabelLocation(labelPosition);
         Double dDrawX = oDraw.X;
         Double dDrawY = oDraw.Y;
 
-        // These are the bounds of the label text.
+        // These are the left and right bounds of the rectangle where the text
+        // will actually appear.
 
         Double dLabelBoundsLeft = 0;
         Double dLabelBoundsRight = 0;
 
-        // This is the adjustment that needs to be made to the label's
-        // x-coordinate to account for the way FormattedText draws centered and
-        // right-justified text.
+        AdjustForTextAlignment(dLabelWidth, dLabelHeight, labelPosition,
+            formattedText, ref dDrawX, ref dDrawY, ref dLabelBoundsLeft,
+            ref dLabelBoundsRight);
+
+        // Don't let the text exceed the bounds of the graph rectangle.
+
+        dDrawX = StayWithinHorizontalBounds(
+            dDrawX, graphDrawingContext, dLabelBoundsLeft, dLabelBoundsRight);
+
+        Double dLabelBoundsTop = dDrawY;
+        Double dLabelBoundsBottom = dDrawY + dLabelHeight;
+
+        dDrawY = StayWithinVerticalBounds(
+            dDrawY, graphDrawingContext, dLabelBoundsTop, dLabelBoundsBottom);
+
+        if (drawBackground)
+        {
+            dLabelBoundsLeft = StayWithinHorizontalBounds(
+                dLabelBoundsLeft, graphDrawingContext,
+                dLabelBoundsLeft, dLabelBoundsRight);
+
+            DrawLabelBackground( drawingContext, graphDrawingContext,
+                formattedText, formattedTextColor, m_btBackgroundAlpha,
+                new Point(dLabelBoundsLeft, dDrawY) );
+        }
+
+        drawingContext.DrawText( formattedText, new Point(dDrawX, dDrawY) );
+    }
+
+    //*************************************************************************
+    //  Method: AdjustForTextAlignment()
+    //
+    /// <summary>
+    /// Adjusts several drawing parameters to compensate for the way
+    /// DrawingContext.DrawText() positions centered and right-justified text.
+    /// </summary>
+    ///
+    /// <param name="dLabelWidth">
+    /// The label's width.
+    /// </param>
+    ///
+    /// <param name="dLabelHeight">
+    /// The label's height.
+    /// </param>
+    ///
+    /// <param name="eLabelPosition">
+    /// The label's position.
+    /// </param>
+    ///
+    /// <param name="oFormattedText">
+    /// The FormattedText object to use.
+    /// </param>
+    ///
+    /// <param name="dDrawX">
+    /// The x-coordinate where the label will be drawn using
+    /// DrawingContext.Draw().
+    /// </param>
+    ///
+    /// <param name="dDrawY">
+    /// The y-coordinate where the label will be drawn using
+    /// DrawingContext.Draw().
+    /// </param>
+    ///
+    /// <param name="dLabelBoundsLeft">
+    /// The left bounds of the rectangle where the text will actually appear.
+    /// </param>
+    ///
+    /// <param name="dLabelBoundsRight">
+    /// The right bounds of the rectangle where the text will actually appear.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AdjustForTextAlignment
+    (
+        Double dLabelWidth,
+        Double dLabelHeight,
+        VertexLabelPosition eLabelPosition,
+        FormattedText oFormattedText,
+        ref Double dDrawX,
+        ref Double dDrawY,
+        ref Double dLabelBoundsLeft,
+        ref Double dLabelBoundsRight
+    )
+    {
+        Debug.Assert(dLabelWidth >= 0);
+        Debug.Assert(dLabelHeight >= 0);
+        Debug.Assert(oFormattedText != null);
+        AssertValid();
+
+        Double dHalfLabelHeight = dLabelHeight / 2.0;
+        Double dHalfLabelWidth = dLabelWidth / 2.0;
+        Double dMaxTextWidth = oFormattedText.MaxTextWidth;
+        Double dHalfMaxTextWidth = dMaxTextWidth / 2.0;
+
+        // This is the adjustment that needs to be made to the x-coordinate
+        // passed to DrawingContext.DrawText() to compensate for the way
+        // centered and right-justified text is positioned.
         //
         // When wrapping is turned off (FormattedText.MaxTextWidth = 0) and
         // FormattedText.TextAlignment = TextAlignment.Center, for example,
@@ -223,13 +304,13 @@ public class VertexLabelDrawer : DrawerBase
         // > 0), the text gets centered horizontally at the point halfway
         // between the specified drawing point and the MaxTextWidth value.
 
-        Double dXAdjustment = 0;
+        Double dAdjustmentForTextAlignmentX = 0;
 
-        switch (labelPosition)
+        switch (eLabelPosition)
         {
             case VertexLabelPosition.TopLeft:
 
-                dXAdjustment = -dMaxTextWidth;
+                dAdjustmentForTextAlignmentX = -dMaxTextWidth;
                 dDrawY -= (dLabelHeight + VerticalMargin);
                 dLabelBoundsLeft = dDrawX - dLabelWidth;
                 dLabelBoundsRight = dDrawX;
@@ -238,7 +319,7 @@ public class VertexLabelDrawer : DrawerBase
 
             case VertexLabelPosition.TopCenter:
 
-                dXAdjustment = -dHalfMaxTextWidth;
+                dAdjustmentForTextAlignmentX = -dHalfMaxTextWidth;
                 dDrawY -= (dLabelHeight + VerticalMargin);
                 dLabelBoundsLeft = dDrawX - dHalfLabelWidth;
                 dLabelBoundsRight = dDrawX + dHalfLabelWidth;
@@ -255,7 +336,7 @@ public class VertexLabelDrawer : DrawerBase
 
             case VertexLabelPosition.MiddleLeft:
 
-                dXAdjustment = -dMaxTextWidth;
+                dAdjustmentForTextAlignmentX = -dMaxTextWidth;
                 dDrawX -= HorizontalMargin;
                 dDrawY -= dHalfLabelHeight;
                 dLabelBoundsLeft = dDrawX - dLabelWidth;
@@ -265,7 +346,7 @@ public class VertexLabelDrawer : DrawerBase
 
             case VertexLabelPosition.MiddleCenter:
 
-                dXAdjustment = -dHalfMaxTextWidth;
+                dAdjustmentForTextAlignmentX = -dHalfMaxTextWidth;
                 dDrawY -= dHalfLabelHeight;
                 dLabelBoundsLeft = dDrawX - dHalfLabelWidth;
                 dLabelBoundsRight = dDrawX + dHalfLabelWidth;
@@ -283,7 +364,7 @@ public class VertexLabelDrawer : DrawerBase
 
             case VertexLabelPosition.BottomLeft:
 
-                dXAdjustment = -dMaxTextWidth;
+                dAdjustmentForTextAlignmentX = -dMaxTextWidth;
                 dDrawY += VerticalMargin;
                 dLabelBoundsLeft = dDrawX - dLabelWidth;
                 dLabelBoundsRight = dDrawX;
@@ -292,7 +373,7 @@ public class VertexLabelDrawer : DrawerBase
 
             case VertexLabelPosition.BottomCenter:
 
-                dXAdjustment = -dHalfMaxTextWidth;
+                dAdjustmentForTextAlignmentX = -dHalfMaxTextWidth;
                 dDrawY += VerticalMargin;
                 dLabelBoundsLeft = dDrawX - dHalfLabelWidth;
                 dLabelBoundsRight = dDrawX + dHalfLabelWidth;
@@ -317,36 +398,108 @@ public class VertexLabelDrawer : DrawerBase
                 break;
         }
 
-        // Don't let the text exceed the bounds of the graph rectangle.
+        dDrawX += dAdjustmentForTextAlignmentX;
+    }
 
-        Double dLabelBoundsTop = dDrawY;
-        Double dLabelBoundsBottom = dDrawY + dLabelHeight;
+    //*************************************************************************
+    //  Method: StayWithinHorizontalBounds()
+    //
+    /// <summary>
+    /// Adjusts an x-coordinate so it stays within the graph rectangle.
+    /// </summary>
+    ///
+    /// <param name="dX">
+    /// The x-coordinate to adjust if necessary.
+    /// </param>
+    ///
+    /// <param name="oGraphDrawingContext">
+    /// Provides access to objects needed for graph-drawing operations.
+    /// </param>
+    ///
+    /// <param name="dLabelBoundsLeft">
+    /// The left bounds of the rectangle where the text will actually appear.
+    /// </param>
+    ///
+    /// <param name="dLabelBoundsRight">
+    /// The right bounds of the rectangle where the text will actually appear.
+    /// </param>
+    ///
+    /// <returns>
+    /// The adjusted x-coordinate.
+    /// </returns>
+    //*************************************************************************
+
+    protected Double
+    StayWithinHorizontalBounds
+    (
+        Double dX,
+        GraphDrawingContext oGraphDrawingContext,
+        Double dLabelBoundsLeft,
+        Double dLabelBoundsRight
+    )
+    {
+        Debug.Assert(oGraphDrawingContext != null);
+        AssertValid();
 
         Rect oGraphRectangleMinusMargin =
-            graphDrawingContext.GraphRectangleMinusMargin;
+            oGraphDrawingContext.GraphRectangleMinusMargin;
 
-        dDrawX += Math.Max(0,
-            oGraphRectangleMinusMargin.Left - dLabelBoundsLeft);
+        dX += Math.Max(0, oGraphRectangleMinusMargin.Left - dLabelBoundsLeft);
 
-        dDrawX -= Math.Max(0,
-            dLabelBoundsRight - oGraphRectangleMinusMargin.Right);
+        dX -= Math.Max(0, dLabelBoundsRight - oGraphRectangleMinusMargin.Right);
 
-        dDrawY += Math.Max(0,
-            oGraphRectangleMinusMargin.Top - dLabelBoundsTop);
+        return (dX);
+    }
 
-        dDrawY -= Math.Max(0,
+    //*************************************************************************
+    //  Method: StayWithinVerticalBounds()
+    //
+    /// <summary>
+    /// Adjusts a y-coordinate so it stays within the graph rectangle.
+    /// </summary>
+    ///
+    /// <param name="dY">
+    /// The y-coordinate to adjust if necessary.
+    /// </param>
+    ///
+    /// <param name="oGraphDrawingContext">
+    /// Provides access to objects needed for graph-drawing operations.
+    /// </param>
+    ///
+    /// <param name="dLabelBoundsTop">
+    /// The top bounds of the rectangle where the text will actually appear.
+    /// </param>
+    ///
+    /// <param name="dLabelBoundsBottom">
+    /// The bottom bounds of the rectangle where the text will actually appear.
+    /// </param>
+    ///
+    /// <returns>
+    /// The adjusted y-coordinate.
+    /// </returns>
+    //*************************************************************************
+
+    protected Double
+    StayWithinVerticalBounds
+    (
+        Double dY,
+        GraphDrawingContext oGraphDrawingContext,
+        Double dLabelBoundsTop,
+        Double dLabelBoundsBottom
+    )
+    {
+        Debug.Assert(oGraphDrawingContext != null);
+        AssertValid();
+
+        Rect oGraphRectangleMinusMargin =
+            oGraphDrawingContext.GraphRectangleMinusMargin;
+
+        dY += Math.Max(0, oGraphRectangleMinusMargin.Top - dLabelBoundsTop);
+
+        dY -= Math.Max(0,
             dLabelBoundsBottom - oGraphRectangleMinusMargin.Bottom);
 
-        Point oTextOrigin = new Point(dDrawX + dXAdjustment, dDrawY);
-
-        if (drawBackground)
-        {
-            DrawLabelBackground(drawingContext, graphDrawingContext,
-                formattedText, formattedTextColor, m_btBackgroundAlpha,
-                oTextOrigin);
-        }
-
-        drawingContext.DrawText(formattedText, oTextOrigin);
+        return (dY);
     }
 
     //*************************************************************************

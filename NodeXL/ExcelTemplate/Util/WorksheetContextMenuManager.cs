@@ -76,12 +76,12 @@ public class WorksheetContextMenuManager : Object
 
     public WorksheetContextMenuManager
     (
-        Microsoft.Office.Tools.Excel.Workbook workbook,
-        Microsoft.Office.Tools.Excel.Worksheet edgeWorksheet,
+        Microsoft.Office.Tools.Excel.WorkbookBase workbook,
+        Microsoft.Office.Tools.Excel.WorksheetBase edgeWorksheet,
         Microsoft.Office.Tools.Excel.ListObject edgeTable,
-        Microsoft.Office.Tools.Excel.Worksheet vertexWorksheet,
+        Microsoft.Office.Tools.Excel.WorksheetBase vertexWorksheet,
         Microsoft.Office.Tools.Excel.ListObject vertexTable,
-        Microsoft.Office.Tools.Excel.Worksheet groupWorksheet,
+        Microsoft.Office.Tools.Excel.WorksheetBase groupWorksheet,
         Microsoft.Office.Tools.Excel.ListObject groupTable
     )
     {
@@ -1650,7 +1650,7 @@ public class WorksheetContextMenuManager : Object
 
     /// Excel workbook.
 
-    protected Microsoft.Office.Tools.Excel.Workbook m_oWorkbook;
+    protected Microsoft.Office.Tools.Excel.WorkbookBase m_oWorkbook;
 
     /// The edge table on the edge worksheet.
 

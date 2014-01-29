@@ -133,13 +133,6 @@ public static class NodeXLWorkbookConverter : Object
                 ApplicationUtil.GetMissingTemplateMessage() );
         }
 
-        #if false  // For testing.
-
-        sTemplatePath = @"E:\NodeXL\ExcelTemplateSetup\"
-            + "TemplateModifiedForClickOnce\NodeXLGraph.xltx";
-
-        #endif
-
         try
         {
             File.Copy(otherWorkbookFile, convertedWorkbookFile, true);
@@ -169,7 +162,8 @@ public static class NodeXLWorkbookConverter : Object
 
         try
         {
-            if ( ServerDocument.IsCustomized(convertedWorkbookFile) )
+            if (ServerDocument.GetCustomizationVersion(
+                convertedWorkbookFile) > 0)
             {
                 ServerDocument.RemoveCustomization(convertedWorkbookFile);
             }

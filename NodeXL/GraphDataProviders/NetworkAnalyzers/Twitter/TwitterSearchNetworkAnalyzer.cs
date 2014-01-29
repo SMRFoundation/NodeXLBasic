@@ -119,6 +119,33 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         #if AddExtraEdges
 
+        /// <summary>
+        /// Include an edge from person A to person B if both people have
+        /// tweeted the same hashtag.
+        /// </summary>
+
+        SharedHashtagEdges = 128,
+
+        /// <summary>
+        /// Include an edge from person A to person B if both people have
+        /// tweeted the same URL.
+        /// </summary>
+
+        SharedUrlEdges = 256,
+
+        /// <summary>
+        /// Include an edge from person A to person B if both people have
+        /// tweeted the same word.
+        /// </summary>
+
+        SharedWordEdges = 512,
+
+        /// <summary>
+        /// Include an edge from person A to person B if both people have
+        /// tweeted the same word pair.
+        /// </summary>
+
+        SharedWordPairEdges = 1024,
 
         #endif
     }
@@ -471,6 +498,33 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         #if AddExtraEdges
 
+        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
+            WhatToInclude.SharedHashtagEdges) )
+        {
+            oGraphMLXmlDocument.DefineEdgeStringGraphMLAttributes(
+                SharedHashtagID, "Shared Hashtag");
+        }
+
+        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
+            WhatToInclude.SharedUrlEdges) )
+        {
+            oGraphMLXmlDocument.DefineEdgeStringGraphMLAttributes(
+                SharedUrlID, "Shared URL");
+        }
+
+        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
+            WhatToInclude.SharedWordEdges) )
+        {
+            oGraphMLXmlDocument.DefineEdgeStringGraphMLAttributes(
+                SharedWordID, "Shared Word");
+        }
+
+        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
+            WhatToInclude.SharedWordPairEdges) )
+        {
+            oGraphMLXmlDocument.DefineEdgeStringGraphMLAttributes(
+                SharedWordPairID, "Shared Word Pairs");
+        }
 
         #endif
     }
@@ -700,6 +754,35 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         #if AddExtraEdges
 
+        ReportProgress("Examining shared relationships.");
+
+        SharedTermEdgeAppender oSharedTermEdgeAppender =
+            new SharedTermEdgeAppender(sSearchTerm, oGraphMLXmlDocument,
+                oUserIDDictionary.Values);
+
+        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
+            WhatToInclude.SharedHashtagEdges) )
+        {
+            oSharedTermEdgeAppender.AppendSharedHashtagEdges();
+        }
+
+        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
+            WhatToInclude.SharedUrlEdges) )
+        {
+            oSharedTermEdgeAppender.AppendSharedUrlEdges();
+        }
+
+        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
+            WhatToInclude.SharedWordEdges) )
+        {
+            oSharedTermEdgeAppender.AppendSharedWordEdges();
+        }
+
+        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
+            WhatToInclude.SharedWordPairEdges) )
+        {
+            oSharedTermEdgeAppender.AppendSharedWordPairEdges();
+        }
 
         #endif
     }
@@ -875,6 +958,40 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         #if AddExtraEdges
 
+        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
+            WhatToInclude.SharedHashtagEdges) )
+        {
+            oNetworkDescriber.AddSentence(
+                "There is an edge for each shared hashtag relationship."
+                );
+        }
+
+        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
+            WhatToInclude.SharedUrlEdges) )
+        {
+            oNetworkDescriber.AddSentence(
+                "There is an edge for each shared URL relationship."
+                );
+        }
+
+        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
+            WhatToInclude.SharedWordEdges) )
+        {
+            oNetworkDescriber.AddSentence(
+                "There is an edge for each shared word relationship, provided"
+                + " that at least {0} users tweeted the word."
+                ,
+                iSharedWordUserThreshold
+                );
+        }
+
+        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
+            WhatToInclude.SharedWordPairEdges) )
+        {
+            oNetworkDescriber.AddSentence(
+                "There is an edge for each shared word pair relationship."
+                );
+        }
 
         #endif
 
@@ -950,6 +1067,15 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
 
     #if AddExtraEdges
+
+    ///
+    public const String SharedHashtagID = "SharedHashtag";
+    ///
+    public const String SharedUrlID = "SharedUrl";
+    ///
+    public const String SharedWordID = "SharedWord";
+    ///
+    public const String SharedWordPairID = "SharedWordPair";
 
     #endif
 

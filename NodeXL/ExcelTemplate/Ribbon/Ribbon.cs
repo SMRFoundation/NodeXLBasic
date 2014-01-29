@@ -2,6 +2,7 @@
 
 using System;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Office.Interop.Excel;
 using Microsoft.Office.Tools.Ribbon;
@@ -46,7 +47,7 @@ namespace Smrf.NodeXL.ExcelTemplate
 /// </remarks>
 //*****************************************************************************
 
-public partial class Ribbon : OfficeRibbon
+public partial class Ribbon : RibbonBase
 {
     //*************************************************************************
     //  Constructor: Ribbon()
@@ -57,11 +58,16 @@ public partial class Ribbon : OfficeRibbon
     //*************************************************************************
 
     public Ribbon()
+    :
+    base( Globals.Factory.GetRibbonFactory() )
     {
         InitializeComponent();
 
         btnGetExchangeGraphDataProvider.Tag =
             ProjectInformation.ExchangeGraphDataProviderUrl;
+
+        btnGetMediaWikiGraphDataProvider.Tag =
+            ProjectInformation.MediaWikiGraphDataProviderUrl;
 
         btnGetOnaSurveysGraphDataProvider.Tag =
             ProjectInformation.OnaSurveysGraphDataProviderUrl;
@@ -993,20 +999,21 @@ public partial class Ribbon : OfficeRibbon
 
         // For each such class, add a child menu item to the Import menu.
 
-        RibbonComponentCollection<RibbonControl> oImportItems =
-            mnuImport.Items;
+        IList<RibbonControl> oImportItems = mnuImport.Items;
 
         Int32 iInsertionIndex =
             oImportItems.IndexOf(sepGraphDataProvidersGoHere);
 
         Debug.Assert(iInsertionIndex > 0);
 
-        oImportItems.Insert( iInsertionIndex, new RibbonSeparator() );
+        oImportItems.Insert( iInsertionIndex,
+            this.Factory.CreateRibbonSeparator() );
+
         iInsertionIndex++;
 
         foreach (Object oGraphDataProvider in oGraphDataProviders)
         {
-            RibbonButton oRibbonButton = new RibbonButton();
+            RibbonButton oRibbonButton = this.Factory.CreateRibbonButton();
 
             String sGraphDataProviderName =
                 PlugInManager.GetGraphDataProviderName(oGraphDataProvider);
@@ -1022,7 +1029,7 @@ public partial class Ribbon : OfficeRibbon
                     oGraphDataProvider) + "."
                 ;
 
-            oRibbonButton.Click += new EventHandler<RibbonControlEventArgs>(
+            oRibbonButton.Click += new RibbonControlEventHandler(
                 this.btnImportFromGraphDataProvider_Click);
 
             oImportItems.Insert(iInsertionIndex, oRibbonButton);

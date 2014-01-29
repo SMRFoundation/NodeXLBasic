@@ -1015,7 +1015,7 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
         if (sAnnotation != null)
         {
             oVertexLabelDrawer.DrawLabel(oDrawingContext,
-                oGraphDrawingContext, oVertexDrawingHistory, oVertexBounds,
+                oGraphDrawingContext, oVertexDrawingHistory,
 
                 CreateFormattedTextWithWrap(sAnnotation, oColor,
                     m_oFormattedTextManager.FontSize),
@@ -1165,7 +1165,6 @@ public class VertexDrawer : VertexAndEdgeDrawerBase
             {
                 oVertexLabelDrawer.DrawLabel(oDrawingContext,
                     oGraphDrawingContext, oVertexDrawingHistory,
-                    oVertexRectangle,
 
                     CreateFormattedTextWithWrap(sAnnotation, oColor,
                         m_oFormattedTextManager.FontSize),

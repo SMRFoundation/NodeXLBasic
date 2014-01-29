@@ -37,14 +37,17 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.chkAutomateAfterImport = new System.Windows.Forms.CheckBox();
             this.btnAutomateTasksUserSettings = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.usrPlugInFolderPath = new Smrf.AppLib.FolderPathControl();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(172, 92);
+            this.btnOK.Location = new System.Drawing.Point(172, 172);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
-            this.btnOK.TabIndex = 4;
+            this.btnOK.TabIndex = 6;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -52,10 +55,10 @@ namespace Smrf.NodeXL.ExcelTemplate
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(258, 92);
+            this.btnCancel.Location = new System.Drawing.Point(258, 172);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
-            this.btnCancel.TabIndex = 5;
+            this.btnCancel.TabIndex = 7;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -101,13 +104,44 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnAutomateTasksUserSettings.UseVisualStyleBackColor = true;
             this.btnAutomateTasksUserSettings.Click += new System.EventHandler(this.btnAutomateTasksUserSettings_Click);
             // 
+            // usrPlugInFolderPath
+            // 
+            this.usrPlugInFolderPath.AllowEmptyFolderPath = true;
+            this.usrPlugInFolderPath.BrowsePrompt = "Browse for the folder containing third-party graph data importers.";
+            this.usrPlugInFolderPath.FolderPath = "";
+            this.usrPlugInFolderPath.Location = new System.Drawing.Point(12, 110);
+            this.usrPlugInFolderPath.Name = "usrPlugInFolderPath";
+            this.usrPlugInFolderPath.Size = new System.Drawing.Size(326, 24);
+            this.usrPlugInFolderPath.TabIndex = 5;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 92);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(239, 13);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "&Folder containing third-party graph data importers:";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 139);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(260, 13);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "(Folder change takes effect after NodeXL is restarted)";
+            // 
             // ImportDataUserSettingsDialog
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(350, 129);
+            this.ClientSize = new System.Drawing.Size(350, 209);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.usrPlugInFolderPath);
             this.Controls.Add(this.btnAutomateTasksUserSettings);
             this.Controls.Add(this.chkAutomateAfterImport);
             this.Controls.Add(this.chkSaveImportDescription);
@@ -133,5 +167,8 @@ namespace Smrf.NodeXL.ExcelTemplate
         private System.Windows.Forms.CheckBox chkAutomateAfterImport;
         private System.Windows.Forms.Button btnAutomateTasksUserSettings;
         private System.Windows.Forms.ToolTip toolTip1;
+        private AppLib.FolderPathControl usrPlugInFolderPath;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }

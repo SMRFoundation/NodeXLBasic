@@ -407,10 +407,10 @@ public class VertexWorksheetPopulator : Object
 
         Range oAddedVertexNameRange = oVertexWorksheet.get_Range(
 
-            oDataBodyRange.Cells[iExistingRows + 1,
+            (Range)oDataBodyRange.Cells[iExistingRows + 1,
                 iVertexNameColumnIndexOneBased],
 
-            oDataBodyRange.Cells[iExistingRows + iRowsToAdd,
+            (Range)oDataBodyRange.Cells[iExistingRows + iRowsToAdd,
                 iVertexNameColumnIndexOneBased]
             );
 

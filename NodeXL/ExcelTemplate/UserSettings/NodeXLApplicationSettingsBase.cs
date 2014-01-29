@@ -188,11 +188,11 @@ public class NodeXLApplicationSettingsBase : ApplicationSettingsBase
         // Start with default settings, then selectively copy the standard
         // settings file to the copy.
 
-        this.PerWorkbookSettings.WorkbookSettings = 
+        SetWorkbookSettings(
             CopyAndFilterSettings(
                 ReadStandardSettingsFile(),
                 DefaultStandardSettingsFileContents
-            );
+            ) );
     }
 
     //*************************************************************************
@@ -215,7 +215,7 @@ public class NodeXLApplicationSettingsBase : ApplicationSettingsBase
 
         WriteStandardSettingsFile(
             CopyAndFilterSettings(
-                this.PerWorkbookSettings.WorkbookSettings,
+                GetWorkbookSettings(),
                 ReadStandardSettingsFile()
             ) );
     }
@@ -329,30 +329,70 @@ public class NodeXLApplicationSettingsBase : ApplicationSettingsBase
     }
 
     //*************************************************************************
-    //  Property: PerWorkbookSettings
+    //  Method: GetWorkbookSettings()
+    //
+    /// <summary>
+    /// Gets the users settings for this workbook.
+    /// </summary>
+    ///
+    /// <returns>
+    /// The workbook's user settings.
+    /// </returns>
+    //*************************************************************************
+
+    protected String
+    GetWorkbookSettings()
+    {
+        AssertValid();
+
+        return ( GetPerWorkbookSettings().WorkbookSettings );
+    }
+
+    //*************************************************************************
+    //  Method: SetWorkbookSettings()
+    //
+    /// <summary>
+    /// Sets the users settings for this workbook.
+    /// </summary>
+    ///
+    /// <param name="sWorkbookSettings">
+    /// The workbook's user settings.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    SetWorkbookSettings
+    (
+        String sWorkbookSettings
+    )
+    {
+        AssertValid();
+        Debug.Assert( !String.IsNullOrEmpty(sWorkbookSettings) );
+
+        GetPerWorkbookSettings().WorkbookSettings = sWorkbookSettings;
+    }
+
+    //*************************************************************************
+    //  Method: GetPerWorkbookSettings()
     //
     /// <summary>
     /// Gets a new PerWorkbookSettings object.
     /// </summary>
     ///
-    /// <value>
+    /// <returns>
     /// A new PerWorkbookSettings object where the workbook settings are
     /// stored.
-    /// </value>
+    /// </returns>
     //*************************************************************************
 
     protected PerWorkbookSettings
-    PerWorkbookSettings
+    GetPerWorkbookSettings()
     {
-        get
-        {
-            AssertValid();
+        AssertValid();
 
-            Debug.Assert(Globals.ThisWorkbook != null);
+        Debug.Assert(Globals.ThisWorkbook != null);
 
-            return ( new PerWorkbookSettings(
-                Globals.ThisWorkbook.InnerObject) );
-        }
+        return ( new PerWorkbookSettings( Globals.ThisWorkbook.InnerObject) );
     }
 
     #if TRACE_CALLS
@@ -401,7 +441,7 @@ public class NodeXLApplicationSettingsBase : ApplicationSettingsBase
     {
         AssertValid();
 
-        this.PerWorkbookSettings.WorkbookSettings = ReadStandardSettingsFile();
+        SetWorkbookSettings( ReadStandardSettingsFile() );
     }
 
     //*************************************************************************
@@ -417,7 +457,7 @@ public class NodeXLApplicationSettingsBase : ApplicationSettingsBase
     {
         AssertValid();
 
-        WriteStandardSettingsFile(this.PerWorkbookSettings.WorkbookSettings);
+        WriteStandardSettingsFile( GetWorkbookSettings() );
     }
 
     //*************************************************************************
@@ -836,7 +876,7 @@ public class NodeXLApplicationSettingsBase : ApplicationSettingsBase
         + "<configSections>\r\n"
         + "<sectionGroup name=\"userSettings\""
         + " type=\"System.Configuration.UserSettingsGroup, System,"
-        + " Version=2.0.0.0, Culture=neutral,"
+        + " Version=4.0.0.0, Culture=neutral,"
         + " PublicKeyToken=b77a5c561934e089\">"
         + "</sectionGroup>"
         + "</configSections>\r\n"

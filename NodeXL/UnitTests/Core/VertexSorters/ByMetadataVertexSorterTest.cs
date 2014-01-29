@@ -106,17 +106,8 @@ public class ByMetadataVertexSorterTest : Object
         }
         catch (ArgumentNullException oArgumentNullException)
         {
-            Assert.AreEqual(
-
-                "Smrf.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
-                + " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
-                + "=b77a5c561934e089]].Constructor: "
-
-                + "sortKey argument can't be null.\r\n"
-                + "Parameter name: sortKey"
-                ,
-                oArgumentNullException.Message
-                );
+            Assert.IsTrue( oArgumentNullException.Message.Contains(
+                "sortKey argument can't be null") );
 
             throw oArgumentNullException;
         }
@@ -145,17 +136,8 @@ public class ByMetadataVertexSorterTest : Object
         }
         catch (ArgumentException oArgumentException)
         {
-            Assert.AreEqual(
-
-                "Smrf.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
-                + " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
-                + "=b77a5c561934e089]].Constructor: "
-
-                + "sortKey argument must have a length greater than zero.\r\n"
-                + "Parameter name: sortKey"
-                ,
-                oArgumentException.Message
-                );
+            Assert.IsTrue( oArgumentException.Message.Contains(
+                "sortKey argument must have a length greater than zero") );
 
             throw oArgumentException;
         }
@@ -203,16 +185,8 @@ public class ByMetadataVertexSorterTest : Object
         }
         catch (ApplicationException oApplicationException)
         {
-            Assert.AreEqual(
-
-                "Smrf.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
-                + " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
-                + "=b77a5c561934e089]].SortKey: "
-
-                + "Can't be null."
-                ,
-                oApplicationException.Message
-                );
+            Assert.IsTrue( oApplicationException.Message.Contains(
+                "Can't be null") );
 
             throw oApplicationException;
         }
@@ -240,16 +214,8 @@ public class ByMetadataVertexSorterTest : Object
         }
         catch (ApplicationException oApplicationException)
         {
-            Assert.AreEqual(
-
-                "Smrf.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
-                + " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
-                + "=b77a5c561934e089]].SortKey: "
-
-                + "Must have a length greater than zero."
-                ,
-                oApplicationException.Message
-                );
+            Assert.IsTrue( oApplicationException.Message.Contains(
+                "Must have a length greater than zero") );
 
             throw oApplicationException;
         }
@@ -517,17 +483,8 @@ public class ByMetadataVertexSorterTest : Object
         }
         catch (ArgumentNullException oArgumentNullException)
         {
-            Assert.AreEqual(
-
-                "Smrf.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
-                + " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
-                + "=b77a5c561934e089]].Sort: "
-
-                + "vertices argument can't be null.\r\n"
-                + "Parameter name: vertices"
-                ,
-                oArgumentNullException.Message
-                );
+            Assert.IsTrue(oArgumentNullException.Message.Contains(
+                "Sort: vertices argument can't be null") );
 
             throw oArgumentNullException;
         }
@@ -559,18 +516,10 @@ public class ByMetadataVertexSorterTest : Object
         }
         catch (ArgumentException oArgumentException)
         {
-            Assert.AreEqual(
+            Assert.IsTrue( oArgumentException.Message.Contains(
 
-                "Smrf.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
-                + " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
-                + "=b77a5c561934e089]].Sort: "
-
-                + "One of the vertices does not have the specified sort key,"
-                + " or the key's value is the wrong type.\r\n"
-                + "Parameter name: key"
-                ,
-                oArgumentException.Message
-                );
+                "One of the vertices does not have the specified sort key,"
+                + " or the key's value is the wrong type") );
 
             throw oArgumentException;
         }
@@ -604,18 +553,10 @@ public class ByMetadataVertexSorterTest : Object
         }
         catch (ArgumentException oArgumentException)
         {
-            Assert.AreEqual(
+            Assert.IsTrue( oArgumentException.Message.Contains(
 
-                "Smrf.NodeXL.Core.ByMetadataVertexSorter`1[[System.Int32,"
-                + " mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken"
-                + "=b77a5c561934e089]].Sort: "
-
-                + "One of the vertices does not have the specified sort key,"
-                + " or the key's value is the wrong type.\r\n"
-                + "Parameter name: key"
-                ,
-                oArgumentException.Message
-                );
+                "One of the vertices does not have the specified sort key,"
+                + " or the key's value is the wrong type") );
 
             throw oArgumentException;
         }

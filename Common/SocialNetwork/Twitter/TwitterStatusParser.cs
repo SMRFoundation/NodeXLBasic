@@ -202,7 +202,7 @@ public static class TwitterStatusParser : Object
         }
 
         String [] urls = GetEntities(
-            entityValueDictionary, "urls", "expanded_url");
+            entityValueDictionary, "urls", "expanded_url", false);
 
         if (expandUrls)
         {
@@ -256,7 +256,9 @@ public static class TwitterStatusParser : Object
             return ( new String[0] );
         }
 
-        return ( GetEntities(entityValueDictionary, "hashtags", "text") );
+        return (
+            GetEntities(entityValueDictionary, "hashtags", "text", true)
+            );
     }
 
     //*************************************************************************
@@ -331,6 +333,10 @@ public static class TwitterStatusParser : Object
     /// Name of the child value in each entity to get.  Sample: "expanded_url".
     /// </param>
     ///
+    /// <param name="convertToLowerCase">
+    /// True to convert all the returned entities to lower case.
+    /// </param>
+    ///
     /// <returns>
     /// An array of entities.  The array may be empty.
     /// </returns>
@@ -341,7 +347,8 @@ public static class TwitterStatusParser : Object
     (
         Dictionary<String, Object> entityValueDictionary,
         String entityName,
-        String entityChildName
+        String entityChildName,
+        Boolean convertToLowerCase
     )
     {
         Debug.Assert(entityValueDictionary != null);
@@ -369,6 +376,11 @@ public static class TwitterStatusParser : Object
                         entityChildName, out childValue)
                     )
                 {
+                    if (convertToLowerCase)
+                    {
+                        childValue = childValue.ToLower();
+                    }
+
                     entities.Add(childValue);
                 }
             }

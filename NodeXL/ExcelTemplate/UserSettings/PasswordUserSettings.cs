@@ -20,7 +20,7 @@ namespace Smrf.NodeXL.ExcelTemplate
 
 [ SettingsGroupNameAttribute("PasswordUserSettings") ]
 
-public class PasswordUserSettings : ApplicationSettingsBase
+public class PasswordUserSettings : NodeXLApplicationSettingsBase
 {
     //*************************************************************************
     //  Constructor: PasswordUserSettings()
@@ -32,8 +32,13 @@ public class PasswordUserSettings : ApplicationSettingsBase
     //*************************************************************************
 
     public PasswordUserSettings()
+    :
+    base(false)
     {
-        // (Do nothing.)
+        // (Note that the NodeXLApplicationSettingsBase base class is told to
+        // use the standard settings file instead of the workbook settings for
+        // password user settings.  We do not want the password user settings
+        // to travel with the workbook.)
 
         AssertValid();
     }
@@ -114,12 +119,14 @@ public class PasswordUserSettings : ApplicationSettingsBase
     /// </summary>
     //*************************************************************************
 
-    [Conditional("DEBUG")]
+    // [Conditional("DEBUG")]
 
-    public void
+    public override void
     AssertValid()
     {
-        // (Do nothing.)
+        base.AssertValid();
+
+        // (Do nothing else.)
     }
 
 

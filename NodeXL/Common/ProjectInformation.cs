@@ -17,6 +17,15 @@ public static class ProjectInformation
     //  Public constants
     //*************************************************************************
 
+    /// Name of the Excel Template application's template subfolder within the
+    /// deployment folder.
+
+    public const String ExcelTemplateSubfolder = @"DeployedTemplate";
+
+    /// Name of the Excel Template application's template.
+
+    public const String ExcelTemplateName = "NodeXLGraph.xltx";
+
     /// URL or the project's home page.
 
     public const String HomePageUrl = "http://www.codeplex.com/NodeXL";
@@ -72,6 +81,11 @@ public static class ProjectInformation
 
     public const String ExchangeGraphDataProviderUrl =
         "http://exchangespigot.codeplex.com/";
+     
+    /// URL of the page for downloading the MediaWiki graph data provider.
+
+    public const String MediaWikiGraphDataProviderUrl =
+        "http://wikiimporter.codeplex.com/";
      
     /// URL of the page for downloading the ONA Surveys graph data provider.
 

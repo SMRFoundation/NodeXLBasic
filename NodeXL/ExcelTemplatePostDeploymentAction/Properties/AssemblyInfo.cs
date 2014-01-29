@@ -1,15 +1,12 @@
-﻿
-
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-
-[assembly: AssemblyTitle("NodeXL Excel Template Setup ClickOnce Installer")]
-[assembly: AssemblyDescription("Custom action class used by the NodeXL Excel template setup program")]
+[assembly: AssemblyTitle("NodeXL Excel Template Post Deployment Action")]
+[assembly: AssemblyDescription("Performs required tasks after the Excel Template project is deployed")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Social Media Research Foundation")]
 [assembly: AssemblyProduct("NodeXL")]
@@ -23,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("f97624fa-d776-4bc8-9ad8-206118942b8a")]
+[assembly: Guid("546994a1-ed1d-4b1d-9e9b-0f923573ab26")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -36,5 +33,5 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.0.1.251")]
-[assembly: AssemblyFileVersion("1.0.1.251")]
+[assembly: AssemblyVersion("1.0.1.317")]
+[assembly: AssemblyFileVersion("1.0.1.317")]

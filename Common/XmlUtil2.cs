@@ -321,65 +321,6 @@ public static class XmlUtil2
     }
 
     //*************************************************************************
-    //  Method: SelectRequiredSingleNodeAsGuid()
-    //
-    /// <summary>
-    /// Selects a required XML node and gets its GUID value.
-    /// </summary>
-    ///
-    /// <param name="node">
-    /// Node to select from.
-    /// </param>
-    ///
-    /// <param name="xPath">
-    /// XPath expression.
-    /// </param>
-    ///
-    /// <param name="xmlNamespaceManager">
-    /// NamespaceManager to use, or null to not use one.
-    /// </param>
-    ///
-    /// <returns>
-    /// The selected node's GUID value.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// If the specified node is missing or its value isn't a GUID, an
-    /// XmlException is thrown.
-    /// </remarks>
-    //*************************************************************************
-
-    public static Guid
-    SelectRequiredSingleNodeAsGuid
-    (
-        XmlNode node,
-        String xPath,
-        XmlNamespaceManager xmlNamespaceManager
-    )
-    {
-        Debug.Assert(node != null);
-        Debug.Assert( !String.IsNullOrEmpty(xPath) );
-
-        Guid oGuid;
-
-        if ( !TrySelectSingleNodeAsGuid(node, xPath, xmlNamespaceManager,
-            out oGuid) )
-        {
-            throw new XmlException( String.Format(
-
-                "An XML node with the name \"{0}\" is missing a required"
-                + " descendent node whose value must be a GUID.  The XPath"
-                + " is \"{1}\"."
-                ,
-                node.Name,
-                xPath
-                ) );
-        }
-
-        return (oGuid);
-    }
-
-    //*************************************************************************
     //  Method: TrySelectSingleNode()
     //
     /// <summary>
@@ -692,66 +633,6 @@ public static class XmlUtil2
             &&
             Boolean.TryParse(sValue, out value)
             );
-    }
-
-    //*************************************************************************
-    //  Method: TrySelectSingleNodeAsGuid()
-    //
-    /// <summary>
-    /// Attempts to select an XML node and get its GUID value.
-    /// </summary>
-    ///
-    /// <param name="node">
-    /// Node to select from.
-    /// </param>
-    ///
-    /// <param name="xPath">
-    /// XPath expression.
-    /// </param>
-    ///
-    /// <param name="xmlNamespaceManager">
-    /// NamespaceManager to use, or null to not use one.
-    /// </param>
-    ///
-    /// <param name="value">
-    /// Where the selected node's GUID value gets stored if true is returned.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the specified node was found and its value was a GUID.
-    /// </returns>
-    //*************************************************************************
-
-    public static Boolean
-    TrySelectSingleNodeAsGuid
-    (
-        XmlNode node,
-        String xPath,
-        XmlNamespaceManager xmlNamespaceManager,
-        out Guid value
-    )
-    {
-        Debug.Assert(node != null);
-        Debug.Assert( !String.IsNullOrEmpty(xPath) );
-
-        value = Guid.Empty;
-        String sValue;
-
-        if ( TrySelectSingleNodeAsString(node, xPath, xmlNamespaceManager,
-            out sValue) )
-        {
-            try
-            {
-                value = new Guid(sValue);
-                return (true);
-            }
-            catch (FormatException)
-            {
-                // Fall through.
-            }
-        }
-
-        return (false);
     }
 
     //*************************************************************************

@@ -31,146 +31,147 @@ namespace Smrf.NodeXL.ExcelTemplate
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Ribbon));
-            Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItem1 = new Microsoft.Office.Tools.Ribbon.RibbonDropDownItem();
-            Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItem2 = new Microsoft.Office.Tools.Ribbon.RibbonDropDownItem();
-            this.NodeXL = new Microsoft.Office.Tools.Ribbon.RibbonTab();
-            this.grpData = new Microsoft.Office.Tools.Ribbon.RibbonGroup();
-            this.mnuImport = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
-            this.btnImportFromUcinetFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnImportFromGraphMLFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnImportFromGraphMLFiles = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnImportFromPajekFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.separator9 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.btnImportFromMatrixWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnImportFromWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.separator3 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.btnImportFromNodeXLGraphGallery = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnAnalyzeEmailNetwork = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.sepGraphDataProvidersGoHere = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.btnConvertNodeXLWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.mnuGetThirdPartyGraphDataProviders = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
-            this.btnGetExchangeGraphDataProvider = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnGetOnaSurveysGraphDataProvider = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnGetSocialNetworkGraphDataProvider = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnGetVosonGraphDataProvider = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.separator14 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.btnImportDataUserSettings = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.mnuExport = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
-            this.btnExportToUcinetFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnExportToGraphMLFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnExportToPajekFile = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.separator8 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.btnExportSelectionToNewNodeXLWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnExportToNewMatrixWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.separator19 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.btnExportToNodeXLGraphGallery = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnExportToEmail = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.mniPrepareData = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
-            this.btnMergeDuplicateEdges = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnPopulateVertexWorksheet = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.grpGraph = new Microsoft.Office.Tools.Ribbon.RibbonGroup();
-            this.btnReadWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnShowGraphSummary = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnAutomateTasks = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.rddGraphDirectedness = new Microsoft.Office.Tools.Ribbon.RibbonDropDown();
-            this.rddLayout = new Microsoft.Office.Tools.Ribbon.RibbonDropDown();
-            this.btnEditLayoutUserSettings = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnShowReadabilityMetrics = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.grpVisualAttributes = new Microsoft.Office.Tools.Ribbon.RibbonGroup();
-            this.btnAutoFillWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetColor = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetAlpha = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.mnuSetVisibility = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
-            this.btnSetEdgeVisibilityShow = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetEdgeVisibilitySkip = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetEdgeVisibilityHide = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetVertexVisibilityShowIfInAnEdge = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetVertexVisibilitySkip = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetVertexVisibilityHide = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetVertexVisibilityShow = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.mnuSetVertexShape = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
-            this.btnSetVertexShapeCircle = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetVertexShapeDisk = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetVertexShapeSphere = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.separator4 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.btnSetVertexShapeSquare = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetVertexShapeSolidSquare = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.separator5 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.btnSetVertexShapeDiamond = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetVertexShapeSolidDiamond = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.separator6 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.btnSetVertexShapeTriangle = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetVertexShapeSolidTriangle = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.separator11 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.btnSetVertexShapeLabel = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetVertexShapeImage = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetVertexRadius = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSetEdgeWidth = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.grpAnalysis = new Microsoft.Office.Tools.Ribbon.RibbonGroup();
-            this.btnShowDynamicFilters = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.sbGraphMetrics = new Microsoft.Office.Tools.Ribbon.RibbonSplitButton();
-            this.btnShowGraphMetrics = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnAggregateGraphMetrics = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.sbCreateSubgraphImages = new Microsoft.Office.Tools.Ribbon.RibbonSplitButton();
-            this.btnCreateSubgraphImages = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnDeleteSubgraphThumbnails = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.mnuGroups = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
-            this.btnGroupByVertexAttribute = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnCalculateConnectedComponents = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnGroupByCluster = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnGroupByMotif = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.separator15 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.btnCollapseSelectedGroups = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnCollapseAllGroups = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnExpandSelectedGroups = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnExpandAllGroups = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSelectGroupsWithSelectedVertices = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnSelectAllGroups = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnAddSelectedVerticesToGroup = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnRemoveSelectedVerticesFromGroups = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnRemoveSelectedGroups = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnRemoveAllGroups = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnGroupUserSettings = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.grpOptions = new Microsoft.Office.Tools.Ribbon.RibbonGroup();
-            this.btnUseCurrentOptionsForNew = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnImportOptions = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnExportOptions = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnResetCurrentOptions = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.grpShowHide = new Microsoft.Office.Tools.Ribbon.RibbonGroup();
-            this.mnuShowColumnGroups = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
-            this.chkShowVisualAttributeColumnGroups = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
-            this.chkShowLabelColumnGroups = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
-            this.chkShowLayoutColumnGroups = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
-            this.chkShowGraphMetricColumnGroups = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
-            this.chkShowOtherColumnGroups = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
-            this.separator1 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.btnShowAllColumnGroups = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnHideAllColumnGroups = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.mnuShowGraphElements = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
-            this.chkReadVertexLabels = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
-            this.chkReadEdgeLabels = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
-            this.chkReadGroupLabels = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
-            this.separator12 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.chkShowGraphLegend = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
-            this.chkShowGraphAxes = new Microsoft.Office.Tools.Ribbon.RibbonCheckBox();
-            this.separator7 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.btnShowAllGraphElements = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnHideAllGraphElements = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnEnableAllNotifications = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.grpHelp = new Microsoft.Office.Tools.Ribbon.RibbonGroup();
-            this.btnHelp = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.mnuOnline = new Microsoft.Office.Tools.Ribbon.RibbonMenu();
-            this.btnOpenHomePage = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnOpenDiscussionPage = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnOpenNodeXLGraphGallery = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.separator13 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.btnRegisterUser = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnDonate = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.separator2 = new Microsoft.Office.Tools.Ribbon.RibbonSeparator();
-            this.btnCheckForUpdate = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnOpenSampleNodeXLWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnAbout = new Microsoft.Office.Tools.Ribbon.RibbonButton();
-            this.btnCreateNodeXLWorkbook = new Microsoft.Office.Tools.Ribbon.RibbonButton();
+            Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl1 = this.Factory.CreateRibbonDropDownItem();
+            Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl2 = this.Factory.CreateRibbonDropDownItem();
+            this.NodeXL = this.Factory.CreateRibbonTab();
+            this.grpData = this.Factory.CreateRibbonGroup();
+            this.mnuImport = this.Factory.CreateRibbonMenu();
+            this.btnImportFromUcinetFile = this.Factory.CreateRibbonButton();
+            this.btnImportFromGraphMLFile = this.Factory.CreateRibbonButton();
+            this.btnImportFromGraphMLFiles = this.Factory.CreateRibbonButton();
+            this.btnImportFromPajekFile = this.Factory.CreateRibbonButton();
+            this.separator9 = this.Factory.CreateRibbonSeparator();
+            this.btnImportFromMatrixWorkbook = this.Factory.CreateRibbonButton();
+            this.btnImportFromWorkbook = this.Factory.CreateRibbonButton();
+            this.separator3 = this.Factory.CreateRibbonSeparator();
+            this.btnImportFromNodeXLGraphGallery = this.Factory.CreateRibbonButton();
+            this.btnAnalyzeEmailNetwork = this.Factory.CreateRibbonButton();
+            this.sepGraphDataProvidersGoHere = this.Factory.CreateRibbonSeparator();
+            this.btnConvertNodeXLWorkbook = this.Factory.CreateRibbonButton();
+            this.mnuGetThirdPartyGraphDataProviders = this.Factory.CreateRibbonMenu();
+            this.btnGetExchangeGraphDataProvider = this.Factory.CreateRibbonButton();
+            this.btnGetOnaSurveysGraphDataProvider = this.Factory.CreateRibbonButton();
+            this.btnGetSocialNetworkGraphDataProvider = this.Factory.CreateRibbonButton();
+            this.btnGetVosonGraphDataProvider = this.Factory.CreateRibbonButton();
+            this.separator14 = this.Factory.CreateRibbonSeparator();
+            this.btnImportDataUserSettings = this.Factory.CreateRibbonButton();
+            this.mnuExport = this.Factory.CreateRibbonMenu();
+            this.btnExportToUcinetFile = this.Factory.CreateRibbonButton();
+            this.btnExportToGraphMLFile = this.Factory.CreateRibbonButton();
+            this.btnExportToPajekFile = this.Factory.CreateRibbonButton();
+            this.separator8 = this.Factory.CreateRibbonSeparator();
+            this.btnExportSelectionToNewNodeXLWorkbook = this.Factory.CreateRibbonButton();
+            this.btnExportToNewMatrixWorkbook = this.Factory.CreateRibbonButton();
+            this.separator19 = this.Factory.CreateRibbonSeparator();
+            this.btnExportToNodeXLGraphGallery = this.Factory.CreateRibbonButton();
+            this.btnExportToEmail = this.Factory.CreateRibbonButton();
+            this.mniPrepareData = this.Factory.CreateRibbonMenu();
+            this.btnMergeDuplicateEdges = this.Factory.CreateRibbonButton();
+            this.btnPopulateVertexWorksheet = this.Factory.CreateRibbonButton();
+            this.grpGraph = this.Factory.CreateRibbonGroup();
+            this.btnReadWorkbook = this.Factory.CreateRibbonButton();
+            this.btnShowGraphSummary = this.Factory.CreateRibbonButton();
+            this.btnAutomateTasks = this.Factory.CreateRibbonButton();
+            this.rddGraphDirectedness = this.Factory.CreateRibbonDropDown();
+            this.rddLayout = this.Factory.CreateRibbonDropDown();
+            this.btnEditLayoutUserSettings = this.Factory.CreateRibbonButton();
+            this.btnShowReadabilityMetrics = this.Factory.CreateRibbonButton();
+            this.grpVisualAttributes = this.Factory.CreateRibbonGroup();
+            this.btnAutoFillWorkbook = this.Factory.CreateRibbonButton();
+            this.btnSetColor = this.Factory.CreateRibbonButton();
+            this.btnSetAlpha = this.Factory.CreateRibbonButton();
+            this.mnuSetVisibility = this.Factory.CreateRibbonMenu();
+            this.btnSetEdgeVisibilityShow = this.Factory.CreateRibbonButton();
+            this.btnSetEdgeVisibilitySkip = this.Factory.CreateRibbonButton();
+            this.btnSetEdgeVisibilityHide = this.Factory.CreateRibbonButton();
+            this.btnSetVertexVisibilityShowIfInAnEdge = this.Factory.CreateRibbonButton();
+            this.btnSetVertexVisibilitySkip = this.Factory.CreateRibbonButton();
+            this.btnSetVertexVisibilityHide = this.Factory.CreateRibbonButton();
+            this.btnSetVertexVisibilityShow = this.Factory.CreateRibbonButton();
+            this.mnuSetVertexShape = this.Factory.CreateRibbonMenu();
+            this.btnSetVertexShapeCircle = this.Factory.CreateRibbonButton();
+            this.btnSetVertexShapeDisk = this.Factory.CreateRibbonButton();
+            this.btnSetVertexShapeSphere = this.Factory.CreateRibbonButton();
+            this.separator4 = this.Factory.CreateRibbonSeparator();
+            this.btnSetVertexShapeSquare = this.Factory.CreateRibbonButton();
+            this.btnSetVertexShapeSolidSquare = this.Factory.CreateRibbonButton();
+            this.separator5 = this.Factory.CreateRibbonSeparator();
+            this.btnSetVertexShapeDiamond = this.Factory.CreateRibbonButton();
+            this.btnSetVertexShapeSolidDiamond = this.Factory.CreateRibbonButton();
+            this.separator6 = this.Factory.CreateRibbonSeparator();
+            this.btnSetVertexShapeTriangle = this.Factory.CreateRibbonButton();
+            this.btnSetVertexShapeSolidTriangle = this.Factory.CreateRibbonButton();
+            this.separator11 = this.Factory.CreateRibbonSeparator();
+            this.btnSetVertexShapeLabel = this.Factory.CreateRibbonButton();
+            this.btnSetVertexShapeImage = this.Factory.CreateRibbonButton();
+            this.btnSetVertexRadius = this.Factory.CreateRibbonButton();
+            this.btnSetEdgeWidth = this.Factory.CreateRibbonButton();
+            this.grpAnalysis = this.Factory.CreateRibbonGroup();
+            this.btnShowDynamicFilters = this.Factory.CreateRibbonButton();
+            this.sbGraphMetrics = this.Factory.CreateRibbonSplitButton();
+            this.btnShowGraphMetrics = this.Factory.CreateRibbonButton();
+            this.btnAggregateGraphMetrics = this.Factory.CreateRibbonButton();
+            this.sbCreateSubgraphImages = this.Factory.CreateRibbonSplitButton();
+            this.btnCreateSubgraphImages = this.Factory.CreateRibbonButton();
+            this.btnDeleteSubgraphThumbnails = this.Factory.CreateRibbonButton();
+            this.mnuGroups = this.Factory.CreateRibbonMenu();
+            this.btnGroupByVertexAttribute = this.Factory.CreateRibbonButton();
+            this.btnCalculateConnectedComponents = this.Factory.CreateRibbonButton();
+            this.btnGroupByCluster = this.Factory.CreateRibbonButton();
+            this.btnGroupByMotif = this.Factory.CreateRibbonButton();
+            this.separator15 = this.Factory.CreateRibbonSeparator();
+            this.btnCollapseSelectedGroups = this.Factory.CreateRibbonButton();
+            this.btnCollapseAllGroups = this.Factory.CreateRibbonButton();
+            this.btnExpandSelectedGroups = this.Factory.CreateRibbonButton();
+            this.btnExpandAllGroups = this.Factory.CreateRibbonButton();
+            this.btnSelectGroupsWithSelectedVertices = this.Factory.CreateRibbonButton();
+            this.btnSelectAllGroups = this.Factory.CreateRibbonButton();
+            this.btnAddSelectedVerticesToGroup = this.Factory.CreateRibbonButton();
+            this.btnRemoveSelectedVerticesFromGroups = this.Factory.CreateRibbonButton();
+            this.btnRemoveSelectedGroups = this.Factory.CreateRibbonButton();
+            this.btnRemoveAllGroups = this.Factory.CreateRibbonButton();
+            this.btnGroupUserSettings = this.Factory.CreateRibbonButton();
+            this.grpOptions = this.Factory.CreateRibbonGroup();
+            this.btnUseCurrentOptionsForNew = this.Factory.CreateRibbonButton();
+            this.btnImportOptions = this.Factory.CreateRibbonButton();
+            this.btnExportOptions = this.Factory.CreateRibbonButton();
+            this.btnResetCurrentOptions = this.Factory.CreateRibbonButton();
+            this.grpShowHide = this.Factory.CreateRibbonGroup();
+            this.mnuShowColumnGroups = this.Factory.CreateRibbonMenu();
+            this.chkShowVisualAttributeColumnGroups = this.Factory.CreateRibbonCheckBox();
+            this.chkShowLabelColumnGroups = this.Factory.CreateRibbonCheckBox();
+            this.chkShowLayoutColumnGroups = this.Factory.CreateRibbonCheckBox();
+            this.chkShowGraphMetricColumnGroups = this.Factory.CreateRibbonCheckBox();
+            this.chkShowOtherColumnGroups = this.Factory.CreateRibbonCheckBox();
+            this.separator1 = this.Factory.CreateRibbonSeparator();
+            this.btnShowAllColumnGroups = this.Factory.CreateRibbonButton();
+            this.btnHideAllColumnGroups = this.Factory.CreateRibbonButton();
+            this.mnuShowGraphElements = this.Factory.CreateRibbonMenu();
+            this.chkReadVertexLabels = this.Factory.CreateRibbonCheckBox();
+            this.chkReadEdgeLabels = this.Factory.CreateRibbonCheckBox();
+            this.chkReadGroupLabels = this.Factory.CreateRibbonCheckBox();
+            this.separator12 = this.Factory.CreateRibbonSeparator();
+            this.chkShowGraphLegend = this.Factory.CreateRibbonCheckBox();
+            this.chkShowGraphAxes = this.Factory.CreateRibbonCheckBox();
+            this.separator7 = this.Factory.CreateRibbonSeparator();
+            this.btnShowAllGraphElements = this.Factory.CreateRibbonButton();
+            this.btnHideAllGraphElements = this.Factory.CreateRibbonButton();
+            this.btnEnableAllNotifications = this.Factory.CreateRibbonButton();
+            this.grpHelp = this.Factory.CreateRibbonGroup();
+            this.btnHelp = this.Factory.CreateRibbonButton();
+            this.mnuOnline = this.Factory.CreateRibbonMenu();
+            this.btnOpenHomePage = this.Factory.CreateRibbonButton();
+            this.btnOpenDiscussionPage = this.Factory.CreateRibbonButton();
+            this.btnOpenNodeXLGraphGallery = this.Factory.CreateRibbonButton();
+            this.separator13 = this.Factory.CreateRibbonSeparator();
+            this.btnRegisterUser = this.Factory.CreateRibbonButton();
+            this.btnDonate = this.Factory.CreateRibbonButton();
+            this.separator2 = this.Factory.CreateRibbonSeparator();
+            this.btnCheckForUpdate = this.Factory.CreateRibbonButton();
+            this.btnOpenSampleNodeXLWorkbook = this.Factory.CreateRibbonButton();
+            this.btnAbout = this.Factory.CreateRibbonButton();
+            this.btnCreateNodeXLWorkbook = this.Factory.CreateRibbonButton();
+            this.btnGetMediaWikiGraphDataProvider = this.Factory.CreateRibbonButton();
             this.NodeXL.SuspendLayout();
             this.grpData.SuspendLayout();
             this.grpGraph.SuspendLayout();
@@ -179,7 +180,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.grpOptions.SuspendLayout();
             this.grpShowHide.SuspendLayout();
             this.grpHelp.SuspendLayout();
-            this.SuspendLayout();
             // 
             // NodeXL
             // 
@@ -225,7 +225,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.mnuImport.ScreenTip = "Import";
             this.mnuImport.ShowImage = true;
             this.mnuImport.SuperTip = "Import graph data into the workbook.";
-            this.mnuImport.ItemsLoading += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.mnuImport_ItemsLoading);
+            this.mnuImport.ItemsLoading += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.mnuImport_ItemsLoading);
             // 
             // btnImportFromUcinetFile
             // 
@@ -235,9 +235,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnImportFromUcinetFile.ScreenTip = "Import from UCINET Full Matrix DL File";
             this.btnImportFromUcinetFile.ShowImage = true;
             this.btnImportFromUcinetFile.SuperTip = "Optionally clear the NodeXL workbook, then import edges from a UCINET full matrix" +
-                " DL file.";
+    " DL file.";
             this.btnImportFromUcinetFile.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ImportFromUcinetFile;
-            this.btnImportFromUcinetFile.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnImportFromUcinetFile.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnImportFromGraphMLFile
             // 
@@ -248,7 +248,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnImportFromGraphMLFile.ShowImage = true;
             this.btnImportFromGraphMLFile.SuperTip = resources.GetString("btnImportFromGraphMLFile.SuperTip");
             this.btnImportFromGraphMLFile.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ImportFromGraphMLFile;
-            this.btnImportFromGraphMLFile.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnImportFromGraphMLFile.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnImportFromGraphMLFiles
             // 
@@ -259,7 +259,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnImportFromGraphMLFiles.ShowImage = true;
             this.btnImportFromGraphMLFiles.SuperTip = "Import a set of GraphML files into a set of new NodeXL workbooks.";
             this.btnImportFromGraphMLFiles.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ImportFromGraphMLFiles;
-            this.btnImportFromGraphMLFiles.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnImportFromGraphMLFiles.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnImportFromPajekFile
             // 
@@ -270,7 +270,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnImportFromPajekFile.ShowImage = true;
             this.btnImportFromPajekFile.SuperTip = resources.GetString("btnImportFromPajekFile.SuperTip");
             this.btnImportFromPajekFile.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ImportFromPajekFile;
-            this.btnImportFromPajekFile.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnImportFromPajekFile.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // separator9
             // 
@@ -284,9 +284,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnImportFromMatrixWorkbook.ScreenTip = "Import from Open Matrix Workbook";
             this.btnImportFromMatrixWorkbook.ShowImage = true;
             this.btnImportFromMatrixWorkbook.SuperTip = "Optionally clear the NodeXL workbook, then import edges from an open workbook tha" +
-                "t contains a graph represented as an adjacency matrix.";
+    "t contains a graph represented as an adjacency matrix.";
             this.btnImportFromMatrixWorkbook.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ImportFromMatrixWorkbook;
-            this.btnImportFromMatrixWorkbook.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnImportFromMatrixWorkbook.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnImportFromWorkbook
             // 
@@ -297,7 +297,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnImportFromWorkbook.ShowImage = true;
             this.btnImportFromWorkbook.SuperTip = resources.GetString("btnImportFromWorkbook.SuperTip");
             this.btnImportFromWorkbook.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ImportFromWorkbook;
-            this.btnImportFromWorkbook.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnImportFromWorkbook.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // separator3
             // 
@@ -312,7 +312,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnImportFromNodeXLGraphGallery.ShowImage = true;
             this.btnImportFromNodeXLGraphGallery.SuperTip = "Browse for importable GraphML files on the NodeXL Graph Gallery website.";
             this.btnImportFromNodeXLGraphGallery.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.OpenNodeXLGraphGallery;
-            this.btnImportFromNodeXLGraphGallery.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnImportFromNodeXLGraphGallery.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnAnalyzeEmailNetwork
             // 
@@ -323,7 +323,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnAnalyzeEmailNetwork.ShowImage = true;
             this.btnAnalyzeEmailNetwork.SuperTip = resources.GetString("btnAnalyzeEmailNetwork.SuperTip");
             this.btnAnalyzeEmailNetwork.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.AnalyzeEmailNetwork;
-            this.btnAnalyzeEmailNetwork.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnAnalyzeEmailNetwork.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // sepGraphDataProvidersGoHere
             // 
@@ -337,13 +337,14 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnConvertNodeXLWorkbook.ScreenTip = "Import from NodeXL Workbook Created on Another Computer";
             this.btnConvertNodeXLWorkbook.ShowImage = true;
             this.btnConvertNodeXLWorkbook.SuperTip = "Import a NodeXL workbook that was created on another computer and that can\'t be o" +
-                "pened directly in Excel.";
+    "pened directly in Excel.";
             this.btnConvertNodeXLWorkbook.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ConvertNodeXLWorkbook;
-            this.btnConvertNodeXLWorkbook.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnConvertNodeXLWorkbook.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // mnuGetThirdPartyGraphDataProviders
             // 
             this.mnuGetThirdPartyGraphDataProviders.Items.Add(this.btnGetExchangeGraphDataProvider);
+            this.mnuGetThirdPartyGraphDataProviders.Items.Add(this.btnGetMediaWikiGraphDataProvider);
             this.mnuGetThirdPartyGraphDataProviders.Items.Add(this.btnGetOnaSurveysGraphDataProvider);
             this.mnuGetThirdPartyGraphDataProviders.Items.Add(this.btnGetSocialNetworkGraphDataProvider);
             this.mnuGetThirdPartyGraphDataProviders.Items.Add(this.btnGetVosonGraphDataProvider);
@@ -353,7 +354,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.mnuGetThirdPartyGraphDataProviders.ScreenTip = "Get Third-Party Graph Data Importers ";
             this.mnuGetThirdPartyGraphDataProviders.ShowImage = true;
             this.mnuGetThirdPartyGraphDataProviders.SuperTip = "Get third-party plug-in software that will import graph data from other types of " +
-                "networks.";
+    "networks.";
             // 
             // btnGetExchangeGraphDataProvider
             // 
@@ -362,7 +363,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnGetExchangeGraphDataProvider.OfficeImageId = "ViewOnlineConnection";
             this.btnGetExchangeGraphDataProvider.ScreenTip = "Exchange Server Networks ";
             this.btnGetExchangeGraphDataProvider.ShowImage = true;
-            this.btnGetExchangeGraphDataProvider.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnStartProcess_Click);
+            this.btnGetExchangeGraphDataProvider.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStartProcess_Click);
             // 
             // btnGetOnaSurveysGraphDataProvider
             // 
@@ -371,7 +372,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnGetOnaSurveysGraphDataProvider.OfficeImageId = "ViewOnlineConnection";
             this.btnGetOnaSurveysGraphDataProvider.ScreenTip = "ONA Survey Networks ";
             this.btnGetOnaSurveysGraphDataProvider.ShowImage = true;
-            this.btnGetOnaSurveysGraphDataProvider.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnStartProcess_Click);
+            this.btnGetOnaSurveysGraphDataProvider.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStartProcess_Click);
             // 
             // btnGetSocialNetworkGraphDataProvider
             // 
@@ -380,7 +381,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnGetSocialNetworkGraphDataProvider.OfficeImageId = "ViewOnlineConnection";
             this.btnGetSocialNetworkGraphDataProvider.ScreenTip = "Social Networks ";
             this.btnGetSocialNetworkGraphDataProvider.ShowImage = true;
-            this.btnGetSocialNetworkGraphDataProvider.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnStartProcess_Click);
+            this.btnGetSocialNetworkGraphDataProvider.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStartProcess_Click);
             // 
             // btnGetVosonGraphDataProvider
             // 
@@ -389,7 +390,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnGetVosonGraphDataProvider.OfficeImageId = "ViewOnlineConnection";
             this.btnGetVosonGraphDataProvider.ScreenTip = "VOSON Hyperlink Networks ";
             this.btnGetVosonGraphDataProvider.ShowImage = true;
-            this.btnGetVosonGraphDataProvider.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnStartProcess_Click);
+            this.btnGetVosonGraphDataProvider.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStartProcess_Click);
             // 
             // separator14
             // 
@@ -403,7 +404,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnImportDataUserSettings.ShowImage = true;
             this.btnImportDataUserSettings.SuperTip = "Specify options for how data is imported into the workbook.";
             this.btnImportDataUserSettings.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.EditImportDataUserSettings;
-            this.btnImportDataUserSettings.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnImportDataUserSettings.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // mnuExport
             // 
@@ -433,7 +434,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnExportToUcinetFile.ShowImage = true;
             this.btnExportToUcinetFile.SuperTip = "Export the edges to a new UCINET full matrix DL file.";
             this.btnExportToUcinetFile.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ExportToUcinetFile;
-            this.btnExportToUcinetFile.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnExportToUcinetFile.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnExportToGraphMLFile
             // 
@@ -443,9 +444,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnExportToGraphMLFile.ScreenTip = "Export to GraphML File";
             this.btnExportToGraphMLFile.ShowImage = true;
             this.btnExportToGraphMLFile.SuperTip = "Exports the edges and vertices to a new GraphML file.  All columns in the Edges a" +
-                "nd Vertices worksheet are exported.";
+    "nd Vertices worksheet are exported.";
             this.btnExportToGraphMLFile.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ExportToGraphMLFile;
-            this.btnExportToGraphMLFile.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnExportToGraphMLFile.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnExportToPajekFile
             // 
@@ -455,10 +456,10 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnExportToPajekFile.ScreenTip = "Export to Pajek File";
             this.btnExportToPajekFile.ShowImage = true;
             this.btnExportToPajekFile.SuperTip = "Exports the edges and vertices to a new Pajek text file.  Vertex locations (the X" +
-                " and Y columns in the Vertices worksheet) are the only properties that are expor" +
-                "ted.";
+    " and Y columns in the Vertices worksheet) are the only properties that are expor" +
+    "ted.";
             this.btnExportToPajekFile.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ExportToPajekFile;
-            this.btnExportToPajekFile.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnExportToPajekFile.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // separator8
             // 
@@ -473,7 +474,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnExportSelectionToNewNodeXLWorkbook.ShowImage = true;
             this.btnExportSelectionToNewNodeXLWorkbook.SuperTip = "Export the selected edges and vertices to a new NodeXL workbook.";
             this.btnExportSelectionToNewNodeXLWorkbook.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ExportSelectionToNewNodeXLWorkbook;
-            this.btnExportSelectionToNewNodeXLWorkbook.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnExportSelectionToNewNodeXLWorkbook.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnExportToNewMatrixWorkbook
             // 
@@ -484,7 +485,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnExportToNewMatrixWorkbook.ShowImage = true;
             this.btnExportToNewMatrixWorkbook.SuperTip = "Export the edges to a new workbook as an adjacency matrix.";
             this.btnExportToNewMatrixWorkbook.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ExportToNewMatrixWorkbook;
-            this.btnExportToNewMatrixWorkbook.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnExportToNewMatrixWorkbook.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // separator19
             // 
@@ -499,7 +500,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnExportToNodeXLGraphGallery.ShowImage = true;
             this.btnExportToNodeXLGraphGallery.SuperTip = "Export the graph to the NodeXL Graph Gallery website.";
             this.btnExportToNodeXLGraphGallery.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ExportToNodeXLGraphGallery;
-            this.btnExportToNodeXLGraphGallery.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnExportToNodeXLGraphGallery.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnExportToEmail
             // 
@@ -510,7 +511,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnExportToEmail.ShowImage = true;
             this.btnExportToEmail.SuperTip = "Export the graph to one or more email addresses.";
             this.btnExportToEmail.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ExportToEmail;
-            this.btnExportToEmail.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnExportToEmail.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // mniPrepareData
             // 
@@ -530,8 +531,8 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnMergeDuplicateEdges.ScreenTip = "Count and Merge Duplicate Edges ";
             this.btnMergeDuplicateEdges.ShowImage = true;
             this.btnMergeDuplicateEdges.SuperTip = "Count edges that are duplicates, merge them, or both.  You can specify how NodeXL" +
-                " determines whether two edges are duplicates.";
-            this.btnMergeDuplicateEdges.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnMergeDuplicateEdges_Click);
+    " determines whether two edges are duplicates.";
+            this.btnMergeDuplicateEdges.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnMergeDuplicateEdges_Click);
             // 
             // btnPopulateVertexWorksheet
             // 
@@ -541,7 +542,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnPopulateVertexWorksheet.ScreenTip = "Get Vertices from Edges Worksheet ";
             this.btnPopulateVertexWorksheet.ShowImage = true;
             this.btnPopulateVertexWorksheet.SuperTip = resources.GetString("btnPopulateVertexWorksheet.SuperTip");
-            this.btnPopulateVertexWorksheet.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnPopulateVertexWorksheet_Click);
+            this.btnPopulateVertexWorksheet.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnPopulateVertexWorksheet_Click);
             // 
             // grpGraph
             // 
@@ -563,7 +564,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnReadWorkbook.ShowImage = true;
             this.btnReadWorkbook.SuperTip = resources.GetString("btnReadWorkbook.SuperTip");
             this.btnReadWorkbook.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ShowGraphAndReadWorkbook;
-            this.btnReadWorkbook.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnReadWorkbook.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnShowGraphSummary
             // 
@@ -574,7 +575,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnShowGraphSummary.ShowImage = true;
             this.btnShowGraphSummary.SuperTip = "Show a summary of how the current graph was created.";
             this.btnShowGraphSummary.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ShowGraphSummary;
-            this.btnShowGraphSummary.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnShowGraphSummary.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnAutomateTasks
             // 
@@ -585,28 +586,28 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnAutomateTasks.ShowImage = true;
             this.btnAutomateTasks.SuperTip = "Run multiple tasks with one button click.";
             this.btnAutomateTasks.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.AutomateTasks;
-            this.btnAutomateTasks.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnAutomateTasks.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // rddGraphDirectedness
             // 
             this.rddGraphDirectedness.Enabled = false;
-            ribbonDropDownItem1.Label = "Directed";
-            ribbonDropDownItem1.OfficeImageId = "ShapeStraightConnectorArrow";
-            ribbonDropDownItem1.ScreenTip = "Edges start at Vertex 1 and end at Vertex 2.";
-            ribbonDropDownItem1.Tag = Smrf.NodeXL.Core.GraphDirectedness.Directed;
-            ribbonDropDownItem2.Label = "Undirected";
-            ribbonDropDownItem2.OfficeImageId = "ShapeStraightConnector";
-            ribbonDropDownItem2.ScreenTip = "Edges do not have a start or end.  Vertex 1 and Vertex 2 are interchangable.";
-            ribbonDropDownItem2.Tag = Smrf.NodeXL.Core.GraphDirectedness.Undirected;
-            this.rddGraphDirectedness.Items.Add(ribbonDropDownItem1);
-            this.rddGraphDirectedness.Items.Add(ribbonDropDownItem2);
+            ribbonDropDownItemImpl1.Label = "Directed";
+            ribbonDropDownItemImpl1.OfficeImageId = "ShapeStraightConnectorArrow";
+            ribbonDropDownItemImpl1.ScreenTip = "Edges start at Vertex 1 and end at Vertex 2.";
+            ribbonDropDownItemImpl1.Tag = Smrf.NodeXL.Core.GraphDirectedness.Directed;
+            ribbonDropDownItemImpl2.Label = "Undirected";
+            ribbonDropDownItemImpl2.OfficeImageId = "ShapeStraightConnector";
+            ribbonDropDownItemImpl2.ScreenTip = "Edges do not have a start or end.  Vertex 1 and Vertex 2 are interchangable.";
+            ribbonDropDownItemImpl2.Tag = Smrf.NodeXL.Core.GraphDirectedness.Undirected;
+            this.rddGraphDirectedness.Items.Add(ribbonDropDownItemImpl1);
+            this.rddGraphDirectedness.Items.Add(ribbonDropDownItemImpl2);
             this.rddGraphDirectedness.Label = "Type:";
             this.rddGraphDirectedness.Name = "rddGraphDirectedness";
             this.rddGraphDirectedness.OfficeImageId = "DiagramReverseClassic";
             this.rddGraphDirectedness.ScreenTip = "Graph Type";
             this.rddGraphDirectedness.ShowImage = true;
             this.rddGraphDirectedness.SuperTip = resources.GetString("rddGraphDirectedness.SuperTip");
-            this.rddGraphDirectedness.SelectionChanged += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.rddGraphDirectedness_SelectionChanged);
+            this.rddGraphDirectedness.SelectionChanged += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.rddGraphDirectedness_SelectionChanged);
             // 
             // rddLayout
             // 
@@ -618,7 +619,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.rddLayout.ScreenTip = "Layout";
             this.rddLayout.ShowImage = true;
             this.rddLayout.SuperTip = "Select the algorithm used to lay out the graph.";
-            this.rddLayout.ButtonClick += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.rddLayout_ButtonClick);
+            this.rddLayout.ButtonClick += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.rddLayout_ButtonClick);
             // 
             // btnEditLayoutUserSettings
             // 
@@ -656,9 +657,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnAutoFillWorkbook.ScreenTip = "Autofill Columns";
             this.btnAutoFillWorkbook.ShowImage = true;
             this.btnAutoFillWorkbook.SuperTip = "Calculate and fill in the graph\'s visual property columns, such as edge width and" +
-                " vertex shape, using values from other columns.";
+    " vertex shape, using values from other columns.";
             this.btnAutoFillWorkbook.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.AutoFillWorkbook;
-            this.btnAutoFillWorkbook.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnAutoFillWorkbook.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnSetColor
             // 
@@ -669,9 +670,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetColor.ScreenTip = "Color ";
             this.btnSetColor.ShowImage = true;
             this.btnSetColor.SuperTip = "Set the color of the selected edges, vertices, or groups.\r\n\r\nThe Edges, Vertices," +
-                " or Groups worksheet must be selected before this can be used.";
+    " or Groups worksheet must be selected before this can be used.";
             this.btnSetColor.Tag = Smrf.NodeXL.ExcelTemplate.VisualAttributes.Color;
-            this.btnSetColor.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVisualAttribute_Click);
+            this.btnSetColor.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetVisualAttribute_Click);
             // 
             // btnSetAlpha
             // 
@@ -682,9 +683,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetAlpha.ScreenTip = "Opacity";
             this.btnSetAlpha.ShowImage = true;
             this.btnSetAlpha.SuperTip = "Set the opacity of the selected edges or vertices.\r\n\r\nThe Edges or Vertices works" +
-                "heet must be selected before this can be used.";
+    "heet must be selected before this can be used.";
             this.btnSetAlpha.Tag = Smrf.NodeXL.ExcelTemplate.VisualAttributes.Alpha;
-            this.btnSetAlpha.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVisualAttribute_Click);
+            this.btnSetAlpha.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetVisualAttribute_Click);
             // 
             // mnuSetVisibility
             // 
@@ -702,7 +703,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.mnuSetVisibility.ScreenTip = "Visibility";
             this.mnuSetVisibility.ShowImage = true;
             this.mnuSetVisibility.SuperTip = "Set the visibility of the selected edges or vertices.\r\n\r\nThe Edges or Vertices wo" +
-                "rksheet must be selected before this can be used.";
+    "rksheet must be selected before this can be used.";
             // 
             // btnSetEdgeVisibilityShow
             // 
@@ -711,9 +712,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetEdgeVisibilityShow.ScreenTip = "Show ";
             this.btnSetEdgeVisibilityShow.ShowImage = true;
             this.btnSetEdgeVisibilityShow.SuperTip = "Set the visibility of the selected edges to Show.\r\n\r\nThe edges will be shown when" +
-                " the graph is refreshed.\r\n\r\nThis is the default.";
+    " the graph is refreshed.\r\n\r\nThis is the default.";
             this.btnSetEdgeVisibilityShow.Tag = Smrf.NodeXL.ExcelTemplate.EdgeWorksheetReader.Visibility.Show;
-            this.btnSetEdgeVisibilityShow.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetEdgeVisibility_Click);
+            this.btnSetEdgeVisibilityShow.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetEdgeVisibility_Click);
             // 
             // btnSetEdgeVisibilitySkip
             // 
@@ -722,9 +723,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetEdgeVisibilitySkip.ScreenTip = "Skip ";
             this.btnSetEdgeVisibilitySkip.ShowImage = true;
             this.btnSetEdgeVisibilitySkip.SuperTip = "Set the visibility of the selected edges to Skip.\r\n\r\nThe edge rows will be ignore" +
-                "d.";
+    "d.";
             this.btnSetEdgeVisibilitySkip.Tag = Smrf.NodeXL.ExcelTemplate.EdgeWorksheetReader.Visibility.Skip;
-            this.btnSetEdgeVisibilitySkip.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetEdgeVisibility_Click);
+            this.btnSetEdgeVisibilitySkip.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetEdgeVisibility_Click);
             // 
             // btnSetEdgeVisibilityHide
             // 
@@ -733,9 +734,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetEdgeVisibilityHide.ScreenTip = "Hide ";
             this.btnSetEdgeVisibilityHide.ShowImage = true;
             this.btnSetEdgeVisibilityHide.SuperTip = "Set the visibility of the selected edges to Hide.\r\n\r\nThe edges will be used when " +
-                "laying out the graph but will then be hidden.";
+    "laying out the graph but will then be hidden.";
             this.btnSetEdgeVisibilityHide.Tag = Smrf.NodeXL.ExcelTemplate.EdgeWorksheetReader.Visibility.Hide;
-            this.btnSetEdgeVisibilityHide.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetEdgeVisibility_Click);
+            this.btnSetEdgeVisibilityHide.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetEdgeVisibility_Click);
             // 
             // btnSetVertexVisibilityShowIfInAnEdge
             // 
@@ -744,10 +745,10 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetVertexVisibilityShowIfInAnEdge.ScreenTip = "Show if in an Edge ";
             this.btnSetVertexVisibilityShowIfInAnEdge.ShowImage = true;
             this.btnSetVertexVisibilityShowIfInAnEdge.SuperTip = "Set the visibility of the selected vertices to Show if in an Edge.\r\n\r\nIf the vert" +
-                "ices are part of an edge, they will be shown.  Otherwise, the vertex rows will b" +
-                "e ignored.\r\n\r\nThis is the default.";
+    "ices are part of an edge, they will be shown.  Otherwise, the vertex rows will b" +
+    "e ignored.\r\n\r\nThis is the default.";
             this.btnSetVertexVisibilityShowIfInAnEdge.Tag = Smrf.NodeXL.ExcelTemplate.VertexWorksheetReader.Visibility.ShowIfInAnEdge;
-            this.btnSetVertexVisibilityShowIfInAnEdge.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVertexVisibility_Click);
+            this.btnSetVertexVisibilityShowIfInAnEdge.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetVertexVisibility_Click);
             // 
             // btnSetVertexVisibilitySkip
             // 
@@ -756,9 +757,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetVertexVisibilitySkip.ScreenTip = "Skip ";
             this.btnSetVertexVisibilitySkip.ShowImage = true;
             this.btnSetVertexVisibilitySkip.SuperTip = "Set the visibility of the selected vertices to Skip.\r\n\r\nThe vertex rows and any e" +
-                "dge rows that use the vertices will be ignored.";
+    "dge rows that use the vertices will be ignored.";
             this.btnSetVertexVisibilitySkip.Tag = Smrf.NodeXL.ExcelTemplate.VertexWorksheetReader.Visibility.Skip;
-            this.btnSetVertexVisibilitySkip.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVertexVisibility_Click);
+            this.btnSetVertexVisibilitySkip.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetVertexVisibility_Click);
             // 
             // btnSetVertexVisibilityHide
             // 
@@ -768,7 +769,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetVertexVisibilityHide.ShowImage = true;
             this.btnSetVertexVisibilityHide.SuperTip = resources.GetString("btnSetVertexVisibilityHide.SuperTip");
             this.btnSetVertexVisibilityHide.Tag = Smrf.NodeXL.ExcelTemplate.VertexWorksheetReader.Visibility.Hide;
-            this.btnSetVertexVisibilityHide.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVertexVisibility_Click);
+            this.btnSetVertexVisibilityHide.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetVertexVisibility_Click);
             // 
             // btnSetVertexVisibilityShow
             // 
@@ -777,9 +778,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetVertexVisibilityShow.ScreenTip = "Show ";
             this.btnSetVertexVisibilityShow.ShowImage = true;
             this.btnSetVertexVisibilityShow.SuperTip = "Set the visibility of the selected vertices to Show.\r\n\r\nThe vertices will be show" +
-                "n regardless of whether they are part of an edge.";
+    "n regardless of whether they are part of an edge.";
             this.btnSetVertexVisibilityShow.Tag = Smrf.NodeXL.ExcelTemplate.VertexWorksheetReader.Visibility.Show;
-            this.btnSetVertexVisibilityShow.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVertexVisibility_Click);
+            this.btnSetVertexVisibilityShow.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetVertexVisibility_Click);
             // 
             // mnuSetVertexShape
             // 
@@ -805,7 +806,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.mnuSetVertexShape.ScreenTip = "Vertex Shape";
             this.mnuSetVertexShape.ShowImage = true;
             this.mnuSetVertexShape.SuperTip = "Set the shape of the selected vertices or groups.\r\n\r\nThe Vertices or Groups works" +
-                "heet must be selected before this can be used.";
+    "heet must be selected before this can be used.";
             // 
             // btnSetVertexShapeCircle
             // 
@@ -816,7 +817,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetVertexShapeCircle.ShowImage = true;
             this.btnSetVertexShapeCircle.SuperTip = "Set the shape of the selected vertices or clusters to Circle.";
             this.btnSetVertexShapeCircle.Tag = Smrf.NodeXL.Visualization.Wpf.VertexShape.Circle;
-            this.btnSetVertexShapeCircle.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVertexShape_Click);
+            this.btnSetVertexShapeCircle.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetVertexShape_Click);
             // 
             // btnSetVertexShapeDisk
             // 
@@ -827,7 +828,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetVertexShapeDisk.ShowImage = true;
             this.btnSetVertexShapeDisk.SuperTip = "Set the shape of the selected vertices or clusters to Disk.";
             this.btnSetVertexShapeDisk.Tag = Smrf.NodeXL.Visualization.Wpf.VertexShape.Disk;
-            this.btnSetVertexShapeDisk.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVertexShape_Click);
+            this.btnSetVertexShapeDisk.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetVertexShape_Click);
             // 
             // btnSetVertexShapeSphere
             // 
@@ -838,7 +839,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetVertexShapeSphere.ShowImage = true;
             this.btnSetVertexShapeSphere.SuperTip = "Set the shape of the selected vertices or clusters to Sphere.";
             this.btnSetVertexShapeSphere.Tag = Smrf.NodeXL.Visualization.Wpf.VertexShape.Sphere;
-            this.btnSetVertexShapeSphere.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVertexShape_Click);
+            this.btnSetVertexShapeSphere.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetVertexShape_Click);
             // 
             // separator4
             // 
@@ -853,7 +854,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetVertexShapeSquare.ShowImage = true;
             this.btnSetVertexShapeSquare.SuperTip = "Set the shape of the selected vertices or clusters to Square.";
             this.btnSetVertexShapeSquare.Tag = Smrf.NodeXL.Visualization.Wpf.VertexShape.Square;
-            this.btnSetVertexShapeSquare.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVertexShape_Click);
+            this.btnSetVertexShapeSquare.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetVertexShape_Click);
             // 
             // btnSetVertexShapeSolidSquare
             // 
@@ -864,7 +865,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetVertexShapeSolidSquare.ShowImage = true;
             this.btnSetVertexShapeSolidSquare.SuperTip = "Set the shape of the selected vertices or clusters to Solid Square.";
             this.btnSetVertexShapeSolidSquare.Tag = Smrf.NodeXL.Visualization.Wpf.VertexShape.SolidSquare;
-            this.btnSetVertexShapeSolidSquare.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVertexShape_Click);
+            this.btnSetVertexShapeSolidSquare.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetVertexShape_Click);
             // 
             // separator5
             // 
@@ -879,7 +880,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetVertexShapeDiamond.ShowImage = true;
             this.btnSetVertexShapeDiamond.SuperTip = "Set the shape of the selected vertices or clusters to Diamond.";
             this.btnSetVertexShapeDiamond.Tag = Smrf.NodeXL.Visualization.Wpf.VertexShape.Diamond;
-            this.btnSetVertexShapeDiamond.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVertexShape_Click);
+            this.btnSetVertexShapeDiamond.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetVertexShape_Click);
             // 
             // btnSetVertexShapeSolidDiamond
             // 
@@ -890,7 +891,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetVertexShapeSolidDiamond.ShowImage = true;
             this.btnSetVertexShapeSolidDiamond.SuperTip = "Set the shape of the selected vertices or clusters to Solid Diamond.";
             this.btnSetVertexShapeSolidDiamond.Tag = Smrf.NodeXL.Visualization.Wpf.VertexShape.SolidDiamond;
-            this.btnSetVertexShapeSolidDiamond.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVertexShape_Click);
+            this.btnSetVertexShapeSolidDiamond.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetVertexShape_Click);
             // 
             // separator6
             // 
@@ -905,7 +906,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetVertexShapeTriangle.ShowImage = true;
             this.btnSetVertexShapeTriangle.SuperTip = "Set the shape of the selected vertices or clusters to Triangle.";
             this.btnSetVertexShapeTriangle.Tag = Smrf.NodeXL.Visualization.Wpf.VertexShape.Triangle;
-            this.btnSetVertexShapeTriangle.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVertexShape_Click);
+            this.btnSetVertexShapeTriangle.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetVertexShape_Click);
             // 
             // btnSetVertexShapeSolidTriangle
             // 
@@ -916,7 +917,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetVertexShapeSolidTriangle.ShowImage = true;
             this.btnSetVertexShapeSolidTriangle.SuperTip = "Set the shape of the selected vertices or clusters to Solid Triangle.";
             this.btnSetVertexShapeSolidTriangle.Tag = Smrf.NodeXL.Visualization.Wpf.VertexShape.SolidTriangle;
-            this.btnSetVertexShapeSolidTriangle.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVertexShape_Click);
+            this.btnSetVertexShapeSolidTriangle.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetVertexShape_Click);
             // 
             // separator11
             // 
@@ -931,7 +932,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetVertexShapeLabel.ShowImage = true;
             this.btnSetVertexShapeLabel.SuperTip = "Set the shape of the selected vertices or clusters to Label";
             this.btnSetVertexShapeLabel.Tag = Smrf.NodeXL.Visualization.Wpf.VertexShape.Label;
-            this.btnSetVertexShapeLabel.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVertexShape_Click);
+            this.btnSetVertexShapeLabel.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetVertexShape_Click);
             // 
             // btnSetVertexShapeImage
             // 
@@ -942,7 +943,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetVertexShapeImage.ShowImage = true;
             this.btnSetVertexShapeImage.SuperTip = "Set the shape of the selected vertices or clusters to Image";
             this.btnSetVertexShapeImage.Tag = Smrf.NodeXL.Visualization.Wpf.VertexShape.Image;
-            this.btnSetVertexShapeImage.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVertexShape_Click);
+            this.btnSetVertexShapeImage.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetVertexShape_Click);
             // 
             // btnSetVertexRadius
             // 
@@ -953,9 +954,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetVertexRadius.ScreenTip = "Vertex Size";
             this.btnSetVertexRadius.ShowImage = true;
             this.btnSetVertexRadius.SuperTip = "Set the size of the selected vertices.\r\n\r\nThe Vertices worksheet must be selected" +
-                " before this can be used.";
+    " before this can be used.";
             this.btnSetVertexRadius.Tag = Smrf.NodeXL.ExcelTemplate.VisualAttributes.VertexRadius;
-            this.btnSetVertexRadius.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVisualAttribute_Click);
+            this.btnSetVertexRadius.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetVisualAttribute_Click);
             // 
             // btnSetEdgeWidth
             // 
@@ -966,9 +967,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetEdgeWidth.ScreenTip = "Edge Width";
             this.btnSetEdgeWidth.ShowImage = true;
             this.btnSetEdgeWidth.SuperTip = "Set the width of the selected edges.\r\n\r\nThe Edges worksheet must be selected befo" +
-                "re this can be used.";
+    "re this can be used.";
             this.btnSetEdgeWidth.Tag = Smrf.NodeXL.ExcelTemplate.VisualAttributes.EdgeWidth;
-            this.btnSetEdgeWidth.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnSetVisualAttribute_Click);
+            this.btnSetEdgeWidth.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetVisualAttribute_Click);
             // 
             // grpAnalysis
             // 
@@ -989,9 +990,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnShowDynamicFilters.ScreenTip = "Dynamic Filters";
             this.btnShowDynamicFilters.ShowImage = true;
             this.btnShowDynamicFilters.SuperTip = "Filter the graph\'s vertices and edges in real time.\r\n\r\nThe graph must be shown us" +
-                "ing the Show Graph/Refresh Graph button before dynamic filters can be used.";
+    "ing the Show Graph/Refresh Graph button before dynamic filters can be used.";
             this.btnShowDynamicFilters.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ShowDynamicFilters;
-            this.btnShowDynamicFilters.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnShowDynamicFilters.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // sbGraphMetrics
             // 
@@ -1003,7 +1004,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.sbGraphMetrics.ScreenTip = "Graph Metrics";
             this.sbGraphMetrics.SuperTip = "Calculate selected graph metrics and insert the results into the workbook.";
             this.sbGraphMetrics.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ShowGraphMetrics;
-            this.sbGraphMetrics.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.sbGraphMetrics.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnShowGraphMetrics
             // 
@@ -1014,7 +1015,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnShowGraphMetrics.ShowImage = true;
             this.btnShowGraphMetrics.SuperTip = "Calculate selected graph metrics and insert the results into the workbook.";
             this.btnShowGraphMetrics.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ShowGraphMetrics;
-            this.btnShowGraphMetrics.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnShowGraphMetrics.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnAggregateGraphMetrics
             // 
@@ -1024,9 +1025,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnAggregateGraphMetrics.ScreenTip = "Aggregate Overall Metrics ";
             this.btnAggregateGraphMetrics.ShowImage = true;
             this.btnAggregateGraphMetrics.SuperTip = "Aggregate the overall metrics from multiple NodeXL workbooks into a new Excel wor" +
-                "kbook.";
+    "kbook.";
             this.btnAggregateGraphMetrics.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.AggregateGraphMetrics;
-            this.btnAggregateGraphMetrics.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnAggregateGraphMetrics.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // sbCreateSubgraphImages
             // 
@@ -1037,9 +1038,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.sbCreateSubgraphImages.OfficeImageId = "PhotoAlbumInsert";
             this.sbCreateSubgraphImages.ScreenTip = "Subgraph Images";
             this.sbCreateSubgraphImages.SuperTip = "Create an image of each vertex\'s subgraph.\r\n\t\r\nThe images can be saved as files i" +
-                "n a folder or inserted as thumbnails into the Vertices worksheet.";
+    "n a folder or inserted as thumbnails into the Vertices worksheet.";
             this.sbCreateSubgraphImages.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.CreateSubgraphImages;
-            this.sbCreateSubgraphImages.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.sbCreateSubgraphImages.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnCreateSubgraphImages
             // 
@@ -1049,9 +1050,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnCreateSubgraphImages.ScreenTip = "Subgraph Images";
             this.btnCreateSubgraphImages.ShowImage = true;
             this.btnCreateSubgraphImages.SuperTip = "Create an image of each vertex\'s subgraph.\r\n\t\r\nThe images can be saved as files i" +
-                "n a folder or inserted as thumbnails into the Vertices worksheet.";
+    "n a folder or inserted as thumbnails into the Vertices worksheet.";
             this.btnCreateSubgraphImages.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.CreateSubgraphImages;
-            this.btnCreateSubgraphImages.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnCreateSubgraphImages.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnDeleteSubgraphThumbnails
             // 
@@ -1061,9 +1062,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnDeleteSubgraphThumbnails.ScreenTip = "Delete Subgraph Thumbnails";
             this.btnDeleteSubgraphThumbnails.ShowImage = true;
             this.btnDeleteSubgraphThumbnails.SuperTip = "Delete any subgraph thumbnails in the Vertices worksheet.\r\n\r\nThis will not delete" +
-                " any subgraph image files you saved in a folder.";
+    " any subgraph image files you saved in a folder.";
             this.btnDeleteSubgraphThumbnails.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.DeleteSubgraphThumbnails;
-            this.btnDeleteSubgraphThumbnails.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnDeleteSubgraphThumbnails.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // mnuGroups
             // 
@@ -1090,7 +1091,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.mnuGroups.ScreenTip = "Groups";
             this.mnuGroups.ShowImage = true;
             this.mnuGroups.SuperTip = "Work with groups of related vertices.";
-            this.mnuGroups.ItemsLoading += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.mnuGroups_ItemsLoading);
+            this.mnuGroups.ItemsLoading += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.mnuGroups_ItemsLoading);
             // 
             // btnGroupByVertexAttribute
             // 
@@ -1100,7 +1101,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnGroupByVertexAttribute.ShowImage = true;
             this.btnGroupByVertexAttribute.SuperTip = resources.GetString("btnGroupByVertexAttribute.SuperTip");
             this.btnGroupByVertexAttribute.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.GroupByVertexAttribute;
-            this.btnGroupByVertexAttribute.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnGroupByVertexAttribute.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnCalculateConnectedComponents
             // 
@@ -1110,7 +1111,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnCalculateConnectedComponents.ShowImage = true;
             this.btnCalculateConnectedComponents.SuperTip = resources.GetString("btnCalculateConnectedComponents.SuperTip");
             this.btnCalculateConnectedComponents.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.CalculateConnectedComponents;
-            this.btnCalculateConnectedComponents.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnCalculateConnectedComponents.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnGroupByCluster
             // 
@@ -1120,7 +1121,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnGroupByCluster.ShowImage = true;
             this.btnGroupByCluster.SuperTip = resources.GetString("btnGroupByCluster.SuperTip");
             this.btnGroupByCluster.Tag = "";
-            this.btnGroupByCluster.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnGroupByCluster_Click);
+            this.btnGroupByCluster.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnGroupByCluster_Click);
             // 
             // btnGroupByMotif
             // 
@@ -1130,7 +1131,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnGroupByMotif.ShowImage = true;
             this.btnGroupByMotif.SuperTip = resources.GetString("btnGroupByMotif.SuperTip");
             this.btnGroupByMotif.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.GroupByMotif;
-            this.btnGroupByMotif.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnGroupByMotif.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // separator15
             // 
@@ -1143,10 +1144,10 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnCollapseSelectedGroups.ScreenTip = "Collapse Selected Groups ";
             this.btnCollapseSelectedGroups.ShowImage = true;
             this.btnCollapseSelectedGroups.SuperTip = "A collapsed group is shown as a vertex whose size is proportional to the number o" +
-                "f vertices in the group.  It includes a plus sign to distinguish it from a norma" +
-                "l vertex.";
+    "f vertices in the group.  It includes a plus sign to distinguish it from a norma" +
+    "l vertex.";
             this.btnCollapseSelectedGroups.Tag = Smrf.NodeXL.ExcelTemplate.GroupCommands.CollapseSelectedGroups;
-            this.btnCollapseSelectedGroups.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.GroupCommandButton_Click);
+            this.btnCollapseSelectedGroups.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.GroupCommandButton_Click);
             // 
             // btnCollapseAllGroups
             // 
@@ -1155,10 +1156,10 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnCollapseAllGroups.ScreenTip = "Collapse All Groups ";
             this.btnCollapseAllGroups.ShowImage = true;
             this.btnCollapseAllGroups.SuperTip = "A collapsed group is shown as a vertex whose size is proportional to the number o" +
-                "f vertices in the group.  It includes a plus sign to distinguish it from a norma" +
-                "l vertex.";
+    "f vertices in the group.  It includes a plus sign to distinguish it from a norma" +
+    "l vertex.";
             this.btnCollapseAllGroups.Tag = Smrf.NodeXL.ExcelTemplate.GroupCommands.CollapseAllGroups;
-            this.btnCollapseAllGroups.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.GroupCommandButton_Click);
+            this.btnCollapseAllGroups.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.GroupCommandButton_Click);
             // 
             // btnExpandSelectedGroups
             // 
@@ -1168,7 +1169,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnExpandSelectedGroups.ShowImage = true;
             this.btnExpandSelectedGroups.SuperTip = "Expand the selected groups if they are collapsed.";
             this.btnExpandSelectedGroups.Tag = Smrf.NodeXL.ExcelTemplate.GroupCommands.ExpandSelectedGroups;
-            this.btnExpandSelectedGroups.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.GroupCommandButton_Click);
+            this.btnExpandSelectedGroups.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.GroupCommandButton_Click);
             // 
             // btnExpandAllGroups
             // 
@@ -1178,7 +1179,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnExpandAllGroups.ShowImage = true;
             this.btnExpandAllGroups.SuperTip = "Expand all groups that are collapsed.";
             this.btnExpandAllGroups.Tag = Smrf.NodeXL.ExcelTemplate.GroupCommands.ExpandAllGroups;
-            this.btnExpandAllGroups.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.GroupCommandButton_Click);
+            this.btnExpandAllGroups.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.GroupCommandButton_Click);
             // 
             // btnSelectGroupsWithSelectedVertices
             // 
@@ -1188,7 +1189,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSelectGroupsWithSelectedVertices.ShowImage = true;
             this.btnSelectGroupsWithSelectedVertices.SuperTip = "Select the groups that contain the selected vertices.";
             this.btnSelectGroupsWithSelectedVertices.Tag = Smrf.NodeXL.ExcelTemplate.GroupCommands.SelectGroupsWithSelectedVertices;
-            this.btnSelectGroupsWithSelectedVertices.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.GroupCommandButton_Click);
+            this.btnSelectGroupsWithSelectedVertices.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.GroupCommandButton_Click);
             // 
             // btnSelectAllGroups
             // 
@@ -1198,7 +1199,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSelectAllGroups.ShowImage = true;
             this.btnSelectAllGroups.SuperTip = "Select all groups.";
             this.btnSelectAllGroups.Tag = Smrf.NodeXL.ExcelTemplate.GroupCommands.SelectAllGroups;
-            this.btnSelectAllGroups.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.GroupCommandButton_Click);
+            this.btnSelectAllGroups.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.GroupCommandButton_Click);
             // 
             // btnAddSelectedVerticesToGroup
             // 
@@ -1208,7 +1209,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnAddSelectedVerticesToGroup.ShowImage = true;
             this.btnAddSelectedVerticesToGroup.SuperTip = resources.GetString("btnAddSelectedVerticesToGroup.SuperTip");
             this.btnAddSelectedVerticesToGroup.Tag = Smrf.NodeXL.ExcelTemplate.GroupCommands.AddSelectedVerticesToGroup;
-            this.btnAddSelectedVerticesToGroup.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.GroupCommandButton_Click);
+            this.btnAddSelectedVerticesToGroup.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.GroupCommandButton_Click);
             // 
             // btnRemoveSelectedVerticesFromGroups
             // 
@@ -1217,10 +1218,10 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnRemoveSelectedVerticesFromGroups.ScreenTip = "Remove Selected Vertices from Groups ";
             this.btnRemoveSelectedVerticesFromGroups.ShowImage = true;
             this.btnRemoveSelectedVerticesFromGroups.SuperTip = "Remove the selected vertices from the groups they belong to.\r\n\t\r\nThis will not re" +
-                "move the vertices from the graph.\r\n\r\nThe group changes aren\'t shown until the gr" +
-                "aph is refreshed.";
+    "move the vertices from the graph.\r\n\r\nThe group changes aren\'t shown until the gr" +
+    "aph is refreshed.";
             this.btnRemoveSelectedVerticesFromGroups.Tag = Smrf.NodeXL.ExcelTemplate.GroupCommands.RemoveSelectedVerticesFromGroups;
-            this.btnRemoveSelectedVerticesFromGroups.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.GroupCommandButton_Click);
+            this.btnRemoveSelectedVerticesFromGroups.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.GroupCommandButton_Click);
             // 
             // btnRemoveSelectedGroups
             // 
@@ -1229,10 +1230,10 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnRemoveSelectedGroups.ScreenTip = "Remove Selected Groups ";
             this.btnRemoveSelectedGroups.ShowImage = true;
             this.btnRemoveSelectedGroups.SuperTip = "Removing a group does not remove the group\'s vertices from the graph; it just cau" +
-                "ses those vertices to no longer be part of a group.\r\n\t\r\nThe group changes aren\'t" +
-                " shown until the graph is refreshed.";
+    "ses those vertices to no longer be part of a group.\r\n\t\r\nThe group changes aren\'t" +
+    " shown until the graph is refreshed.";
             this.btnRemoveSelectedGroups.Tag = Smrf.NodeXL.ExcelTemplate.GroupCommands.RemoveSelectedGroups;
-            this.btnRemoveSelectedGroups.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.GroupCommandButton_Click);
+            this.btnRemoveSelectedGroups.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.GroupCommandButton_Click);
             // 
             // btnRemoveAllGroups
             // 
@@ -1241,10 +1242,10 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnRemoveAllGroups.ScreenTip = "Remove All Groups ";
             this.btnRemoveAllGroups.ShowImage = true;
             this.btnRemoveAllGroups.SuperTip = "Removing a group does not remove the group\'s vertices from the graph; it just cau" +
-                "ses those vertices to no longer be part of a group.\r\n\t\r\nThe group changes aren\'t" +
-                " shown until the graph is refreshed.";
+    "ses those vertices to no longer be part of a group.\r\n\t\r\nThe group changes aren\'t" +
+    " shown until the graph is refreshed.";
             this.btnRemoveAllGroups.Tag = Smrf.NodeXL.ExcelTemplate.GroupCommands.RemoveAllGroups;
-            this.btnRemoveAllGroups.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.GroupCommandButton_Click);
+            this.btnRemoveAllGroups.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.GroupCommandButton_Click);
             // 
             // btnGroupUserSettings
             // 
@@ -1254,7 +1255,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnGroupUserSettings.ShowImage = true;
             this.btnGroupUserSettings.SuperTip = "Specify options for how groups are shown.";
             this.btnGroupUserSettings.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.EditGroupUserSettings;
-            this.btnGroupUserSettings.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnGroupUserSettings.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // grpOptions
             // 
@@ -1274,7 +1275,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnUseCurrentOptionsForNew.ScreenTip = "Use Current Options for New Workbooks";
             this.btnUseCurrentOptionsForNew.ShowImage = true;
             this.btnUseCurrentOptionsForNew.SuperTip = "Use this workbook\'s options for all new NodeXL workbooks.";
-            this.btnUseCurrentOptionsForNew.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnUseCurrentOptionsForNew_Click);
+            this.btnUseCurrentOptionsForNew.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnUseCurrentOptionsForNew_Click);
             // 
             // btnImportOptions
             // 
@@ -1284,7 +1285,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnImportOptions.ScreenTip = "Import Options";
             this.btnImportOptions.ShowImage = true;
             this.btnImportOptions.SuperTip = "Import a NodeXL options file into this workbook.";
-            this.btnImportOptions.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnImportOptions_Click);
+            this.btnImportOptions.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnImportOptions_Click);
             // 
             // btnExportOptions
             // 
@@ -1294,8 +1295,8 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnExportOptions.ScreenTip = "Export Options";
             this.btnExportOptions.ShowImage = true;
             this.btnExportOptions.SuperTip = "Export this workbook\'s options to a NodeXL options file that can be imported into" +
-                " other NodeXL workbooks.";
-            this.btnExportOptions.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnExportOptions_Click);
+    " other NodeXL workbooks.";
+            this.btnExportOptions.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnExportOptions_Click);
             // 
             // btnResetCurrentOptions
             // 
@@ -1305,7 +1306,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnResetCurrentOptions.ScreenTip = "Reset All Current Options";
             this.btnResetCurrentOptions.ShowImage = true;
             this.btnResetCurrentOptions.SuperTip = "Reset this workbook\'s options to the options used for new NodeXL workbooks.";
-            this.btnResetCurrentOptions.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnResetCurrentOptions_Click);
+            this.btnResetCurrentOptions.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnResetCurrentOptions_Click);
             // 
             // grpShowHide
             // 
@@ -1332,7 +1333,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.mnuShowColumnGroups.ScreenTip = "Show/Hide Workbook Columns";
             this.mnuShowColumnGroups.ShowImage = true;
             this.mnuShowColumnGroups.SuperTip = "Show or hide groups of columns in the NodeXL workbook.";
-            this.mnuShowColumnGroups.ItemsLoading += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.mnuShowColumnGroups_ItemsLoading);
+            this.mnuShowColumnGroups.ItemsLoading += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.mnuShowColumnGroups_ItemsLoading);
             // 
             // chkShowVisualAttributeColumnGroups
             // 
@@ -1340,10 +1341,10 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.chkShowVisualAttributeColumnGroups.Name = "chkShowVisualAttributeColumnGroups";
             this.chkShowVisualAttributeColumnGroups.ScreenTip = "Show/Hide Visual Property Columns";
             this.chkShowVisualAttributeColumnGroups.SuperTip = "Show or hide the columns you can use to control the appearance of individual edge" +
-                "s, vertices and groups.";
-            this.chkShowVisualAttributeColumnGroups.Tag = ((Smrf.NodeXL.ExcelTemplate.ColumnGroups)(((Smrf.NodeXL.ExcelTemplate.ColumnGroups.EdgeVisualAttributes | Smrf.NodeXL.ExcelTemplate.ColumnGroups.VertexVisualAttributes)
-                        | Smrf.NodeXL.ExcelTemplate.ColumnGroups.GroupVisualAttributes)));
-            this.chkShowVisualAttributeColumnGroups.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.chkShowColumnGroups_Click);
+    "s, vertices and groups.";
+            this.chkShowVisualAttributeColumnGroups.Tag = ((Smrf.NodeXL.ExcelTemplate.ColumnGroups)(((Smrf.NodeXL.ExcelTemplate.ColumnGroups.EdgeVisualAttributes | Smrf.NodeXL.ExcelTemplate.ColumnGroups.VertexVisualAttributes) 
+            | Smrf.NodeXL.ExcelTemplate.ColumnGroups.GroupVisualAttributes)));
+            this.chkShowVisualAttributeColumnGroups.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.chkShowColumnGroups_Click);
             // 
             // chkShowLabelColumnGroups
             // 
@@ -1351,10 +1352,10 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.chkShowLabelColumnGroups.Name = "chkShowLabelColumnGroups";
             this.chkShowLabelColumnGroups.ScreenTip = "Show/Hide Label Columns";
             this.chkShowLabelColumnGroups.SuperTip = "Show or hide the columns you can use to add labels to individual edges, labels an" +
-                "d tooltips to individual vertices, and labels to individual groups.";
-            this.chkShowLabelColumnGroups.Tag = ((Smrf.NodeXL.ExcelTemplate.ColumnGroups)(((Smrf.NodeXL.ExcelTemplate.ColumnGroups.EdgeLabels | Smrf.NodeXL.ExcelTemplate.ColumnGroups.VertexLabels)
-                        | Smrf.NodeXL.ExcelTemplate.ColumnGroups.GroupLabels)));
-            this.chkShowLabelColumnGroups.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.chkShowColumnGroups_Click);
+    "d tooltips to individual vertices, and labels to individual groups.";
+            this.chkShowLabelColumnGroups.Tag = ((Smrf.NodeXL.ExcelTemplate.ColumnGroups)(((Smrf.NodeXL.ExcelTemplate.ColumnGroups.EdgeLabels | Smrf.NodeXL.ExcelTemplate.ColumnGroups.VertexLabels) 
+            | Smrf.NodeXL.ExcelTemplate.ColumnGroups.GroupLabels)));
+            this.chkShowLabelColumnGroups.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.chkShowColumnGroups_Click);
             // 
             // chkShowLayoutColumnGroups
             // 
@@ -1362,9 +1363,9 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.chkShowLayoutColumnGroups.Name = "chkShowLayoutColumnGroups";
             this.chkShowLayoutColumnGroups.ScreenTip = "Show/Hide Layout Columns";
             this.chkShowLayoutColumnGroups.SuperTip = "Show or hide the columns you can use to control the location of individual vertic" +
-                "es and collapsed groups.";
+    "es and collapsed groups.";
             this.chkShowLayoutColumnGroups.Tag = ((Smrf.NodeXL.ExcelTemplate.ColumnGroups)((Smrf.NodeXL.ExcelTemplate.ColumnGroups.VertexLayout | Smrf.NodeXL.ExcelTemplate.ColumnGroups.GroupLayout)));
-            this.chkShowLayoutColumnGroups.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.chkShowColumnGroups_Click);
+            this.chkShowLayoutColumnGroups.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.chkShowColumnGroups_Click);
             // 
             // chkShowGraphMetricColumnGroups
             // 
@@ -1372,12 +1373,12 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.chkShowGraphMetricColumnGroups.Name = "chkShowGraphMetricColumnGroups";
             this.chkShowGraphMetricColumnGroups.ScreenTip = "Show/Hide Graph Metric Columns";
             this.chkShowGraphMetricColumnGroups.SuperTip = "Show or hide the graph metric columns in the Edges, Vertices, Groups and Group Ed" +
-                "ges worksheets.\r\n\r\nGraph metrics can be calculated with the Graph Metrics button" +
-                " in the Analysis ribbon group.";
-            this.chkShowGraphMetricColumnGroups.Tag = ((Smrf.NodeXL.ExcelTemplate.ColumnGroups)((((Smrf.NodeXL.ExcelTemplate.ColumnGroups.EdgeGraphMetrics | Smrf.NodeXL.ExcelTemplate.ColumnGroups.VertexGraphMetrics)
-                        | Smrf.NodeXL.ExcelTemplate.ColumnGroups.GroupGraphMetrics)
-                        | Smrf.NodeXL.ExcelTemplate.ColumnGroups.GroupEdgeGraphMetrics)));
-            this.chkShowGraphMetricColumnGroups.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.chkShowColumnGroups_Click);
+    "ges worksheets.\r\n\r\nGraph metrics can be calculated with the Graph Metrics button" +
+    " in the Analysis ribbon group.";
+            this.chkShowGraphMetricColumnGroups.Tag = ((Smrf.NodeXL.ExcelTemplate.ColumnGroups)((((Smrf.NodeXL.ExcelTemplate.ColumnGroups.EdgeGraphMetrics | Smrf.NodeXL.ExcelTemplate.ColumnGroups.VertexGraphMetrics) 
+            | Smrf.NodeXL.ExcelTemplate.ColumnGroups.GroupGraphMetrics) 
+            | Smrf.NodeXL.ExcelTemplate.ColumnGroups.GroupEdgeGraphMetrics)));
+            this.chkShowGraphMetricColumnGroups.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.chkShowColumnGroups_Click);
             // 
             // chkShowOtherColumnGroups
             // 
@@ -1385,10 +1386,10 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.chkShowOtherColumnGroups.Name = "chkShowOtherColumnGroups";
             this.chkShowOtherColumnGroups.ScreenTip = "Show/Hide Other Columns";
             this.chkShowOtherColumnGroups.SuperTip = "Show or hide the columns that are not in one of NodeXL\'s standard column groups. " +
-                " This includes any columns you\'ve added yourself.";
-            this.chkShowOtherColumnGroups.Tag = ((Smrf.NodeXL.ExcelTemplate.ColumnGroups)(((Smrf.NodeXL.ExcelTemplate.ColumnGroups.EdgeOtherColumns | Smrf.NodeXL.ExcelTemplate.ColumnGroups.VertexOtherColumns)
-                        | Smrf.NodeXL.ExcelTemplate.ColumnGroups.GroupOtherColumns)));
-            this.chkShowOtherColumnGroups.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.chkShowColumnGroups_Click);
+    " This includes any columns you\'ve added yourself.";
+            this.chkShowOtherColumnGroups.Tag = ((Smrf.NodeXL.ExcelTemplate.ColumnGroups)(((Smrf.NodeXL.ExcelTemplate.ColumnGroups.EdgeOtherColumns | Smrf.NodeXL.ExcelTemplate.ColumnGroups.VertexOtherColumns) 
+            | Smrf.NodeXL.ExcelTemplate.ColumnGroups.GroupOtherColumns)));
+            this.chkShowOtherColumnGroups.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.chkShowColumnGroups_Click);
             // 
             // separator1
             // 
@@ -1403,7 +1404,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnShowAllColumnGroups.ShowImage = true;
             this.btnShowAllColumnGroups.SuperTip = "Show all the columns in the worksheets.";
             this.btnShowAllColumnGroups.Tag = true;
-            this.btnShowAllColumnGroups.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnShowOrHideAllColumnGroups_Click);
+            this.btnShowAllColumnGroups.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnShowOrHideAllColumnGroups_Click);
             // 
             // btnHideAllColumnGroups
             // 
@@ -1414,7 +1415,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnHideAllColumnGroups.ShowImage = true;
             this.btnHideAllColumnGroups.SuperTip = "Hide all the non-essential columns in the worksheets.";
             this.btnHideAllColumnGroups.Tag = false;
-            this.btnHideAllColumnGroups.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnShowOrHideAllColumnGroups_Click);
+            this.btnHideAllColumnGroups.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnShowOrHideAllColumnGroups_Click);
             // 
             // mnuShowGraphElements
             // 
@@ -1465,7 +1466,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.chkShowGraphLegend.Name = "chkShowGraphLegend";
             this.chkShowGraphLegend.ScreenTip = "Show/Hide Graph Legend";
             this.chkShowGraphLegend.SuperTip = "Show or hide the legend at the bottom of the graph pane.";
-            this.chkShowGraphLegend.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.chkShowGraphLegend_Click);
+            this.chkShowGraphLegend.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.chkShowGraphLegend_Click);
             // 
             // chkShowGraphAxes
             // 
@@ -1473,7 +1474,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.chkShowGraphAxes.Name = "chkShowGraphAxes";
             this.chkShowGraphAxes.ScreenTip = "Show/Hide Graph Axes";
             this.chkShowGraphAxes.SuperTip = resources.GetString("chkShowGraphAxes.SuperTip");
-            this.chkShowGraphAxes.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.chkShowGraphAxes_Click);
+            this.chkShowGraphAxes.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.chkShowGraphAxes_Click);
             // 
             // separator7
             // 
@@ -1488,7 +1489,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnShowAllGraphElements.ShowImage = true;
             this.btnShowAllGraphElements.SuperTip = "Show all elements in the graph pane.";
             this.btnShowAllGraphElements.Tag = true;
-            this.btnShowAllGraphElements.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnShowOrHideAllGraphElements_Click);
+            this.btnShowAllGraphElements.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnShowOrHideAllGraphElements_Click);
             // 
             // btnHideAllGraphElements
             // 
@@ -1499,7 +1500,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnHideAllGraphElements.ShowImage = true;
             this.btnHideAllGraphElements.SuperTip = "Hide all elements in the graph pane.";
             this.btnHideAllGraphElements.Tag = false;
-            this.btnHideAllGraphElements.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnShowOrHideAllGraphElements_Click);
+            this.btnHideAllGraphElements.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnShowOrHideAllGraphElements_Click);
             // 
             // btnEnableAllNotifications
             // 
@@ -1509,8 +1510,8 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnEnableAllNotifications.ScreenTip = "Show Notifications ";
             this.btnEnableAllNotifications.ShowImage = true;
             this.btnEnableAllNotifications.SuperTip = "Turn on all notifications that you turned off when you checked \"don\'t notify me a" +
-                "gain\" in a message box.";
-            this.btnEnableAllNotifications.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnEnableAllNotifications_Click);
+    "gain\" in a message box.";
+            this.btnEnableAllNotifications.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnEnableAllNotifications_Click);
             // 
             // grpHelp
             // 
@@ -1530,7 +1531,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnHelp.ScreenTip = "Help ";
             this.btnHelp.ShowImage = true;
             this.btnHelp.SuperTip = "Learn how to use NodeXL.";
-            this.btnHelp.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnHelp_Click);
+            this.btnHelp.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnHelp_Click);
             // 
             // mnuOnline
             // 
@@ -1558,7 +1559,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnOpenHomePage.ShowImage = true;
             this.btnOpenHomePage.SuperTip = "Open the NodeXL home page in a browser window.";
             this.btnOpenHomePage.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.OpenHomePage;
-            this.btnOpenHomePage.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnOpenHomePage.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnOpenDiscussionPage
             // 
@@ -1569,7 +1570,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnOpenDiscussionPage.ShowImage = true;
             this.btnOpenDiscussionPage.SuperTip = "Ask questions and read comments on the NodeXL Discussions list.";
             this.btnOpenDiscussionPage.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.OpenDiscussionPage;
-            this.btnOpenDiscussionPage.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnOpenDiscussionPage.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnOpenNodeXLGraphGallery
             // 
@@ -1580,7 +1581,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnOpenNodeXLGraphGallery.ShowImage = true;
             this.btnOpenNodeXLGraphGallery.SuperTip = "Browse graphs on the NodeXL Graph Gallery website.";
             this.btnOpenNodeXLGraphGallery.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.OpenNodeXLGraphGallery;
-            this.btnOpenNodeXLGraphGallery.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnOpenNodeXLGraphGallery.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // separator13
             // 
@@ -1595,7 +1596,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnRegisterUser.ShowImage = true;
             this.btnRegisterUser.SuperTip = "Register to join the NodeXL email list.";
             this.btnRegisterUser.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.RegisterUser;
-            this.btnRegisterUser.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnRunNoParamCommand_Click);
+            this.btnRegisterUser.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
             // btnDonate
             // 
@@ -1605,7 +1606,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnDonate.ScreenTip = "Donate ";
             this.btnDonate.ShowImage = true;
             this.btnDonate.SuperTip = "Donate to the Social Media Research Foundation\'s NodeXL development fund. ";
-            this.btnDonate.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnStartProcess_Click);
+            this.btnDonate.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStartProcess_Click);
             // 
             // separator2
             // 
@@ -1619,7 +1620,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnCheckForUpdate.ScreenTip = "Check for Updates ";
             this.btnCheckForUpdate.ShowImage = true;
             this.btnCheckForUpdate.SuperTip = "Check for a newer version of NodeXL.";
-            this.btnCheckForUpdate.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnCheckForUpdate_Click);
+            this.btnCheckForUpdate.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnCheckForUpdate_Click);
             // 
             // btnOpenSampleNodeXLWorkbook
             // 
@@ -1629,8 +1630,8 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnOpenSampleNodeXLWorkbook.ScreenTip = "Sample Workbook ";
             this.btnOpenSampleNodeXLWorkbook.ShowImage = true;
             this.btnOpenSampleNodeXLWorkbook.SuperTip = "Open a sample NodeXL workbook.  If you click the NodeXL, Graph, Show Graph button" +
-                " in the sample workbook\'s Ribbon, you\'ll see a graph of NodeXL\'s features.";
-            this.btnOpenSampleNodeXLWorkbook.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnOpenSampleNodeXLWorkbook_Click);
+    " in the sample workbook\'s Ribbon, you\'ll see a graph of NodeXL\'s features.";
+            this.btnOpenSampleNodeXLWorkbook.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnOpenSampleNodeXLWorkbook_Click);
             // 
             // btnAbout
             // 
@@ -1640,7 +1641,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnAbout.ScreenTip = "About NodeXL ";
             this.btnAbout.ShowImage = true;
             this.btnAbout.SuperTip = "View information about NodeXL.";
-            this.btnAbout.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnAbout_Click);
+            this.btnAbout.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAbout_Click);
             // 
             // btnCreateNodeXLWorkbook
             // 
@@ -1650,7 +1651,16 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnCreateNodeXLWorkbook.ScreenTip = "New NodeXL Workbook ";
             this.btnCreateNodeXLWorkbook.ShowImage = true;
             this.btnCreateNodeXLWorkbook.SuperTip = "Create a new NodeXL workbook.";
-            this.btnCreateNodeXLWorkbook.Click += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonControlEventArgs>(this.btnCreateNodeXLWorkbook_Click);
+            this.btnCreateNodeXLWorkbook.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnCreateNodeXLWorkbook_Click);
+            // 
+            // btnGetMediaWikiGraphDataProvider
+            // 
+            this.btnGetMediaWikiGraphDataProvider.Label = "MediaWiki Networks";
+            this.btnGetMediaWikiGraphDataProvider.Name = "btnGetMediaWikiGraphDataProvider";
+            this.btnGetMediaWikiGraphDataProvider.OfficeImageId = "ViewOnlineConnection";
+            this.btnGetMediaWikiGraphDataProvider.ScreenTip = "MediaWiki Networks";
+            this.btnGetMediaWikiGraphDataProvider.ShowImage = true;
+            this.btnGetMediaWikiGraphDataProvider.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStartProcess_Click);
             // 
             // Ribbon
             // 
@@ -1661,8 +1671,8 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.OfficeMenu.Items.Add(this.btnCreateNodeXLWorkbook);
             this.RibbonType = "Microsoft.Excel.Workbook";
             this.Tabs.Add(this.NodeXL);
-            this.Load += new System.EventHandler<Microsoft.Office.Tools.Ribbon.RibbonUIEventArgs>(this.Ribbon_Load);
             this.Close += new System.EventHandler(this.Ribbon_Close);
+            this.Load += new Microsoft.Office.Tools.Ribbon.RibbonUIEventHandler(this.Ribbon_Load);
             this.NodeXL.ResumeLayout(false);
             this.NodeXL.PerformLayout();
             this.grpData.ResumeLayout(false);
@@ -1679,7 +1689,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.grpShowHide.PerformLayout();
             this.grpHelp.ResumeLayout(false);
             this.grpHelp.PerformLayout();
-            this.ResumeLayout(false);
 
         }
 
@@ -1823,9 +1832,10 @@ namespace Smrf.NodeXL.ExcelTemplate
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportDataUserSettings;
         internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator14;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnExportToEmail;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnGetMediaWikiGraphDataProvider;
     }
 
-    partial class ThisRibbonCollection : Microsoft.Office.Tools.Ribbon.RibbonReadOnlyCollection
+    partial class ThisRibbonCollection
     {
         internal Ribbon Ribbon
         {

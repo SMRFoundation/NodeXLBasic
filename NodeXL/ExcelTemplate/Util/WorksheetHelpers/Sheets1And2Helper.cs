@@ -45,7 +45,7 @@ public class Sheets1And2Helper : SheetHelper
 
     public Sheets1And2Helper
     (
-        Microsoft.Office.Tools.Excel.Worksheet worksheet,
+        Microsoft.Office.Tools.Excel.WorksheetBase worksheet,
         Microsoft.Office.Tools.Excel.ListObject table
     )
     : base(worksheet, table)

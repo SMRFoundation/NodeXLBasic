@@ -232,16 +232,14 @@ public class WorksheetReaderBase : NodeXLBase
 
             Range oIDRange = oWorksheet.get_Range(
 
-                oDataBodyRange.Cells[
+                (Range)oDataBodyRange.Cells[
                     iAreaStartRowOneBased - iTableStartRowOneBased,
-                    iIDColumnIndex
-                    ],
+                    iIDColumnIndex],
 
-                oDataBodyRange.Cells[
+                (Range)oDataBodyRange.Cells[
                     iAreaStartRowOneBased - iTableStartRowOneBased
                         + iRowsInArea - 1,
-                    iIDColumnIndex
-                    ]
+                    iIDColumnIndex]
                 );
 
             // Use the Excel row numbers as the unique IDs.  Create a

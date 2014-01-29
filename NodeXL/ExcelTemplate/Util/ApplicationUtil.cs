@@ -46,22 +46,11 @@ public static class ApplicationUtil
             return;
         }
 
-        String sHelpFileFolder;
-
-        if (RunningInDevelopmentEnvironment)
-        {
-            sHelpFileFolder = Path.Combine(
-                GetDevelopmentApplicationFolder(),
-                @"..\..\..\Documents\Help\ExcelTemplate"
-            );
-        }
-        else
-        {
-            sHelpFileFolder = GetApplicationFolder();
-        }
+        // It's assumed that the build process placed a copy of the help file
+        // in the application folder.
 
         m_oHelpProcess = Process.Start( Path.Combine(
-            sHelpFileFolder, HelpFileName) );
+            GetApplicationFolder(), HelpFileName) );
 
         m_oHelpProcess.EnableRaisingEvents = true;
 
@@ -375,24 +364,6 @@ public static class ApplicationUtil
     }
 
     //*************************************************************************
-    //  Method: GetPlugInFolder()
-    //
-    /// <summary>
-    /// Gets the full path to folder where plug-in assemblies are stored.
-    /// </summary>
-    ///
-    /// <returns>
-    /// The full path to folder where plug-in assemblies are stored.
-    /// </returns>
-    //*************************************************************************
-
-    public static String
-    GetPlugInFolder()
-    {
-        return ( Path.Combine(GetApplicationFolder(), PlugInSubfolder) );
-    }
-
-    //*************************************************************************
     //  Method: GetApplicationFolder()
     //
     /// <summary>
@@ -401,76 +372,25 @@ public static class ApplicationUtil
     ///
     /// <returns>
     /// The full path to the application's folder.  Sample:
-    /// "C:\Program Files\...\NodeXL Excel Template".
+    /// "...\Some ClickOnce Folder".
     /// </returns>
     //*************************************************************************
 
     public static String
     GetApplicationFolder()
     {
-        if (RunningInDevelopmentEnvironment)
-        {
-            return ( GetDevelopmentApplicationFolder() );
-        }
-
-        // For versions 1.0.1.113 and earlier, the setup program installed
-        // NodeXL into a subfolder of the standard Program Files folder and the
-        // program was run from there.  The application folder could then be
-        // obtained as follows:
+        // This works whether the application is running within ClickOnce, in
+        // which case it returns something like this:
         //
-        //   String sApplicationFolder = Path.GetDirectoryName(
-        //     Assembly.GetExecutingAssembly().CodeBase);
+        //   "...\Some ClickOnce Folder".
         //
-        // Versions since then have continued to install NodeXL into that
-        // subfolder, but ClickOnce is now called at the end of the setup to
-        // install the application into the ClickOnce cache, and that is where
-        // the application actually runs from.  That means that the location of
-        // the executing assembly is now in some obscure location, far from the
-        // Program Files folder, and the above code no longer works.
+        // ...or in the development environment, in which case it returns
+        // something like this:
         //
-        // For the following comments, note that there is only one NodeXL setup
-        // program, and it is always 32-bit.  This is where the setup program
-        // installs NodeXL, assuming an English version of Windows:
+        //   "C:\NodeXL\ExcelTemplate\bin\Debug"
         //
-        //     32-bit Windows: "C:\Program Files"
-        //     64-bit Windows: "C:\Program Files (x86)"
 
-        String sProgramFilesFolder;
-
-        if (IntPtr.Size == 4)
-        {
-            // NodeXL is running within 32-bit Excel.
-            //
-            // This is what Environment.SpecialFolder.ProgramFiles returns:
-            //
-            //     32-bit Windows: "C:\Program Files"
-            //     64-bit Windows: "C:\Program Files (x86)"
-            //
-            // Because this matches the folder where NodeXL is installed, no
-            // special action is required.
-
-            sProgramFilesFolder = Environment.GetFolderPath(
-                Environment.SpecialFolder.ProgramFiles);
-        }
-        else
-        {
-            // NodeXL is running within 64-bit Excel.
-            //
-            // This is what Environment.SpecialFolder.ProgramFiles returns:
-            //
-            //     64-bit Windows: "C:\Program Files"
-            //
-            // This won't work, because NodeXL is installed at
-            // "C:\Program Files (x86)".  Instead, use one of Windows'
-            // environment variables.
-
-            sProgramFilesFolder = System.Environment.GetEnvironmentVariable(
-                "ProgramFiles(x86)");
-        }
-
-        Debug.Assert( !String.IsNullOrEmpty(sProgramFilesFolder) );
-
-        return ( Path.Combine(sProgramFilesFolder, ProgramFilesSubfolder) );
+        return ( Path.GetDirectoryName( GetExecutingAssemblyPath() ) );
     }
 
     //*************************************************************************
@@ -575,26 +495,6 @@ public static class ApplicationUtil
     }
 
     //*************************************************************************
-    //  Method: GetDevelopmentApplicationFolder()
-    //
-    /// <summary>
-    /// Gets the full path to the application's folder when the application is
-    /// running in a development environment.
-    /// </summary>
-    ///
-    /// <returns>
-    /// The full path to the application's folder.  Sample:
-    /// "E:\NodeXL\ExcelTemplate\bin\Debug"
-    /// </returns>
-    //*************************************************************************
-
-    private static String
-    GetDevelopmentApplicationFolder()
-    {
-        return ( Path.GetDirectoryName( GetExecutingAssemblyPath() ) );
-    }
-
-    //*************************************************************************
     //  Method: TryGetTemplatePath()
     //
     /// <summary>
@@ -617,19 +517,19 @@ public static class ApplicationUtil
         out String templatePath
     )
     {
-        String sTemplatesPath;
+        String sTemplateFolderPath;
 
         if (RunningInDevelopmentEnvironment)
         {
             // Samples, depending on which program is being run:
             //
-            //   1. "E:\NodeXL\ExcelTemplate\bin\Debug"
+            //   1. "C:\NodeXL\ExcelTemplate\bin\Debug"
             //
-            //   2. "E:\NodeXL\NetworkServer\bin\Debug"
+            //   2. "C:\NodeXL\NetworkServer\bin\Debug"
             //
-            //   3. "E:\NodeXL\GraphMLFileProcessor\bin\Debug"
+            //   3. "C:\NodeXL\GraphMLFileProcessor\bin\Debug"
 
-            sTemplatesPath = Path.GetDirectoryName(
+            sTemplateFolderPath = Path.GetDirectoryName(
                 GetExecutingAssemblyPath() );
 
             // The template in the development environment is under the
@@ -637,21 +537,25 @@ public static class ApplicationUtil
 
             const String ExcelTemplateFolderName = "ExcelTemplate";
 
-            sTemplatesPath = sTemplatesPath.Replace("NetworkServer",
-                ExcelTemplateFolderName);
+            sTemplateFolderPath = sTemplateFolderPath.Replace(
+                "NetworkServer", ExcelTemplateFolderName);
 
-            sTemplatesPath = sTemplatesPath.Replace("GraphMLFileProcessor",
-                ExcelTemplateFolderName);
+            sTemplateFolderPath = sTemplateFolderPath.Replace(
+                "GraphMLFileProcessor", ExcelTemplateFolderName);
         }
         else
         {
-            // The setup program puts the template file in the application
-            // folder.
+            // The deployment process puts the template file in a subfolder of
+            // the deployment folder.
 
-            sTemplatesPath = GetApplicationFolder();
+            sTemplateFolderPath = Path.Combine(
+                GetApplicationFolder(),
+                ProjectInformation.ExcelTemplateSubfolder
+                );
         }
 
-        templatePath = Path.Combine(sTemplatesPath, TemplateName);
+        templatePath = Path.Combine(
+            sTemplateFolderPath, ProjectInformation.ExcelTemplateName);
 
         return ( File.Exists(templatePath) );
     }
@@ -757,24 +661,6 @@ public static class ApplicationUtil
     //  Private constants
     //*************************************************************************
 
-    /// Application subfolder within the Program Files folder.  There is no
-    /// UI in the setup program to select another folder, so this will always
-    /// be the correct subfolder.
-
-    private const String ProgramFilesSubfolder =
-        @"Social Media Research Foundation\NodeXL Excel Template";
-
-    /// Subfolder under the application folder where plug-in assemblies are
-    /// stored.
-
-    private const String PlugInSubfolder = "PlugIns";
-
-    /// Subfolder under the application folder where the files uses in the
-    /// sample NodeXLWorkbook are stored.
-
-    private const String SampleNodeXLWorkbookSubfolder =
-        "SampleNodeXLWorkbook";
-
     /// Subfolder under the application folder where the splash screen is
     /// stored.
 
@@ -788,6 +674,12 @@ public static class ApplicationUtil
     /// File name of the application's help file.
 
     private const String HelpFileName = "NodeXLExcelTemplate.chm";
+
+    /// Subfolder under the application folder where the files uses in the
+    /// sample NodeXLWorkbook are stored.
+
+    private const String SampleNodeXLWorkbookSubfolder =
+        "SampleNodeXLWorkbook";
 
     /// File name of the GraphML file used to create the sample NodeXLWorkbook.
 
@@ -813,10 +705,6 @@ public static class ApplicationUtil
     /// Application name.
 
     public const String ApplicationName = "NodeXL";
-
-    /// Name of the application's template.
-
-    public const String TemplateName = "NodeXLGraph.xltx";
 
     /// Solution ID, as a GUID string.
 

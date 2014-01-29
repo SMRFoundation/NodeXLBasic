@@ -40,6 +40,7 @@ public partial class FolderPathControl : UserControl
         InitializeComponent();
 
         m_sFolderPath = String.Empty;
+        m_bAllowEmptyFolderPath = false;
         m_sBrowsePrompt = "Browse for a folder.";
 
         DoDataExchange(false);
@@ -73,6 +74,37 @@ public partial class FolderPathControl : UserControl
         {
             m_sFolderPath = value;
             DoDataExchange(false);
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: AllowEmptyFolderPath
+    //
+    /// <summary>
+    /// Gets or sets a flag specifying whether the folder path can be empty.
+    /// </summary>
+    ///
+    /// <value>
+    /// true if the folder path can be an empty string.  The default value is
+    /// false.
+    /// </value>
+    //*************************************************************************
+
+    public Boolean
+    AllowEmptyFolderPath
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_bAllowEmptyFolderPath);
+        }
+
+        set
+        {
+            m_bAllowEmptyFolderPath = value;
 
             AssertValid();
         }
@@ -161,12 +193,19 @@ public partial class FolderPathControl : UserControl
 
         if (bFromControls)
         {
-            String sFolderPath = String.Empty;
+            String sFolderPath = txbFolderPath.Text.Trim();
 
-            if ( !FormUtil.ValidateDirectoryTextBox(txbFolderPath,
-                "Enter or browse for a folder.", out sFolderPath) )
+            if (
+                !m_bAllowEmptyFolderPath
+                ||
+                sFolderPath.Length > 0
+                )
             {
-                return (false);
+                if ( !FormUtil.ValidateDirectoryTextBox(txbFolderPath,
+                    "Enter or browse for a folder.", out sFolderPath) )
+                {
+                    return (false);
+                }
             }
 
             m_sFolderPath = sFolderPath;
@@ -231,6 +270,7 @@ public partial class FolderPathControl : UserControl
     AssertValid()
     {
         Debug.Assert(m_sFolderPath != null);
+        // m_bAllowEmptyFolderPath
         Debug.Assert( !String.IsNullOrEmpty(m_sBrowsePrompt) );
     }
 
@@ -242,6 +282,10 @@ public partial class FolderPathControl : UserControl
     /// The folder path, or String.Empty.
 
     protected String m_sFolderPath;
+
+    /// true if the folder path can be an empty string.
+
+    protected Boolean m_bAllowEmptyFolderPath;
 
     /// The prompt to use in the folder browsing dialog.
 

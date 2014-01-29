@@ -78,7 +78,10 @@ public class GraphVertexEdgeBaseTest : Object
     public void
     TestConstructor()
     {
-        Assert.AreEqual(0, m_oGraphVertexEdgeBase.ID);
+        // The ID value depends on how the test environment initializes static
+        // variables, so don't check this.
+
+        // Assert.AreEqual(0, m_oGraphVertexEdgeBase.ID);
 
         Assert.IsNull(m_oGraphVertexEdgeBase.Name);
 

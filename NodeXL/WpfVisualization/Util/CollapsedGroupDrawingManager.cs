@@ -1210,8 +1210,7 @@ public class CollapsedGroupDrawingManager : VisualizationBase
         // collapsed group vertex created by this class.
 
         oVertexLabelDrawer.DrawLabel(oDrawingContext, oGraphDrawingContext,
-            oVertexDrawingHistory, oVertexDrawingHistory.GetBounds().Bounds,
-            VertexLabelPosition.MiddleCenter,
+            oVertexDrawingHistory, VertexLabelPosition.MiddleCenter,
 
             oFormattedTextManager.CreateFormattedText("+", oContrastingColor,
                 15.0, dGraphScale),

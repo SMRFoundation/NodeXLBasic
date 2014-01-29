@@ -262,8 +262,11 @@ public static class ExcelTableUtil
             Int32 iRows = oRows.Count;
 
             Range oRangeToSet = (Range)oWorksheet.get_Range(
-                oWorksheet.Cells[iFirstRowOneBased, iColumnOneBased],
-                oWorksheet.Cells[iFirstRowOneBased + iRows - 1, iColumnOneBased]
+
+                (Range)oWorksheet.Cells[iFirstRowOneBased, iColumnOneBased],
+
+                (Range)oWorksheet.Cells[iFirstRowOneBased + iRows - 1,
+                    iColumnOneBased]
                 );
 
             oRangeToSet.set_Value(Missing.Value, value);
@@ -1431,9 +1434,9 @@ public static class ExcelTableUtil
 
             oDataBodyRange = oWorksheet.get_Range(
 
-                oWorksheet.Cells[iRow, oRangeToUse.Column],
+                (Range)oWorksheet.Cells[iRow, oRangeToUse.Column],
 
-                oWorksheet.Cells[iRow,
+                (Range)oWorksheet.Cells[iRow,
                     oRangeToUse.Column + oRangeToUse.Columns.Count - 1]
                 );
         }
@@ -2263,8 +2266,11 @@ public static class ExcelTableUtil
             Debug.Assert(iFirstRowOneBased >= 1);
 
             Range oFirstRow = (Range)oWorksheet.get_Range(
-                oWorksheet.Cells[iFirstRowOneBased, iFirstColumnOneBased],
-                oWorksheet.Cells[iFirstRowOneBased, iLastColumnOneBased]
+
+                (Range)oWorksheet.Cells[iFirstRowOneBased,
+                    iFirstColumnOneBased],
+
+                (Range)oWorksheet.Cells[iFirstRowOneBased, iLastColumnOneBased]
                 );
 
             oFirstRow.ClearContents();
@@ -2276,9 +2282,10 @@ public static class ExcelTableUtil
 
             Range oRemainingOldRows = (Range)oWorksheet.get_Range(
 
-                oWorksheet.Cells[iFirstRowOneBased + 1, iFirstColumnOneBased],
+                (Range)oWorksheet.Cells[iFirstRowOneBased + 1,
+                    iFirstColumnOneBased],
 
-                oWorksheet.Cells[iFirstRowOneBased + iRowsOld - 1,
+                (Range)oWorksheet.Cells[iFirstRowOneBased + iRowsOld - 1,
                     iLastColumnOneBased]
                 );
 
@@ -2479,7 +2486,7 @@ public static class ExcelTableUtil
     {
         Debug.Assert(application != null);
 
-        return ( application.CommandBars[TableContextCommandBarID] );
+        return ( application.CommandBars[TableContextCommandBarName] );
     }
 
     //*************************************************************************
@@ -2664,13 +2671,20 @@ public static class ExcelTableUtil
     //*************************************************************************
 
     /// <summary>
-    /// ID of the command bar that appears when you right-click a table
-    /// (ListObject) cell.  The English name of this command bar is
-    /// "List Range Popup".
+    /// Name of the command bar that appears when you right-click a table
+    /// (ListObject) cell.
+    ///
+    /// Note: In some versions of Excel, using this command bar's ID (which is
+    /// 72) instead of its name works properly, and an earlier version of this
+    /// code used the ID.  The ID does not work in all versions of Excel,
+    /// however, so the name is used instead.  (The latest documentation for
+    /// Application.CommandBars now specifies that using a name instead of an
+    /// ID is required for shortcut menus.)
     /// </summary>
 
-    public static readonly Int32 TableContextCommandBarID = 72;
-
+    public static readonly String TableContextCommandBarName =
+        "List Range Popup";
+    
     /// <summary>
     /// For methods that take a column width parameter, specify this constant
     /// to automatically set the column width.

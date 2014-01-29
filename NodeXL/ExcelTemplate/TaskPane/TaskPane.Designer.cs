@@ -116,6 +116,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.wbSplashScreen = new System.Windows.Forms.WebBrowser();
             this.cmsNodeXLControl.SuspendLayout();
             this.tsToolStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splLegend)).BeginInit();
             this.splLegend.Panel1.SuspendLayout();
             this.splLegend.Panel2.SuspendLayout();
             this.splLegend.SuspendLayout();
@@ -969,6 +970,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.tsToolStrip1.PerformLayout();
             this.splLegend.Panel1.ResumeLayout(false);
             this.splLegend.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splLegend)).EndInit();
             this.splLegend.ResumeLayout(false);
             this.pnlForBackColorOnly.ResumeLayout(false);
             this.tsToolStrip2.ResumeLayout(false);

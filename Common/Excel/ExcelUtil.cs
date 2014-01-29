@@ -1738,12 +1738,11 @@ public static class ExcelUtil
 
         Range oRangeToSet = oWorksheet.get_Range(
 
-            oWorksheet.Cells[iRow, iColumn],
+            (Range)oWorksheet.Cells[iRow, iColumn],
 
-            oWorksheet.Cells[
+            (Range)oWorksheet.Cells[
                 iRow + iEndRow - iStartRow,
-                iColumn + iEndColumn - iStartColumn
-                ]
+                iColumn + iEndColumn - iStartColumn]
             );
 
         oRangeToSet.set_Value(Missing.Value, values);

@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Microsoft.Office.Tools.Ribbon;
 using Smrf.AppLib;
@@ -89,7 +90,7 @@ public class LayoutManagerForRibbonDropDown : LayoutManager
 
             if (m_oRibbonDropDown != null)
             {
-                RibbonDropDownItemCollection oItems = m_oRibbonDropDown.Items;
+                IList<RibbonDropDownItem> oItems = m_oRibbonDropDown.Items;
                 Int32 iItems = oItems.Count;
                 Int32 i;
 
@@ -155,7 +156,7 @@ public class LayoutManagerForRibbonDropDown : LayoutManager
 
         m_oRibbonDropDown = ribbonDropDown;
 
-        RibbonDropDownItemCollection oItems = m_oRibbonDropDown.Items;
+        IList<RibbonDropDownItem> oItems = m_oRibbonDropDown.Items;
         Int32 iIndexToSelect = -1;
 
         // Add an item for each available layout.
@@ -173,7 +174,10 @@ public class LayoutManagerForRibbonDropDown : LayoutManager
                     iIndexToSelect = oItems.Count;
                 }
 
-                RibbonDropDownItem oItem = new RibbonDropDownItem();
+                RibbonDropDownItem oItem =
+					Globals.Factory.GetRibbonFactory()
+					.CreateRibbonDropDownItem();
+
                 oItem.Label = oItem.ScreenTip = oLayoutInfo.Text;
                 oItem.SuperTip = oLayoutInfo.Description;
                 oItem.Tag = eLayout;
@@ -189,9 +193,8 @@ public class LayoutManagerForRibbonDropDown : LayoutManager
 
         m_oRibbonDropDown.SelectedItemIndex = iIndexToSelect;
 
-        m_oRibbonDropDown.SelectionChanged +=
-            new System.EventHandler<RibbonControlEventArgs>(
-                this.RibbonDropDown_SelectionChanged);
+        m_oRibbonDropDown.SelectionChanged += new RibbonControlEventHandler(
+			this.RibbonDropDown_SelectionChanged);
     }
 
     //*************************************************************************

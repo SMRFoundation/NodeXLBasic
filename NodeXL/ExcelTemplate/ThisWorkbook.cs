@@ -977,10 +977,15 @@ public partial class ThisWorkbook
         ImportDataUserSettings oImportDataUserSettings =
             new ImportDataUserSettings();
 
+        PlugInUserSettings oPlugInUserSettings =
+            new PlugInUserSettings();
+
         if ( ( new ImportDataUserSettingsDialog(
-            oImportDataUserSettings, this) ).ShowDialog() == DialogResult.OK )
+            oImportDataUserSettings, oPlugInUserSettings, this) ).ShowDialog()
+			== DialogResult.OK )
         {
             oImportDataUserSettings.Save();
+            oPlugInUserSettings.Save();
         }
     }
 
