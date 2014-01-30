@@ -545,6 +545,51 @@ public class ConnectedComponentCalculator : GraphMetricCalculatorBase
             0: fSmallestSortableLayoutAndZOrder );
     }
 
+    //*************************************************************************
+    //  Method: getMostConnectedComponent()
+    //
+    /// <summary>
+    /// Finds the most strongly connected component from a list of components.
+    /// </summary>
+    /// 
+    /// <param name="oStronglyConnectedComponents">
+    /// A list of components, which are lists of IVertex objects.
+    /// </param>
+    /// 
+    /// <param name="oGraph">
+    /// The graph we're working on.
+    /// </param>
+    /// 
+    /// <returns>
+    /// The most strongly connected component (currently the biggest).
+    /// </returns>
+    //*************************************************************************
+
+    public LinkedList<IVertex>
+    getMostConnectedComponent
+    (
+        IList<LinkedList<IVertex>> oStronglyConnectedComponents,
+        IGraph oGraph
+    )
+    {
+        Debug.Assert(oStronglyConnectedComponents != null);
+        Debug.Assert(oGraph != null);
+
+        int count = 0;
+        LinkedList<IVertex> biggest = null;
+        foreach (LinkedList<IVertex> oStronglyConnectedComponent in
+            oStronglyConnectedComponents)
+        {
+            int temp = oStronglyConnectedComponent.Count;
+            if (temp > count)
+            {
+
+                count = temp;
+                biggest = oStronglyConnectedComponent;
+            }
+        }
+        return biggest;
+    }
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -563,7 +608,6 @@ public class ConnectedComponentCalculator : GraphMetricCalculatorBase
 
         // (Do nothing else.)
     }
-
 
     //*************************************************************************
     //  Protected fields

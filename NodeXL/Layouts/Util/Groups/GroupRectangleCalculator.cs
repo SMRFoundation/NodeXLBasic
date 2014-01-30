@@ -250,7 +250,7 @@ public static class GroupRectangleCalculator
     /// </returns>
     //*************************************************************************
 
-    private static Double
+    public static Double
     GetAreaPerVertex
     (
         Rectangle oGraphRectangle,

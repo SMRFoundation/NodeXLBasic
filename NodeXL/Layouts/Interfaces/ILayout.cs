@@ -89,6 +89,25 @@ public interface ILayout
     }
 
     //*************************************************************************
+    //  Property: BoxLayoutAlgorithm
+    //
+    /// <summary>
+    /// Gets or sets the box layout algorithm to use when laying out the graph.
+    /// </summary>
+    ///
+    /// <value>
+    /// The box layout algorithm to use when laying out the graph.
+    /// </value>
+    //*************************************************************************
+
+    BoxLayoutAlgorithm
+    BoxLayoutAlgorithm
+    {
+        get;
+        set;
+    }
+
+    //*************************************************************************
     //  Property: SupportsOutOfBoundsVertices
     //
     /// <summary>

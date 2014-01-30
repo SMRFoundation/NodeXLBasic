@@ -34,8 +34,8 @@ LayoutStyle
     /// groups is laid out within a box using the algorithm implemented by the
     /// <see cref="ILayout" /> implementation.  The box size is proportional
     /// to the number of vertices in the group and the boxes are arranged using
-    /// a squarified treemap algorithm.  Otherwise, <see cref="Normal" /> is
-    /// used.
+    /// the selected <see cref="BoxLayoutAlgorithm" />.  Otherwise, 
+    /// <see cref="Normal" /> is used.
     ///
     /// <para>
     /// This layout style is sometimes called "group in a box."

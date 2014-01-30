@@ -1872,7 +1872,125 @@ internal class GraphicsUtil
         }
     }
 
+    //*************************************************************************
+    //  Method: MoveRectangleWithinBounds()
+    //
+    /// <summary>
+    /// Moves a rectangle so it is contained within an outer bounding
+    /// rectangle.
+    /// </summary>
+    ///
+    /// <param name="rectangle">
+    /// The rectangle that needs to be contained within <paramref
+    /// name="boundingRectangle" />.
+    /// </param>
+    ///
+    /// <param name="boundingRectangle">
+    /// The rectangle that <paramref name="rectangle" /> needs to be contained
+    /// within.
+    /// </param>
+    ///
+    /// <param name="resizeRectangleIfNecessary">
+    /// If this is true and moving <paramref name="rectangle" /> isn't enough
+    /// to contain it within <paramref name="boundingRectangle" />, <paramref
+    /// name="rectangle" /> is resized to force it to be contained.  If this is
+    /// false, any excess is left hanging over the right and bottom edges of
+    /// <paramref name="boundingRectangle" />.
+    /// </param>
+    ///
+    /// <returns>
+    /// A copy of <paramref name="rectangle" /> that is contained within
+    /// <paramref name="boundingRectangle" />.
+    /// </returns>
+    //*************************************************************************
 
+    public static RectangleF
+    MoveRectangleWithinBounds
+    (
+        RectangleF rectangle,
+        RectangleF boundingRectangle,
+        Boolean resizeRectangleIfNecessary
+    )
+    {
+        RectangleF movedRectangle = rectangle;
+
+        if (!rectangle.IsEmpty)
+        {
+            if (resizeRectangleIfNecessary)
+            {
+                movedRectangle.Width = Math.Min(
+                    movedRectangle.Width, boundingRectangle.Width);
+
+                movedRectangle.Height = Math.Min(
+                    movedRectangle.Height, boundingRectangle.Height);
+            }
+
+            float dXOffset = boundingRectangle.Left - movedRectangle.Left;
+
+            if (movedRectangle.Width > boundingRectangle.Width || dXOffset > 0)
+            {
+                movedRectangle.Offset(dXOffset, 0);
+            }
+            else
+            {
+                dXOffset = boundingRectangle.Right - movedRectangle.Right;
+
+                if (dXOffset < 0)
+                {
+                    movedRectangle.Offset(dXOffset, 0);
+                }
+            }
+
+            float dYOffset = boundingRectangle.Top - movedRectangle.Top;
+
+            if (movedRectangle.Height > boundingRectangle.Height ||
+                dYOffset > 0)
+            {
+                movedRectangle.Offset(0, dYOffset);
+            }
+            else
+            {
+                dYOffset = boundingRectangle.Bottom - movedRectangle.Bottom;
+
+                if (dYOffset < 0)
+                {
+                    movedRectangle.Offset(0, dYOffset);
+                }
+            }
+        }
+
+        return (movedRectangle);
+    }
+
+    //*************************************************************************
+    //  Method: DistanceBetweenTwoPointFs()
+    //
+    /// <summary>
+    /// Computes the distance between two points
+    /// </summary>
+    /// 
+    /// <param name="point1">
+    /// The first point
+    /// </param>
+    /// 
+    /// <param name="point2">
+    /// The second point
+    /// </param>
+    /// 
+    /// <returns>
+    /// The distance between the two points
+    /// </returns>
+    //*************************************************************************
+
+    public static Single
+    DistanceBetweenTwoPointFs
+    (
+        PointF point1,
+        PointF point2
+    )
+    {
+        return (Single) Math.Sqrt(Math.Pow(point1.X - point2.X, 2.0f) + Math.Pow(point1.Y - point2.Y, 2.0f));
+    }
     //*************************************************************************
     //  Private constants
     //*************************************************************************

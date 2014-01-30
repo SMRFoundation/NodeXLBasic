@@ -8,6 +8,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using Smrf.NodeXL.Core;
 using Smrf.NodeXL.Algorithms;
+using Smrf.GraphicsLib;
+using MIConvexHull;
 
 namespace Smrf.NodeXL.Layouts
 {
@@ -182,6 +184,43 @@ public abstract class LayoutBase : LayoutsBase, ILayout
             }
 
             m_eLayoutStyle = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: BoxLayoutAlgorithm
+    //
+    /// <summary>
+    /// Gets or sets the box layout algorithm to use when laying out the graph.
+    /// </summary>
+    ///
+    /// <value>
+    /// The box layout algorithm to use when laying out the graph.  The default value is
+    /// <see cref="Smrf.NodeXL.Layouts.BoxLayoutAlgorithm.Treemap" />.
+    /// </value>
+    ///
+    //*************************************************************************
+
+    public BoxLayoutAlgorithm
+    BoxLayoutAlgorithm
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_eBoxLayoutAlgorithm);
+        }
+
+        set
+        {
+            if (value == m_eBoxLayoutAlgorithm)
+            {
+                return;
+            }
+
+            m_eBoxLayoutAlgorithm = value;
 
             AssertValid();
         }
@@ -1481,7 +1520,13 @@ public abstract class LayoutBase : LayoutsBase, ILayout
             if ( m_eLayoutStyle == LayoutStyle.UseGroups &&
                 GroupUtil.GraphHasGroups(oGraph) )
             {
-                if ( !LayOutGraphUsingGroups(oGraph, oAdjustedLayoutContext,
+				List<GroupInfo> groupsToLayOut = GetGroupsToLayOut(oGraph);
+
+                // Pick the treemap layout if we only have one group. We could change this to <= 2 groups, but
+                // that can cause tiny slivers for very small groups
+                if (m_eBoxLayoutAlgorithm == BoxLayoutAlgorithm.Treemap || groupsToLayOut.Count <= 1)
+                {
+                    if (!LayOutGraphUsingGroups(oGraph, groupsToLayOut, oAdjustedLayoutContext,
                     oBackgroundWorker) )
                 {
                     // LayOutGraphAsyncCancel() was called.
@@ -1491,6 +1536,34 @@ public abstract class LayoutBase : LayoutsBase, ILayout
 
                 oVerticesToLayOut = new IVertex[0];
             }
+ 			else if (m_eBoxLayoutAlgorithm == BoxLayoutAlgorithm.PackedRectangles)
+                {
+                    if (!LayOutGraphUsingPackedRectangles(oGraph, groupsToLayOut, oAdjustedLayoutContext,
+                        oBackgroundWorker))
+                    {
+                        // LayOutGraphAsyncCancel() was called.
+                        oDoWorkEventArgs.Cancel = true;
+                    }
+
+                    oVerticesToLayOut = new IVertex[0];
+                }
+                else if (m_eBoxLayoutAlgorithm == BoxLayoutAlgorithm.ForceDirected)
+                {
+                    if (!LayOutGraphUsingForceDirectedGroups(oGraph, groupsToLayOut, oAdjustedLayoutContext,
+                        oBackgroundWorker))
+                    {
+                        // LayOutGraphAsyncCancel() was called.
+
+                        oDoWorkEventArgs.Cancel = true;
+                    }
+
+                    oVerticesToLayOut = new IVertex[0];
+                }
+                else
+                {
+                    throw new NotImplementedException("There is no group-in-a-box layout algorithm defined for '" + m_eBoxLayoutAlgorithm + "'");
+                }
+			}
             else if ( (m_eLayoutStyle == LayoutStyle.UseBinning) &&
                 this.SupportsBinning )
             {
@@ -1553,6 +1626,12 @@ public abstract class LayoutBase : LayoutsBase, ILayout
     /// The graph to lay out.
     /// </param>
     ///
+    /// <param name="oGroupsToLayout">
+    /// A List containing a GroupInfo object for each group of vertices that
+    /// should be laid out in a rectangle, sorted by the number of vertices in
+    /// the group, in descending order.
+    /// </param>
+    ///
     /// <param name="oAdjustedLayoutContext">
     /// The LayoutContext to use.  This has already been adjusted for the
     /// layout margin.
@@ -1573,6 +1652,7 @@ public abstract class LayoutBase : LayoutsBase, ILayout
     LayOutGraphUsingGroups
     (
         IGraph oGraph,
+        List<GroupInfo> oGroupsToLayout,
         LayoutContext oAdjustedLayoutContext,
         BackgroundWorker oBackgroundWorker
     )
@@ -1580,21 +1660,383 @@ public abstract class LayoutBase : LayoutsBase, ILayout
         Debug.Assert(oGraph != null);
         Debug.Assert(oAdjustedLayoutContext != null);
 
-        // There is one object in this List for each group of vertices that
-        // will be laid out in a rectangle.
-
-        List<GroupInfo> oGroupsToLayOut = GetGroupsToLayOut(oGraph);
-
         // Calculate a rectangle for each group.
 
         GroupRectangleCalculator.CalculateGroupRectangles(
-            oAdjustedLayoutContext.GraphRectangle, oGroupsToLayOut);
+            oAdjustedLayoutContext.GraphRectangle, oGroupsToLayout);
 
-        Int32 iGroups = oGroupsToLayOut.Count;
+        Int32 iGroups = oGroupsToLayout.Count;
 
         for (Int32 i = 0; i < iGroups; i++)
         {
-            GroupInfo oGroupInfo = oGroupsToLayOut[i];
+            GroupInfo oGroupInfo = oGroupsToLayout[i];
+
+            Rectangle oGroupRectangle = oGroupInfo.Rectangle;
+            oGroupRectangle.Inflate(-m_iMargin, -m_iMargin);
+
+            // Do not use Rectangle.IsEmpty() here.  It returns true only if
+            // the rectangle is at the origin and has zero width and height.
+
+            if (oGroupRectangle.Width > 0 && oGroupRectangle.Height > 0)
+            {
+                ICollection<IVertex> oVerticesInGroup = oGroupInfo.Vertices;
+
+                if (!GetLayoutToUseForGroup(oGraph, oVerticesInGroup).
+                    LayOutGraphCore(oGraph, oVerticesInGroup,
+                        new LayoutContext(oGroupRectangle), oBackgroundWorker)
+                    )
+                {
+                    // LayOutGraphAsyncCancel() was called.
+
+                    return (false);
+                }
+            }
+            else
+            {
+                oGroupRectangle = oGroupInfo.Rectangle;
+                PointF oVertexLocation;
+
+                if (oGroupRectangle.Width > 0 && oGroupRectangle.Height > 0)
+                {
+                    // Put the group's vertices at the rectangle's center.
+
+                    oVertexLocation = new PointF(
+                        oGroupRectangle.Left + oGroupRectangle.Width / 2,
+                        oGroupRectangle.Top + oGroupRectangle.Height / 2
+                        );
+                }
+                else
+                {
+                    // Put the group's vertices at the rectangle's upper-left
+                    // corner.
+
+                    oVertexLocation = new PointF(
+                        oGroupRectangle.X, oGroupRectangle.Y
+                        );
+                }
+
+                foreach (IVertex oVertex in oGroupInfo.Vertices)
+                {
+                    oVertex.Location = oVertexLocation;
+                }
+            }
+        }
+
+        // Perform metadata-related tasks.
+
+        GroupMetadataManager.OnLayoutUsingGroupsEnd(oGraph, oGroupsToLayout,
+            this.GroupRectanglePenWidth, this.IntergroupEdgeStyle);
+
+        return (true);
+    }
+
+    //*************************************************************************
+    //  Method: LayOutGraphUsingPackedRectangles()
+    //
+    /// <summary>
+    /// Synchronously or asynchronously lays out a graph using groups.
+    /// </summary>
+    ///
+    /// <param name="oGraph">
+    /// The graph to lay out.
+    /// </param>
+    ///
+    /// <param name="oGroupsToLayout">
+    /// A List containing a GroupInfo object for each group of vertices that
+    /// should be laid out in a rectangle, sorted by the number of vertices in
+    /// the group, in descending order.
+    /// </param>
+    /// 
+    /// <param name="oAdjustedLayoutContext">
+    /// The LayoutContext to use.  This has already been adjusted for the
+    /// layout margin.
+    /// </param>
+    ///
+    /// <param name="oBackgroundWorker">
+    /// <see cref="BackgroundWorker" /> whose worker thread called this method,
+    /// or null if the graph is being laid out synchronously.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the layout was successfully completed, false if the layout was
+    /// cancelled.
+    /// </returns>
+    //*************************************************************************
+    protected Boolean
+    LayOutGraphUsingPackedRectangles
+    (
+        IGraph oGraph,
+        List<GroupInfo> oGroupsToLayout,
+        LayoutContext oAdjustedLayoutContext,
+        BackgroundWorker oBackgroundWorker
+    )
+    {
+        Debug.Assert(oGraph != null);
+        Debug.Assert(oAdjustedLayoutContext != null);
+
+        // Calculate a rectangle for each group.
+        double alpha = 0.99;
+        PackedGroupRectangleCalculator.CalculateGroupRectangles(
+            oAdjustedLayoutContext.GraphRectangle, oGroupsToLayout, alpha); //ETM: groupsToLayOut is sorted in decreasing order of size
+
+        Int32 iGroups = oGroupsToLayout.Count;
+
+        for (Int32 i = 0; i < iGroups; i++)
+        {
+            GroupInfo oGroupInfo = oGroupsToLayout[i];
+
+            Rectangle oGroupRectangle = oGroupInfo.Rectangle;
+            oGroupRectangle.Inflate(-m_iMargin, -m_iMargin);
+
+            // Do not use Rectangle.IsEmpty() here.  It returns true only if
+            // the rectangle is at the origin and has zero width and height.
+
+            if (oGroupRectangle.Width > 0 && oGroupRectangle.Height > 0)
+            {
+                ICollection<IVertex> oVerticesInGroup = oGroupInfo.Vertices;
+
+                if (!GetLayoutToUseForGroup(oGraph, oVerticesInGroup).
+                    LayOutGraphCore(oGraph, oVerticesInGroup,
+                        new LayoutContext(oGroupRectangle), oBackgroundWorker)
+                    )
+                {
+                    // LayOutGraphAsyncCancel() was called.
+
+                    return (false);
+                }
+            }
+            else
+            {
+                oGroupRectangle = oGroupInfo.Rectangle;
+                PointF oVertexLocation;
+
+                if (oGroupRectangle.Width > 0 && oGroupRectangle.Height > 0)
+                {
+                    // Put the group's vertices at the rectangle's center.
+
+                    oVertexLocation = new PointF(
+                        oGroupRectangle.Left + oGroupRectangle.Width / 2,
+                        oGroupRectangle.Top + oGroupRectangle.Height / 2
+                        );
+                }
+                else
+                {
+                    // Put the group's vertices at the rectangle's upper-left
+                    // corner.
+
+                    oVertexLocation = new PointF(
+                        oGroupRectangle.X, oGroupRectangle.Y
+                        );
+                }
+
+                foreach (IVertex oVertex in oGroupInfo.Vertices)
+                {
+                    oVertex.Location = oVertexLocation;
+                }
+            }
+        }
+
+        // Perform metadata-related tasks.
+        GroupMetadataManager.OnLayoutUsingGroupsEnd(oGraph, oGroupsToLayout,
+            this.GroupRectanglePenWidth, this.IntergroupEdgeStyle);
+
+        return (true);
+    }
+
+    //*************************************************************************
+    //  Method: LayOutGraphUsingForceDirectedGroups()
+    //
+    /// <summary>
+    /// Synchronously or asynchronously lays out a graph using groups.
+    /// </summary>
+    ///
+    /// <param name="oGraph">
+    /// The graph to lay out.
+    /// </param>
+    ///
+    /// <param name="oGroupsToLayout">
+    /// A List containing a GroupInfo object for each group of vertices that
+    /// should be laid out in a rectangle, sorted by the number of vertices in
+    /// the group, in descending order.
+    /// </param>
+    /// 
+    /// <param name="oAdjustedLayoutContext">
+    /// The LayoutContext to use.  This has already been adjusted for the
+    /// layout margin.
+    /// </param>
+    ///
+    /// <param name="oBackgroundWorker">
+    /// <see cref="BackgroundWorker" /> whose worker thread called this method,
+    /// or null if the graph is being laid out synchronously.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the layout was successfully completed, false if the layout was
+    /// cancelled.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    LayOutGraphUsingForceDirectedGroups
+    (
+        IGraph oGraph,
+        List<GroupInfo> oGroupsToLayout,
+        LayoutContext oAdjustedLayoutContext,
+        BackgroundWorker oBackgroundWorker
+    )
+    {
+        Debug.Assert(oGraph != null);
+        Debug.Assert(oAdjustedLayoutContext != null);
+
+        /////////////////////////////////////////////////////
+        // Get the initial position for the group vertices //
+        /////////////////////////////////////////////////////
+
+        // Determine how much of the screen to use for groups
+        Single areaPerVertex = (Single)GroupRectangleCalculator.GetAreaPerVertex(oAdjustedLayoutContext.GraphRectangle, oGroupsToLayout);
+        areaPerVertex /= 2f; // Customise this value if necessary to have more whitespace between groups -- expose as a user control?
+
+        // Create a graph for the groups
+
+        Graph groupInitialGraph = new Graph(GraphDirectedness.Undirected);
+
+        // Convert GroupInfos into vertices that can be laid out
+        //IEnumerable<GroupVertex> groupInitialGraphVertices = groupsToLayOut.Select<GroupInfo, GroupVertex>(g => new GroupVertex(g, groupInitialGraph));
+        List<GroupVertex> groupInitialGraphVertices = new List<GroupVertex>();
+
+        foreach (GroupInfo groupInfo in oGroupsToLayout)
+        {
+            GroupVertex groupVertex = new GroupVertex(groupInfo, areaPerVertex);
+            groupInitialGraphVertices.Add(groupVertex);
+            groupInitialGraph.Vertices.Add(groupVertex);
+        }
+
+        Int32 iGroups = oGroupsToLayout.Count;
+
+        // Add edges between groups
+        IVertexCollection oVertices = groupInitialGraph.Vertices;
+        IEdgeCollection oEdges = groupInitialGraph.Edges;
+
+        IList<IntergroupEdgeInfo> intergroupEdgeInfos = new IntergroupEdgeCalculator().CalculateGraphMetrics(oGraph, oGroupsToLayout, false);
+        foreach (IntergroupEdgeInfo interGroupEdgeInfo in intergroupEdgeInfos)
+        {
+            IVertex groupVertex1 = oVertices.ElementAt<IVertex>(interGroupEdgeInfo.Group1Index);
+            IVertex groupVertex2 = oVertices.ElementAt<IVertex>(interGroupEdgeInfo.Group2Index);
+
+            if (groupVertex1 != groupVertex2)
+            {
+                oEdges.Add(groupVertex1, groupVertex2, false);
+            }
+        }
+
+        // Use Harel-Koren to compute initial group positions, stored in groupVertex.Location
+        ILayout oLayout = new HarelKorenFastMultiscaleLayout();
+        oLayout.LayOutGraph(groupInitialGraph, oAdjustedLayoutContext);
+
+        foreach (GroupVertex groupVertex in groupInitialGraph.Vertices)
+        {
+            // If we have too few groups, automatically push them into the AdjustedLayoutContext
+            if (groupInitialGraph.Vertices.Count <= 3)
+            {
+                groupVertex.updateGroupInfoRectangleFromLocation();
+                groupVertex.groupInfo.Rectangle = GraphicsUtil.RectangleFToRectangle(GraphicsUtil.MoveRectangleWithinBounds(groupVertex.groupInfo.Rectangle, oAdjustedLayoutContext.GraphRectangle, false), 1);
+                RectangleF r = groupVertex.groupInfo.Rectangle;
+                groupVertex.Location = new PointF(r.X + r.Width / 2, r.Y + r.Height / 2);
+            }
+            // Update the meta-node locations
+            groupVertex.updateGroupInfoLocationFromLocation();
+        }
+
+        /////////////////////////
+        // Remove node overlap //
+        /////////////////////////
+
+        //  while ( overlaps exist along proximity graph edges )
+        //  {
+        //      Create proximity graph (delaunay triangulation)
+        //      Minimize proxmity graph overlap stress function
+        //  }
+        //
+        //  while ( any overlaps exist )
+        //  {
+        //      Create proximity graph (delaunay triangulation)
+        //      Find overlaps (scan-line alg)
+        //      Augment proximity graph with edges for overlaps
+        //      Minimize proxmity graph overlap stress function
+        //  }
+
+        Boolean initialOverlapInProximityGraph;
+        Int32 iteration = 0;
+        Graph lastGraphAfterFirstPhase = groupInitialGraph;
+        do
+        {
+            Graph groupProximityGraph = createGroupVertexProximityGraph(lastGraphAfterFirstPhase);
+            lastGraphAfterFirstPhase = groupProximityGraph;
+            initialOverlapInProximityGraph = proximityGraphStressMajorization(groupProximityGraph, 1000);
+            iteration++;
+        } while (initialOverlapInProximityGraph == true);
+        
+
+        ///////////////////////////////////////////////////////////////////
+        // Transform the layout to get the boxes within the LayoutContext//
+        ///////////////////////////////////////////////////////////////////
+
+        Rectangle boundingRectangle = oAdjustedLayoutContext.GraphRectangle;
+
+        Int32 overallLeftOffset = Int32.MinValue;
+        Int32 overallTopOffset = Int32.MinValue;
+        Int32 overallRightOffset = Int32.MinValue;
+        Int32 overallBottomOffset = Int32.MinValue;
+
+        foreach (GroupInfo groupInfo in oGroupsToLayout)
+        {
+            Rectangle groupRectangle = groupInfo.Rectangle;
+
+            Int32 rectangleLeftOffset = boundingRectangle.Left - groupRectangle.Left;
+            if (rectangleLeftOffset > overallLeftOffset)
+            {
+                overallLeftOffset = rectangleLeftOffset;
+            }
+            Int32 rectangleTopOffset = boundingRectangle.Top - groupRectangle.Top;
+            if (rectangleTopOffset > overallTopOffset)
+            {
+                overallTopOffset = rectangleTopOffset;
+            }
+
+            Int32 rectangleRightOffset = groupRectangle.Right - boundingRectangle.Right;
+            if (rectangleRightOffset > overallRightOffset)
+            {
+                overallRightOffset = rectangleRightOffset;
+            }
+            Int32 rectangleBottomOffset = groupRectangle.Bottom - boundingRectangle.Bottom;
+            if (rectangleBottomOffset > overallBottomOffset)
+            {
+                overallBottomOffset = rectangleBottomOffset;
+            }
+        }
+
+        Rectangle newBoundingRectangle = new Rectangle(
+            boundingRectangle.X - overallLeftOffset, boundingRectangle.Y - overallTopOffset,
+            boundingRectangle.Width + overallLeftOffset + overallRightOffset, boundingRectangle.Height + overallTopOffset + overallBottomOffset);
+
+        // Perform metadata-related tasks.
+
+        GroupMetadataManager.OnLayoutUsingGroupsEnd(lastGraphAfterFirstPhase, oGroupsToLayout,
+            this.GroupRectanglePenWidth, this.IntergroupEdgeStyle);
+
+        lastGraphAfterFirstPhase.SetValue(ReservedMetadataKeys.GroupLayoutDrawingInfo,
+            new GroupLayoutDrawingInfo(oGroupsToLayout, this.GroupRectanglePenWidth, null));
+
+        //TransformLayout(oGraph, new LayoutContext(newBoundingRectangle), oAdjustedLayoutContext);
+        TransformLayout(lastGraphAfterFirstPhase, new LayoutContext(newBoundingRectangle), oAdjustedLayoutContext);
+
+        ///////////////////////////////////
+        // Finish with individual groups //
+        ///////////////////////////////////
+
+        for (Int32 i = 0; i < iGroups; i++)
+        {
+            GroupInfo oGroupInfo = oGroupsToLayout[i];
 
             Rectangle oGroupRectangle = oGroupInfo.Rectangle;
             oGroupRectangle.Inflate(-m_iMargin, -m_iMargin);
@@ -1649,11 +2091,425 @@ public abstract class LayoutBase : LayoutsBase, ILayout
 
         // Perform metadata-related tasks.
 
-        GroupMetadataManager.OnLayoutUsingGroupsEnd(oGraph, oGroupsToLayOut,
+        GroupMetadataManager.OnLayoutUsingGroupsEnd(oGraph, oGroupsToLayout,
             this.GroupRectanglePenWidth, this.IntergroupEdgeStyle);
 
         return (true);
     }
+
+    //*************************************************************************
+    //  Method: createGroupVertexProximityGraph()
+    //
+    /// <summary>
+    /// Creates the proximity graph (delaunay triangulation) of the node
+    /// positions in the group graph.
+    /// </summary>
+    /// <param name="graph">
+    /// The group graph to create a proximity graph from.
+    /// </param>
+    /// 
+    /// <returns>
+    /// The proximity graph.
+    /// </returns>
+    //*************************************************************************
+
+    private static Graph createGroupVertexProximityGraph(IGraph graph)
+    {
+        Graph groupProximityGraph = new Graph(GraphDirectedness.Undirected);
+        List<GroupVertex> groupProximityGraphVertices = new List<GroupVertex>();
+            
+        foreach (GroupVertex groupVertex in graph.Vertices)
+        {
+            // Update group collapsed location with the result of the initial layout
+            //groupVertex.updateGroupInfoLocationAndRectangleFromLocation(areaPerVertex);
+            groupVertex.updatePositionFromLocation();
+        }
+
+        foreach (GroupVertex groupVertex in graph.Vertices)
+        {
+            GroupVertex newGroupVertex = new GroupVertex(groupVertex);
+            groupProximityGraphVertices.Add(newGroupVertex);
+            groupProximityGraph.Vertices.Add(newGroupVertex);
+        }
+
+        // If we have a degenerate case do nothing
+        if (graph.Vertices.Count == 0)
+        {
+            // Do nothing
+        }
+        // If we have fewer group vertices/points than the delaunay triangulation code can handle (0-3) do it manually
+        else if (groupProximityGraphVertices.Count <= 3)
+        {
+            // Connect all the vertices in a clique
+            for (Int32 i = 0; i < groupProximityGraphVertices.Count; i++)
+            {
+                IVertex groupVertex1 = groupProximityGraphVertices.ElementAt(i);
+
+                for (Int32 j = i + 1; j < groupProximityGraphVertices.Count; j++)
+                {
+                    IVertex groupVertex2 = groupProximityGraphVertices.ElementAt(j);
+
+                    groupProximityGraph.Edges.Add(new Edge(groupVertex1, groupVertex2, false));
+                }
+            }
+        }
+        else
+        {
+            // Use the node positions stored in GroupVertex.Position for the delaunay triangulation
+            // Ensure the position has been set ahead of time (e.g., using groupVertex.updatePositionFromLocation())
+            ITriangulation<GroupVertex, DefaultTriangulationCell<GroupVertex>> delaunayTriangulation = Triangulation.CreateDelaunay<GroupVertex>(groupProximityGraphVertices);
+
+            // Each delaunay triangulation cell is a triangle with our group vertices as its vertices
+            // Add edges to the proximity graph from the triangle edges
+            foreach (DefaultTriangulationCell<GroupVertex> cell in delaunayTriangulation.Cells)
+            {
+                Debug.Assert(cell.Vertices.Count() == 3);
+
+                // Add edges for the three triangle faces
+                groupProximityGraph.Edges.Add(new Edge(cell.Vertices[0], cell.Vertices[1], false));
+                groupProximityGraph.Edges.Add(new Edge(cell.Vertices[0], cell.Vertices[2], false));
+                groupProximityGraph.Edges.Add(new Edge(cell.Vertices[1], cell.Vertices[2], false));
+            }
+
+            // Two triangles can share an edge, so remove one of them
+            groupProximityGraph.Edges.RemoveDuplicates();
+
+            //// Update group vertex location with the positions from the delaunay triangulation
+            //foreach (GroupVertex groupVertex in groupProximityGraph.Vertices)
+            //{
+            //    groupVertex.updateLocationFromPosition();
+            //}
+        }
+        return groupProximityGraph;
+    }
+
+    //*************************************************************************
+    //  Method: proximityGraphStressMajorization()
+    //
+    /// <summary>
+    /// Run iterations of stress majorization to eliminate overlap on a 
+    /// proximity graph.
+    /// </summary>
+    /// 
+    /// <param name="groupProximityGraph">
+    /// The proximity graph to run stress majorization on.
+    /// </param>
+    /// 
+    /// <param name="maxIterations">
+    /// The maximum number of interations of stress majorization to run.
+    /// </param>
+    /// 
+    /// <returns>
+    /// Whether there was any overlap initially.
+    /// </returns>
+    //*************************************************************************
+
+    private Boolean
+    proximityGraphStressMajorization
+    (
+        IGraph groupProximityGraph,
+        int maxIterations
+    )
+    {
+        // Graph X = n x 2 matrix. X_i refers to a node's points, X^(1) is the horizontal axis and X^(2) is the vertical. X(t) refers to a time step.
+
+        // CG ALGORITHM
+        // δ_{ij} = w_{ij} * d_{ij}
+        // Weighted Laplacian L^w = n x n matrix. Constant througout solving
+        // L^X defined p.241. Recomputed at each iteration.
+        // Iteratively solve:
+        //      L^w * X(t+1)^a = L^{X(t)} * X(t)^a
+        //      constant n x n matrix * n x 1 vector = n x n matrix * n x 1 vector
+        //      n x 1 vector - n x 1 vector = 0
+        //      n x 1 vector = 0
+        //      for
+        //      a = 1,2
+
+        // LOCAL ALGORITHM -- the one we use here
+        Boolean currentOverlapInProximityGraph = true;
+        Boolean initialOverlapInProximityGraph = false;
+        int i;
+        for (i = 0; i < maxIterations && currentOverlapInProximityGraph; i++)
+        {
+            currentOverlapInProximityGraph = false;
+
+            foreach (GroupVertex groupVertex in groupProximityGraph.Vertices)
+            {
+                groupVertex.OldLocation = groupVertex.Location;
+            }
+
+            foreach (GroupVertex groupVertex1 in groupProximityGraph.Vertices)
+            {
+                Single xNumerator = 0.0f;
+                Single yNumerator = 0.0f;
+                Single denominator = 0.0f;
+
+                foreach (Edge edge in groupVertex1.IncidentEdges) // O(n) operation... // Each edge seen twice...
+                {
+                    GroupVertex groupVertex2 = (GroupVertex)edge.GetAdjacentVertex(groupVertex1);
+
+                    Debug.Assert(groupVertex1 != groupVertex2);// If this happens we have an infinite loop...
+
+                    // Calculate an overlap factor for each pair of nodes connected by an edge in the proxmity graph
+
+                    Rectangle groupRectangle1 = groupVertex1.groupInfo.Rectangle;
+                    Rectangle groupRectangle2 = groupVertex2.groupInfo.Rectangle;
+
+                    Single widthOverlapRatio =
+                        ((Single)groupRectangle1.Width / 2.0f + (Single)groupRectangle2.Width / 2.0f) /
+                        Math.Abs(groupVertex1.OldLocation.X - groupVertex2.OldLocation.X);
+
+                    Single heightOverlapRatio =
+                        ((Single)groupRectangle1.Height / 2.0f + (Single)groupRectangle2.Height / 2.0f) /
+                        Math.Abs(groupVertex1.OldLocation.Y - groupVertex2.OldLocation.Y);
+
+                    // t_{ij} -- Overlap factor
+                    Single overlapFactor = Math.Max(Math.Min(widthOverlapRatio, heightOverlapRatio), 1.0f);
+
+                    if (!isApproximatelyEqual(overlapFactor - 1.0f, 0.0f, 0.0000001f))
+                    {
+                        //Debug.Print("Overlap: " + groupVertex1.Name + " " + groupVertex2.Name);
+                        currentOverlapInProximityGraph = true;
+                        initialOverlapInProximityGraph = true;
+                    }
+
+                    // s_max -- Max overlap removal per interaction, which must be > 1. Gansner & Hu 2009 report that 1.5 is good.
+                    Single maxOverlapRemovalPerIteration = 1.5f;
+
+                    // s_{ij} -- Scaling factor for the overlap factor
+                    Single overlapFactorScalingFactor = Math.Min(overlapFactor, maxOverlapRemovalPerIteration);
+
+                    Single distanceBetweenVertices = GraphicsUtil.DistanceBetweenTwoPointFs(groupVertex1.OldLocation, groupVertex2.OldLocation);
+
+                    // d_{ij} -- Edge ideal distance
+                    Single edgeIdealDistance = overlapFactorScalingFactor * distanceBetweenVertices;
+
+                    // w_{ij} -- Scaling factor. The double bars around the d_{ij} term in the paper are typos
+                    Single scalingFactor = 1.0f / edgeIdealDistance / edgeIdealDistance;
+
+                    Single xDifference = groupVertex1.OldLocation.X - groupVertex2.OldLocation.X;
+                    Single yDifference = groupVertex1.OldLocation.Y - groupVertex2.OldLocation.Y;
+
+                    Single xPart = scalingFactor * (groupVertex2.OldLocation.X + edgeIdealDistance * xDifference * inverse(distanceBetweenVertices));
+                    Single yPart = scalingFactor * (groupVertex2.OldLocation.Y + edgeIdealDistance * yDifference * inverse(distanceBetweenVertices));
+                        
+                    xNumerator += xPart;
+                    yNumerator += yPart;
+
+                    denominator += scalingFactor;
+                }
+
+                groupVertex1.Location = new PointF(xNumerator / denominator, yNumerator / denominator);
+            }
+        }
+
+        return initialOverlapInProximityGraph;
+    }
+
+
+    //*************************************************************************
+    //  Method: inverse()
+    //
+    /// <summary>
+    /// Simply calculates the inverse of a value.
+    /// </summary>
+    /// 
+    /// <param name="val">
+    /// The value to inverse.
+    /// </param>
+    /// 
+    /// <returns>
+    /// The inverse.
+    /// </returns>
+    //*************************************************************************
+
+    private Single
+    inverse
+    (
+        Single val
+    )
+    {
+        if (isApproximatelyEqual(val, 0.0f, 0.0000001f))
+        {
+            return 0.0f;
+        } 
+        else 
+        {
+            return 1.0f / val;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: isApproximatelyEqual()
+    //
+    /// <summary>
+    /// Determines whether two values are within epsilon of each other.
+    /// </summary>
+    /// 
+    /// <param name="value1">
+    /// Value A
+    /// </param>
+    /// 
+    /// <param name="value2">
+    /// Valube B
+    /// </param>
+    /// 
+    /// <param name="epsilon">
+    /// The largest difference A-B where A and B are still approximately equal.
+    /// </param>
+    //*************************************************************************
+
+    private static bool 
+    isApproximatelyEqual
+    (
+        Single value1,
+        Single value2,
+        Single epsilon
+    )
+    {
+        // If they are equal anyway, just return True. 
+        if (value1.Equals(value2))
+        {
+            return true;
+        }
+
+        // Handle NaN, Infinity. 
+        if (Single.IsInfinity(value1) | Single.IsNaN(value1))
+        {
+            return value1.Equals(value2);
+        }
+        else if (Single.IsInfinity(value2) | Single.IsNaN(value2))
+        {
+            return value1.Equals(value2);
+        }
+
+        // Handle zero to avoid division by zero 
+        Single divisor = Math.Max(value1, value2);
+        if (divisor.Equals(0))
+        {
+            divisor = Math.Min(value1, value2);
+        }
+
+        return Math.Abs(value1 - value2) / divisor <= epsilon;
+    }
+
+    //*************************************************************************
+    //  Class: GroupVertex
+    //
+	/// <summary>
+	/// A special representation of a group used for calculating the 
+    /// Force-Directed Group-in-a-Box layout.
+	/// </summary>
+    //*************************************************************************
+
+    class GroupVertex : Vertex, MICHIVertex
+    {
+        public GroupInfo groupInfo;
+        private Single areaPerVertex;
+
+        public GroupVertex(GroupInfo groupInfo, Single areaPerVertex)
+        {
+            this.Name = groupInfo.Name;
+            this.groupInfo = groupInfo;
+            this.areaPerVertex = areaPerVertex;
+        }
+
+        public GroupVertex(GroupVertex other)
+            : this(other.groupInfo, other.areaPerVertex)
+        {
+            // Position and location may not exist...
+            Position = new double[] { other.Position[0], other.Position[1] };
+            Location = new PointF(other.Location.X, other.Location.Y);
+        }
+
+        public double[] Position { get; set; }
+
+        /// <summary>
+        /// Updates the MIConvexHull <see cref="MICHIVertex" /> Position using the NodeXL <see cref="Vertex" /> Location
+        /// </summary>
+        public void updatePositionFromLocation()
+        {
+            Position = new double[] { Location.X, Location.Y };
+        }
+
+        /// <summary>
+        /// Updates the NodeXL <see cref="Vertex" /> Location using the MIConvexHull <see cref="MICHIVertex" /> Position
+        /// </summary>
+        public void updateLocationFromPosition()
+        {
+            double[] pos = Position;
+            Location = new PointF((float)pos[0], (float)pos[1]);
+        }
+
+        /// <summary>
+        /// Updates the <see cref="GroupInfo" /> CollapsedLocation using the <see cref="Vertex" /> Location
+        /// as well as the GroupInfo.Rectangle
+        /// </summary>
+        public void updateGroupInfoLocationFromLocation
+        (
+        )
+        {
+            groupInfo.CollapsedLocation = Location;
+            //updateGroupInfoRectangleFromLocation(areaPerVertex);
+        }
+
+        public void updateGroupInfoRectangleFromLocation
+        (
+        )
+        {
+            // Create a square box around the group
+            Single x = Location.X;
+            Single y = Location.Y;
+            Single area = areaPerVertex * (Single)groupInfo.Vertices.Count;
+            float width = (float)Math.Sqrt(area);
+            float height = width;
+
+            RectangleF groupRectangle = new RectangleF(x - width / 2, y - height / 2, width, height);
+
+            //groupRectangle = GraphicsUtil.MoveRectangleWithinBounds(groupRectangle, oAdjustedLayoutContext.GraphRectangle, false);
+
+            groupInfo.Rectangle = GraphicsUtil.RectangleFToRectangle(groupRectangle, 1);
+        }
+
+        public new PointF 
+        Location
+        {
+            get
+            {
+                AssertValid();
+
+                return (m_oLocation);
+            }
+
+            set
+            {
+                m_oLocation = value;
+                updateGroupInfoRectangleFromLocation();
+                AssertValid();
+            }
+        }
+
+        public PointF
+        OldLocation
+        {
+            get
+            {
+                AssertValid();
+
+                return (m_oOldLocation);
+            }
+
+            set
+            {
+                m_oOldLocation = value;
+
+                AssertValid();
+            }
+        }
+
+        protected PointF m_oOldLocation;
+    }
+
 
     //*************************************************************************
     //  Method: GetGroupsToLayOut()
@@ -1906,6 +2762,111 @@ public abstract class LayoutBase : LayoutsBase, ILayout
         Debug.Assert(m_oBackgroundWorker != null);
     }
 
+    //*************************************************************************
+    //  Method: GetGroupsToLayOutConnectivity()
+    //
+	/// <summary>
+	/// Gets the groups from the graph and ensures they have connectivity
+    /// calculated.
+	/// </summary>
+    /// 
+	/// <param name="oGraph">
+    /// The graph to examine.
+    /// </param>
+    /// 
+	/// <returns>
+    /// A list of GroupInfo objects from the graph sorted by connectivity.
+    /// </returns>
+    //*************************************************************************
+
+    protected List<GroupInfo>
+    GetGroupsToLayOutConnectivity
+    (
+        IGraph oGraph
+    )
+    {
+        Debug.Assert(oGraph != null);
+        List<GroupInfo> oGroupsToLayOut = GroupUtil.GetGroupsWithAllVertices(oGraph, true);
+        List<GroupInfo> filteredList = new List<GroupInfo>();
+        //iterate through groups -> 
+        //get intergroup edge number of each group
+        //sort based on 
+
+        int connectivity;
+        //calculate connectivity of each group relative to another group and then sort according to that
+        foreach (GroupInfo g in oGroupsToLayOut)
+        {
+            connectivity = 0;
+            foreach (GroupInfo g2 in oGroupsToLayOut)
+            {
+
+                if (!g.Equals(g2))
+                {
+                System.Diagnostics.Debug.Print(g.Label + " " + getConnectivityBetween(g, g2, oGraph).ToString() + " " + g2.Label);
+                    if (getConnectivityBetween(g, g2, oGraph)){
+                    connectivity += 1;
+                    System.Diagnostics.Debug.Print(g.Label + " is connected to " + g2.Label);
+                    }
+                }
+            }
+            g.Connectivity = connectivity;
+            System.Diagnostics.Debug.Print("Total connectivity of " + g.Label + "=" + connectivity);
+
+            if (!(g.Connectivity < 1 && g.Vertices.Count < 2))
+            {                 
+                filteredList.Add(g);
+            }else{
+            oGraph.Vertices.Remove(g.Vertices.First.Value.ID);
+            }
+        }
+        filteredList.Sort(
+            (a, b) => -a.CompareConnectivity(b));
+        return (filteredList);
+    }
+
+    //*************************************************************************
+    //  Method: getConnectivityBetween()
+    //
+    /// <summary>
+    /// Get whether there is connectivity between two groups in a graph.
+    /// </summary>
+    /// 
+    /// <param name="g1">
+    /// Group 1
+    /// </param>
+    /// 
+    /// <param name="g2">
+    /// Group 2
+    /// </param>
+    /// 
+    /// <param name="oGraph">
+    /// The graph these groups are in
+    /// </param>
+    /// 
+    /// <returns>
+    /// True if there is connectivity, false otherwise.
+    /// </returns>
+    //*************************************************************************
+
+    public bool getConnectivityBetween(GroupInfo g1, GroupInfo g2, IGraph oGraph)
+    {
+
+        IntergroupEdgeCalculator m_oIntergroupEdgeCalculator = new IntergroupEdgeCalculator();
+
+		// Currently uses undirected graph
+        IList<IntergroupEdgeInfo> oIntergroupEdges =
+            m_oIntergroupEdgeCalculator.CalculateGraphMetrics(oGraph,
+                new GroupInfo[] { g1, g2 }, false);
+
+        foreach (IntergroupEdgeInfo e in oIntergroupEdges)
+        {
+            if (e.Group1Index == 0 && e.Group2Index == 1)
+            {
+                return e.Edges > 0;
+        }
+        }
+        return false;
+    }
 
     //*************************************************************************
     //  Protected constants
@@ -1929,6 +2890,10 @@ public abstract class LayoutBase : LayoutsBase, ILayout
     /// The style to use when laying out the graph.
 
     protected LayoutStyle m_eLayoutStyle;
+
+    /// The algorithm to use when laying out groups.
+
+    protected BoxLayoutAlgorithm m_eBoxLayoutAlgorithm;
 
     /// The width of the pen used to draw group rectangles.
 

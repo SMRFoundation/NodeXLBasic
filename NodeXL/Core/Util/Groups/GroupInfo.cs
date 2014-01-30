@@ -60,9 +60,11 @@ public class GroupInfo : Object
         m_sCollapsedAttributes = collapsedAttributes;
         m_oCollapsedLocation = null;
 
+		// Metric for GIB layouts
+        m_Connectivity = 0;
         // AssertValid();
     }
-
+    
     //*************************************************************************
     //  Constructor: GroupInfo()
     //
@@ -300,6 +302,63 @@ public class GroupInfo : Object
         }
     }
 
+    //*************************************************************************
+    //  Property: Connectivity
+    //
+    /// <summary>
+    /// Gets or sets the group's connectivity metric for the Packed Rectangles 
+    /// Group-in-a-Box layout.
+    /// </summary>
+    //*************************************************************************
+
+    public int
+    Connectivity
+    {
+        get
+        {
+            AssertValid();
+
+            return m_Connectivity;
+        }
+
+        set
+        {
+            m_Connectivity = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Method: CompareConnectivity()
+    //
+    /// <summary>
+    /// Compares the group's connectivity metric for the Packed Rectangles 
+    /// Group-in-a-Box layout.
+    /// </summary>
+    /// 
+    /// <param name="other">
+    /// A group to compare this against.
+    /// </param>
+    /// 
+    /// <returns>
+    /// A signed number indicating the relative values of connectivity metric.
+    /// </returns>
+    //*************************************************************************
+
+    public int
+    CompareConnectivity(GroupInfo other)
+    {
+
+        if (other.Connectivity != this.Connectivity)
+        {
+            return this.Connectivity.CompareTo(other.Connectivity);
+        }
+        else
+        {
+            return this.Vertices.Count.CompareTo(other.Vertices.Count);
+        }
+    }
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -331,6 +390,9 @@ public class GroupInfo : Object
     /// The group's unique name.  Can be null or empty.
 
     protected String m_sName;
+
+	/// Group's connectivity metric for GIB layout algorithm
+    protected int m_Connectivity;
 
     /// Collection of the group's vertices.
 

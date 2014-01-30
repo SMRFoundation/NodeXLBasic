@@ -47,15 +47,17 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.label2 = new System.Windows.Forms.Label();
             this.btnResetAll = new System.Windows.Forms.Button();
             this.radLayoutStyleUseGroups = new System.Windows.Forms.RadioButton();
-            this.radLayoutStyleUseBinning = new System.Windows.Forms.RadioButton();
             this.radLayoutStyleNormal = new System.Windows.Forms.RadioButton();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.pnlLayoutStyleUseGroups = new System.Windows.Forms.Panel();
+            this.cbxBoxLayoutAlgorithm = new Smrf.AppLib.ComboBoxPlus();
+            this.label8 = new System.Windows.Forms.Label();
             this.cbxIntergroupEdgeStyle = new Smrf.AppLib.ComboBoxPlus();
             this.label6 = new System.Windows.Forms.Label();
             this.chkImproveLayoutOfGroups = new System.Windows.Forms.CheckBox();
             this.nudGroupRectanglePenWidth = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
+            this.radLayoutStyleUseBinning = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.nudFruchtermanReingoldIterations)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudFruchtermanReingoldC)).BeginInit();
@@ -71,7 +73,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(276, 450);
+            this.btnCancel.Location = new System.Drawing.Point(276, 479);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
             this.btnCancel.TabIndex = 6;
@@ -80,7 +82,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(190, 450);
+            this.btnOK.Location = new System.Drawing.Point(190, 479);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
             this.btnOK.TabIndex = 5;
@@ -120,7 +122,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.nudFruchtermanReingoldIterations);
-            this.groupBox1.Location = new System.Drawing.Point(12, 348);
+            this.groupBox1.Location = new System.Drawing.Point(12, 366);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(344, 90);
             this.groupBox1.TabIndex = 3;
@@ -181,7 +183,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.pnlLayoutStyleUseBinning.Controls.Add(this.label3);
             this.pnlLayoutStyleUseBinning.Controls.Add(this.nudMaximumVerticesPerBin);
             this.pnlLayoutStyleUseBinning.Controls.Add(this.label2);
-            this.pnlLayoutStyleUseBinning.Location = new System.Drawing.Point(38, 231);
+            this.pnlLayoutStyleUseBinning.Location = new System.Drawing.Point(38, 250);
             this.pnlLayoutStyleUseBinning.Name = "pnlLayoutStyleUseBinning";
             this.pnlLayoutStyleUseBinning.Size = new System.Drawing.Size(292, 61);
             this.pnlLayoutStyleUseBinning.TabIndex = 4;
@@ -258,7 +260,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             // 
             // btnResetAll
             // 
-            this.btnResetAll.Location = new System.Drawing.Point(12, 450);
+            this.btnResetAll.Location = new System.Drawing.Point(12, 479);
             this.btnResetAll.Name = "btnResetAll";
             this.btnResetAll.Size = new System.Drawing.Size(80, 23);
             this.btnResetAll.TabIndex = 4;
@@ -270,25 +272,12 @@ namespace Smrf.NodeXL.ExcelTemplate
             // 
             this.radLayoutStyleUseGroups.Location = new System.Drawing.Point(10, 48);
             this.radLayoutStyleUseGroups.Name = "radLayoutStyleUseGroups";
-            this.radLayoutStyleUseGroups.Size = new System.Drawing.Size(320, 38);
+            this.radLayoutStyleUseGroups.Size = new System.Drawing.Size(320, 30);
             this.radLayoutStyleUseGroups.TabIndex = 1;
             this.radLayoutStyleUseGroups.TabStop = true;
-            this.radLayoutStyleUseGroups.Text = "L&ay out each of the graph\'s groups in its own box and sort the boxes by group si" +
-                "ze";
+            this.radLayoutStyleUseGroups.Text = "L&ay out each of the graph\'s groups in its own box";
             this.radLayoutStyleUseGroups.UseVisualStyleBackColor = true;
             this.radLayoutStyleUseGroups.CheckedChanged += new System.EventHandler(this.OnEventThatRequiresControlEnabling);
-            // 
-            // radLayoutStyleUseBinning
-            // 
-            this.radLayoutStyleUseBinning.Location = new System.Drawing.Point(9, 190);
-            this.radLayoutStyleUseBinning.Name = "radLayoutStyleUseBinning";
-            this.radLayoutStyleUseBinning.Size = new System.Drawing.Size(321, 38);
-            this.radLayoutStyleUseBinning.TabIndex = 3;
-            this.radLayoutStyleUseBinning.TabStop = true;
-            this.radLayoutStyleUseBinning.Text = "La&y out the graph\'s smaller connected components in boxes at the bottom of the g" +
-                "raph pane";
-            this.radLayoutStyleUseBinning.UseVisualStyleBackColor = true;
-            this.radLayoutStyleUseBinning.CheckedChanged += new System.EventHandler(this.OnEventThatRequiresControlEnabling);
             // 
             // radLayoutStyleNormal
             // 
@@ -310,28 +299,48 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.groupBox3.Controls.Add(this.radLayoutStyleUseGroups);
             this.groupBox3.Location = new System.Drawing.Point(12, 37);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(344, 301);
+            this.groupBox3.Size = new System.Drawing.Size(344, 323);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Layout style";
             // 
             // pnlLayoutStyleUseGroups
             // 
+            this.pnlLayoutStyleUseGroups.Controls.Add(this.cbxBoxLayoutAlgorithm);
+            this.pnlLayoutStyleUseGroups.Controls.Add(this.label8);
             this.pnlLayoutStyleUseGroups.Controls.Add(this.cbxIntergroupEdgeStyle);
             this.pnlLayoutStyleUseGroups.Controls.Add(this.label6);
             this.pnlLayoutStyleUseGroups.Controls.Add(this.chkImproveLayoutOfGroups);
             this.pnlLayoutStyleUseGroups.Controls.Add(this.nudGroupRectanglePenWidth);
             this.pnlLayoutStyleUseGroups.Controls.Add(this.label5);
-            this.pnlLayoutStyleUseGroups.Location = new System.Drawing.Point(38, 88);
+            this.pnlLayoutStyleUseGroups.Location = new System.Drawing.Point(38, 80);
             this.pnlLayoutStyleUseGroups.Name = "pnlLayoutStyleUseGroups";
-            this.pnlLayoutStyleUseGroups.Size = new System.Drawing.Size(292, 96);
+            this.pnlLayoutStyleUseGroups.Size = new System.Drawing.Size(292, 123);
             this.pnlLayoutStyleUseGroups.TabIndex = 2;
+            // 
+            // cbxBoxLayoutAlgorithm
+            // 
+            this.cbxBoxLayoutAlgorithm.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbxBoxLayoutAlgorithm.FormattingEnabled = true;
+            this.cbxBoxLayoutAlgorithm.Location = new System.Drawing.Point(150, 3);
+            this.cbxBoxLayoutAlgorithm.Name = "cbxBoxLayoutAlgorithm";
+            this.cbxBoxLayoutAlgorithm.Size = new System.Drawing.Size(130, 21);
+            this.cbxBoxLayoutAlgorithm.TabIndex = 6;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(3, 3);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(104, 13);
+            this.label8.TabIndex = 5;
+            this.label8.Text = "&Box layout algorithm:";
             // 
             // cbxIntergroupEdgeStyle
             // 
             this.cbxIntergroupEdgeStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxIntergroupEdgeStyle.FormattingEnabled = true;
-            this.cbxIntergroupEdgeStyle.Location = new System.Drawing.Point(150, 29);
+            this.cbxIntergroupEdgeStyle.Location = new System.Drawing.Point(150, 57);
             this.cbxIntergroupEdgeStyle.Name = "cbxIntergroupEdgeStyle";
             this.cbxIntergroupEdgeStyle.Size = new System.Drawing.Size(80, 21);
             this.cbxIntergroupEdgeStyle.TabIndex = 3;
@@ -339,7 +348,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(3, 32);
+            this.label6.Location = new System.Drawing.Point(3, 57);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(90, 13);
             this.label6.TabIndex = 2;
@@ -348,7 +357,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             // chkImproveLayoutOfGroups
             // 
             this.chkImproveLayoutOfGroups.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.chkImproveLayoutOfGroups.Location = new System.Drawing.Point(3, 59);
+            this.chkImproveLayoutOfGroups.Location = new System.Drawing.Point(3, 84);
             this.chkImproveLayoutOfGroups.Name = "chkImproveLayoutOfGroups";
             this.chkImproveLayoutOfGroups.Size = new System.Drawing.Size(277, 34);
             this.chkImproveLayoutOfGroups.TabIndex = 4;
@@ -358,7 +367,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             // 
             // nudGroupRectanglePenWidth
             // 
-            this.nudGroupRectanglePenWidth.Location = new System.Drawing.Point(150, 4);
+            this.nudGroupRectanglePenWidth.Location = new System.Drawing.Point(150, 31);
             this.nudGroupRectanglePenWidth.Maximum = new decimal(new int[] {
             10,
             0,
@@ -376,11 +385,23 @@ namespace Smrf.NodeXL.ExcelTemplate
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(3, 6);
+            this.label5.Location = new System.Drawing.Point(3, 31);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(127, 13);
             this.label5.TabIndex = 0;
             this.label5.Text = "&Width of the box outlines:";
+            // 
+            // radLayoutStyleUseBinning
+            // 
+            this.radLayoutStyleUseBinning.Location = new System.Drawing.Point(9, 209);
+            this.radLayoutStyleUseBinning.Name = "radLayoutStyleUseBinning";
+            this.radLayoutStyleUseBinning.Size = new System.Drawing.Size(321, 38);
+            this.radLayoutStyleUseBinning.TabIndex = 3;
+            this.radLayoutStyleUseBinning.TabStop = true;
+            this.radLayoutStyleUseBinning.Text = "La&y out the graph\'s smaller connected components in boxes at the bottom of the g" +
+                "raph pane";
+            this.radLayoutStyleUseBinning.UseVisualStyleBackColor = true;
+            this.radLayoutStyleUseBinning.CheckedChanged += new System.EventHandler(this.OnEventThatRequiresControlEnabling);
             // 
             // LayoutUserSettingsDialog
             // 
@@ -388,7 +409,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(369, 490);
+            this.ClientSize = new System.Drawing.Size(369, 513);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.btnResetAll);
             this.Controls.Add(this.nudMargin);
@@ -438,7 +459,6 @@ namespace Smrf.NodeXL.ExcelTemplate
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnResetAll;
         private System.Windows.Forms.RadioButton radLayoutStyleUseGroups;
-        private System.Windows.Forms.RadioButton radLayoutStyleUseBinning;
         private System.Windows.Forms.RadioButton radLayoutStyleNormal;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Panel pnlLayoutStyleUseGroups;
@@ -447,5 +467,8 @@ namespace Smrf.NodeXL.ExcelTemplate
         private System.Windows.Forms.CheckBox chkImproveLayoutOfGroups;
         private System.Windows.Forms.Label label6;
         private Smrf.AppLib.ComboBoxPlus cbxIntergroupEdgeStyle;
+        private System.Windows.Forms.RadioButton radLayoutStyleUseBinning;
+        private Smrf.AppLib.ComboBoxPlus cbxBoxLayoutAlgorithm;
+        private System.Windows.Forms.Label label8;
     }
 }

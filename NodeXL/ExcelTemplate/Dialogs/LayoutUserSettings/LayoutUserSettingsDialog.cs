@@ -63,6 +63,9 @@ public partial class LayoutUserSettingsDialog : ExcelTemplateForm
         m_oLayoutUserSettingsDialogUserSettings =
             new LayoutUserSettingsDialogUserSettings(this);
 
+        cbxBoxLayoutAlgorithm.PopulateWithEnumValues(
+            typeof(BoxLayoutAlgorithm), true);
+
         cbxIntergroupEdgeStyle.PopulateWithEnumValues(
             typeof(IntergroupEdgeStyle), true);
 
@@ -143,8 +146,8 @@ public partial class LayoutUserSettingsDialog : ExcelTemplateForm
             {
                 Int32 iGroupRectanglePenWidth;
 
-                if ( !ValidateNumericUpDown(nudGroupRectanglePenWidth,
-                        "a box outline width", out iGroupRectanglePenWidth) )
+                if (!ValidateNumericUpDown(nudGroupRectanglePenWidth,
+                        "a box outline width", out iGroupRectanglePenWidth))
                 {
                     return (false);
                 }
@@ -153,6 +156,10 @@ public partial class LayoutUserSettingsDialog : ExcelTemplateForm
 
                 m_oLayoutUserSettings.GroupRectanglePenWidth =
                     (Double)nudGroupRectanglePenWidth.Value;
+
+                m_oLayoutUserSettings.BoxLayoutAlgorithm =
+                    (BoxLayoutAlgorithm)
+                    cbxBoxLayoutAlgorithm.SelectedValue;
 
                 m_oLayoutUserSettings.IntergroupEdgeStyle =
                     (IntergroupEdgeStyle)
@@ -218,7 +225,10 @@ public partial class LayoutUserSettingsDialog : ExcelTemplateForm
             }
 
             nudGroupRectanglePenWidth.Value =
-                (Decimal)m_oLayoutUserSettings.GroupRectanglePenWidth;
+                       (Decimal)m_oLayoutUserSettings.GroupRectanglePenWidth;
+            
+            cbxBoxLayoutAlgorithm.SelectedValue =
+                m_oLayoutUserSettings.BoxLayoutAlgorithm;
 
             cbxIntergroupEdgeStyle.SelectedValue =
                 m_oLayoutUserSettings.IntergroupEdgeStyle;

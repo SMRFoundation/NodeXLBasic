@@ -79,6 +79,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MIConvexHullPlugin, Version=1.0.10.1021, Culture=neutral, PublicKeyToken=7d233ba7875a1b76, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>References\MIConvexHullPlugin.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.GLEE, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7f84f738e1fc245c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>References\Microsoft.GLEE.dll</HintPath>
@@ -113,7 +117,6 @@
     <Compile Include="Interfaces\ILayout.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="LayoutsBase.cs" />
     <Compile Include="Layouts\CircleLayout.cs" />
     <Compile Include="Layouts\FruchtermanReingold\FruchtermanReingoldLayout.cs" />
     <Compile Include="Layouts\FruchtermanReingold\FruchtermanReingoldVertexInfo.cs" />
@@ -122,6 +125,7 @@
     <Compile Include="Layouts\HarelKoren\HarelKorenFastMultiscaleLayoutInternal.cs" />
     <Compile Include="Layouts\LayoutBase.cs" />
     <Compile Include="Layouts\LayOutGraphAsyncArguments.cs" />
+    <Compile Include="LayoutsBase.cs" />
     <Compile Include="Layouts\NullLayout.cs" />
     <Compile Include="Layouts\Polar\PolarAbsoluteLayout.cs" />
     <Compile Include="Layouts\Polar\PolarLayout.cs" />
@@ -131,8 +135,11 @@
     <Compile Include="Layouts\SortableLayoutBase.cs" />
     <Compile Include="Layouts\SpiralLayout.cs" />
     <Compile Include="Layouts\SugiyamaLayout.cs" />
+    <Compile Include="Util\BoxLayoutAlgorithm.cs" />
     <Compile Include="Util\EdgeBundler.cs" />
     <Compile Include="Util\GraphBinner.cs" />
+    <Compile Include="Util\Groups\PackedGroupRectangleCalculator.cs" />
+    <Compile Include="Util\Groups\FreeSpaceBox.cs" />
     <Compile Include="Util\Groups\GroupLayoutDrawingInfo.cs" />
     <Compile Include="Util\Groups\GroupMetadataManager.cs" />
     <Compile Include="Util\Groups\GroupRectangleCalculator.cs" />
@@ -145,6 +152,10 @@
     <Compile Include="Util\VertexGridSnapper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Adapters\Adapters.csproj">
+      <Project>{49BF210B-2FB1-4955-9553-B4C9DB275352}</Project>
+      <Name>Adapters</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Algorithms\Algorithms.csproj">
       <Project>{1E286552-2364-419B-B8A0-D21B860BC60F}</Project>
       <Name>Algorithms</Name>

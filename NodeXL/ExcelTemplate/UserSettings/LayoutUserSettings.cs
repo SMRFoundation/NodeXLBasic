@@ -139,6 +139,40 @@ public class LayoutUserSettings : NodeXLApplicationSettingsBase
     }
 
     //*************************************************************************
+    //  Property: BoxLayoutAlgorithm
+    //
+    /// <summary>
+    /// Gets or sets the box layout algorithm to use when laying out groups in the graph.
+    /// </summary>
+    ///
+    /// <value>
+    /// The box layout algorithm to use when laying out the graph.  The default value is
+    /// <see cref="Smrf.NodeXL.Layouts.BoxLayoutAlgorithm.Treemap" />.
+    /// </value>
+    //*************************************************************************
+
+    [UserScopedSettingAttribute()]
+    [DefaultSettingValueAttribute("Treemap")]
+
+    public BoxLayoutAlgorithm
+    BoxLayoutAlgorithm
+    {
+        get
+        {
+            AssertValid();
+
+            return ((BoxLayoutAlgorithm)this[BoxLayoutAlgorithmKey]);
+        }
+
+        set
+        {
+            this[BoxLayoutAlgorithmKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Property: GroupRectanglePenWidth
     //
     /// <summary>
@@ -409,6 +443,7 @@ public class LayoutUserSettings : NodeXLApplicationSettingsBase
 
         layout.Margin = this.Margin;
         layout.LayoutStyle = this.LayoutStyle;
+        layout.BoxLayoutAlgorithm = this.BoxLayoutAlgorithm;
         layout.GroupRectanglePenWidth = this.GroupRectanglePenWidth;
         layout.IntergroupEdgeStyle = this.IntergroupEdgeStyle;
         layout.ImproveLayoutOfGroups = this.ImproveLayoutOfGroups;
@@ -462,6 +497,10 @@ public class LayoutUserSettings : NodeXLApplicationSettingsBase
     /// Name of the settings key for the LayoutStyle property.
 
     protected const String LayoutStyleKey = "LayoutStyle";
+
+    /// Name of the settings key for the BoxLayoutAlgorithm property.
+
+    protected const String BoxLayoutAlgorithmKey = "BoxLayoutAlgorithm";
 
     /// Name of the settings key for the GroupRectanglePenWidth property.
 

@@ -573,8 +573,10 @@ public class MotifCalculator : GraphMetricCalculatorBase
                 // Potential motif is larger in total size, so we favor it
                 // -- OR --
                 // Potential motif is equal in total size and has more spanners, which we favor over more anchors
-                if (potTotal > existTotal || 
-                    (potTotal == existTotal && potSpanners > existSpanners))
+                if (potSpanners > existSpanners || 
+                    (
+                    potSpanners == existSpanners &&
+                    potTotal > existTotal))
                 {
                     
                     // Remove the existing motif from the list of motifs and the dictionary entries for its vertices
