@@ -1517,26 +1517,26 @@ public abstract class LayoutBase : LayoutsBase, ILayout
 
         if (iVerticesToLayOut == oGraph.Vertices.Count)
         {
-            if ( m_eLayoutStyle == LayoutStyle.UseGroups &&
-                GroupUtil.GraphHasGroups(oGraph) )
+            if (m_eLayoutStyle == LayoutStyle.UseGroups &&
+                GroupUtil.GraphHasGroups(oGraph))
             {
-				List<GroupInfo> groupsToLayOut = GetGroupsToLayOut(oGraph);
+                List<GroupInfo> groupsToLayOut = GetGroupsToLayOut(oGraph);
 
                 // Pick the treemap layout if we only have one group. We could change this to <= 2 groups, but
                 // that can cause tiny slivers for very small groups
                 if (m_eBoxLayoutAlgorithm == BoxLayoutAlgorithm.Treemap || groupsToLayOut.Count <= 1)
                 {
                     if (!LayOutGraphUsingGroups(oGraph, groupsToLayOut, oAdjustedLayoutContext,
-                    oBackgroundWorker) )
-                {
-                    // LayOutGraphAsyncCancel() was called.
+                    oBackgroundWorker))
+                    {
+                        // LayOutGraphAsyncCancel() was called.
 
-                    oDoWorkEventArgs.Cancel = true;
+                        oDoWorkEventArgs.Cancel = true;
+                    }
+
+                    oVerticesToLayOut = new IVertex[0];
                 }
-
-                oVerticesToLayOut = new IVertex[0];
-            }
- 			else if (m_eBoxLayoutAlgorithm == BoxLayoutAlgorithm.PackedRectangles)
+                else if (m_eBoxLayoutAlgorithm == BoxLayoutAlgorithm.PackedRectangles)
                 {
                     if (!LayOutGraphUsingPackedRectangles(oGraph, groupsToLayOut, oAdjustedLayoutContext,
                         oBackgroundWorker))
@@ -1563,9 +1563,9 @@ public abstract class LayoutBase : LayoutsBase, ILayout
                 {
                     throw new NotImplementedException("There is no group-in-a-box layout algorithm defined for '" + m_eBoxLayoutAlgorithm + "'");
                 }
-			}
-            else if ( (m_eLayoutStyle == LayoutStyle.UseBinning) &&
-                this.SupportsBinning )
+            }
+            else if ((m_eLayoutStyle == LayoutStyle.UseBinning) &&
+                this.SupportsBinning)
             {
                 // Lay out the graph's smaller components in bins.
 
@@ -1576,9 +1576,9 @@ public abstract class LayoutBase : LayoutsBase, ILayout
                 ICollection<IVertex> oRemainingVertices;
                 Rectangle oRemainingRectangle;
 
-                if ( oGraphBinner.LayOutSmallerComponentsInBins(oGraph,
+                if (oGraphBinner.LayOutSmallerComponentsInBins(oGraph,
                     oVerticesToLayOut, oAdjustedLayoutContext,
-                    out oRemainingVertices, out oRemainingRectangle) )
+                    out oRemainingVertices, out oRemainingRectangle))
                 {
                     // The remaining vertices need to be laid out in the
                     // remaining rectangle.
@@ -1602,8 +1602,8 @@ public abstract class LayoutBase : LayoutsBase, ILayout
         {
             // Let the derived class do the work.
 
-            if ( !LayOutGraphCore(oGraph, oVerticesToLayOut,
-                oAdjustedLayoutContext, oBackgroundWorker) )
+            if (!LayOutGraphCore(oGraph, oVerticesToLayOut,
+                oAdjustedLayoutContext, oBackgroundWorker))
             {
                 // LayOutGraphAsyncCancel() was called.
 
