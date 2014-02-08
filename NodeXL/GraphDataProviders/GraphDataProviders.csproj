@@ -24,7 +24,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;DoNotAddExtraEdges</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\Smrf.NodeXL.GraphDataProviders.xml</DocumentationFile>
@@ -34,7 +34,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;DoNotAddExtraEdges</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -243,7 +243,6 @@
     <Compile Include="NetworkAnalyzers\HttpNetworkAnalyzerBase.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\Authorization\TwitterAccessToken.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\Authorization\TwitterAuthorizationStatus.cs" />
-    <Compile Include="NetworkAnalyzers\Twitter\SharedTermEdgeAppender.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TweetDateRangeAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TwitterListNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TwitterNetworkAnalyzerBase.cs" />

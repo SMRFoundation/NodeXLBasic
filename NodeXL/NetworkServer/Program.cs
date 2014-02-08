@@ -285,15 +285,14 @@ class Program
             TwitterSearchNetworkAnalyzer.WhatToInclude.None;
 
         Int32 iMaximumTweets = Int32.MinValue;
-        Int32 iSharedWordUserThreshold = Int32.MinValue;
 
         try
         {
             oNetworkConfigurationFileParser.
                 GetTwitterSearchNetworkConfiguration(out sSearchTerm,
                 out eWhatToInclude, out iMaximumTweets,
-                out iSharedWordUserThreshold, out sNetworkFileFolderPath,
-                out eNetworkFileFormats, out sNodeXLWorkbookSettingsFilePath,
+                out sNetworkFileFolderPath, out eNetworkFileFormats,
+                out sNodeXLWorkbookSettingsFilePath,
                 out bAutomateNodeXLWorkbook);
         }
         catch (XmlException oXmlException)
@@ -321,8 +320,7 @@ class Program
         try
         {
             oXmlDocument = oTwitterSearchNetworkAnalyzer.GetNetwork(
-                sSearchTerm, eWhatToInclude, iMaximumTweets,
-                iSharedWordUserThreshold);
+                sSearchTerm, eWhatToInclude, iMaximumTweets);
         }
         catch (PartialNetworkException oPartialNetworkException)
         {

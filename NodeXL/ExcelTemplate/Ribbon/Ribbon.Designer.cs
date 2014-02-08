@@ -167,7 +167,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnRegisterUser = this.Factory.CreateRibbonButton();
             this.btnDonate = this.Factory.CreateRibbonButton();
             this.separator2 = this.Factory.CreateRibbonSeparator();
-            this.btnCheckForUpdate = this.Factory.CreateRibbonButton();
             this.btnOpenSampleNodeXLWorkbook = this.Factory.CreateRibbonButton();
             this.btnAbout = this.Factory.CreateRibbonButton();
             this.btnCreateNodeXLWorkbook = this.Factory.CreateRibbonButton();
@@ -1542,7 +1541,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.mnuOnline.Items.Add(this.btnRegisterUser);
             this.mnuOnline.Items.Add(this.btnDonate);
             this.mnuOnline.Items.Add(this.separator2);
-            this.mnuOnline.Items.Add(this.btnCheckForUpdate);
             this.mnuOnline.Label = "Online";
             this.mnuOnline.Name = "mnuOnline";
             this.mnuOnline.OfficeImageId = "ViewOnlineConnection";
@@ -1612,15 +1610,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             // 
             this.separator2.Name = "separator2";
             // 
-            // btnCheckForUpdate
-            // 
-            this.btnCheckForUpdate.Label = "Check for Updates";
-            this.btnCheckForUpdate.Name = "btnCheckForUpdate";
-            this.btnCheckForUpdate.OfficeImageId = "FileStartWorkflow";
-            this.btnCheckForUpdate.ScreenTip = "Check for Updates ";
-            this.btnCheckForUpdate.ShowImage = true;
-            this.btnCheckForUpdate.SuperTip = "Check for a newer version of NodeXL.";
-            this.btnCheckForUpdate.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnCheckForUpdate_Click);
             // 
             // btnOpenSampleNodeXLWorkbook
             // 
@@ -1706,7 +1695,6 @@ namespace Smrf.NodeXL.ExcelTemplate
         internal Microsoft.Office.Tools.Ribbon.RibbonGroup grpGraph;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnGroupByCluster;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportFromPajekFile;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnCheckForUpdate;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnOpenHomePage;
         internal Microsoft.Office.Tools.Ribbon.RibbonMenu mnuImport;
         internal Microsoft.Office.Tools.Ribbon.RibbonMenu mnuExport;

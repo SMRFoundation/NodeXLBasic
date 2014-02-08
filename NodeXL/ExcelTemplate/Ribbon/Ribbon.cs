@@ -1403,34 +1403,6 @@ public partial class Ribbon : RibbonBase
     }
 
     //*************************************************************************
-    //  Method: btnCheckForUpdate_Click()
-    //
-    /// <summary>
-    /// Handles the Click event on the btnCheckForUpdate button.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    btnCheckForUpdate_Click
-    (
-        object sender,
-        RibbonControlEventArgs e
-    )
-    {
-        AssertValid();
-
-        ApplicationUtil.CheckForUpdate();
-    }
-
-    //*************************************************************************
     //  Method: btnOpenSampleNodeXLWorkbook_Click()
     //
     /// <summary>

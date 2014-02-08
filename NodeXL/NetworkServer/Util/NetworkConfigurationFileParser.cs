@@ -168,10 +168,6 @@ public class NetworkConfigurationFileParser : Object
     /// Where the maximum number of statuses to request gets stored.
     /// </param>
     ///
-    /// <param name="sharedWordUserThreshold">
-    /// Where the shared word user threshold gets stored.
-    /// </param>
-    ///
     /// <param name="networkFileFolderPath">
     /// Where the full path to the folder where the network files should be
     /// written gets stored.
@@ -199,7 +195,6 @@ public class NetworkConfigurationFileParser : Object
         out String searchTerm,
         out TwitterSearchNetworkAnalyzer.WhatToInclude whatToInclude,
         out Int32 maximumStatuses,
-        out Int32 sharedWordUserThreshold,
         out String networkFileFolderPath,
         out NetworkFileFormats networkFileFormats,
         out String nodeXLWorkbookSettingsFilePath,
@@ -241,17 +236,6 @@ public class NetworkConfigurationFileParser : Object
                     + " NodeXL.)"
                 );
             }
-        }
-
-        if ( !XmlUtil2.TrySelectSingleNodeAsInt32(
-            oTwitterSearchNetworkConfigurationNode,
-            "SharedWordUserThreshold/text()", null,
-            out sharedWordUserThreshold) )
-        {
-            // The optional SharedWordUserThreshold is missing.  Use a default
-            // value.
-
-            sharedWordUserThreshold = DefaultSharedWordUserThreshold;
         }
 
         whatToInclude =
@@ -717,15 +701,6 @@ public class NetworkConfigurationFileParser : Object
     {
         // m_oNetworkConfigurationXmlDocument
     }
-
-
-    //*************************************************************************
-    //  Protected constants
-    //*************************************************************************
-
-    /// Default value to use for the shared word user threshold.
-
-    protected const Int32 DefaultSharedWordUserThreshold = 1000;
 
 
     //*************************************************************************

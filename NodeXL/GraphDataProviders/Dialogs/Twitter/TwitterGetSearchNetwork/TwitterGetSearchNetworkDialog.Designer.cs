@@ -33,9 +33,6 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.pnlUserInputs = new System.Windows.Forms.Panel();
-            this.pnlSharedWordUserThreshold = new System.Windows.Forms.Panel();
-            this.nudSharedWordUserThreshold = new System.Windows.Forms.NumericUpDown();
-            this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.nudMaximumStatuses = new System.Windows.Forms.NumericUpDown();
@@ -52,8 +49,6 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.slStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.usrTwitterRateLimits = new Smrf.NodeXL.GraphDataProviders.Twitter.TwitterRateLimitsControl();
             this.pnlUserInputs.SuspendLayout();
-            this.pnlSharedWordUserThreshold.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudSharedWordUserThreshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaximumStatuses)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -80,7 +75,6 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // 
             // pnlUserInputs
             // 
-            this.pnlUserInputs.Controls.Add(this.pnlSharedWordUserThreshold);
             this.pnlUserInputs.Controls.Add(this.label4);
             this.pnlUserInputs.Controls.Add(this.label3);
             this.pnlUserInputs.Controls.Add(this.nudMaximumStatuses);
@@ -97,51 +91,6 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.pnlUserInputs.Name = "pnlUserInputs";
             this.pnlUserInputs.Size = new System.Drawing.Size(357, 480);
             this.pnlUserInputs.TabIndex = 0;
-            // 
-            // pnlSharedWordUserThreshold
-            // 
-            this.pnlSharedWordUserThreshold.Controls.Add(this.nudSharedWordUserThreshold);
-            this.pnlSharedWordUserThreshold.Controls.Add(this.label5);
-            this.pnlSharedWordUserThreshold.Location = new System.Drawing.Point(156, 188);
-            this.pnlSharedWordUserThreshold.Name = "pnlSharedWordUserThreshold";
-            this.pnlSharedWordUserThreshold.Size = new System.Drawing.Size(188, 38);
-            this.pnlSharedWordUserThreshold.TabIndex = 8;
-            // 
-            // nudSharedWordUserThreshold
-            // 
-            this.nudSharedWordUserThreshold.Increment = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.nudSharedWordUserThreshold.Location = new System.Drawing.Point(102, 11);
-            this.nudSharedWordUserThreshold.Maximum = new decimal(new int[] {
-            9999,
-            0,
-            0,
-            0});
-            this.nudSharedWordUserThreshold.Minimum = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-            this.nudSharedWordUserThreshold.Name = "nudSharedWordUserThreshold";
-            this.nudSharedWordUserThreshold.Size = new System.Drawing.Size(58, 20);
-            this.nudSharedWordUserThreshold.TabIndex = 1;
-            this.nudSharedWordUserThreshold.ThousandsSeparator = true;
-            this.nudSharedWordUserThreshold.Value = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
-            // 
-            // label5
-            // 
-            this.label5.Location = new System.Drawing.Point(3, 6);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(97, 31);
-            this.label5.TabIndex = 0;
-            this.label5.Text = "&Shared word\r\ntweeter threshold:";
             // 
             // label4
             // 
@@ -245,7 +194,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.linkLabel1.TabIndex = 2;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Tag = "http://support.twitter.com/groups/31-twitter-basics/topics/110-search/articles/71" +
-                "577-how-to-use-advanced-twitter-search";
+    "577-how-to-use-advanced-twitter-search";
             this.linkLabel1.Text = "Advanced search help";
             // 
             // chkIncludeStatistics
@@ -273,7 +222,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.label1.Size = new System.Drawing.Size(350, 26);
             this.label1.TabIndex = 0;
             this.label1.Text = "Add a verte&x for each person who tweeted this search term, or who was replied to" +
-                " or mentioned in those tweets:";
+    " or mentioned in those tweets:";
             // 
             // statusStrip1
             // 
@@ -319,8 +268,6 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.Text = "[Gets set in code]";
             this.pnlUserInputs.ResumeLayout(false);
             this.pnlUserInputs.PerformLayout();
-            this.pnlSharedWordUserThreshold.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.nudSharedWordUserThreshold)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaximumStatuses)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
@@ -349,8 +296,5 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
         private System.Windows.Forms.NumericUpDown nudMaximumStatuses;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Panel pnlSharedWordUserThreshold;
-        private System.Windows.Forms.NumericUpDown nudSharedWordUserThreshold;
-        private System.Windows.Forms.Label label5;
     }
 }

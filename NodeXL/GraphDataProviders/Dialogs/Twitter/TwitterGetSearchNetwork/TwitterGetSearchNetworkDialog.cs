@@ -46,26 +46,7 @@ public partial class TwitterGetSearchNetworkDialog :
         // m_bIncludeMentionsEdges
         // m_bIncludeNonRepliesToNonMentionsEdges
 
-        #if AddExtraEdges
-
-        // m_bIncludeSharedHashtagEdges
-        // m_bIncludeSharedUrlEdges
-        // m_bIncludeSharedWordEdges
-        // m_bIncludeSharedWordPairEdges
-
-        // In version 1.0.1.243, thresholds are temporarily set to hard-coded,
-        // experimental values.  See SharedTermEdgeAppender.cs.
-
-        label5.Text = "Not used in this version:";
-
-        #else
-
-        pnlSharedWordUserThreshold.Visible = false;
-
-        #endif
-
         // m_iMaximumStatuses
-        // m_iSharedWordUserThreshold
         // m_bIncludeStatuses
         // m_bExpandStatusUrls
         // m_bIncludeStatistics
@@ -174,25 +155,7 @@ public partial class TwitterGetSearchNetworkDialog :
 
             m_bIncludeFollowedEdges = clbWhatEdgesToInclude.GetItemChecked(3);
 
-            #if AddExtraEdges
-
-            m_bIncludeSharedHashtagEdges =
-                clbWhatEdgesToInclude.GetItemChecked(4);
-
-            m_bIncludeSharedUrlEdges = clbWhatEdgesToInclude.GetItemChecked(5);
-
-            m_bIncludeSharedWordEdges =
-                clbWhatEdgesToInclude.GetItemChecked(6);
-
-            m_bIncludeSharedWordPairEdges =
-                clbWhatEdgesToInclude.GetItemChecked(7);
-
-            #endif
-
             m_iMaximumStatuses = (Int32)nudMaximumStatuses.Value;
-
-            m_iSharedWordUserThreshold =
-                (Int32)nudSharedWordUserThreshold.Value;
 
             m_bIncludeStatuses = chkIncludeStatuses.Checked;
             m_bExpandStatusUrls = chkExpandStatusUrls.Checked;
@@ -210,21 +173,7 @@ public partial class TwitterGetSearchNetworkDialog :
 
             clbWhatEdgesToInclude.SetItemChecked(3, m_bIncludeFollowedEdges);
 
-            #if AddExtraEdges
-
-            clbWhatEdgesToInclude.SetItemChecked(4,
-                m_bIncludeSharedHashtagEdges);
-
-            clbWhatEdgesToInclude.SetItemChecked(5, m_bIncludeSharedUrlEdges);
-            clbWhatEdgesToInclude.SetItemChecked(6, m_bIncludeSharedWordEdges);
-
-            clbWhatEdgesToInclude.SetItemChecked(7,
-                m_bIncludeSharedWordPairEdges);
-
-            #endif
-
             nudMaximumStatuses.Value = m_iMaximumStatuses;
-            nudSharedWordUserThreshold.Value = m_iSharedWordUserThreshold;
             chkIncludeStatuses.Checked = m_bIncludeStatuses;
             chkExpandStatusUrls.Checked = m_bExpandStatusUrls;
             chkIncludeStatistics.Checked = m_bIncludeStatistics;
@@ -280,30 +229,10 @@ public partial class TwitterGetSearchNetworkDialog :
             (m_bIncludeNonRepliesToNonMentionsEdges ?
                 TwitterSearchNetworkAnalyzer.
                 WhatToInclude.NonRepliesToNonMentionsEdges : 0)
-
-            #if AddExtraEdges
-
-            |
-            (m_bIncludeSharedHashtagEdges ?
-                TwitterSearchNetworkAnalyzer.
-                WhatToInclude.SharedHashtagEdges : 0)
-            |
-            (m_bIncludeSharedUrlEdges ?
-                TwitterSearchNetworkAnalyzer.WhatToInclude.SharedUrlEdges : 0)
-            |
-            (m_bIncludeSharedWordEdges ?
-                TwitterSearchNetworkAnalyzer.WhatToInclude.SharedWordEdges : 0)
-            |
-            (m_bIncludeSharedWordPairEdges ?
-                TwitterSearchNetworkAnalyzer.
-                WhatToInclude.SharedWordPairEdges : 0)
-
-            #endif
             ;
 
         ( (TwitterSearchNetworkAnalyzer)m_oHttpNetworkAnalyzer ).
-            GetNetworkAsync(m_sSearchTerm, eWhatToInclude, m_iMaximumStatuses,
-            m_iSharedWordUserThreshold);
+            GetNetworkAsync(m_sSearchTerm, eWhatToInclude, m_iMaximumStatuses);
     }
 
     //*************************************************************************
@@ -423,18 +352,8 @@ public partial class TwitterGetSearchNetworkDialog :
         // m_bIncludeMentionsEdges
         // m_bIncludeNonRepliesToNonMentionsEdges
 
-        #if AddExtraEdges
-
-        // m_bIncludeSharedHashtagEdges
-        // m_bIncludeSharedUrlEdges
-        // m_bIncludeSharedWordEdges
-        // m_bIncludeSharedWordPairEdges
-
-        #endif
-
         Debug.Assert(m_iMaximumStatuses > 0);
         Debug.Assert(m_iMaximumStatuses != Int32.MaxValue);
-        Debug.Assert(m_iSharedWordUserThreshold >= 2);
         // m_bIncludeStatuses
         // m_bExpandStatusUrls
         // m_bIncludeStatistics
@@ -473,38 +392,9 @@ public partial class TwitterGetSearchNetworkDialog :
 
     protected static Boolean m_bIncludeNonRepliesToNonMentionsEdges = true;
 
-    #if AddExtraEdges
-
-    /// Include an edge from person A to person B if both people have tweeted
-    /// the same hashtag.
-
-    protected static Boolean m_bIncludeSharedHashtagEdges = false;
-
-    /// Include an edge from person A to person B if both people have tweeted
-    /// the same URL.
-
-    protected static Boolean m_bIncludeSharedUrlEdges = false;
-
-    /// Include an edge from person A to person B if both people have tweeted
-    /// the same word.
-
-    protected static Boolean m_bIncludeSharedWordEdges = false;
-
-    /// Include an edge from person A to person B if both people have tweeted
-    /// the same word pair.
-
-    protected static Boolean m_bIncludeSharedWordPairEdges = false;
-
-    #endif
-
     /// Maximum number of tweets to request.
 
     protected static Int32 m_iMaximumStatuses = 100;
-
-    /// Edge XML nodes are appended for a word only if at least this many users
-    /// have tweeted the word.
-
-    protected static Int32 m_iSharedWordUserThreshold = 1000;
 
     /// true to include each status.
 
@@ -628,30 +518,6 @@ WhatEdgeToIncludeInformation
                 TwitterSearchNetworkAnalyzer.WhatToInclude.FollowedEdges,
                 "Follows relationship (very slow!)"
                 ),
-
-            #if AddExtraEdges
-
-            new WhatEdgeToIncludeInformation(
-                TwitterSearchNetworkAnalyzer.WhatToInclude.SharedHashtagEdges,
-                "Shared hashtag relationship in tweets"
-                ),
-
-            new WhatEdgeToIncludeInformation(
-                TwitterSearchNetworkAnalyzer.WhatToInclude.SharedUrlEdges,
-                "Shared URL relationship in tweets"
-                ),
-
-            new WhatEdgeToIncludeInformation(
-                TwitterSearchNetworkAnalyzer.WhatToInclude.SharedWordEdges,
-                "Shared word relationship in tweets"
-                ),
-
-            new WhatEdgeToIncludeInformation(
-                TwitterSearchNetworkAnalyzer.WhatToInclude.SharedWordPairEdges,
-                "Shared word pair relationship in tweets"
-                ),
-
-            #endif
             } );
     }
 

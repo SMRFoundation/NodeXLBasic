@@ -116,38 +116,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         /// </summary>
 
         NonRepliesToNonMentionsEdges = 64,
-
-        #if AddExtraEdges
-
-        /// <summary>
-        /// Include an edge from person A to person B if both people have
-        /// tweeted the same hashtag.
-        /// </summary>
-
-        SharedHashtagEdges = 128,
-
-        /// <summary>
-        /// Include an edge from person A to person B if both people have
-        /// tweeted the same URL.
-        /// </summary>
-
-        SharedUrlEdges = 256,
-
-        /// <summary>
-        /// Include an edge from person A to person B if both people have
-        /// tweeted the same word.
-        /// </summary>
-
-        SharedWordEdges = 512,
-
-        /// <summary>
-        /// Include an edge from person A to person B if both people have
-        /// tweeted the same word pair.
-        /// </summary>
-
-        SharedWordPairEdges = 1024,
-
-        #endif
     }
 
     //*************************************************************************
@@ -170,12 +138,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// Maximum number of tweets to request.  Can't be Int32.MaxValue.
     /// </param>
     ///
-    /// <param name="sharedWordUserThreshold">
-    /// Edge XML nodes are appended for a word only if at least this many users
-    /// have tweeted the word.  Must be at least 2.  Used only if <paramref
-    /// name="whatToInclude" /> includes SharedWordEdges.
-    /// </param>
-    ///
     /// <remarks>
     /// When the analysis completes, the <see
     /// cref="HttpNetworkAnalyzerBase.AnalysisCompleted" /> event fires.  The
@@ -195,14 +157,12 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     (
         String searchTerm,
         WhatToInclude whatToInclude,
-        Int32 maximumStatuses,
-        Int32 sharedWordUserThreshold
+        Int32 maximumStatuses
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(searchTerm) );
         Debug.Assert(maximumStatuses > 0);
         Debug.Assert(maximumStatuses != Int32.MaxValue);
-        Debug.Assert(sharedWordUserThreshold >= 2);
         AssertValid();
 
         const String MethodName = "GetNetworkAsync";
@@ -216,7 +176,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         oGetNetworkAsyncArgs.SearchTerm = searchTerm;
         oGetNetworkAsyncArgs.WhatToInclude = whatToInclude;
         oGetNetworkAsyncArgs.MaximumStatuses = maximumStatuses;
-        oGetNetworkAsyncArgs.SharedWordUserThreshold = sharedWordUserThreshold;
 
         m_oBackgroundWorker.RunWorkerAsync(oGetNetworkAsyncArgs);
     }
@@ -241,12 +200,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// Maximum number of tweets to request.  Can't be Int32.MaxValue.
     /// </param>
     ///
-    /// <param name="sharedWordUserThreshold">
-    /// Edge XML nodes are appended for a word only if at least this many users
-    /// have tweeted the word.  Must be at least 2.  Used only if <paramref
-    /// name="whatToInclude" /> includes SharedWordEdges.
-    /// </param>
-    ///
     /// <returns>
     /// An XmlDocument containing the network as GraphML.
     /// </returns>
@@ -257,18 +210,16 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     (
         String searchTerm,
         WhatToInclude whatToInclude,
-        Int32 maximumStatuses,
-        Int32 sharedWordUserThreshold
+        Int32 maximumStatuses
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(searchTerm) );
         Debug.Assert(maximumStatuses > 0);
         Debug.Assert(maximumStatuses != Int32.MaxValue);
-        Debug.Assert(sharedWordUserThreshold >= 2);
         AssertValid();
 
         return ( GetNetworkInternal(searchTerm, whatToInclude,
-            maximumStatuses, sharedWordUserThreshold) );
+            maximumStatuses) );
     }
 
     //*************************************************************************
@@ -294,11 +245,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// Maximum number of tweets to request.  Can't be Int32.MaxValue.
     /// </param>
     ///
-    /// <param name="iSharedWordUserThreshold">
-    /// Edge XML nodes are appended for a word only if at least this many users
-    /// have tweeted the word.
-    /// </param>
-    ///
     /// <returns>
     /// An XmlDocument containing the network as GraphML.
     /// </returns>
@@ -309,14 +255,12 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     (
         String sSearchTerm,
         WhatToInclude eWhatToInclude,
-        Int32 iMaximumStatuses,
-        Int32 iSharedWordUserThreshold
+        Int32 iMaximumStatuses
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
         Debug.Assert(iMaximumStatuses > 0);
         Debug.Assert(iMaximumStatuses != Int32.MaxValue);
-        Debug.Assert(iSharedWordUserThreshold >= 2);
         AssertValid();
 
         BeforeGetNetwork();
@@ -331,16 +275,12 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             TwitterSearchNetworkGraphMLUtil.CreateGraphMLXmlDocument(
                 bIncludeStatistics, bIncludeStatuses);
 
-        DefineSharedTermEdgeGraphMLAttributes(eWhatToInclude,
-            oGraphMLXmlDocument);
-
         RequestStatistics oRequestStatistics = new RequestStatistics();
 
         try
         {
             GetNetworkInternal(sSearchTerm, eWhatToInclude, iMaximumStatuses,
-                iSharedWordUserThreshold, oRequestStatistics,
-                oGraphMLXmlDocument);
+                oRequestStatistics, oGraphMLXmlDocument);
         }
         catch (Exception oException)
         {
@@ -351,8 +291,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         OnNetworkObtained(oGraphMLXmlDocument, oRequestStatistics, 
 
             GetNetworkDescription(sSearchTerm, eWhatToInclude,
-                iMaximumStatuses, iSharedWordUserThreshold,
-                oGraphMLXmlDocument),
+                iMaximumStatuses, oGraphMLXmlDocument),
 
             "Twitter Search " + sSearchTerm
             );
@@ -379,11 +318,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// Maximum number of tweets to request.  Can't be Int32.MaxValue.
     /// </param>
     ///
-    /// <param name="iSharedWordUserThreshold">
-    /// Edge XML nodes are appended for a word only if at least this many users
-    /// have tweeted the word.
-    /// </param>
-    ///
     /// <param name="oRequestStatistics">
     /// A <see cref="RequestStatistics" /> object that is keeping track of
     /// requests made while getting the network.
@@ -400,7 +334,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         String sSearchTerm,
         WhatToInclude eWhatToInclude,
         Int32 iMaximumStatuses,
-        Int32 iSharedWordUserThreshold,
         RequestStatistics oRequestStatistics,
         GraphMLXmlDocument oGraphMLXmlDocument
     )
@@ -408,7 +341,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
         Debug.Assert(iMaximumStatuses > 0);
         Debug.Assert(iMaximumStatuses != Int32.MaxValue);
-        Debug.Assert(iSharedWordUserThreshold >= 2);
         Debug.Assert(oRequestStatistics != null);
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
@@ -465,68 +397,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             WhatToIncludeFlagIsSet(eWhatToInclude,
                 WhatToInclude.Statuses)
             );
-
-        AppendSharedTermEdges(sSearchTerm, oUserIDDictionary, eWhatToInclude,
-            oGraphMLXmlDocument);
-    }
-
-    //*************************************************************************
-    //  Method: DefineSharedTermEdgeGraphMLAttributes()
-    //
-    /// <summary>
-    /// Defines GraphML-Attributes for the network's shared term edges.
-    /// </summary>
-    ///
-    /// <param name="eWhatToInclude">
-    /// Specifies what should be included in the network.
-    /// </param>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// The GraphMLXmlDocument to populate with the requested network.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    DefineSharedTermEdgeGraphMLAttributes
-    (
-        WhatToInclude eWhatToInclude,
-        GraphMLXmlDocument oGraphMLXmlDocument
-    )
-    {
-        Debug.Assert(oGraphMLXmlDocument != null);
-        AssertValid();
-
-        #if AddExtraEdges
-
-        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.SharedHashtagEdges) )
-        {
-            oGraphMLXmlDocument.DefineEdgeStringGraphMLAttributes(
-                SharedHashtagID, "Shared Hashtag");
-        }
-
-        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.SharedUrlEdges) )
-        {
-            oGraphMLXmlDocument.DefineEdgeStringGraphMLAttributes(
-                SharedUrlID, "Shared URL");
-        }
-
-        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.SharedWordEdges) )
-        {
-            oGraphMLXmlDocument.DefineEdgeStringGraphMLAttributes(
-                SharedWordID, "Shared Word");
-        }
-
-        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.SharedWordPairEdges) )
-        {
-            oGraphMLXmlDocument.DefineEdgeStringGraphMLAttributes(
-                SharedWordPairID, "Shared Word Pairs");
-        }
-
-        #endif
     }
 
     //*************************************************************************
@@ -713,81 +583,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: AppendSharedTermEdges()
-    //
-    /// <summary>
-    /// Appends edge XML nodes for terms that were tweeted by pairs of Twitter
-    /// users.
-    /// </summary>
-    ///
-    /// <param name="sSearchTerm">
-    /// The term to search for.
-    /// </param>
-    ///
-    /// <param name="oUserIDDictionary">
-    /// The key is the Twitter user ID and the value is the corresponding
-    /// TwitterUser.
-    /// </param>
-    ///
-    /// <param name="eWhatToInclude">
-    /// Specifies what should be included in the network.
-    /// </param>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// The GraphMLXmlDocument to populate with the requested network.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    AppendSharedTermEdges
-    (
-        String sSearchTerm,
-        Dictionary<String, TwitterUser> oUserIDDictionary,
-        WhatToInclude eWhatToInclude,
-        GraphMLXmlDocument oGraphMLXmlDocument
-    )
-    {
-        Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
-        Debug.Assert(oUserIDDictionary != null);
-        Debug.Assert(oGraphMLXmlDocument != null);
-        AssertValid();
-
-        #if AddExtraEdges
-
-        ReportProgress("Examining shared relationships.");
-
-        SharedTermEdgeAppender oSharedTermEdgeAppender =
-            new SharedTermEdgeAppender(sSearchTerm, oGraphMLXmlDocument,
-                oUserIDDictionary.Values);
-
-        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.SharedHashtagEdges) )
-        {
-            oSharedTermEdgeAppender.AppendSharedHashtagEdges();
-        }
-
-        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.SharedUrlEdges) )
-        {
-            oSharedTermEdgeAppender.AppendSharedUrlEdges();
-        }
-
-        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.SharedWordEdges) )
-        {
-            oSharedTermEdgeAppender.AppendSharedWordEdges();
-        }
-
-        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.SharedWordPairEdges) )
-        {
-            oSharedTermEdgeAppender.AppendSharedWordPairEdges();
-        }
-
-        #endif
-    }
-
-    //*************************************************************************
     //  Method: WhatToIncludeFlagIsSet()
     //
     /// <summary>
@@ -838,11 +633,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// Maximum number of tweets to request.  Can't be Int32.MaxValue.
     /// </param>
     ///
-    /// <param name="iSharedWordUserThreshold">
-    /// Edge XML nodes are appended for a word only if at least this many users
-    /// have tweeted the word.
-    /// </param>
-    ///
     /// <param name="oGraphMLXmlDocument">
     /// The GraphMLXmlDocument that contains the network.
     /// </param>
@@ -858,14 +648,12 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         String sSearchTerm,
         WhatToInclude eWhatToInclude,
         Int32 iMaximumStatuses,
-        Int32 iSharedWordUserThreshold,
         GraphMLXmlDocument oGraphMLXmlDocument
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
         Debug.Assert(iMaximumStatuses > 0);
         Debug.Assert(iMaximumStatuses != Int32.MaxValue);
-        Debug.Assert(iSharedWordUserThreshold >= 2);
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
@@ -956,45 +744,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 );
         }
 
-        #if AddExtraEdges
-
-        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.SharedHashtagEdges) )
-        {
-            oNetworkDescriber.AddSentence(
-                "There is an edge for each shared hashtag relationship."
-                );
-        }
-
-        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.SharedUrlEdges) )
-        {
-            oNetworkDescriber.AddSentence(
-                "There is an edge for each shared URL relationship."
-                );
-        }
-
-        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.SharedWordEdges) )
-        {
-            oNetworkDescriber.AddSentence(
-                "There is an edge for each shared word relationship, provided"
-                + " that at least {0} users tweeted the word."
-                ,
-                iSharedWordUserThreshold
-                );
-        }
-
-        if ( WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.SharedWordPairEdges) )
-        {
-            oNetworkDescriber.AddSentence(
-                "There is an edge for each shared word pair relationship."
-                );
-        }
-
-        #endif
-
         return ( oNetworkDescriber.ConcatenateSentences() );
     }
 
@@ -1031,8 +780,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             e.Result = GetNetworkInternal(
                 oGetNetworkAsyncArgs.SearchTerm,
                 oGetNetworkAsyncArgs.WhatToInclude,
-                oGetNetworkAsyncArgs.MaximumStatuses,
-                oGetNetworkAsyncArgs.SharedWordUserThreshold
+                oGetNetworkAsyncArgs.MaximumStatuses
                 );
         }
         catch (CancellationPendingException)
@@ -1059,25 +807,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         // (Do nothing else.)
     }
-
-
-    //*************************************************************************
-    //  Public constants
-    //*************************************************************************
-
-
-    #if AddExtraEdges
-
-    ///
-    public const String SharedHashtagID = "SharedHashtag";
-    ///
-    public const String SharedUrlID = "SharedUrl";
-    ///
-    public const String SharedWordID = "SharedWord";
-    ///
-    public const String SharedWordPairID = "SharedWordPair";
-
-    #endif
 
 
     //*************************************************************************
@@ -1114,8 +843,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         public WhatToInclude WhatToInclude;
         ///
         public Int32 MaximumStatuses;
-        ///
-        public Int32 SharedWordUserThreshold;
     };
 }
 
