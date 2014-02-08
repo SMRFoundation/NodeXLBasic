@@ -1,7 +1,7 @@
 
 Overview
 --------
-NodeXL is an Excel 2007/2010 template for displaying and analyzing network
+NodeXL is an Excel 2007/2010/2013 template for displaying and analyzing network
 graphs, along with an API for incorporating graphs in other applications.  To
 build NodeXL, see .\HowToBuildNodeXL.txt.
 
@@ -51,8 +51,8 @@ NodeXL documentation.
 
 ExcelTemplate
 -------------
-VSTO-based Excel 2007/2010 template project that displays a graph within an
-Excel workbook.
+VSTO-based Excel 2007/2010/2013 template project that displays a graph within
+an Excel workbook.
 
 
 ExcelTemplatePlugIns
@@ -61,27 +61,10 @@ Class library project.  Contains interface definitions for plug-ins used by
 ExcelTemplate.
 
 
-ExcelTemplateRegisterUser
--------------------------
-Windows Forms project.  Registers a user of the ExcelTemplate from within
-ExcelTemplateSetup and ExcelTemplate.
-
-
-ExcelTemplateSetup
-------------------
-Deployment project.  Installs ExcelTemplate.
-
-
-ExcelTemplateSetupClickOnceInstaller
-------------------------------------
-Class library project.  Contains custom action class used by
-ExcelTemplateSetup.
-
-
-ExcelTemplateSetupTrustInstaller
---------------------------------
-Class library project.  Contains custom action class used by
-ExcelTemplateSetup.
+ExcelTemplatePostDeploymentAction
+---------------------------------
+Class library project.  Contains an action that gets run on the client computer
+right after the ExcelTemplate project is deployed.
 
 
 GraphDataProviders
@@ -146,4 +129,3 @@ WpfVisualization
 ----------------
 Class library project.  Contains classes used to draw graphs in the WPF
 environment.
-
