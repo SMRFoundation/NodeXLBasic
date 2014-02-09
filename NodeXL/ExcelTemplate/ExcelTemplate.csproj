@@ -26,7 +26,7 @@
     <VSTO_TrustAssembliesLocation>true</VSTO_TrustAssembliesLocation>
     <TargetFrameworkProfile />
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <PublishUrl>C:\PortNodeXL\NodeXL\ExcelTemplate\Publish\</PublishUrl>
+    <PublishUrl>E:\NodeXL\ExcelTemplate\Publish\</PublishUrl>
     <InstallUrl>http://www.nodexlgraphgallery.org/NodeXLSetup/</InstallUrl>
     <TargetCulture>en</TargetCulture>
     <ApplicationVersion>1.0.1.318</ApplicationVersion>
