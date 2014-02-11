@@ -37,6 +37,6 @@ using Microsoft.Office.Tools.Excel;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.0.1.318")]
-[assembly: AssemblyFileVersion("1.0.1.318")]
+[assembly: AssemblyVersion("1.0.1.319")]
+[assembly: AssemblyFileVersion("1.0.1.319")]
 

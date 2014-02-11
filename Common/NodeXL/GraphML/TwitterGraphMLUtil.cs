@@ -95,6 +95,7 @@ public static class TwitterGraphMLUtil : Object
             );
 
         DefineLatitudeAndLongitudeGraphMLAttributes(graphMLXmlDocument, false);
+        DefineInReplyToStatusIDGraphMLAttribute(graphMLXmlDocument, false);
     }
 
     //*************************************************************************
@@ -134,6 +135,8 @@ public static class TwitterGraphMLUtil : Object
 
         NodeXLGraphMLUtil.DefineImportedIDGraphMLAttribute(
             graphMLXmlDocument, true);
+
+        DefineInReplyToStatusIDGraphMLAttribute(graphMLXmlDocument, true);
     }
 
     //*************************************************************************
@@ -171,6 +174,36 @@ public static class TwitterGraphMLUtil : Object
 
         graphMLXmlDocument.DefineEdgeStringGraphMLAttributes(
             EdgeRelationshipDateUtcID, "Relationship Date (UTC)");
+    }
+
+    //*************************************************************************
+    //  Method: DefineInReplyToStatusIDGraphMLAttribute()
+    //
+    /// <summary>
+    /// Defines a GraphML-Attribute for in-reply-to status ID.
+    /// </summary>
+    ///
+    /// <param name="graphMLXmlDocument">
+    /// GraphMLXmlDocument being populated.
+    /// </param>
+    ///
+    /// <param name="forEdges">
+    /// true if the attribute is for edges, false if it is for vertices.
+    /// </param>
+    //*************************************************************************
+
+    public static void
+    DefineInReplyToStatusIDGraphMLAttribute
+    (
+        GraphMLXmlDocument graphMLXmlDocument,
+        Boolean forEdges
+    )
+    {
+        Debug.Assert(graphMLXmlDocument != null);
+
+        graphMLXmlDocument.DefineStringGraphMLAttributes(forEdges,
+            InReplyToStatusIDID, "In-Reply-To Tweet ID"
+            );
     }
 
     //*************************************************************************
@@ -734,6 +767,49 @@ public static class TwitterGraphMLUtil : Object
     }
 
     //*************************************************************************
+    //  Method: AppendInReplyToStatusIDGraphMLAttributeValue()
+    //
+    /// <summary>
+    /// Appends a GraphML attribute value for an in-reply-to status ID.
+    /// </summary>
+    ///
+    /// <param name="graphMLXmlDocument">
+    /// GraphMLXmlDocument being populated.
+    /// </param>
+    ///
+    /// <param name="edgeOrVertexXmlNode">
+    /// The edge or vertex XML node to add the Graph-ML attribute value to.
+    /// </param>
+    ///
+    /// <param name="inReplyToStatusID">
+    /// The in-reply-to status ID.  Can be null or empty.
+    /// </param>
+    //*************************************************************************
+
+    public static void
+    AppendInReplyToStatusIDGraphMLAttributeValue
+    (
+        GraphMLXmlDocument graphMLXmlDocument,
+        XmlNode edgeOrVertexXmlNode,
+        String inReplyToStatusID
+    )
+    {
+        Debug.Assert(graphMLXmlDocument != null);
+        Debug.Assert(edgeOrVertexXmlNode != null);
+
+        if ( !String.IsNullOrEmpty(inReplyToStatusID) )
+        {
+            // Precede the ID with a single quote to force Excel to treat the
+            // ID as text.  Otherwise, it formats the ID, which is a large
+            // number, in scientific notation.
+
+            graphMLXmlDocument.AppendGraphMLAttributeValue(
+                edgeOrVertexXmlNode, InReplyToStatusIDID,
+                "'" + inReplyToStatusID);
+        }
+    }
+
+    //*************************************************************************
     //  Method: UrlsToDomains()
     //
     /// <summary>
@@ -1079,6 +1155,9 @@ public static class TwitterGraphMLUtil : Object
 
             graphMLXmlDocument.AppendGraphMLAttributeValue(edgeXmlNode,
                 NodeXLGraphMLUtil.ImportedIDID, "'" + twitterStatus.ID);
+
+            AppendInReplyToStatusIDGraphMLAttributeValue(graphMLXmlDocument,
+                edgeXmlNode, twitterStatus.InReplyToStatusID);
         }
     }
 
@@ -1193,6 +1272,8 @@ public static class TwitterGraphMLUtil : Object
     private const String LatitudeID = "Latitude";
     ///
     private const String LongitudeID = "Longitude";
+    ///
+    private const String InReplyToStatusIDID = "InReplyToStatusID";
 }
 
 }

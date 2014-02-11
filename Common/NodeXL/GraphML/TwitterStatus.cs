@@ -1,6 +1,8 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using Smrf.SocialNetworkLib.Twitter;
 
 namespace Smrf.NodeXL.GraphMLLib
 {
@@ -20,6 +22,95 @@ namespace Smrf.NodeXL.GraphMLLib
 public class TwitterStatus : Object
 {
     //*************************************************************************
+    //  Method: TryFromStatusValueDictionary()
+    //
+    /// <summary>
+    /// Attempts to create a new instance of the <see cref="TwitterStatus" />
+    /// class from a Twitter JSON response.
+    /// </summary>
+    ///
+    /// <param name="statusValueDictionary">
+    /// Name/value pairs parsed from a Twitter JSON response.  Contains
+    /// information about a status.
+    /// </param>
+    ///
+    /// <param name="expandStatusUrls">
+    /// true to expand all URLs that might be shortened URLs.
+    /// </param>
+    ///
+    /// <param name="twitterStatus">
+    /// Where a new <see cref="TwitterStatus" /> object gets stored if true is
+    /// returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if successful.
+    /// </returns>
+    //*************************************************************************
+
+    public static Boolean
+    TryFromStatusValueDictionary
+    (
+        Dictionary<String, Object> statusValueDictionary,
+        Boolean expandStatusUrls,
+        out TwitterStatus twitterStatus
+    )
+    {
+        Debug.Assert(statusValueDictionary != null);
+
+        twitterStatus = null;
+
+        // Get the status information.
+
+        String statusID, statusText;
+
+        if (
+            !TwitterJsonUtil.TryGetJsonValueFromDictionary(
+                statusValueDictionary, "id_str", out statusID)
+            ||
+            !TwitterJsonUtil.TryGetJsonValueFromDictionary(
+                statusValueDictionary, "text", out statusText)
+            )
+        {
+            return (false);
+        }
+
+        String statusDateUtc;
+
+        if ( TwitterJsonUtil.TryGetJsonValueFromDictionary(
+            statusValueDictionary, "created_at", out statusDateUtc) )
+        {
+            statusDateUtc = TwitterDateParser.ParseTwitterDate(statusDateUtc);
+        }
+
+        String latitude, longitude;
+
+        TwitterGraphMLUtil.GetLatitudeAndLongitudeFromStatusValueDictionary(
+            statusValueDictionary, out latitude, out longitude);
+
+        String statusUrls, statusHashtags;
+
+        TwitterGraphMLUtil.GetUrlsAndHashtagsFromStatusValueDictionary(
+            statusValueDictionary, expandStatusUrls, out statusUrls,
+            out statusHashtags);
+
+        String inReplyToStatusID;
+
+        TwitterJsonUtil.TryGetJsonValueFromDictionary(
+            statusValueDictionary, "in_reply_to_status_id_str",
+            out inReplyToStatusID);
+
+        // Note that null date, coordinates, URLs hashtags, and in-reply-to-ID
+        // are acceptable here.
+
+        twitterStatus = new TwitterStatus(
+            statusID, statusText, statusDateUtc, latitude, longitude,
+            statusUrls, statusHashtags, inReplyToStatusID);
+
+        return (true);
+    }
+
+    //*************************************************************************
     //  Constructor: TwitterStatus()
     //
     /// <summary>
@@ -35,29 +126,34 @@ public class TwitterStatus : Object
     /// </param>
     ///
     /// <param name="parsedDateUtc">
-    /// The parsed status date as a culture-invariant UTC string.  See <see
+    /// The parsed status date as a culture-invariant UTC string, or null if
+    /// not available.  See <see
     /// cref="Smrf.SocialNetworkLib.Twitter.TwitterDateParser.ParseTwitterDate"
-    /// />.  Can be null or empty.
+    /// />.  Can be null.
     /// </param>
     ///
     /// <param name="latitude">
-    /// The status's latitude.  Can be null or empty.
+    /// The status's latitude, or null if not available.
     /// </param>
     ///
     /// <param name="longitude">
-    /// The status's longitude.  Can be null or empty.
+    /// The status's longitude, or null if not available.
     /// </param>
     ///
     /// <param name="urls">
-    /// The status's space-delimited URLs.  Can be null or empty.
+    /// The status's space-delimited URLs, or null if not available.
     /// </param>
     ///
     /// <param name="hashtags">
-    /// The status's space-delimited hashtags.  Can be null or empty.
+    /// The status's space-delimited hashtags, or null if not available.
+    /// </param>
+    ///
+    /// <param name="inReplyToStatusID">
+    /// The in-reply-to status ID, or null if not available.
     /// </param>
     //*************************************************************************
 
-    public TwitterStatus
+    private TwitterStatus
     (
         String ID,
         String text,
@@ -65,7 +161,8 @@ public class TwitterStatus : Object
         String latitude,
         String longitude,
         String urls,
-        String hashtags
+        String hashtags,
+        String inReplyToStatusID
     )
     {
         m_ID = ID;
@@ -75,6 +172,7 @@ public class TwitterStatus : Object
         m_Longitude = longitude;
         m_Urls = urls;
         m_Hashtags = hashtags;
+        m_InReplyToStatusID = inReplyToStatusID;
 
         AssertValid();
     }
@@ -133,9 +231,10 @@ public class TwitterStatus : Object
     /// </summary>
     ///
     /// <value>
-    /// The parsed status date as a culture-invariant UTC string.  See <see
+    /// The parsed status date as a culture-invariant UTC string, or null if
+    /// not available.  See <see
     /// cref="Smrf.SocialNetworkLib.Twitter.TwitterDateParser.ParseTwitterDate"
-    /// />.  Can be null or empty.
+    /// />.
     /// </value>
     //*************************************************************************
 
@@ -158,7 +257,7 @@ public class TwitterStatus : Object
     /// </summary>
     ///
     /// <value>
-    /// The status's latitude.  Can be null or empty.
+    /// The status's latitude, or null if not available.
     /// </value>
     //*************************************************************************
 
@@ -181,7 +280,7 @@ public class TwitterStatus : Object
     /// </summary>
     ///
     /// <value>
-    /// The status's longitude.  Can be null or empty.
+    /// The status's longitude, or null if not available.
     /// </value>
     //*************************************************************************
 
@@ -204,7 +303,7 @@ public class TwitterStatus : Object
     /// </summary>
     ///
     /// <value>
-    /// The status's space-delimited URLs.  Can be null or empty.
+    /// The status's space-delimited URLs, or null if not available.
     /// </value>
     //*************************************************************************
 
@@ -234,7 +333,7 @@ public class TwitterStatus : Object
     /// </summary>
     ///
     /// <value>
-    /// The status's space-delimited hashtags.  Can be null or empty.
+    /// The status's space-delimited hashtags, or null if not available.
     /// </value>
     //*************************************************************************
 
@@ -246,6 +345,29 @@ public class TwitterStatus : Object
             AssertValid();
 
             return (m_Hashtags);
+        }
+    }
+
+    //*************************************************************************
+    //  Property: InReplyToStatusID
+    //
+    /// <summary>
+    /// Gets the ID of the status that this status is a reply to.
+    /// </summary>
+    ///
+    /// <value>
+    /// The in-reply-to status ID, or null if not available.
+    /// </value>
+    //*************************************************************************
+
+    public String
+    InReplyToStatusID
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_InReplyToStatusID);
         }
     }
 
@@ -270,6 +392,7 @@ public class TwitterStatus : Object
         // m_Longitude
         // m_Urls
         // m_Hashtags
+        // m_InReplyToStatusID
     }
 
 
@@ -285,23 +408,27 @@ public class TwitterStatus : Object
 
     protected String m_Text;
 
-    /// The parsed status date as a culture-invariant UTC string.
+    /// The parsed status date as a culture-invariant UTC string, or null.
 
     protected String m_ParsedDateUtc;
 
-    /// The status's latitude and longitude.
+    /// The status's latitude and longitude, or null.
 
     protected String m_Latitude;
     ///
     protected String m_Longitude;
 
-    /// The status's space-delimited URLs.
+    /// The status's space-delimited URLs, or null.
 
     protected String m_Urls;
 
-    /// The status's space-delimited hashtags.
+    /// The status's space-delimited hashtags, or null.
 
     protected String m_Hashtags;
+
+    /// The in-reply-to status ID, or null.
+
+    protected String m_InReplyToStatusID;
 }
 
 }

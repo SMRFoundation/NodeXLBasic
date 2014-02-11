@@ -778,37 +778,16 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Debug.Assert(oTwitterUser != null);
         AssertValid();
 
-        String sID, sLatestStatus;
+        TwitterStatus oTwitterStatus;
 
-        if (
-            !TwitterJsonUtil.TryGetJsonValueFromDictionary(
-                oStatusValueDictionary, "id_str", out sID)
-            ||
-            !TwitterJsonUtil.TryGetJsonValueFromDictionary(
-                oStatusValueDictionary, "text", out sLatestStatus)
-            )
+        if ( !TwitterStatus.TryFromStatusValueDictionary(
+            oStatusValueDictionary, bExpandLatestStatusUrls,
+            out oTwitterStatus) )
         {
             return;
         }
 
-        String sLatestStatusDateUtc;
-
-        if ( TwitterJsonUtil.TryGetJsonValueFromDictionary(
-            oStatusValueDictionary, "created_at", out sLatestStatusDateUtc) )
-        {
-            sLatestStatusDateUtc = TwitterDateParser.ParseTwitterDate(
-                sLatestStatusDateUtc);
-        }
-
-        String sLatitude, sLongitude;
-
-        TwitterGraphMLUtil.GetLatitudeAndLongitudeFromStatusValueDictionary(
-            oStatusValueDictionary, out sLatitude, out sLongitude);
-
         XmlNode oVertexXmlNode = oTwitterUser.VertexXmlNode;
-
-        String sLatestStatusUrls = null;
-        String sLatestStatusHashtags = null;
 
         if (bIncludeLatestStatus)
         {
@@ -816,11 +795,9 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
             oGraphMLXmlDocument.AppendGraphMLAttributeValue(
                 oVertexXmlNode, TwitterGraphMLUtil.VertexLatestStatusID,
-                sLatestStatus);
+                oTwitterStatus.Text);
 
-            TwitterGraphMLUtil.GetUrlsAndHashtagsFromStatusValueDictionary(
-                oStatusValueDictionary, bExpandLatestStatusUrls,
-                out sLatestStatusUrls, out sLatestStatusHashtags);
+            String sLatestStatusUrls = oTwitterStatus.Urls;
 
             if ( !String.IsNullOrEmpty(sLatestStatusUrls) )
             {
@@ -835,6 +812,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                     TwitterGraphMLUtil.UrlsToDomains(sLatestStatusUrls) ); 
             }
 
+            String sLatestStatusHashtags = oTwitterStatus.Hashtags;
+
             if ( !String.IsNullOrEmpty(sLatestStatusHashtags) )
             {
                 oGraphMLXmlDocument.AppendGraphMLAttributeValue(
@@ -843,23 +822,25 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                     sLatestStatusHashtags);
             }
 
-            if ( !String.IsNullOrEmpty(sLatestStatusDateUtc) )
+            if ( !String.IsNullOrEmpty(oTwitterStatus.ParsedDateUtc) )
             {
                 oGraphMLXmlDocument.AppendGraphMLAttributeValue(
                     oVertexXmlNode,
                     TwitterGraphMLUtil.VertexLatestStatusDateUtcID,
-                    sLatestStatusDateUtc);
+                    oTwitterStatus.ParsedDateUtc);
             }
 
             TwitterGraphMLUtil.
                 AppendLatitudeAndLongitudeGraphMLAttributeValues(
-                    oGraphMLXmlDocument, oVertexXmlNode, sLatitude,
-                    sLongitude);
+                    oGraphMLXmlDocument, oVertexXmlNode,
+                    oTwitterStatus.Latitude, oTwitterStatus.Longitude);
+
+            TwitterGraphMLUtil.AppendInReplyToStatusIDGraphMLAttributeValue(
+                oGraphMLXmlDocument, oVertexXmlNode,
+                oTwitterStatus.InReplyToStatusID);
         }
 
-        oTwitterUser.Statuses.Add( new TwitterStatus(sID, sLatestStatus,
-            sLatestStatusDateUtc, sLatitude, sLongitude, sLatestStatusUrls,
-            sLatestStatusHashtags) );
+        oTwitterUser.Statuses.Add(oTwitterStatus);
     }
 
     //*************************************************************************

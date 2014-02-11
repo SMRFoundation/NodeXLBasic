@@ -259,46 +259,15 @@ public static class TwitterSearchNetworkGraphMLUtil : Object
         Debug.Assert(statusValueDictionary != null);
         Debug.Assert(twitterUser != null);
 
-        // Get the status information.
+		TwitterStatus twitterStatus;
 
-        String statusID, statusText;
-
-        if (
-            !TwitterJsonUtil.TryGetJsonValueFromDictionary(
-                statusValueDictionary, "id_str", out statusID)
-            ||
-            !TwitterJsonUtil.TryGetJsonValueFromDictionary(
-                statusValueDictionary, "text", out statusText)
-            )
+		if ( !TwitterStatus.TryFromStatusValueDictionary(statusValueDictionary,
+			expandStatusUrls, out twitterStatus) )
         {
             return (false);
         }
 
-        String statusDateUtc;
-
-        if ( TwitterJsonUtil.TryGetJsonValueFromDictionary(
-            statusValueDictionary, "created_at", out statusDateUtc) )
-        {
-            statusDateUtc = TwitterDateParser.ParseTwitterDate(statusDateUtc);
-        }
-
-        String latitude, longitude;
-
-        TwitterGraphMLUtil.GetLatitudeAndLongitudeFromStatusValueDictionary(
-            statusValueDictionary, out latitude, out longitude);
-
-        String statusUrls, statusHashtags;
-
-        TwitterGraphMLUtil.GetUrlsAndHashtagsFromStatusValueDictionary(
-            statusValueDictionary, expandStatusUrls, out statusUrls,
-            out statusHashtags);
-
-        // Note that null date, coordinates, URLs and hashtags are acceptable
-        // here.
-
-        twitterUser.Statuses.Add( new TwitterStatus(
-            statusID, statusText, statusDateUtc, latitude, longitude,
-            statusUrls, statusHashtags) );
+        twitterUser.Statuses.Add(twitterStatus);
 
         return (true);
     }
