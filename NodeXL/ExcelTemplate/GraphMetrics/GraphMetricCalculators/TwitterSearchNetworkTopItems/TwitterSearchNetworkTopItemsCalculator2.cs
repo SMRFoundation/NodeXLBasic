@@ -1599,7 +1599,7 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
         // this format:
         //
         //   The graph represents a network of {0} Twitter {1} whose recent
-        //   tweets contained \"{2}\", taken from...
+        //   tweets contained \"{2}\", or who...
         //
         // This description was created by the TwitterSearchNetworkAnalyzer
         // class.
@@ -1617,7 +1617,7 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
             out sImportDescription) )
         {
             const String Pattern =
-                "contained \"(?<SearchTerm>.+)\", taken from";
+                "contained \"(?<SearchTerm>.+)\", or who";
 
             Match oMatch = Regex.Match(sImportDescription, Pattern);
 

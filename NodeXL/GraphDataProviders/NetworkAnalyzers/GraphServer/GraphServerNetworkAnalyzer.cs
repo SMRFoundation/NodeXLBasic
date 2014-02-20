@@ -464,14 +464,22 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
+        const String Int32FormatString = "N0";
+
         NetworkDescriber oNetworkDescriber = new NetworkDescriber();
+
+        Int32 iVertexCount = GetVertexCount(oGraphMLXmlDocument);
 
         oNetworkDescriber.AddSentence(
 
-            "The graph represents a network of Twitter users whose tweets in"
-            + " the requested date range contained \"{0}\"."
+            "The graph represents a network of {0} Twitter {1} whose tweets in"
+            + " the requested date range contained \"{2}\", or who {3} replied"
+            + " to or mentioned in those tweets."
             ,
-            sSearchTerm
+            iVertexCount.ToString(Int32FormatString),
+            StringUtil.MakePlural("user", iVertexCount),
+            sSearchTerm,
+			iVertexCount > 1 ? "were" : "was"
             );
 
         oNetworkDescriber.AddNetworkTime(NetworkSource);
@@ -497,6 +505,56 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
             );
 
         return ( oNetworkDescriber.ConcatenateSentences() );
+    }
+
+    //*************************************************************************
+    //  Method: GetVertexCount()
+    //
+    /// <summary>
+    /// Gets the number of vertices in the network.
+    /// </summary>
+    ///
+    /// <param name="oGraphMLXmlDocument">
+    /// The XmlDocument that contains the network.
+    /// </param>
+    ///
+    /// <returns>
+    /// The number of vertices in the network.
+    /// </returns>
+    //*************************************************************************
+
+    protected Int32
+    GetVertexCount
+    (
+        XmlDocument oGraphMLXmlDocument
+    )
+    {
+        Debug.Assert(oGraphMLXmlDocument != null);
+        AssertValid();
+
+        Int32 iVertexCount = 0;
+        XmlNode oXmlNode;
+
+        XmlNamespaceManager oXmlNamespaceManager =
+            GraphMLXmlDocument.CreateXmlNamespaceManager(
+                oGraphMLXmlDocument, "g");
+
+        if ( XmlUtil2.TrySelectSingleNode(oGraphMLXmlDocument,
+            "g:graphml/g:graph/g:node", oXmlNamespaceManager,
+            out oXmlNode) )
+        {
+            while (oXmlNode != null)
+            {
+                if (oXmlNode.Name == "node")
+                {
+                    iVertexCount++;
+                }
+
+                oXmlNode = oXmlNode.NextSibling;
+            }
+        }
+
+        return (iVertexCount);
     }
 
     //*************************************************************************

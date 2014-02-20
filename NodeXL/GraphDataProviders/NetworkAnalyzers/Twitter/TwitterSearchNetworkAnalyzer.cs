@@ -672,12 +672,14 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             // attempts to extract the search term from the graph description.
 
             "The graph represents a network of {0} Twitter {1} whose recent"
-            + " tweets contained \"{2}\", taken from a data set limited to a"
-            + " maximum of {3} tweets."
+            + " tweets contained \"{2}\", or who {3} replied to or mentioned"
+            + " in those tweets, taken from a data set limited to a maximum of"
+            + " {4} tweets."
             ,
             iVertexXmlNodes.ToString(Int32FormatString),
             StringUtil.MakePlural("user", iVertexXmlNodes),
             sSearchTerm,
+            iVertexXmlNodes > 1 ? "were" : "was",
             iMaximumStatuses.ToString(Int32FormatString)
             );
 
