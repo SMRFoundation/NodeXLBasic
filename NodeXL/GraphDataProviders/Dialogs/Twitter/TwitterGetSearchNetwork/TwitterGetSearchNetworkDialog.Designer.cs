@@ -190,12 +190,11 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.linkLabel1.AutoSize = true;
             this.linkLabel1.Location = new System.Drawing.Point(0, 59);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(114, 13);
+            this.linkLabel1.Size = new System.Drawing.Size(138, 13);
             this.linkLabel1.TabIndex = 2;
             this.linkLabel1.TabStop = true;
-            this.linkLabel1.Tag = "http://support.twitter.com/groups/31-twitter-basics/topics/110-search/articles/71" +
-    "577-how-to-use-advanced-twitter-search";
-            this.linkLabel1.Text = "Advanced search help";
+            this.linkLabel1.Tag = "https://twitter.com/search-home";
+            this.linkLabel1.Text = "Advanced search operators";
             // 
             // chkIncludeStatistics
             // 

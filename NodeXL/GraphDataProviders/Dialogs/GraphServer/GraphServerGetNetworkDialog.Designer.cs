@@ -182,7 +182,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             // txbSearchTerm
             // 
             this.txbSearchTerm.Location = new System.Drawing.Point(0, 32);
-            this.txbSearchTerm.MaxLength = 100;
+            this.txbSearchTerm.MaxLength = 200;
             this.txbSearchTerm.Name = "txbSearchTerm";
             this.txbSearchTerm.Size = new System.Drawing.Size(271, 20);
             this.txbSearchTerm.TabIndex = 1;
@@ -194,7 +194,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.label1.Size = new System.Drawing.Size(362, 26);
             this.label1.TabIndex = 0;
             this.label1.Text = "Add a verte&x for each person who tweeted this search term, or who was replied to" +
-                " or mentioned in those tweets:";
+    " or mentioned in those tweets:";
             // 
             // statusStrip1
             // 
