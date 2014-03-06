@@ -21,15 +21,25 @@ Required Tools
 How to Build This Solution
 --------------------------
 
-1. Download the latest source code from the NodeXL page on CodePlex.
+1. Get the latest source code from the NodeXL page on CodePlex.
 
 2. If you downloaded the latest source code as a Zip file, unblock the Zip file
    (http://www.ehow.com/how_6967297_unblock-zip-files.html) and unzip it into
    any folder.
 
-2. Open NodeXL\NodeXL.sln in Visual Studio 2013.
+3. Open NodeXL\NodeXL.sln in Visual Studio 2013.
 
-3. Run Build | Rebuild Solution.
+4. In Solution Explorer, right-click the ExcelTemplate project and select
+   "Properties" from the right-click menu.
+
+5. In the ExcelTemplate properties window, select "Signing" in the left column.
+
+6. On the Signing page, make sure "Sign the ClickOnce manifests" is checked.
+   The manifests must be signed with a certificate, but a certificate is not
+   included with the NodeXL source code.  Click the "Create Test Certificate"
+   button to create your own certificate.
+
+7. Run Build | Rebuild Solution.
 
 
 If You Don't Have Excel
