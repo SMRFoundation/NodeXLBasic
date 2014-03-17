@@ -1590,18 +1590,18 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
 
     //*************************************************************************
-    //  Protected constants
+    //  Public constants
     //*************************************************************************
 
     // These limits are arbitrary and may need to be adjusted.
 
     /// Maximum number of recent statuses to request for each specified user.
 
-    protected const Int32 MaximumRecentStatuses = 100;
+    public const Int32 MaximumRecentStatuses = 100;
 
     /// Maximum number of friend or follower IDs to request for each user.
 
-    protected const Int32 MaximumFriendsOrFollowers = 1000;
+    public const Int32 MaximumFriendsOrFollowers = 1000;
 
 
     //*************************************************************************

@@ -30,12 +30,12 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TwitterGetUsersNetworkDialog));
             this.txbScreenNames = new System.Windows.Forms.TextBox();
             this.lblScreenNamesHelp = new System.Windows.Forms.Label();
             this.pnlUserInputs = new System.Windows.Forms.Panel();
             this.chkExpandStatusUrls = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.hllNetworkTypeBasic = new Smrf.AppLib.HelpLinkLabel();
             this.hllNetworkTypeBasicPlusFollows = new Smrf.AppLib.HelpLinkLabel();
             this.picNetworkType = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -103,6 +103,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.hllNetworkTypeBasic);
             this.groupBox2.Controls.Add(this.hllNetworkTypeBasicPlusFollows);
             this.groupBox2.Controls.Add(this.picNetworkType);
             this.groupBox2.Controls.Add(this.label2);
@@ -116,16 +117,27 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "What to import";
             // 
+            // hllNetworkTypeBasic
+            // 
+            this.hllNetworkTypeBasic.AutoSize = true;
+            this.hllNetworkTypeBasic.Location = new System.Drawing.Point(49, 77);
+            this.hllNetworkTypeBasic.Name = "hllNetworkTypeBasic";
+            this.hllNetworkTypeBasic.Size = new System.Drawing.Size(112, 13);
+            this.hllNetworkTypeBasic.TabIndex = 2;
+            this.hllNetworkTypeBasic.TabStop = true;
+            this.hllNetworkTypeBasic.Tag = "";
+            this.hllNetworkTypeBasic.Text = "More about this option";
+            // 
             // hllNetworkTypeBasicPlusFollows
             // 
             this.hllNetworkTypeBasicPlusFollows.AutoSize = true;
-            this.hllNetworkTypeBasicPlusFollows.Location = new System.Drawing.Point(49, 141);
+            this.hllNetworkTypeBasicPlusFollows.Location = new System.Drawing.Point(49, 146);
             this.hllNetworkTypeBasicPlusFollows.Name = "hllNetworkTypeBasicPlusFollows";
-            this.hllNetworkTypeBasicPlusFollows.Size = new System.Drawing.Size(118, 13);
-            this.hllNetworkTypeBasicPlusFollows.TabIndex = 4;
+            this.hllNetworkTypeBasicPlusFollows.Size = new System.Drawing.Size(112, 13);
+            this.hllNetworkTypeBasicPlusFollows.TabIndex = 5;
             this.hllNetworkTypeBasicPlusFollows.TabStop = true;
-            this.hllNetworkTypeBasicPlusFollows.Tag = resources.GetString("hllNetworkTypeBasicPlusFollows.Tag");
-            this.hllNetworkTypeBasicPlusFollows.Text = "How long will the follow information take?";
+            this.hllNetworkTypeBasicPlusFollows.Tag = "";
+            this.hllNetworkTypeBasicPlusFollows.Text = "More about this option";
             // 
             // picNetworkType
             // 
@@ -139,11 +151,12 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(49, 107);
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(49, 126);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(315, 27);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Add the users who follow or are followed by the users I\'m interested in";
+            this.label2.Size = new System.Drawing.Size(213, 13);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "Add some of the users\' friends and followers";
             // 
             // label1
             // 
@@ -157,12 +170,12 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // radNetworkTypeBasicPlusFollows
             // 
             this.radNetworkTypeBasicPlusFollows.AutoSize = true;
-            this.radNetworkTypeBasicPlusFollows.Location = new System.Drawing.Point(15, 85);
+            this.radNetworkTypeBasicPlusFollows.Location = new System.Drawing.Point(15, 104);
             this.radNetworkTypeBasicPlusFollows.Name = "radNetworkTypeBasicPlusFollows";
-            this.radNetworkTypeBasicPlusFollows.Size = new System.Drawing.Size(225, 17);
-            this.radNetworkTypeBasicPlusFollows.TabIndex = 2;
+            this.radNetworkTypeBasicPlusFollows.Size = new System.Drawing.Size(269, 17);
+            this.radNetworkTypeBasicPlusFollows.TabIndex = 3;
             this.radNetworkTypeBasicPlusFollows.TabStop = true;
-            this.radNetworkTypeBasicPlusFollows.Text = "Basic network plus &follow information: slow";
+            this.radNetworkTypeBasicPlusFollows.Text = "Basic network plus &friends and followers (very slow!)";
             this.radNetworkTypeBasicPlusFollows.UseVisualStyleBackColor = true;
             this.radNetworkTypeBasicPlusFollows.CheckedChanged += new System.EventHandler(this.OnNetworkTypeChanged);
             // 
@@ -328,5 +341,6 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
         private System.Windows.Forms.RadioButton radNetworkTypeBasic;
         private System.Windows.Forms.PictureBox picNetworkType;
         private AppLib.HelpLinkLabel hllNetworkTypeBasicPlusFollows;
+        private AppLib.HelpLinkLabel hllNetworkTypeBasic;
     }
 }

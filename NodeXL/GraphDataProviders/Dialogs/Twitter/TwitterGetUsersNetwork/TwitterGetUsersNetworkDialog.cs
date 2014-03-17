@@ -49,6 +49,8 @@ public partial class TwitterGetUsersNetworkDialog
 
         txbScreenNames.MaxLength = MaximumScreenNames * (15 + 2);
 
+        SetHelpText();
+
         // m_bUseListName
         // m_sScreenNames
         // m_sListName
@@ -88,6 +90,67 @@ public partial class TwitterGetUsersNetworkDialog
 
             return (this.slStatusLabel);
         }
+    }
+
+    //*************************************************************************
+    //  Method: SetHelpText()
+    //
+    /// <summary>
+    /// Sets the text in the dialog's HelpLinkLabels.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    SetHelpText()
+    {
+        hllNetworkTypeBasic.Tag = String.Format(
+
+            "When you select this option, NodeXL analyzes each user's {0} most"
+            + " recent tweets."
+            + "\r\n\r\n" 
+            + "If a tweet was a reply to someone else, NodeXL creates an edge"
+            + " from the tweeter to the replied-to user and gives it a"
+            + " \"Relationship\" value of \"Replies-to.\"  There can be only"
+            + " one such Replies-to edge for each tweet."
+            + "\r\n\r\n" 
+            + "If a tweet mentioned someone else, NodeXL creates an edge from"
+            + " the tweeter to the mentioned user and gives it a"
+            + " \"Relationship\" value of \"Mentions.\"  There can be multiple"
+            + " Mentions edges for each tweet.  (Note that a \"Replies-to\" is"
+            + " NOT also a \"Mentions.\")"
+            + "\r\n\r\n" 
+            + "If a tweet neither replied to nor mentioned anyone else, NodeXL"
+            + " creates a self-loop edge from the tweeter to herself and gives"
+            + " it a \"Relationship\" value of \"Tweet.\""
+            ,
+            TwitterUsersNetworkAnalyzer.MaximumRecentStatuses
+            );
+
+        hllNetworkTypeBasicPlusFollows.Tag = String.Format(
+
+            "Importing the network can take a long time when you select this"
+            + " option."
+            + "\r\n\r\n" 
+            + "Due to Twitter rate limiting, NodeXL can import the friends"
+            + " and followers of only fifteen users every fifteen minutes.  If"
+            + " you specify more than fifteen usernames (or you specify a"
+            + " Twitter List that has more than fifteen users), NodeXL has to"
+            + " pause before Twitter will allow it to continue importing the"
+            + " network."
+            + "\r\n\r\n" 
+            + " If you specify 120 users, for example, and you ask for friends"
+            + " and followers, it will take at least two hours for NodeXL to"
+            + " import the network."
+            + "\r\n\r\n" 
+            + "Because it takes so long to import friends and followers,"
+            + " NodeXL doesn't attempt to import all of them.  Instead, it"
+            + " asks Twitter for each user's {0:N0} newest friends and"
+            + " followers.  If a user has {1:N0} friends, for example, NodeXL"
+            + " will import only her {0:N0} newest friends."
+            ,
+            TwitterUsersNetworkAnalyzer.MaximumFriendsOrFollowers,
+            2 * TwitterUsersNetworkAnalyzer.MaximumFriendsOrFollowers
+            );
     }
 
     //*************************************************************************
