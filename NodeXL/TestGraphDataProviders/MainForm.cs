@@ -40,6 +40,11 @@ public partial class MainForm : Form
         GetGraphData( new TwitterListNetworkGraphDataProvider() );
     }
 
+    private void btnTwitterUsers_Click(object sender, EventArgs e)
+    {
+        GetGraphData( new TwitterUsersNetworkGraphDataProvider() );
+    }
+
     private void btnYouTubeUsers_Click(object sender, EventArgs e)
     {
         GetGraphData( new YouTubeUserNetworkGraphDataProvider() );

@@ -109,6 +109,9 @@
     <Compile Include="..\..\Common\SocialNetwork\Twitter\TwitterJsonUtil.cs">
       <Link>Util\SocialNetwork\Twitter\TwitterJsonUtil.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\SocialNetwork\Twitter\TwitterListNameParser.cs">
+      <Link>Util\SocialNetwork\Twitter\TwitterListNameParser.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\SocialNetwork\Twitter\TwitterStatusParser.cs">
       <Link>Util\SocialNetwork\Twitter\TwitterStatusParser.cs</Link>
     </Compile>
@@ -203,6 +206,12 @@
     <Compile Include="Dialogs\Twitter\TwitterGetUserNetwork\TwitterGetUserNetworkDialog.designer.cs">
       <DependentUpon>TwitterGetUserNetworkDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\Twitter\TwitterGetUsersNetwork\TwitterGetUsersNetworkDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\Twitter\TwitterGetUsersNetwork\TwitterGetUsersNetworkDialog.Designer.cs">
+      <DependentUpon>TwitterGetUsersNetworkDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\Twitter\TwitterGraphDataProviderDialogBase.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -230,6 +239,7 @@
     <Compile Include="GraphDataProviders\Twitter\TwitterListNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\Twitter\TwitterSearchNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\Twitter\TwitterUserNetworkGraphDataProvider.cs" />
+    <Compile Include="GraphDataProviders\Twitter\TwitterUsersNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\YouTube\YouTubeUserNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\YouTube\YouTubeVideoNetworkGraphDataProvider.cs" />
     <Compile Include="NetworkAnalyzers\Exceptions\CancellationPendingException.cs" />
@@ -248,6 +258,7 @@
     <Compile Include="NetworkAnalyzers\Twitter\TwitterNetworkAnalyzerBase.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TwitterSearchNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TwitterUserNetworkAnalyzer.cs" />
+    <Compile Include="NetworkAnalyzers\Twitter\TwitterUsersNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\YouTube\YouTubeNetworkAnalyzerBase.cs" />
     <Compile Include="NetworkAnalyzers\YouTube\YouTubeUserNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\YouTube\YouTubeVideoNetworkAnalyzer.cs" />
@@ -294,6 +305,9 @@
     <EmbeddedResource Include="Dialogs\Twitter\TwitterGetUserNetwork\TwitterGetUserNetworkDialog.resx">
       <DependentUpon>TwitterGetUserNetworkDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\Twitter\TwitterGetUsersNetwork\TwitterGetUsersNetworkDialog.resx">
+      <DependentUpon>TwitterGetUsersNetworkDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\YouTube\YouTubeGetUserNetwork\YouTubeGetUserNetworkDialog.resx">
       <DependentUpon>YouTubeGetUserNetworkDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -317,6 +331,12 @@
       <Project>{9F0DA064-8E3A-45D9-826A-3CCB1A748E47}</Project>
       <Name>Util</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Images\TwitterUsersNetworkType\Basic.png" />
+    <EmbeddedResource Include="Images\TwitterUsersNetworkType\BasicPlusAllFollows.png" />
+    <EmbeddedResource Include="Images\TwitterUsersNetworkType\BasicPlusSomeFollows.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

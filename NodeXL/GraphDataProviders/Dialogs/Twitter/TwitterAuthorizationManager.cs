@@ -86,13 +86,6 @@ public class TwitterAuthorizationManager : Object
 
         switch (m_oTwitterAuthorizationControl.Status)
         {
-            case TwitterAuthorizationStatus.NoTwitterAccount:
-
-                // Delete any access token that exists.
-
-                TwitterAccessToken.Delete();
-                return (true);
-
             case TwitterAuthorizationStatus.HasTwitterAccountAuthorized:
 
                 return (true);

@@ -74,11 +74,6 @@ public partial class TwitterAuthorizationControl : UserControl
 
             switch (value)
             {
-                case TwitterAuthorizationStatus.NoTwitterAccount:
-
-                    radNoTwitterAccount.Checked = true;
-                    break;
-
                 case TwitterAuthorizationStatus.HasTwitterAccountNotAuthorized:
 
                     radHasTwitterAccountNotAuthorized.Checked = true;
@@ -105,11 +100,6 @@ public partial class TwitterAuthorizationControl : UserControl
         get
         {
             AssertValid();
-
-            if (radNoTwitterAccount.Checked)
-            {
-                return (TwitterAuthorizationStatus.NoTwitterAccount);
-            }
 
             if (radHasTwitterAccountNotAuthorized.Checked)
             {

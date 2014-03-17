@@ -322,8 +322,8 @@ public class TwitterUtil
     //  Method: EnumerateJsonValues()
     //
     /// <summary>
-    /// Gets a JSON response from a Twitter URL, then enumerates a specified
-    /// set of values in the response.
+    /// Gets a JSON response from a Twitter URL that uses cursoring, then
+    /// enumerates a specified set of values in the response.
     /// </summary>
     ///
     /// <param name="url">
@@ -364,6 +364,13 @@ public class TwitterUtil
     /// <returns>
     /// The enumerated values are returned one-by-one, as an Object.
     /// </returns>
+    ///
+    /// <remarks>
+    /// It's assumed that the Twitter API specified by <paramref name="url" />
+    /// uses Twitter's cursor scheme for paging, where a "cursor" URL parameter
+    /// specifies which page to get.  "GET friends/ids" is an example of such
+    /// an API.
+    /// </remarks>
     //*************************************************************************
 
     public IEnumerable<Object>

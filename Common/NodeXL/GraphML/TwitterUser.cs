@@ -53,6 +53,7 @@ public class TwitterUser : Object
         m_ScreenName = screenName;
         m_VertexXmlNode = vertexXmlNode;
         m_Statuses = new LinkedList<TwitterStatus>();
+        m_Tag = null;
 
         AssertValid();
     }
@@ -126,6 +127,37 @@ public class TwitterUser : Object
         }
     }
 
+    //*************************************************************************
+    //  Property: Tag
+    //
+    /// <summary>
+    /// Gets or sets arbitrary extra data associated with the user.
+    /// </summary>
+    ///
+    /// <value>
+    /// Arbitrary extra data associated with the user, as an Object.  The
+    /// default value is null.
+    /// </value>
+    //*************************************************************************
+
+    public Object
+    Tag
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_Tag);
+        }
+
+        set
+        {
+            m_Tag = value;
+
+            AssertValid();
+        }
+    }
+
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -143,6 +175,7 @@ public class TwitterUser : Object
         Debug.Assert( !String.IsNullOrEmpty(m_ScreenName) );
         Debug.Assert(m_VertexXmlNode != null);
         Debug.Assert(m_Statuses != null);
+        // m_Tag
     }
 
 
@@ -162,6 +195,10 @@ public class TwitterUser : Object
     /// Zero or more statuses associated with the user.
 
     protected LinkedList<TwitterStatus> m_Statuses;
+
+    /// Arbitrary extra data.
+
+    protected Object m_Tag;
 }
 
 }

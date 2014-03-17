@@ -16,13 +16,6 @@ public enum
 TwitterAuthorizationStatus
 {
     /// <summary>
-    /// The user doesn't have a Twitter account, so all requests to Twitter
-    /// will be unauthenticated.
-    /// </summary>
-
-    NoTwitterAccount,
-
-    /// <summary>
     /// The user has a Twitter account, but she has not yet authorized Twitter
     /// to use it.
     /// </summary>

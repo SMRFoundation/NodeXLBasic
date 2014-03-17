@@ -37,13 +37,14 @@
             this.btnFlickrUsers = new System.Windows.Forms.Button();
             this.btnTwitterList = new System.Windows.Forms.Button();
             this.btnGraphServer = new System.Windows.Forms.Button();
+            this.btnTwitterUsers = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // wbWebBrowser
             // 
-            this.wbWebBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.wbWebBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.wbWebBrowser.Location = new System.Drawing.Point(12, 113);
             this.wbWebBrowser.MinimumSize = new System.Drawing.Size(20, 20);
             this.wbWebBrowser.Name = "wbWebBrowser";
@@ -130,11 +131,22 @@
             this.btnGraphServer.UseVisualStyleBackColor = true;
             this.btnGraphServer.Click += new System.EventHandler(this.btnGraphServer_Click);
             // 
+            // btnTwitterUsers
+            // 
+            this.btnTwitterUsers.Location = new System.Drawing.Point(147, 70);
+            this.btnTwitterUsers.Name = "btnTwitterUsers";
+            this.btnTwitterUsers.Size = new System.Drawing.Size(120, 23);
+            this.btnTwitterUsers.TabIndex = 9;
+            this.btnTwitterUsers.Text = "Twitter Users";
+            this.btnTwitterUsers.UseVisualStyleBackColor = true;
+            this.btnTwitterUsers.Click += new System.EventHandler(this.btnTwitterUsers_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(553, 394);
+            this.Controls.Add(this.btnTwitterUsers);
             this.Controls.Add(this.btnGraphServer);
             this.Controls.Add(this.btnTwitterList);
             this.Controls.Add(this.btnFlickrUsers);
@@ -162,6 +174,7 @@
         private System.Windows.Forms.Button btnFlickrUsers;
         private System.Windows.Forms.Button btnTwitterList;
         private System.Windows.Forms.Button btnGraphServer;
+        private System.Windows.Forms.Button btnTwitterUsers;
     }
 }
 

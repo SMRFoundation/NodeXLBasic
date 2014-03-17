@@ -381,8 +381,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     //  Method: EnumerateJsonValues()
     //
     /// <summary>
-    /// Gets a JSON response from a Twitter URL, then enumerates a specified
-    /// set of values in the response.
+    /// Gets a JSON response from a Twitter URL that uses cursoring, then
+    /// enumerates a specified set of values in the response.
     /// </summary>
     ///
     /// <param name="sUrl">
@@ -415,6 +415,13 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// <returns>
     /// The enumerated values are returned one-by-one, as an Object.
     /// </returns>
+    ///
+    /// <remarks>
+    /// It's assumed that the Twitter API specified by <paramref name="sUrl" />
+    /// uses Twitter's cursor scheme for paging, where a "cursor" URL parameter
+    /// specifies which page to get.  "GET friends/ids" is an example of such
+    /// an API.
+    /// </remarks>
     //*************************************************************************
 
     protected IEnumerable<Object>
@@ -564,10 +571,58 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     }
 
     //*************************************************************************
+    //  Method: TryGetScreenNameAndUserIDFromDictionary()
+    //
+    /// <summary>
+    /// Attempts to get a screen name and ID from a user value dictionary.
+    /// </summary>
+    ///
+    /// <param name="oUserValueDictionary">
+    /// Name/value pairs parsed from a Twitter JSON response.  Contains
+    /// information about a user.
+    /// </param>
+    ///
+    /// <param name="sScreenName">
+    /// Where the user's screen name gets stored if true is returned, in lower
+    /// case.  If false is returned, this gets set to null.
+    /// </param>
+    ///
+    /// <param name="sUserID">
+    /// Where the user ID gets stored if true is returned.  If false is
+    /// returned, this gets set to null.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if successful.
+    /// </returns>
+    //*************************************************************************
+
+    protected Boolean
+    TryGetScreenNameAndUserIDFromDictionary
+    (
+        Dictionary<String, Object> oUserValueDictionary,
+        out String sScreenName,
+        out String sUserID
+    )
+    {
+        Debug.Assert(oUserValueDictionary != null);
+        AssertValid();
+
+        sScreenName = sUserID = null;
+
+        return (
+            TryGetScreenNameFromDictionary(oUserValueDictionary,
+                out sScreenName)
+            &&
+            TryGetUserIDFromDictionary(oUserValueDictionary, out sUserID)
+            );
+    }
+
+    //*************************************************************************
     //  Method: TryGetUserIDFromDictionary()
     //
     /// <summary>
-    /// Attempts to get a user ID from a JSON value dictionary.
+    /// Attempts to get a user ID from a user value dictionary.
     /// </summary>
     ///
     /// <param name="oUserValueDictionary">
@@ -603,7 +658,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     //  Method: TryGetScreenNameFromDictionary()
     //
     /// <summary>
-    /// Attempts to get a user's screen name from a JSON value dictionary.
+    /// Attempts to get a user's screen name from a user value dictionary.
     /// </summary>
     ///
     /// <param name="oUserValueDictionary">
@@ -612,8 +667,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// </param>
     ///
     /// <param name="sScreenName">
-    /// Where the user's screen name gets stored if true is returned.  If false
-    /// is returned, this gets set to null.
+    /// Where the user's screen name gets stored if true is returned, in lower
+    /// case.  If false is returned, this gets set to null.
     /// </param>
     ///
     /// <returns>
@@ -631,8 +686,14 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Debug.Assert(oUserValueDictionary != null);
         AssertValid();
 
-        return ( TwitterJsonUtil.TryGetJsonValueFromDictionary(
-            oUserValueDictionary, "screen_name", out sScreenName) );
+        if ( TwitterJsonUtil.TryGetJsonValueFromDictionary(
+            oUserValueDictionary, "screen_name", out sScreenName) )
+        {
+            sScreenName = sScreenName.ToLower();
+            return (true);
+        }
+
+        return (false);
     }
 
     //*************************************************************************
@@ -1155,6 +1216,63 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
                 oGraphMLXmlDocument, sOtherScreenName, sScreenName,
                 "Follower");
         }
+
+        AppendStartTimeRelationshipDateUtcGraphMLAttributeValue(
+            oGraphMLXmlDocument, oEdgeXmlNode, oRequestStatistics);
+    }
+
+    //*************************************************************************
+    //  Method: AppendFollowsEdgeXmlNode()
+    //
+    /// <summary>
+    /// Appends an edge XML node for a follows relationship.
+    /// </summary>
+    ///
+    /// <param name="sScreenName1">
+    /// The first screen name to use.
+    /// </param>
+    ///
+    /// <param name="sScreenName2">
+    /// The second screen name to use.
+    /// </param>
+    ///
+    /// <param name="bScreenName1FollowsScreenName2">
+    /// true if sScreenName1 follows sScreenName2, false if sScreenName2
+    /// follows sScreenName1.
+    /// </param>
+    ///
+    /// <param name="oGraphMLXmlDocument">
+    /// GraphMLXmlDocument being populated.
+    /// </param>
+    ///
+    /// <param name="oRequestStatistics">
+    /// A <see cref="RequestStatistics" /> object that is keeping track of
+    /// requests made while getting the network.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AppendFollowsEdgeXmlNode
+    (
+        String sScreenName1,
+        String sScreenName2,
+        Boolean bScreenName1FollowsScreenName2,
+        GraphMLXmlDocument oGraphMLXmlDocument,
+        RequestStatistics oRequestStatistics
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sScreenName1) );
+        Debug.Assert( !String.IsNullOrEmpty(sScreenName2) );
+        Debug.Assert(oGraphMLXmlDocument != null);
+        Debug.Assert(oRequestStatistics != null);
+        AssertValid();
+
+        XmlNode oEdgeXmlNode = NodeXLGraphMLUtil.AppendEdgeXmlNode(
+            oGraphMLXmlDocument,
+            bScreenName1FollowsScreenName2 ? sScreenName1 : sScreenName2,
+            bScreenName1FollowsScreenName2 ? sScreenName2 : sScreenName1,
+            "Follows"
+            );
 
         AppendStartTimeRelationshipDateUtcGraphMLAttributeValue(
             oGraphMLXmlDocument, oEdgeXmlNode, oRequestStatistics);

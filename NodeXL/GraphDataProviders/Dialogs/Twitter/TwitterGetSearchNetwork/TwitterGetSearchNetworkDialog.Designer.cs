@@ -55,7 +55,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(196, 529);
+            this.btnOK.Location = new System.Drawing.Point(196, 482);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
             this.btnOK.TabIndex = 1;
@@ -66,7 +66,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(282, 529);
+            this.btnCancel.Location = new System.Drawing.Point(282, 482);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
             this.btnCancel.TabIndex = 2;
@@ -89,7 +89,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.pnlUserInputs.Controls.Add(this.label1);
             this.pnlUserInputs.Location = new System.Drawing.Point(12, 39);
             this.pnlUserInputs.Name = "pnlUserInputs";
-            this.pnlUserInputs.Size = new System.Drawing.Size(357, 480);
+            this.pnlUserInputs.Size = new System.Drawing.Size(357, 433);
             this.pnlUserInputs.TabIndex = 0;
             // 
             // label4
@@ -170,7 +170,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // 
             this.usrTwitterAuthorization.Location = new System.Drawing.Point(0, 299);
             this.usrTwitterAuthorization.Name = "usrTwitterAuthorization";
-            this.usrTwitterAuthorization.Size = new System.Drawing.Size(352, 180);
+            this.usrTwitterAuthorization.Size = new System.Drawing.Size(352, 133);
             this.usrTwitterAuthorization.Status = Smrf.NodeXL.GraphDataProviders.Twitter.TwitterAuthorizationStatus.HasTwitterAccountNotAuthorized;
             this.usrTwitterAuthorization.TabIndex = 12;
             // 
@@ -227,7 +227,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.slStatusLabel});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 562);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 515);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(374, 22);
             this.statusStrip1.SizingGrip = false;
@@ -254,7 +254,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(374, 584);
+            this.ClientSize = new System.Drawing.Size(374, 537);
             this.Controls.Add(this.usrTwitterRateLimits);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.pnlUserInputs);
