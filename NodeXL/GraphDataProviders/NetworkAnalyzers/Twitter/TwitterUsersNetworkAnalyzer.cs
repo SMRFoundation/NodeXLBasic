@@ -69,14 +69,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         /// followers of the users who were specified by the caller.
         /// </summary>
 
-        BasicPlusSomeFollows = 1,
-
-        /// <summary>
-        /// BasicPlusSomeFollows plus edges for the friends of the users who
-        /// were not specified by the caller.
-        /// </summary>
-
-        BasicPlusAllFollows = 2,
+        BasicPlusFollows = 1,
     }
 
     //*************************************************************************
@@ -371,37 +364,13 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
             bExpandStatusUrls, oRequestStatistics, oUserIDDictionary,
             oGraphMLXmlDocument);
 
-        if (
-            eNetworkType == NetworkType.BasicPlusSomeFollows
-            ||
-            eNetworkType == NetworkType.BasicPlusAllFollows
-            )
+        if (eNetworkType == NetworkType.BasicPlusFollows)
         {
             // Append vertices and edges for the users who are friends and
             // followers of the users who were specified by the caller.
 
             AppendSomeFriendsAndFollowers(
                 oRequestStatistics, oUserIDDictionary, oGraphMLXmlDocument);
-        }
-
-        if (eNetworkType == NetworkType.BasicPlusAllFollows)
-        {
-            // Append edges for the users who are friends of the users who were
-            // not specified by the caller.
-            //
-            // Note that it is not necessary to also add edges for the
-            // followers of those users, and that in fact doing so would result
-            // in duplicate edges.
-            //
-            // Let's say that users A and B were not specified by the caller,
-            // and that A follows B and B follows A.  Getting the friends of A
-            // will result in an A,B edge, getting the friends of B will result
-            // in a B,A edge, and that's what we want.  If we were to also get
-            // the followers of A and B, then each of these edges would be
-            // duplicated, and we don't want that.
-
-            AppendRemainingFriends(oRequestStatistics, oUserIDDictionary,
-                oGraphMLXmlDocument);
         }
     }
 
@@ -544,73 +513,6 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         AppendSomeFriendsOrFollowers(false, oRequestStatistics,
             oUserIDDictionary, oGraphMLXmlDocument);
-    }
-
-    //*************************************************************************
-    //  Method: AppendRemainingFriends()
-    //
-    /// <summary>
-    /// Appends edges for the friends and followers of the users who were not
-    /// specified by the caller.
-    /// </summary>
-    ///
-    /// <param name="oRequestStatistics">
-    /// A <see cref="RequestStatistics" /> object that is keeping track of
-    /// requests made while getting the network.
-    /// </param>
-    ///
-    /// <param name="oUserIDDictionary">
-    /// The key is the Twitter user ID and the value is the corresponding
-    /// TwitterUser.
-    /// </param>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// The GraphMLXmlDocument to populate with the requested network.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    AppendRemainingFriends
-    (
-        RequestStatistics oRequestStatistics,
-        Dictionary<String, TwitterUser> oUserIDDictionary,
-        GraphMLXmlDocument oGraphMLXmlDocument
-    )
-    {
-        Debug.Assert(oRequestStatistics != null);
-        Debug.Assert(oUserIDDictionary != null);
-        Debug.Assert(oGraphMLXmlDocument != null);
-        AssertValid();
-
-        // Get the screen names of the users who were not specified by the
-        // caller.
-
-        foreach ( String sScreenName in
-            GetScreenNames( oUserIDDictionary, false) )
-        {
-            // Get the IDs of the user's friends who qualify for follow edges.
-
-            String[] asQualifiedFriendUserIDs =
-                GetQualifiedFriendUserIDs(sScreenName, oRequestStatistics,
-                    oUserIDDictionary);
-
-            foreach ( Dictionary<String, Object> oUserValueDictionary in
-
-                EnumerateUserValueDictionaries(asQualifiedFriendUserIDs, true,
-                    oRequestStatistics)
-                )
-            {
-                String sFriendScreenName, sFriendUserID;
-
-                if ( TryGetScreenNameAndUserIDFromDictionary(
-                    oUserValueDictionary, out sFriendScreenName,
-                    out sFriendUserID) )
-                {
-                    AppendFollowsEdgeXmlNode(sScreenName, sFriendScreenName,
-                        true, oGraphMLXmlDocument, oRequestStatistics);
-                }
-            }
-        }
     }
 
     //*************************************************************************
@@ -1409,76 +1311,6 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: GetQualifiedFriendUserIDs()
-    //
-    /// <summary>
-    /// Gets the IDs of a user's friends who qualify for follow edges.
-    /// </summary>
-    ///
-    /// <param name="sScreenName">
-    /// The user's screen name.
-    /// </param>
-    ///
-    /// <param name="oRequestStatistics">
-    /// A <see cref="RequestStatistics" /> object that is keeping track of
-    /// requests made while getting the network.
-    /// </param>
-    ///
-    /// <param name="oUserIDDictionary">
-    /// The key is the Twitter user ID and the value is the corresponding
-    /// TwitterUser.
-    /// </param>
-    ///
-    /// <returns>
-    /// An array of qualified friend user IDs.
-    /// </returns>
-    //*************************************************************************
-
-    protected String[]
-    GetQualifiedFriendUserIDs
-    (
-        String sScreenName,
-        RequestStatistics oRequestStatistics,
-        Dictionary<String, TwitterUser> oUserIDDictionary
-    )
-    {
-        Debug.Assert( !String.IsNullOrEmpty(sScreenName) );
-        Debug.Assert(oRequestStatistics != null);
-        Debug.Assert(oUserIDDictionary != null);
-        AssertValid();
-
-        // Get the user's friends.
-
-        String[] asFriendUserIDs = GetFriendOrFollowerUserIDs(
-            sScreenName, true, oRequestStatistics);
-
-        List<String> oQualifiedFriendUserIDs = new List<String>();
-
-        foreach (String sFriendUserID in asFriendUserIDs)
-        {
-            TwitterUser oFriend;
-
-            if (
-                // The friend is already in the network...
-
-                oUserIDDictionary.TryGetValue(sFriendUserID, out oFriend)
-
-                &&
-
-                // and the friend is not one of the users specified by the
-                // caller...
-
-                !GetIsSpecifiedUser(oFriend)
-                )
-            {
-                oQualifiedFriendUserIDs.Add(sFriendUserID);
-            }
-        }
-
-        return ( oQualifiedFriendUserIDs.ToArray() );
-    }
-
-    //*************************************************************************
     //  Method: CreateGraphMLXmlDocument()
     //
     /// <summary>
@@ -1605,17 +1437,10 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 sNetworkType += ".";
                 break;
 
-            case TwitterUsersNetworkAnalyzer.NetworkType.BasicPlusSomeFollows:
+            case TwitterUsersNetworkAnalyzer.NetworkType.BasicPlusFollows:
 
                 sNetworkType +=
                     ", along with some of the follow relationships.";
-
-                break;
-
-            case TwitterUsersNetworkAnalyzer.NetworkType.BasicPlusAllFollows:
-
-                sNetworkType +=
-                    ", along with all of the follow relationships.";
 
                 break;
 

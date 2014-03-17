@@ -117,6 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="hllNetworkTypeBasicPlusFollows.Tag" xml:space="preserve">
+    <value>Twitter's "rate limiting" prevents NodeXL from importing follow information for more than fifteen users every fifteen minutes.  If you specify more than fifteen usernames (or you specify a Twitter List that has more than fifteen users), NodeXL will have to pause before Twitter allows it to continue importing the network.
+
+If you specify 120 users, for example, and you ask for follow information, then it will take at least two hours for NodeXL to import the network.</value>
+  </data>
   <metadata name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>

@@ -286,13 +286,8 @@ public partial class TwitterGetUsersNetworkDialog
         {
             return (TwitterUsersNetworkAnalyzer.NetworkType.Basic);
         }
-        else if (radNetworkTypeBasicPlusSomeFollows.Checked)
-        {
-            return (
-                TwitterUsersNetworkAnalyzer.NetworkType.BasicPlusSomeFollows);
-        }
 
-        return (TwitterUsersNetworkAnalyzer.NetworkType.BasicPlusAllFollows);
+		return (TwitterUsersNetworkAnalyzer.NetworkType.BasicPlusFollows);
     }
 
     //*************************************************************************
@@ -322,17 +317,12 @@ public partial class TwitterGetUsersNetworkDialog
                 radNetworkTypeBasic.Checked = true;
                 break;
 
-            case TwitterUsersNetworkAnalyzer.NetworkType.BasicPlusSomeFollows:
+            case TwitterUsersNetworkAnalyzer.NetworkType.BasicPlusFollows:
 
-                radNetworkTypeBasicPlusSomeFollows.Checked = true;
+                radNetworkTypeBasicPlusFollows.Checked = true;
                 break;
 
-            case TwitterUsersNetworkAnalyzer.NetworkType.BasicPlusAllFollows:
-
-                radNetworkTypeBasicPlusAllFollows.Checked = true;
-                break;
-
-            default:
+             default:
 
                 Debug.Assert(false);
                 break;
@@ -479,7 +469,7 @@ public partial class TwitterGetUsersNetworkDialog
 
         // The sample images displayed in the picNetworkType PictureBox are
         // stored as embedded resources.  The file names, without namespaces,
-        // are "Basic.png", "BasicPlusSomeFollows.png", etc.
+        // are "Basic.png", "BasicPlusFollows.png", etc.
 
         String sResourceName = String.Format(
 

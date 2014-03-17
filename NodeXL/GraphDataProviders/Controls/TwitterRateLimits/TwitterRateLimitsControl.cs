@@ -61,13 +61,13 @@ public partial class TwitterRateLimitsControl : UserControl
 
         FormUtil.ShowInformation(
 
-            "To protect its Web service, Twitter limits the number of"
-            + " information requests that can be made within a 15-minute"
-            + " period.  They call this \"rate limiting.\"  Depending on the"
-            + " types of networks you import, you can easily reach Twitter's"
-            + " limits."
+            "NodeXL imports all information about Twitter users and tweets"
+            + " directly from Twitter.  Twitter limits how often NodeXL can"
+            + " request such information.  They call this \"rate limiting.\""
+            + "  Depending on the type of network you import, you can easily"
+            + " reach Twitter's limits."
             + "\r\n\r\n"
-            + "When a limit is reached, NodeXL pauses for about 15 minutes"
+            + "When a limit is reached, NodeXL pauses for about fifteen minutes"
             + " until Twitter resets the limit.  These pauses can add up to a"
             + " long delay before the entire Twitter network is imported."
             + "\r\n\r\n"
@@ -101,7 +101,7 @@ public partial class TwitterRateLimitsControl : UserControl
     /// Text for the lnkRateLimiting LinkLabel.
 
     public const String RateLimitingLinkText = 
-        "Why this might take a long time: Twitter rate limiting";
+        "This might take a long time: Twitter rate limiting";
 
 
     //*************************************************************************
