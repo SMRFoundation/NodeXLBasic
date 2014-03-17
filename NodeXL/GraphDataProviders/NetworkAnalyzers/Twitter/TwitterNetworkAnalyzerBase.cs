@@ -213,28 +213,26 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: ReportProgressForFollowedOrFollowing()
+    //  Method: ReportProgressForFriendsOrFollowers()
     //
     /// <summary>
-    /// Reports progress before getting the people followed by a user or the
-    /// people following a user.
+    /// Reports progress before getting a user's friends or followers.
     /// </summary>
     ///
     /// <param name="sScreenName">
-    /// The user' screen name.
+    /// The user's screen name.
     /// </param>
     ///
-    /// <param name="bFollowed">
-    /// true if getting the people followed by the user, false if getting the
-    /// people following the user.
+    /// <param name="bReportProgressForFriends">
+    /// true if getting the user's friends, false if getting his followers.
     /// </param>
     //*************************************************************************
 
     protected void
-    ReportProgressForFollowedOrFollowing
+    ReportProgressForFriendsOrFollowers
     (
         String sScreenName,
-        Boolean bFollowed
+        Boolean bReportProgressForFriends
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sScreenName) );
@@ -242,9 +240,9 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
         ReportProgress( String.Format(
 
-            "Getting people {0} \"{1}\"."
+            "Getting {0} for \"{1}\"."
             ,
-            bFollowed ? "followed by" : "following",
+            bReportProgressForFriends ? "friends" : "followers",
             sScreenName
             ) );
     }
@@ -458,8 +456,8 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// The screen name to get the friends or followers for.
     /// </param>
     ///
-    /// <param name="bFollowed">
-    /// true to get the followed IDs, false to get the follower IDs.
+    /// <param name="bEnumerateFriendIDs">
+    /// true to enumerate the friend IDs, false to enumerate the follower IDs.
     /// </param>
     ///
     /// <param name="iMaximumPeoplePerRequest">
@@ -481,7 +479,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     EnumerateFriendOrFollowerIDs
     (
         String sScreenName,
-        Boolean bFollowed,
+        Boolean bEnumerateFriendIDs,
         Int32 iMaximumPeoplePerRequest,
         RequestStatistics oRequestStatistics
     )
@@ -496,7 +494,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             "{0}{1}.json?screen_name={2}"
             ,
             TwitterApiUrls.Rest,
-            bFollowed ? "friends/ids" : "followers/ids",
+            bEnumerateFriendIDs ? "friends/ids" : "followers/ids",
             TwitterUtil.EncodeUrlParameter(sScreenName)
             );
 
@@ -1016,216 +1014,10 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: AppendFollowedOrFollowingEdgeXmlNodes()
-    //
-    /// <overloads>
-    /// Appends edge XML nodes for followed or following relationships.
-    /// </overloads>
-    ///
-    /// <summary>
-    /// Appends edge XML nodes for the followed or following relationships in
-    /// an entire network.
-    /// </summary>
-    ///
-    /// <param name="oUserIDDictionary">
-    /// The key is the Twitter user ID and the value is the corresponding
-    /// TwitterUser.
-    /// </param>
-    ///
-    /// <param name="bFollowed">
-    /// true to append followed edges, false to append following edges.
-    /// </param>
-    ///
-    /// <param name="iMaximumPeoplePerRequest">
-    /// Maximum number of people to request for each query, or Int32.MaxValue
-    /// for no limit.
-    /// </param>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
-    /// </param>
-    ///
-    /// <param name="oRequestStatistics">
-    /// A <see cref="RequestStatistics" /> object that is keeping track of
-    /// requests made while getting the network.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    AppendFollowedOrFollowingEdgeXmlNodes
-    (
-        Dictionary<String, TwitterUser> oUserIDDictionary,
-        Boolean bFollowed,
-        Int32 iMaximumPeoplePerRequest,
-        GraphMLXmlDocument oGraphMLXmlDocument,
-        RequestStatistics oRequestStatistics
-    )
-    {
-        Debug.Assert(oUserIDDictionary != null);
-        Debug.Assert(iMaximumPeoplePerRequest > 0);
-        Debug.Assert(oGraphMLXmlDocument != null);
-        Debug.Assert(oRequestStatistics != null);
-        AssertValid();
-
-        AppendFollowedOrFollowingEdgeXmlNodes(
-
-            TwitterGraphMLUtil.TwitterUsersToUniqueScreenNames(
-                oUserIDDictionary.Values),
-
-            oUserIDDictionary, bFollowed, iMaximumPeoplePerRequest,
-            oGraphMLXmlDocument, oRequestStatistics);
-    }
-
-    //*************************************************************************
-    //  Method: AppendFollowedOrFollowingEdgeXmlNodes()
+    //  Method: AppendFriendOrFollowerEdgeXmlNode()
     //
     /// <summary>
-    /// Appends edge XML nodes for the followed or following relationships in
-    /// a specified collection of screen names.
-    /// </summary>
-    ///
-    /// <param name="oScreenNames">
-    /// Collection of screen names to append edges for.
-    /// </param>
-    ///
-    /// <param name="oUserIDDictionary">
-    /// The key is the Twitter user ID and the value is the corresponding
-    /// TwitterUser.
-    /// </param>
-    ///
-    /// <param name="bFollowed">
-    /// true to append followed edges, false to append following edges.
-    /// </param>
-    ///
-    /// <param name="iMaximumPeoplePerRequest">
-    /// Maximum number of people to request for each query, or Int32.MaxValue
-    /// for no limit.
-    /// </param>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
-    /// </param>
-    ///
-    /// <param name="oRequestStatistics">
-    /// A <see cref="RequestStatistics" /> object that is keeping track of
-    /// requests made while getting the network.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    AppendFollowedOrFollowingEdgeXmlNodes
-    (
-        ICollection<String> oScreenNames,
-        Dictionary<String, TwitterUser> oUserIDDictionary,
-        Boolean bFollowed,
-        Int32 iMaximumPeoplePerRequest,
-        GraphMLXmlDocument oGraphMLXmlDocument,
-        RequestStatistics oRequestStatistics
-    )
-    {
-        Debug.Assert(oScreenNames != null);
-        Debug.Assert(oUserIDDictionary != null);
-        Debug.Assert(iMaximumPeoplePerRequest > 0);
-        Debug.Assert(oGraphMLXmlDocument != null);
-        Debug.Assert(oRequestStatistics != null);
-        AssertValid();
-
-        foreach (String sScreenName in oScreenNames)
-        {
-            ReportProgressForFollowedOrFollowing(sScreenName, bFollowed);
-
-            // We need to find out who are the followed (or followers) of
-            // sScreenName, and see if any of them are in oUserIDDictionary,
-            // which means they are in the network.
-
-            foreach ( String sOtherUserID in EnumerateFriendOrFollowerIDs(
-                sScreenName, bFollowed, iMaximumPeoplePerRequest,
-                oRequestStatistics) )
-            {
-                TwitterUser oOtherTwitterUser;
-
-                if ( oUserIDDictionary.TryGetValue(sOtherUserID,
-                    out oOtherTwitterUser) )
-                {
-                    // sScreenName is a followed (or follower) of sOtherUserID.
-
-                    AppendFollowedOrFollowingEdgeXmlNode(sScreenName,
-                        oOtherTwitterUser.ScreenName, bFollowed,
-                        oGraphMLXmlDocument, oRequestStatistics);
-                }
-            }
-        }
-    }
-
-    //*************************************************************************
-    //  Method: AppendFollowedOrFollowingEdgeXmlNode()
-    //
-    /// <summary>
-    /// Appends an edge XML node for a followed or following relationship.
-    /// </summary>
-    ///
-    /// <param name="sScreenName">
-    /// The first screen name to use.
-    /// </param>
-    ///
-    /// <param name="sOtherScreenName">
-    /// The second screen name to use.
-    /// </param>
-    ///
-    /// <param name="bFollowed">
-    /// true to append a followed edge, false to append a following edge.
-    /// </param>
-    ///
-    /// <param name="oGraphMLXmlDocument">
-    /// GraphMLXmlDocument being populated.
-    /// </param>
-    ///
-    /// <param name="oRequestStatistics">
-    /// A <see cref="RequestStatistics" /> object that is keeping track of
-    /// requests made while getting the network.
-    /// </param>
-    //*************************************************************************
-
-    protected void
-    AppendFollowedOrFollowingEdgeXmlNode
-    (
-        String sScreenName,
-        String sOtherScreenName,
-        Boolean bFollowed,
-        GraphMLXmlDocument oGraphMLXmlDocument,
-        RequestStatistics oRequestStatistics
-    )
-    {
-        Debug.Assert( !String.IsNullOrEmpty(sScreenName) );
-        Debug.Assert( !String.IsNullOrEmpty(sOtherScreenName) );
-        Debug.Assert(oGraphMLXmlDocument != null);
-        Debug.Assert(oRequestStatistics != null);
-        AssertValid();
-
-        XmlNode oEdgeXmlNode;
-
-        if (bFollowed)
-        {
-            oEdgeXmlNode = NodeXLGraphMLUtil.AppendEdgeXmlNode(
-                oGraphMLXmlDocument, sScreenName, sOtherScreenName,
-                "Followed");
-        }
-        else
-        {
-            oEdgeXmlNode = NodeXLGraphMLUtil.AppendEdgeXmlNode(
-                oGraphMLXmlDocument, sOtherScreenName, sScreenName,
-                "Follower");
-        }
-
-        AppendStartTimeRelationshipDateUtcGraphMLAttributeValue(
-            oGraphMLXmlDocument, oEdgeXmlNode, oRequestStatistics);
-    }
-
-    //*************************************************************************
-    //  Method: AppendFollowsEdgeXmlNode()
-    //
-    /// <summary>
-    /// Appends an edge XML node for a follows relationship.
+    /// Appends an edge XML node for a friend or follower relationship.
     /// </summary>
     ///
     /// <param name="sScreenName1">
@@ -1236,9 +1028,10 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// The second screen name to use.
     /// </param>
     ///
-    /// <param name="bScreenName1FollowsScreenName2">
-    /// true if sScreenName1 follows sScreenName2, false if sScreenName2
-    /// follows sScreenName1.
+    /// <param name="bAppendFriendEdgeXmlNode">
+    /// true if sScreenName2 is a friend of sScreenName1 (which means that
+    /// sScreenName1 follows sScreenName2), or false if sScreenName2
+    /// is a follower of sScreenName1.
     /// </param>
     ///
     /// <param name="oGraphMLXmlDocument">
@@ -1252,11 +1045,11 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     //*************************************************************************
 
     protected void
-    AppendFollowsEdgeXmlNode
+    AppendFriendOrFollowerEdgeXmlNode
     (
         String sScreenName1,
         String sScreenName2,
-        Boolean bScreenName1FollowsScreenName2,
+        Boolean bAppendFriendEdgeXmlNode,
         GraphMLXmlDocument oGraphMLXmlDocument,
         RequestStatistics oRequestStatistics
     )
@@ -1267,10 +1060,13 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         Debug.Assert(oRequestStatistics != null);
         AssertValid();
 
+        // Don't use "friend" or "follower" terminology here, which can be
+        // confusing.  Instead, simply indicate who follows whom.
+
         XmlNode oEdgeXmlNode = NodeXLGraphMLUtil.AppendEdgeXmlNode(
             oGraphMLXmlDocument,
-            bScreenName1FollowsScreenName2 ? sScreenName1 : sScreenName2,
-            bScreenName1FollowsScreenName2 ? sScreenName2 : sScreenName1,
+            bAppendFriendEdgeXmlNode ? sScreenName1 : sScreenName2,
+            bAppendFriendEdgeXmlNode ? sScreenName2 : sScreenName1,
             "Follows"
             );
 
@@ -1319,10 +1115,10 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
             HttpStatusCode.Unauthorized,
 
             // Occurs when the Twitter search API returns a tweet from a user,
-            // but then refuses to provide a list of the people followed by the
-            // user, probably because the user has protected her account.
-            // (But if she has protected her account, why is the search API
-            // returning one of her tweets?)
+            // but then refuses to provide a list of the user's friends,
+            // probably because the user has protected her account.  (But if
+            // she has protected her account, why is the search API returning
+            // one of her tweets?)
 
             HttpStatusCode.NotFound,
 
@@ -1351,22 +1147,6 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// expressions.
 
     protected TwitterStatusTextParser m_oTwitterStatusTextParser;
-
-
-    //*************************************************************************
-    //  Embedded class: GetNetworkAsyncArgsBase()
-    //
-    /// <summary>
-    /// Base class for classes that contain the arguments needed to
-    /// asynchronously get a Twitter network.
-    /// </summary>
-    //*************************************************************************
-
-    protected class GetNetworkAsyncArgsBase
-    {
-        ///
-        public Int32 MaximumPeoplePerRequest;
-    };
 }
 
 }

@@ -175,8 +175,8 @@ public class LayoutManagerForRibbonDropDown : LayoutManager
                 }
 
                 RibbonDropDownItem oItem =
-					Globals.Factory.GetRibbonFactory()
-					.CreateRibbonDropDownItem();
+                    Globals.Factory.GetRibbonFactory()
+                    .CreateRibbonDropDownItem();
 
                 oItem.Label = oItem.ScreenTip = oLayoutInfo.Text;
                 oItem.SuperTip = oLayoutInfo.Description;
@@ -194,7 +194,7 @@ public class LayoutManagerForRibbonDropDown : LayoutManager
         m_oRibbonDropDown.SelectedItemIndex = iIndexToSelect;
 
         m_oRibbonDropDown.SelectionChanged += new RibbonControlEventHandler(
-			this.RibbonDropDown_SelectionChanged);
+            this.RibbonDropDown_SelectionChanged);
     }
 
     //*************************************************************************

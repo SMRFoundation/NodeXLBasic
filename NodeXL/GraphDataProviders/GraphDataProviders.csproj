@@ -188,23 +188,11 @@
     <Compile Include="Dialogs\Twitter\TwitterAuthorizing\TwitterAuthorizingDialog.Designer.cs">
       <DependentUpon>TwitterAuthorizingDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\Twitter\TwitterGetListNetwork\TwitterGetListNetworkDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\Twitter\TwitterGetListNetwork\TwitterGetListNetworkDialog.designer.cs">
-      <DependentUpon>TwitterGetListNetworkDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="Dialogs\Twitter\TwitterGetSearchNetwork\TwitterGetSearchNetworkDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Dialogs\Twitter\TwitterGetSearchNetwork\TwitterGetSearchNetworkDialog.designer.cs">
       <DependentUpon>TwitterGetSearchNetworkDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Dialogs\Twitter\TwitterGetUserNetwork\TwitterGetUserNetworkDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\Twitter\TwitterGetUserNetwork\TwitterGetUserNetworkDialog.designer.cs">
-      <DependentUpon>TwitterGetUserNetworkDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\Twitter\TwitterGetUsersNetwork\TwitterGetUsersNetworkDialog.cs">
       <SubType>Form</SubType>
@@ -236,9 +224,7 @@
     <Compile Include="GraphDataProviders\GraphServer\GraphServerNetworkGraphDataProvider.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GraphDataProviders\Twitter\TwitterListNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\Twitter\TwitterSearchNetworkGraphDataProvider.cs" />
-    <Compile Include="GraphDataProviders\Twitter\TwitterUserNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\Twitter\TwitterUsersNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\YouTube\YouTubeUserNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\YouTube\YouTubeVideoNetworkGraphDataProvider.cs" />
@@ -254,10 +240,8 @@
     <Compile Include="NetworkAnalyzers\Twitter\Authorization\TwitterAccessToken.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\Authorization\TwitterAuthorizationStatus.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TweetDateRangeAnalyzer.cs" />
-    <Compile Include="NetworkAnalyzers\Twitter\TwitterListNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TwitterNetworkAnalyzerBase.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TwitterSearchNetworkAnalyzer.cs" />
-    <Compile Include="NetworkAnalyzers\Twitter\TwitterUserNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\TwitterUsersNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\YouTube\YouTubeNetworkAnalyzerBase.cs" />
     <Compile Include="NetworkAnalyzers\YouTube\YouTubeUserNetworkAnalyzer.cs" />
@@ -296,14 +280,8 @@
     <EmbeddedResource Include="Dialogs\Twitter\TwitterAuthorizing\TwitterAuthorizingDialog.resx">
       <DependentUpon>TwitterAuthorizingDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\Twitter\TwitterGetListNetwork\TwitterGetListNetworkDialog.resx">
-      <DependentUpon>TwitterGetListNetworkDialog.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\Twitter\TwitterGetSearchNetwork\TwitterGetSearchNetworkDialog.resx">
       <DependentUpon>TwitterGetSearchNetworkDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\Twitter\TwitterGetUserNetwork\TwitterGetUserNetworkDialog.resx">
-      <DependentUpon>TwitterGetUserNetworkDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\Twitter\TwitterGetUsersNetwork\TwitterGetUsersNetworkDialog.resx">
       <DependentUpon>TwitterGetUsersNetworkDialog.cs</DependentUpon>

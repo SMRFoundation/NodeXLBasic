@@ -112,7 +112,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.groupBox2.Location = new System.Drawing.Point(0, 178);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(678, 205);
-            this.groupBox2.TabIndex = 0;
+            this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "What to import";
             // 
@@ -125,7 +125,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.hllNetworkTypeBasicPlusFollows.TabIndex = 4;
             this.hllNetworkTypeBasicPlusFollows.TabStop = true;
             this.hllNetworkTypeBasicPlusFollows.Tag = resources.GetString("hllNetworkTypeBasicPlusFollows.Tag");
-            this.hllNetworkTypeBasicPlusFollows.Text = "How long will this take?";
+            this.hllNetworkTypeBasicPlusFollows.Text = "How long will the follow information take?";
             // 
             // picNetworkType
             // 
@@ -171,10 +171,10 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.radNetworkTypeBasic.AutoSize = true;
             this.radNetworkTypeBasic.Location = new System.Drawing.Point(15, 35);
             this.radNetworkTypeBasic.Name = "radNetworkTypeBasic";
-            this.radNetworkTypeBasic.Size = new System.Drawing.Size(124, 17);
+            this.radNetworkTypeBasic.Size = new System.Drawing.Size(92, 17);
             this.radNetworkTypeBasic.TabIndex = 0;
             this.radNetworkTypeBasic.TabStop = true;
-            this.radNetworkTypeBasic.Text = "&Basic network: quick";
+            this.radNetworkTypeBasic.Text = "&Basic network";
             this.radNetworkTypeBasic.UseVisualStyleBackColor = true;
             this.radNetworkTypeBasic.CheckedChanged += new System.EventHandler(this.OnNetworkTypeChanged);
             // 

@@ -196,7 +196,7 @@ public class PerWorkbookSettings : WorksheetReaderBase
         {
             Debug.Assert( !String.IsNullOrEmpty(value) );
 
-			value = PreserveWorkbookSettingsBackwardCompatibility(value);
+            value = PreserveWorkbookSettingsBackwardCompatibility(value);
 
             Int32 iWorkbookSettingsCellCount = 1;
 

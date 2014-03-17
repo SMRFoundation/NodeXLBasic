@@ -59,9 +59,8 @@ public class GroupInfo : Object
         m_bIsCollapsed = isCollapsed;
         m_sCollapsedAttributes = collapsedAttributes;
         m_oCollapsedLocation = null;
-
-		// Metric for GIB layouts
         m_Connectivity = 0;
+
         // AssertValid();
     }
     
@@ -380,6 +379,7 @@ public class GroupInfo : Object
         // m_bIsCollapsed
         // m_sCollapsedAttributes
         // m_oCollapsedLocation
+        // m_Connectivity
     }
 
 
@@ -391,7 +391,8 @@ public class GroupInfo : Object
 
     protected String m_sName;
 
-	/// Group's connectivity metric for GIB layout algorithm
+    /// Group's connectivity metric for GIB layout algorithm
+
     protected int m_Connectivity;
 
     /// Collection of the group's vertices.

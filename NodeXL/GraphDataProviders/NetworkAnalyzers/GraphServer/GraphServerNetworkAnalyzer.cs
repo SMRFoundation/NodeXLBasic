@@ -479,7 +479,7 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
             iVertexCount.ToString(Int32FormatString),
             StringUtil.MakePlural("user", iVertexCount),
             sSearchTerm,
-			iVertexCount > 1 ? "were" : "was"
+            iVertexCount > 1 ? "were" : "was"
             );
 
         oNetworkDescriber.AddNetworkTime(NetworkSource);

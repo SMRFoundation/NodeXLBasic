@@ -982,7 +982,7 @@ public partial class ThisWorkbook
 
         if ( ( new ImportDataUserSettingsDialog(
             oImportDataUserSettings, oPlugInUserSettings, this) ).ShowDialog()
-			== DialogResult.OK )
+            == DialogResult.OK )
         {
             oImportDataUserSettings.Save();
             oPlugInUserSettings.Save();

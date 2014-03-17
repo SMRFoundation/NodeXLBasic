@@ -369,7 +369,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
             // Append vertices and edges for the users who are friends and
             // followers of the users who were specified by the caller.
 
-            AppendSomeFriendsAndFollowers(
+            AppendFriendsAndFollowers(
                 oRequestStatistics, oUserIDDictionary, oGraphMLXmlDocument);
         }
     }
@@ -473,7 +473,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: AppendSomeFriendsAndFollowers()
+    //  Method: AppendFriendsAndFollowers()
     //
     /// <summary>
     /// Appends vertices and edges for the users who are friends and followers
@@ -496,7 +496,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     //*************************************************************************
 
     protected void
-    AppendSomeFriendsAndFollowers
+    AppendFriendsAndFollowers
     (
         RequestStatistics oRequestStatistics,
         Dictionary<String, TwitterUser> oUserIDDictionary,
@@ -508,10 +508,10 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
-        AppendSomeFriendsOrFollowers(true, oRequestStatistics,
+        AppendFriendsOrFollowers(true, oRequestStatistics,
             oUserIDDictionary, oGraphMLXmlDocument);
 
-        AppendSomeFriendsOrFollowers(false, oRequestStatistics,
+        AppendFriendsOrFollowers(false, oRequestStatistics,
             oUserIDDictionary, oGraphMLXmlDocument);
     }
 
@@ -730,7 +730,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: AppendSomeFriendsOrFollowers()
+    //  Method: AppendFriendsOrFollowers()
     //
     /// <summary>
     /// Appends vertices and edges for the users who are friends or followers
@@ -757,7 +757,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     //*************************************************************************
 
     protected void
-    AppendSomeFriendsOrFollowers
+    AppendFriendsOrFollowers
     (
         Boolean bAppendFriends,
         RequestStatistics oRequestStatistics,
@@ -798,7 +798,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
                         oUserIDDictionary, oUserValueDictionary,
                         out oFriendOrFollower);
 
-                    AppendFollowsEdgeXmlNode(sScreenName,
+                    AppendFriendOrFollowerEdgeXmlNode(sScreenName,
                         sFriendOrFollowerScreenName, bAppendFriends,
                         oGraphMLXmlDocument, oRequestStatistics);
                 }
@@ -955,7 +955,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         List<String> oFriendOrFollowerIDs = new List<String>();
 
-        ReportProgressForFollowedOrFollowing(sScreenName, bGetFriendUserIDs);
+        ReportProgressForFriendsOrFollowers(sScreenName, bGetFriendUserIDs);
 
         foreach ( String sFriendOrFollowerID in
 

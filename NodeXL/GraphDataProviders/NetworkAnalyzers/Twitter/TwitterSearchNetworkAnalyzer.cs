@@ -371,12 +371,11 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         if ( WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.FollowedEdges) )
         {
-            // Look at the people followed by each author, and if a followed
-            // has also tweeted the search term, add an edge between the author
-            // and the followed.
+            // Look at each author's friends, and if a friend has also tweeted
+            // the search term, add an edge between the author and the friend.
 
-            AppendFollowedOrFollowingEdgeXmlNodes(oUserIDDictionary, true,
-                MaximumFollowers, oGraphMLXmlDocument, oRequestStatistics);
+            AppendFriendEdgeXmlNodes(oUserIDDictionary, MaximumFollowers,
+                oGraphMLXmlDocument, oRequestStatistics);
         }
 
         AppendRepliesToAndMentionsEdgeXmlNodes(oGraphMLXmlDocument,
@@ -579,6 +578,137 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             TwitterSearchNetworkGraphMLUtil.TryAppendVertexXmlNode(
                 oUserValueDictionary, bIncludeStatistics, false,
                 oGraphMLXmlDocument, oUserIDDictionary, out oTwitterUser);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: AppendFriendEdgeXmlNodes()
+    //
+    /// <overloads>
+    /// Appends edge XML nodes for friends.
+    /// </overloads>
+    ///
+    /// <summary>
+    /// Appends edge XML nodes for the friends in the entire network.
+    /// </summary>
+    ///
+    /// <param name="oUserIDDictionary">
+    /// The key is the Twitter user ID and the value is the corresponding
+    /// TwitterUser.
+    /// </param>
+    ///
+    /// <param name="iMaximumPeoplePerRequest">
+    /// Maximum number of people to request for each query, or Int32.MaxValue
+    /// for no limit.
+    /// </param>
+    ///
+    /// <param name="oGraphMLXmlDocument">
+    /// GraphMLXmlDocument being populated.
+    /// </param>
+    ///
+    /// <param name="oRequestStatistics">
+    /// A <see cref="RequestStatistics" /> object that is keeping track of
+    /// requests made while getting the network.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AppendFriendEdgeXmlNodes
+    (
+        Dictionary<String, TwitterUser> oUserIDDictionary,
+        Int32 iMaximumPeoplePerRequest,
+        GraphMLXmlDocument oGraphMLXmlDocument,
+        RequestStatistics oRequestStatistics
+    )
+    {
+        Debug.Assert(oUserIDDictionary != null);
+        Debug.Assert(iMaximumPeoplePerRequest > 0);
+        Debug.Assert(oGraphMLXmlDocument != null);
+        Debug.Assert(oRequestStatistics != null);
+        AssertValid();
+
+        AppendFriendEdgeXmlNodes(
+
+            TwitterGraphMLUtil.TwitterUsersToUniqueScreenNames(
+                oUserIDDictionary.Values),
+
+            oUserIDDictionary, iMaximumPeoplePerRequest, oGraphMLXmlDocument,
+            oRequestStatistics);
+    }
+
+    //*************************************************************************
+    //  Method: AppendFriendEdgeXmlNodes()
+    //
+    /// <summary>
+    /// Appends edge XML nodes for the friends of a specified collection of
+    /// screen names.
+    /// </summary>
+    ///
+    /// <param name="oScreenNames">
+    /// Collection of screen names to append edges for.
+    /// </param>
+    ///
+    /// <param name="oUserIDDictionary">
+    /// The key is the Twitter user ID and the value is the corresponding
+    /// TwitterUser.
+    /// </param>
+    ///
+    /// <param name="iMaximumPeoplePerRequest">
+    /// Maximum number of people to request for each query, or Int32.MaxValue
+    /// for no limit.
+    /// </param>
+    ///
+    /// <param name="oGraphMLXmlDocument">
+    /// GraphMLXmlDocument being populated.
+    /// </param>
+    ///
+    /// <param name="oRequestStatistics">
+    /// A <see cref="RequestStatistics" /> object that is keeping track of
+    /// requests made while getting the network.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AppendFriendEdgeXmlNodes
+    (
+        ICollection<String> oScreenNames,
+        Dictionary<String, TwitterUser> oUserIDDictionary,
+        Int32 iMaximumPeoplePerRequest,
+        GraphMLXmlDocument oGraphMLXmlDocument,
+        RequestStatistics oRequestStatistics
+    )
+    {
+        Debug.Assert(oScreenNames != null);
+        Debug.Assert(oUserIDDictionary != null);
+        Debug.Assert(iMaximumPeoplePerRequest > 0);
+        Debug.Assert(oGraphMLXmlDocument != null);
+        Debug.Assert(oRequestStatistics != null);
+        AssertValid();
+
+        foreach (String sScreenName in oScreenNames)
+        {
+            ReportProgressForFriendsOrFollowers(sScreenName, true);
+
+            // We need to find out who are the friends of sScreenName, and see
+            // if any of them are in oUserIDDictionary, which means they are in
+            // the network.
+
+            foreach ( String sOtherUserID in EnumerateFriendOrFollowerIDs(
+                sScreenName, true, iMaximumPeoplePerRequest,
+                oRequestStatistics) )
+            {
+                TwitterUser oOtherTwitterUser;
+
+                if ( oUserIDDictionary.TryGetValue(sOtherUserID,
+                    out oOtherTwitterUser) )
+                {
+                    // oOtherTwitterUser is a friend of sScreenName.
+
+                    AppendFriendOrFollowerEdgeXmlNode(sScreenName,
+                        oOtherTwitterUser.ScreenName, true,
+                        oGraphMLXmlDocument, oRequestStatistics);
+                }
+            }
         }
     }
 

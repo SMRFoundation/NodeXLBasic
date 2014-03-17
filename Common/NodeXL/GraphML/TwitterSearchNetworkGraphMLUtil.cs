@@ -259,10 +259,10 @@ public static class TwitterSearchNetworkGraphMLUtil : Object
         Debug.Assert(statusValueDictionary != null);
         Debug.Assert(twitterUser != null);
 
-		TwitterStatus twitterStatus;
+        TwitterStatus twitterStatus;
 
-		if ( !TwitterStatus.TryFromStatusValueDictionary(statusValueDictionary,
-			expandStatusUrls, out twitterStatus) )
+        if ( !TwitterStatus.TryFromStatusValueDictionary(statusValueDictionary,
+            expandStatusUrls, out twitterStatus) )
         {
             return (false);
         }

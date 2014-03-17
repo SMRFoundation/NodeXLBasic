@@ -25,19 +25,9 @@ public partial class MainForm : Form
         InitializeComponent();
     }
 
-    private void btnTwitterUser_Click(object sender, EventArgs e)
-    {
-        GetGraphData( new TwitterUserNetworkGraphDataProvider() );
-    }
-
     private void btnTwitterSearch_Click(object sender, EventArgs e)
     {
         GetGraphData( new TwitterSearchNetworkGraphDataProvider() );
-    }
-
-    private void btnTwitterList_Click(object sender, EventArgs e)
-    {
-        GetGraphData( new TwitterListNetworkGraphDataProvider() );
     }
 
     private void btnTwitterUsers_Click(object sender, EventArgs e)

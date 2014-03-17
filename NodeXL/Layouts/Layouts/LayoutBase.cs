@@ -2396,10 +2396,10 @@ public abstract class LayoutBase : LayoutsBase, ILayout
     //*************************************************************************
     //  Class: GroupVertex
     //
-	/// <summary>
-	/// A special representation of a group used for calculating the 
+    /// <summary>
+    /// A special representation of a group used for calculating the 
     /// Force-Directed Group-in-a-Box layout.
-	/// </summary>
+    /// </summary>
     //*************************************************************************
 
     class GroupVertex : Vertex, MICHIVertex
@@ -2765,16 +2765,16 @@ public abstract class LayoutBase : LayoutsBase, ILayout
     //*************************************************************************
     //  Method: GetGroupsToLayOutConnectivity()
     //
-	/// <summary>
-	/// Gets the groups from the graph and ensures they have connectivity
+    /// <summary>
+    /// Gets the groups from the graph and ensures they have connectivity
     /// calculated.
-	/// </summary>
+    /// </summary>
     /// 
-	/// <param name="oGraph">
+    /// <param name="oGraph">
     /// The graph to examine.
     /// </param>
     /// 
-	/// <returns>
+    /// <returns>
     /// A list of GroupInfo objects from the graph sorted by connectivity.
     /// </returns>
     //*************************************************************************
@@ -2853,7 +2853,7 @@ public abstract class LayoutBase : LayoutsBase, ILayout
 
         IntergroupEdgeCalculator m_oIntergroupEdgeCalculator = new IntergroupEdgeCalculator();
 
-		// Currently uses undirected graph
+        // Currently uses undirected graph
         IList<IntergroupEdgeInfo> oIntergroupEdges =
             m_oIntergroupEdgeCalculator.CalculateGraphMetrics(oGraph,
                 new GroupInfo[] { g1, g2 }, false);

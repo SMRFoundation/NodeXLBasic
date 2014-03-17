@@ -20,18 +20,6 @@ NetworkType
     /// </summary>
 
     TwitterSearch,
-
-    /// <summary>
-    /// Twitter user network.
-    /// </summary>
-
-    TwitterUser,
-
-    /// <summary>
-    /// Twitter list network.
-    /// </summary>
-
-    TwitterList,
 }
 
 }

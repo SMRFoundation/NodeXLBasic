@@ -58,7 +58,7 @@ public partial class ImportDataUserSettingsDialog : ExcelTemplateForm
         Debug.Assert(thisWorkbook != null);
 
         m_oImportDataUserSettings = importDataUserSettings;
-		m_oPlugInUserSettings = plugInUserSettings;
+        m_oPlugInUserSettings = plugInUserSettings;
         m_oThisWorkbook = thisWorkbook;
 
         // Instantiate an object that saves and retrieves the position of this
@@ -212,7 +212,7 @@ public partial class ImportDataUserSettingsDialog : ExcelTemplateForm
         base.AssertValid();
 
         Debug.Assert(m_oImportDataUserSettings != null);
-		Debug.Assert(m_oPlugInUserSettings != null);
+        Debug.Assert(m_oPlugInUserSettings != null);
         Debug.Assert(m_oThisWorkbook != null);
         Debug.Assert(m_oImportDataUserSettingsDialogUserSettings != null);
     }
@@ -226,9 +226,9 @@ public partial class ImportDataUserSettingsDialog : ExcelTemplateForm
 
     protected ImportDataUserSettings m_oImportDataUserSettings;
 
-	/// The user's plug-in settings.
+    /// The user's plug-in settings.
 
-	protected PlugInUserSettings m_oPlugInUserSettings;
+    protected PlugInUserSettings m_oPlugInUserSettings;
 
     /// Workbook containing the graph contents.
 

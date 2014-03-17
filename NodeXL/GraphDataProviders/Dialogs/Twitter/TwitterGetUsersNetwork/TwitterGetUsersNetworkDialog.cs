@@ -287,7 +287,7 @@ public partial class TwitterGetUsersNetworkDialog
             return (TwitterUsersNetworkAnalyzer.NetworkType.Basic);
         }
 
-		return (TwitterUsersNetworkAnalyzer.NetworkType.BasicPlusFollows);
+        return (TwitterUsersNetworkAnalyzer.NetworkType.BasicPlusFollows);
     }
 
     //*************************************************************************
