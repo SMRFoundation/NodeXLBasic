@@ -116,4 +116,4 @@ function Main()
 	ProcessExcelTemplateCsprojFile $sPathRoot $iRevision
 }
 
-Main(320)
+Main(321)

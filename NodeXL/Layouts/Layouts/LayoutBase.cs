@@ -151,7 +151,7 @@ public abstract class LayoutBase : LayoutsBase, ILayout
     /// 
     /// foreach (IVertex vertex in nodeXLControl.Graph.Vertices)
     /// {
-    ///     groupInfo[ random.Next(0, Groups - 1) ].Vertices.Add(vertex);
+    ///     groupInfo[ random.Next(0, Groups - 1) ].Vertices.AddLast(vertex);
     /// }
     /// 
     /// // Store the group information as metadata on the graph.
