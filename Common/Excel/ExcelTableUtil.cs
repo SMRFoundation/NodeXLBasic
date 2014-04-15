@@ -1065,6 +1065,71 @@ public static class ExcelTableUtil
     }
 
     //*************************************************************************
+    //  Method: TryGetOrInsertTableColumn()
+    //
+    /// <summary>
+    /// Attempts to get a table column or insert the column if it doesn't
+    /// exist, and provides the ListColumn for the column.
+    /// </summary>
+    ///
+    /// <param name="table">
+    /// Table to get the column from.
+    /// </param>
+    ///
+    /// <param name="columnName">
+    /// Name of the column to get.
+    /// </param>
+    ///
+    /// <param name="oneBasedColumnIndex">
+    /// One-based index of the column after it is inserted.
+    /// </param>
+    ///
+    /// <param name="columnWidthChars">
+    /// Width of the added column, in characters, or <see
+    /// cref="AutoColumnWidth" /> to set the width automatically.
+    /// </param>
+    ///
+    /// <param name="columnStyle">
+    /// Style of the added column, or null to apply Excel's normal style.
+    /// Sample: "Bad".
+    /// </param>
+    ///
+    /// <param name="listColumn">
+    /// Where the column gets stored if true is returned.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if the column was retrieved or added.
+    /// </returns>
+    //*************************************************************************
+
+    public static Boolean
+    TryGetOrInsertTableColumn
+    (
+        ListObject table,
+        String columnName,
+        Int32 oneBasedColumnIndex,
+        Double columnWidthChars,
+        String columnStyle,
+        out ListColumn listColumn
+    )
+    {
+        Debug.Assert(table != null);
+        Debug.Assert( !String.IsNullOrEmpty(columnName) );
+        Debug.Assert(oneBasedColumnIndex >= 1);
+
+        Debug.Assert(columnWidthChars == AutoColumnWidth ||
+            columnWidthChars >= 0);
+
+        return (
+            TryGetTableColumn(table, columnName, out listColumn)
+            ||
+            TryInsertTableColumn(table, columnName, oneBasedColumnIndex,
+                columnWidthChars, columnStyle, out listColumn)
+            );
+    }
+
+    //*************************************************************************
     //  Method: TryGetTableColumnDataAndValues()
     //
     /// <summary>
@@ -2551,7 +2616,8 @@ public static class ExcelTableUtil
         Object oPosition;
         ListColumns oColumns = table.ListColumns;
         Int32 iColumns = oColumns.Count;
-        Double [] adColumnWidthChars = null;
+        Double [] adOriginalColumnWidthChars = null;
+        ExcelHiddenColumns oOriginalHiddenColumns = null;
 
         if (oneBasedColumnIndex == -1)
         {
@@ -2563,17 +2629,27 @@ public static class ExcelTableUtil
 
             // When inserting a column, Excel messes up the widths of the
             // columns after the insertion point.  Save the widths of those
-            // columns.
+            // columns, which will be used to restore the column widths.
+            //
+            // Note that this workaround is effective only if all columns are
+            // shown, so temporarily show them all.
+            //
+            // (Is there a simpler solution for this?  This is too
+            // complicated.)
+
+            oOriginalHiddenColumns = ExcelColumnHider.ShowHiddenColumns(table);
 
             if (oneBasedColumnIndex <= iColumns)
             {
-                adColumnWidthChars =
+                adOriginalColumnWidthChars =
                     new Double[iColumns - oneBasedColumnIndex + 1];
 
                 for (Int32 iOneBasedIndex = oneBasedColumnIndex;
                     iOneBasedIndex <= iColumns; iOneBasedIndex++)
                 {
-                    adColumnWidthChars[iOneBasedIndex - oneBasedColumnIndex] =
+                    adOriginalColumnWidthChars[
+                        iOneBasedIndex - oneBasedColumnIndex] =
+
                         (Double)oColumns[iOneBasedIndex].Range.ColumnWidth;
                 }
             }
@@ -2609,7 +2685,7 @@ public static class ExcelTableUtil
 
         ExcelUtil.SetRangeStyle(oColumnRange, columnStyle);
 
-        if (adColumnWidthChars != null)
+        if (adOriginalColumnWidthChars != null)
         {
             // Restore the widths of the columns after the insertion point.
 
@@ -2617,8 +2693,14 @@ public static class ExcelTableUtil
                 iOneBasedIndex <= iColumns; iOneBasedIndex++)
             {
                 oColumns[iOneBasedIndex + 1].Range.ColumnWidth =
-                    adColumnWidthChars[iOneBasedIndex - oneBasedColumnIndex];
+                    adOriginalColumnWidthChars[
+                        iOneBasedIndex - oneBasedColumnIndex];
             }
+
+            Debug.Assert(oOriginalHiddenColumns != null);
+
+            ExcelColumnHider.RestoreHiddenColumns(
+                table, oOriginalHiddenColumns);
         }
 
         return (true);

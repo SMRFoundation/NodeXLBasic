@@ -412,7 +412,7 @@ public static class VertexTableColumnNames
     /// <summary>
     /// Name of the optional table column containing an image of the vertex's
     /// subgraph.  This gets added to the table on demand by <see
-    /// cref="TableImagePopulator" />.
+    /// cref="SubgraphImageColumnPopulator" />.
     /// </summary>
 
     public const String SubgraphImage = "Subgraph";

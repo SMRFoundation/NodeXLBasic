@@ -102,8 +102,7 @@ public static class NodeXLWorkbookUtil
     {
         Debug.Assert(workbook != null);
 
-        TableImagePopulator.DeleteImagesInColumn(workbook,
-            WorksheetNames.Vertices, VertexTableColumnNames.SubgraphImage);
+        SubgraphImageColumnPopulator.DeleteSubgraphImages(workbook);
 
         ExcelTableUtil.ClearTables(workbook,
             WorksheetNames.Edges, TableNames.Edges,

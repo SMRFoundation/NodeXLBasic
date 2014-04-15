@@ -653,11 +653,8 @@ public partial class CreateSubgraphImagesDialog : ExcelTemplateForm
                     "Inserting subgraph thumbnails into the worksheet.  Please"
                     + " wait...";
 
-                TableImagePopulator.PopulateColumnWithImages(m_oWorkbook,
-                    WorksheetNames.Vertices, TableNames.Vertices,
-                    VertexTableColumnNames.SubgraphImage,
-                    VertexTableColumnNames.VertexName, oTemporaryImages
-                    );
+                SubgraphImageColumnPopulator.PopulateSubgraphImageColumn(
+                    m_oWorkbook, oTemporaryImages);
 
                 lblStatus.Text = sLastStatusFromSubgraphImageCreator;
             }

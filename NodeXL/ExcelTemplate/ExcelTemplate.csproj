@@ -919,9 +919,9 @@
     <Compile Include="Util\NodeXLWorkbookUtil.cs" />
     <Compile Include="Util\PlugInManager.cs" />
     <Compile Include="Util\SelectionCoordinator.cs" />
+    <Compile Include="Util\SubgraphImageColumnPopulator.cs" />
     <Compile Include="Util\SubgraphImageCreator.cs" />
     <Compile Include="Util\TableColumnAdder.cs" />
-    <Compile Include="Util\TableImagePopulator.cs" />
     <Compile Include="Util\TaskAutomation\AutomationTasks.cs" />
     <Compile Include="Util\TaskAutomation\TaskAutomator.cs" />
     <Compile Include="Util\TemporaryImages.cs" />

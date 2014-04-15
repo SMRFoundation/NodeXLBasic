@@ -1497,8 +1497,8 @@ public partial class ThisWorkbook
                 == DialogResult.Yes
             )
         {
-            TableImagePopulator.DeleteImagesInColumn(this.InnerObject,
-                WorksheetNames.Vertices, VertexTableColumnNames.SubgraphImage);
+            SubgraphImageColumnPopulator.DeleteSubgraphImages(
+                this.InnerObject);
         }
     }
 

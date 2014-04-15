@@ -415,9 +415,8 @@ public static class ColumnGroupManager
                 // Hiding the subgraph image column doesn't hide the images in
                 // the column.
 
-                TableImagePopulator.ShowOrHideImagesInColumn(oWorkbook,
-                    WorksheetNames.Vertices,
-                    VertexTableColumnNames.SubgraphImage, bShow);
+                SubgraphImageColumnPopulator.ShowOrHideSubgraphImages(
+                    oWorkbook, bShow);
             }
         }
     }
