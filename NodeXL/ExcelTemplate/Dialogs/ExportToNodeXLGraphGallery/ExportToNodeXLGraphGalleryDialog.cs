@@ -90,8 +90,6 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
 
         lnkNodeXLGraphGallery.Tag = ProjectInformation.NodeXLGraphGalleryUrl;
 
-        usrExportedFilesDescription.Workbook = workbook;
-
         lnkCreateAccount.Tag =
             ProjectInformation.NodeXLGraphGalleryCreateAccountUrl;
 
@@ -140,15 +138,14 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
     InitializeForEditOnly()
     {
         this.Text += " Options";
-        lnkNodeXLGraphGallery.Enabled = false;
 
-        usrExportedFilesDescription.Title =
-            "[The file name will be used as the title.]";
+        txbTitle.Text =
+            "[A title will be provided]";
 
-        usrExportedFilesDescription.Description =
-            "[The graph summary will be used as the description.]";
+        txbDescription.Text =
+            "[The graph summary will be used as the description]";
 
-        usrExportedFilesDescription.Enabled = false;
+        EnableControls(false, txbTitle, txbDescription);
     }
 
     //*************************************************************************
@@ -176,7 +173,10 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
     {
         if (bFromControls)
         {
-            if ( !usrExportedFilesDescription.Validate() )
+            String sTitle;
+
+            if ( !ValidateRequiredTextBox(txbTitle, "Enter a title.",
+                out sTitle) )
             {
                 return (false);
             }
@@ -216,15 +216,6 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
                 return (false);
             }
 
-            if (m_eMode == DialogMode.Normal)
-            {
-                m_oExportToNodeXLGraphGalleryUserSettings.Title =
-                    usrExportedFilesDescription.Title;
-
-                m_oExportToNodeXLGraphGalleryUserSettings.Description =
-                    usrExportedFilesDescription.Description;
-            }
-
             m_oExportToNodeXLGraphGalleryUserSettings.SpaceDelimitedTags =
                 txbSpaceDelimitedTags.Text.Trim();
 
@@ -247,11 +238,10 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
         {
             if (m_eMode == DialogMode.Normal)
             {
-                usrExportedFilesDescription.Title =
-                    m_oExportToNodeXLGraphGalleryUserSettings.Title;
+                txbTitle.Text =
+                    GraphTitleCreator.CreateGraphTitle(m_oWorkbook);
 
-                usrExportedFilesDescription.Description =
-                    m_oExportToNodeXLGraphGalleryUserSettings.Description;
+                txbDescription.Text = GetDefaultDescription();
             }
 
             txbSpaceDelimitedTags.Text =
@@ -311,6 +301,39 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
 
         EnableControls(radUseCredentials.Checked,
             lblAuthor, txbAuthor, lblPassword, txbPassword);
+    }
+
+    //*************************************************************************
+    //  Method: GetDefaultDescription()
+    //
+    /// <summary>
+    /// Gets a default description to use.
+    /// </summary>
+    ///
+    /// <returns>
+    /// A default description.  Can be an empty string.
+    /// </returns>
+    //*************************************************************************
+
+    protected String
+    GetDefaultDescription()
+    {
+        AssertValid();
+
+        GraphHistory oGraphHistory =
+            ( new PerWorkbookSettings(m_oWorkbook) ).GraphHistory;
+
+        String sDefaultDescription;
+
+        // Order of precedence: import description, empty string.
+
+        if ( !oGraphHistory.TryGetValue(
+            GraphHistoryKeys.ImportDescription, out sDefaultDescription) )
+        {
+            sDefaultDescription = String.Empty;
+        }
+
+        return (sDefaultDescription);
     }
 
     //*************************************************************************
@@ -386,8 +409,9 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
                 oNodeXLGraphGalleryExporter.ExportToNodeXLGraphGallery(
 
                     m_oWorkbook, m_oNodeXLControl,
-                    m_oExportToNodeXLGraphGalleryUserSettings.Title,
-                    m_oExportToNodeXLGraphGalleryUserSettings.Description,
+
+                    txbTitle.Text,
+                    txbDescription.Text,
 
                     m_oExportToNodeXLGraphGalleryUserSettings.
                         SpaceDelimitedTags,

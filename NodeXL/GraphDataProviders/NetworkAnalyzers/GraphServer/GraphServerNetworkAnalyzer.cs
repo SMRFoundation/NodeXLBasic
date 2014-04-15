@@ -323,6 +323,7 @@ public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
                 oMaximumStatusDateUtc, sGraphServerUserName,
                 sGraphServerPassword, oGraphMLXmlDocument),
 
+            SnaTitleCreator.CreateSnaTitle(sSearchTerm, oRequestStatistics),
             "Graph Server " + sSearchTerm
             );
 

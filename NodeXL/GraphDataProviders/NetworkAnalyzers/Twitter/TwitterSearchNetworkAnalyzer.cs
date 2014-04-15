@@ -293,6 +293,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             GetNetworkDescription(sSearchTerm, eWhatToInclude,
                 iMaximumStatuses, oGraphMLXmlDocument),
 
+            SnaTitleCreator.CreateSnaTitle(sSearchTerm, oRequestStatistics),
             "Twitter Search " + sSearchTerm
             );
 

@@ -47,7 +47,10 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.lnkCreateAccount = new Smrf.AppLib.StartProcessLinkLabel();
             this.radUseCredentials = new System.Windows.Forms.RadioButton();
             this.usrExportedFiles = new Smrf.NodeXL.ExcelTemplate.ExportedFilesControl();
-            this.usrExportedFilesDescription = new Smrf.NodeXL.ExcelTemplate.ExportedFilesDescriptionControl();
+            this.txbDescription = new System.Windows.Forms.TextBox();
+            this.lblDescription = new System.Windows.Forms.Label();
+            this.txbTitle = new System.Windows.Forms.TextBox();
+            this.lblTitle = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -57,7 +60,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnCancel.Location = new System.Drawing.Point(485, 523);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
-            this.btnCancel.TabIndex = 6;
+            this.btnCancel.TabIndex = 9;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -66,7 +69,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnOK.Location = new System.Drawing.Point(399, 523);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
-            this.btnOK.TabIndex = 5;
+            this.btnOK.TabIndex = 8;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -78,7 +81,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.lnkNodeXLGraphGallery.Location = new System.Drawing.Point(12, 9);
             this.lnkNodeXLGraphGallery.Name = "lnkNodeXLGraphGallery";
             this.lnkNodeXLGraphGallery.Size = new System.Drawing.Size(372, 17);
-            this.lnkNodeXLGraphGallery.TabIndex = 7;
+            this.lnkNodeXLGraphGallery.TabIndex = 10;
             this.lnkNodeXLGraphGallery.TabStop = true;
             this.lnkNodeXLGraphGallery.Text = "This exports an image of the graph to the NodeXL Graph Gallery website.";
             this.lnkNodeXLGraphGallery.UseCompatibleTextRendering = true;
@@ -89,7 +92,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.label4.Location = new System.Drawing.Point(12, 148);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(143, 13);
-            this.label4.TabIndex = 1;
+            this.label4.TabIndex = 4;
             this.label4.Text = "T&ags (separate with spaces):";
             // 
             // txbSpaceDelimitedTags
@@ -98,7 +101,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.txbSpaceDelimitedTags.MaxLength = 200;
             this.txbSpaceDelimitedTags.Name = "txbSpaceDelimitedTags";
             this.txbSpaceDelimitedTags.Size = new System.Drawing.Size(395, 20);
-            this.txbSpaceDelimitedTags.TabIndex = 2;
+            this.txbSpaceDelimitedTags.TabIndex = 5;
             // 
             // txbAuthor
             // 
@@ -181,7 +184,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.groupBox1.Location = new System.Drawing.Point(12, 182);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(553, 189);
-            this.groupBox1.TabIndex = 3;
+            this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "NodeXL Graph Gallery account";
             // 
@@ -194,8 +197,8 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.lnkCreateAccountHelp.TabIndex = 9;
             this.lnkCreateAccountHelp.TabStop = true;
             this.lnkCreateAccountHelp.Tag = "If you have an account on the NodeXL Graph Gallery website, you can sign in to th" +
-                "e website later and edit or delete any graphs you\'ve exported.  Graphs exported " +
-                "by guests cannot be edited or deleted.";
+    "e website later and edit or delete any graphs you\'ve exported.  Graphs exported " +
+    "by guests cannot be edited or deleted.";
             this.lnkCreateAccountHelp.Text = "Why create an account?";
             // 
             // lnkCreateAccount
@@ -227,19 +230,46 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.usrExportedFiles.Location = new System.Drawing.Point(12, 385);
             this.usrExportedFiles.Name = "usrExportedFiles";
             this.usrExportedFiles.Size = new System.Drawing.Size(553, 133);
-            this.usrExportedFiles.TabIndex = 4;
+            this.usrExportedFiles.TabIndex = 7;
             this.usrExportedFiles.UseFixedAspectRatio = false;
             // 
-            // usrExportedFilesDescription
+            // txbDescription
             // 
-            this.usrExportedFilesDescription.Description = "";
-            this.usrExportedFilesDescription.DescriptionLabel = "&Description";
-            this.usrExportedFilesDescription.Location = new System.Drawing.Point(12, 38);
-            this.usrExportedFilesDescription.Name = "usrExportedFilesDescription";
-            this.usrExportedFilesDescription.Size = new System.Drawing.Size(553, 100);
-            this.usrExportedFilesDescription.TabIndex = 0;
-            this.usrExportedFilesDescription.Title = "";
-            this.usrExportedFilesDescription.TitleLabel = "&Title";
+            this.txbDescription.AcceptsReturn = true;
+            this.txbDescription.Location = new System.Drawing.Point(170, 65);
+            this.txbDescription.MaxLength = 80000;
+            this.txbDescription.Multiline = true;
+            this.txbDescription.Name = "txbDescription";
+            this.txbDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txbDescription.Size = new System.Drawing.Size(395, 72);
+            this.txbDescription.TabIndex = 3;
+            // 
+            // lblDescription
+            // 
+            this.lblDescription.AutoSize = true;
+            this.lblDescription.Location = new System.Drawing.Point(12, 65);
+            this.lblDescription.Name = "lblDescription";
+            this.lblDescription.Size = new System.Drawing.Size(63, 13);
+            this.lblDescription.TabIndex = 2;
+            this.lblDescription.Text = "&Description:";
+            // 
+            // txbTitle
+            // 
+            this.txbTitle.Location = new System.Drawing.Point(170, 37);
+            this.txbTitle.MaxLength = 100;
+            this.txbTitle.Name = "txbTitle";
+            this.txbTitle.Size = new System.Drawing.Size(395, 20);
+            this.txbTitle.TabIndex = 1;
+            // 
+            // lblTitle
+            // 
+            this.lblTitle.AutoSize = true;
+            this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTitle.Location = new System.Drawing.Point(12, 37);
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size(30, 13);
+            this.lblTitle.TabIndex = 0;
+            this.lblTitle.Text = "&Title:";
             // 
             // ExportToNodeXLGraphGalleryDialog
             // 
@@ -248,7 +278,10 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(580, 561);
-            this.Controls.Add(this.usrExportedFilesDescription);
+            this.Controls.Add(this.txbDescription);
+            this.Controls.Add(this.lblDescription);
+            this.Controls.Add(this.txbTitle);
+            this.Controls.Add(this.lblTitle);
             this.Controls.Add(this.usrExportedFiles);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.txbSpaceDelimitedTags);
@@ -287,6 +320,9 @@ namespace Smrf.NodeXL.ExcelTemplate
 		private Smrf.AppLib.HelpLinkLabel lnkCreateAccountHelp;
         private Smrf.AppLib.StartProcessLinkLabel lnkCreateAccount;
         private ExportedFilesControl usrExportedFiles;
-        private ExportedFilesDescriptionControl usrExportedFilesDescription;
+        private System.Windows.Forms.TextBox txbDescription;
+        private System.Windows.Forms.Label lblDescription;
+        private System.Windows.Forms.TextBox txbTitle;
+        private System.Windows.Forms.Label lblTitle;
     }
 }

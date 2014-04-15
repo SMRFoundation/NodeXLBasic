@@ -222,6 +222,10 @@ public partial class ThisWorkbook
                     typeof(String) ),
 
                 (String)oGraph.GetValue(
+                    ReservedMetadataKeys.SuggestedTitle,
+                    typeof(String) ),
+
+                (String)oGraph.GetValue(
                     ReservedMetadataKeys.SuggestedFileNameNoExtension,
                     typeof(String) )
                 );
@@ -1017,7 +1021,7 @@ public partial class ThisWorkbook
                     "open matrix workbook",
                     oImportFromMatrixWorkbookDialog.SourceWorkbookName),
 
-                null
+                null, null
                 );
         }
     }
@@ -1075,7 +1079,7 @@ public partial class ThisWorkbook
                 GraphImporter.GetImportedFileDescription("open workbook",
                     oImportFromWorkbookDialog.SourceWorkbookName),
 
-                null
+                null, null
                 );
         }
     }
@@ -1543,7 +1547,7 @@ public partial class ThisWorkbook
         {
             GraphImporter.UpdateGraphHistoryAfterImport(this.InnerObject,
                 "The graph was obtained by analyzing an email network.",
-                null
+                null, null
                 );
 
             // Note that the ribbon won't actually update until the modal
@@ -1583,7 +1587,7 @@ public partial class ThisWorkbook
                 GraphImporter.GetImportedFileDescription("UCINET file",
                     oOpenUcinetFileDialog.FileName),
 
-                null
+                null, null
                 );
         }
     }
@@ -1616,7 +1620,7 @@ public partial class ThisWorkbook
                 GraphImporter.GetImportedFileDescription(
                     "Pajek file", oDialog.FileName),
 
-                null
+                null, null
                 );
         }
     }
@@ -1657,6 +1661,8 @@ public partial class ThisWorkbook
 
                 GraphImporter.GetImportedGraphMLFileDescription(
                     oDialog.FileName, oGraph),
+
+                GraphImporter.GetImportedGraphMLFileTitle(oGraph),
 
                 null
                 );
@@ -1801,6 +1807,10 @@ public partial class ThisWorkbook
     /// empty or null.
     /// </param>
     ///
+    /// <param name="sSuggestedTitle">
+    /// Title suggested for the graph.  Can be empty or null.
+    /// </param>
+    ///
     /// <param name="sSuggestedFileNameNoExtension">
     /// File name suggested for the NodeXL workbook, without a path or
     /// extension.  Can be empty or null.
@@ -1818,6 +1828,7 @@ public partial class ThisWorkbook
     (
         IGraph oGraph,
         String sImportDescription,
+        String sSuggestedTitle,
         String sSuggestedFileNameNoExtension
     )
     {
@@ -1843,7 +1854,8 @@ public partial class ThisWorkbook
 
         ImportGraph(oGraph,
             new String[] {EdgeTableColumnNames.EdgeWeight}, null,
-            sImportDescription, sSuggestedFileNameNoExtension);
+            sImportDescription, sSuggestedTitle,
+            sSuggestedFileNameNoExtension);
     }
 
     //*************************************************************************
@@ -1872,6 +1884,10 @@ public partial class ThisWorkbook
     /// empty or null.
     /// </param>
     ///
+    /// <param name="sSuggestedTitle">
+    /// Title suggested for the graph.  Can be empty or null.
+    /// </param>
+    ///
     /// <param name="sSuggestedFileNameNoExtension">
     /// File name suggested for the NodeXL workbook, without a path or
     /// extension.  Can be empty or null.
@@ -1885,6 +1901,7 @@ public partial class ThisWorkbook
         String [] oEdgeAttributes,
         String [] oVertexAttributes,
         String sImportDescription,
+        String sSuggestedTitle,
         String sSuggestedFileNameNoExtension
     )
     {
@@ -1951,7 +1968,8 @@ public partial class ThisWorkbook
         }
 
         GraphImporter.UpdateGraphHistoryAfterImport(this.InnerObject,
-            sImportDescription, sSuggestedFileNameNoExtension);
+            sImportDescription, sSuggestedTitle,
+            sSuggestedFileNameNoExtension);
 
         this.GraphDirectedness = eGraphDirectedness;
         this.Ribbon.GraphDirectedness = eGraphDirectedness;

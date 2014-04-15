@@ -102,39 +102,6 @@ public class ExportToEmailUserSettings : NodeXLApplicationSettingsBase
     }
 
     //*************************************************************************
-    //  Property: Subject
-    //
-    /// <summary>
-    /// Gets or sets the email subject.
-    /// </summary>
-    ///
-    /// <value>
-    /// The email subject.  The default value is String.Empty.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("") ]
-
-    public String
-    Subject
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (String)this[SubjectKey] );
-        }
-
-        set
-        {
-            this[SubjectKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
     //  Property: MessageBody
     //
     /// <summary>
@@ -147,7 +114,21 @@ public class ExportToEmailUserSettings : NodeXLApplicationSettingsBase
     //*************************************************************************
 
     [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("") ]
+
+    [ DefaultSettingValueAttribute(
+
+        "<img src=\"http://www.nodexlgraphgallery.org/Images/SiteLogo.png\" />"
+        + "\r\n\r\n"
+        + "This graph was brought to you by NodeXL."
+        + "\r\n\r\n"
+        + "{Graph Image}"
+        + "\r\n\r\n"
+        + "{Graph Summary}"
+        + "\r\n\r\n"
+        + "For more information, go to <a href=\"http://nodexl.codeplex.com/\">"
+        + "NodeXL on CodePlex</a>."
+
+    ) ]
 
     public String
     MessageBody
@@ -435,11 +416,6 @@ public class ExportToEmailUserSettings : NodeXLApplicationSettingsBase
 
     protected const String FromAddressKey =
         "FromAddress";
-
-    /// Name of the settings key for the Subject property.
-
-    protected const String SubjectKey =
-        "Subject";
 
     /// Name of the settings key for the MessageBody property.
 

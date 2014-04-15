@@ -279,6 +279,12 @@ public interface IGraphDataProvider2
     /// </para>
     ///
     /// <para>
+    /// If there is an optional "suggestedTitle" attribute on the "graph" XML
+    /// node, NodeXL will use the suggested title when exporting the graph to
+    /// the NodeXL Graph Gallery, for example.  A title should be short.
+    /// </para>
+    ///
+    /// <para>
     /// If there is an optional "suggestedFileNameNoExtension" attribute on the
     /// "graph" XML node, NodeXL will use the suggested file name when the user
     /// automates the graph and specifies that he wants the workbook saved

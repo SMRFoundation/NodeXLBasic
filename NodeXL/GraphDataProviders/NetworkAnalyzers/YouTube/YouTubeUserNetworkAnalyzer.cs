@@ -231,12 +231,14 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
                 oRequestStatistics);
         }
 
+        String sNetworkTitle = "YouTube User " + sUserNameToAnalyze;
+
         OnNetworkObtained(oGraphMLXmlDocument, oRequestStatistics, 
 
             GetNetworkDescription(sUserNameToAnalyze, eWhatToInclude,
                 eNetworkLevel, iMaximumPeoplePerRequest),
 
-            "YouTube User " + sUserNameToAnalyze
+            sNetworkTitle, sNetworkTitle
             );
 
         return (oGraphMLXmlDocument);

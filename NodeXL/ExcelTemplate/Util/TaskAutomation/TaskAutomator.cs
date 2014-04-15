@@ -1062,17 +1062,14 @@ public static class TaskAutomator : Object
             oExportToNodeXLGraphGalleryUserSettings, out sAuthor,
             out sPassword);
 
-        // Note that the workbook's name is used for the title, and a graph
-        // summary is used for the description.
-
-        Debug.Assert( !String.IsNullOrEmpty(oWorkbook.Name) );
+        // Note that a graph summary is used for the description.
 
         try
         {
             ( new NodeXLGraphGalleryExporter() ).ExportToNodeXLGraphGallery(
                 oWorkbook,
                 oNodeXLControl,
-                oWorkbook.Name,
+                GraphTitleCreator.CreateGraphTitle(oWorkbook),
                 GraphSummarizer.SummarizeGraph(oWorkbook),
                 oExportToNodeXLGraphGalleryUserSettings.SpaceDelimitedTags,
                 sAuthor,
@@ -1145,10 +1142,6 @@ public static class TaskAutomator : Object
             return (false);
         }
 
-        // Note that the workbook's name is used for the subject.
-
-        Debug.Assert( !String.IsNullOrEmpty(oWorkbook.Name) );
-
         try
         {
             ( new EmailExporter() ).ExportToEmail(
@@ -1156,7 +1149,7 @@ public static class TaskAutomator : Object
                 oNodeXLControl,
                 oExportToEmailUserSettings.SpaceDelimitedToAddresses.Split(' '),
                 oExportToEmailUserSettings.FromAddress,
-                oWorkbook.Name,
+                GraphTitleCreator.CreateGraphTitle(oWorkbook),
                 oExportToEmailUserSettings.MessageBody,
                 oExportToEmailUserSettings.SmtpHost,
                 oExportToEmailUserSettings.SmtpPort,

@@ -203,9 +203,11 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
                 oRequestStatistics);
         }
 
+        String sNetworkTitle = "YouTube Video " + sSearchTerm;
+
         OnNetworkObtained(oGraphMLXmlDocument, oRequestStatistics, 
             GetNetworkDescription(sSearchTerm, eWhatToInclude, iMaximumVideos),
-            "YouTube Video " + sSearchTerm
+            sNetworkTitle, sNetworkTitle
             );
 
         return (oGraphMLXmlDocument);

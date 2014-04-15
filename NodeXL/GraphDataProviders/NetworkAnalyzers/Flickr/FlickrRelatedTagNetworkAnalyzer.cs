@@ -214,9 +214,11 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
                 oRequestStatistics);
         }
 
+        String sNetworkTitle = "Flickr Tag " + sTag;
+
         OnNetworkObtained(oGraphMLXmlDocument, oRequestStatistics,
             GetNetworkDescription(sTag, eWhatToInclude, eNetworkLevel),
-            "Flickr Tag " + sTag
+            sNetworkTitle, sNetworkTitle
             );
 
         return (oGraphMLXmlDocument);

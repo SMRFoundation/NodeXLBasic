@@ -325,7 +325,9 @@ public class GraphMLToNodeXLWorkbookConverter
                 GraphImporter.UpdateGraphHistoryAfterImport(oNodeXLWorkbook,
 
                     GraphImporter.GetImportedGraphMLFileDescription(
-                        sGraphMLFilePath, oGraph),
+                        sGraphMLFilePath, oGraph), 
+                        
+                    GraphImporter.GetImportedGraphMLFileTitle(oGraph),
 
                     null);
             }
@@ -343,7 +345,7 @@ public class GraphMLToNodeXLWorkbookConverter
                 GraphImporter
                     .UpdateGraphHistoryAfterImportWithoutPermissionCheck(
                         oNodeXLWorkbook, (String)oGraphDescriptionAsObject,
-                        null, oPerWorkbookSettings);
+                        null, null, oPerWorkbookSettings);
             }
 
             if (bSetAutomateTasksOnOpen)

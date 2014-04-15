@@ -248,6 +248,7 @@
     <Compile Include="NetworkAnalyzers\YouTube\YouTubeVideoNetworkAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\NetworkDescriber.cs" />
+    <Compile Include="Util\SnaTitleCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\FlickrApiKey\FlickrApiKeyControl.resx">

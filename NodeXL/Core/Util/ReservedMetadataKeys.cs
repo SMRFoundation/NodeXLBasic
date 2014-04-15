@@ -1075,6 +1075,18 @@ public static class ReservedMetadataKeys : Object
         FirstChar + "GraphDescription";
 
     /// <summary>
+    /// Key added to a graph to specify a suggested title.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// GraphMLGraphAdapter.LoadGraph() adds this key to the graph if there is
+    /// a suggested title in the GraphML it loads.
+    /// </remarks>
+
+    public static readonly String SuggestedTitle =
+        FirstChar + "SuggestedTitle";
+
+    /// <summary>
     /// Key added to a graph to specify a suggested file name.
     /// </summary>
     ///

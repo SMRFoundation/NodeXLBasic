@@ -824,8 +824,14 @@ public abstract class HttpNetworkAnalyzerBase : Object
     /// </param>
     ///
     /// <param name="sNetworkTitle">
-    /// A title for the network.  This becomes part of the suggested file name
-    /// for the network.
+    /// A title for the network.
+    /// </param>
+    ///
+    /// <param name="sPartialFileName">
+    /// A string that will be used as part of the suggested file name for the
+    /// network.  Sample: "Twitter Search usfca".  The actual file name in this
+    /// case (without an extension) will be "2014-04-14 21-23-22 NodeXL Twitter
+    /// Search usfca".
     /// </param>
     ///
     /// <remarks>
@@ -842,13 +848,15 @@ public abstract class HttpNetworkAnalyzerBase : Object
         XmlDocument oGraphMLXmlDocument,
         RequestStatistics oRequestStatistics,
         String sNetworkDescription,
-        String sNetworkTitle
+        String sNetworkTitle,
+        String sPartialFileName
     )
     {
         Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert(oRequestStatistics != null);
         Debug.Assert( !String.IsNullOrEmpty(sNetworkDescription) );
         Debug.Assert( !String.IsNullOrEmpty(sNetworkTitle) );
+        Debug.Assert( !String.IsNullOrEmpty(sPartialFileName) );
         AssertValid();
 
         XmlNode oGraphXmlNode = XmlUtil2.SelectRequiredSingleNode(
@@ -861,11 +869,16 @@ public abstract class HttpNetworkAnalyzerBase : Object
         XmlUtil2.SetAttributes(oGraphXmlNode,
             "description", sNetworkDescription);
 
+        XmlUtil2.SetAttributes(oGraphXmlNode,
+            "suggestedTitle", sNetworkTitle);
+
         String sSuggestedFileNameNoExtension = String.Format(
             "{0} NodeXL {1}"
             ,
-            DateTimeUtil2.ToCultureInvariantFileName(DateTime.Now),
-            sNetworkTitle
+            DateTimeUtil2.ToCultureInvariantFileName(
+                oRequestStatistics.StartTimeUtc),
+
+            sPartialFileName
             );
 
         XmlUtil2.SetAttributes(oGraphXmlNode,

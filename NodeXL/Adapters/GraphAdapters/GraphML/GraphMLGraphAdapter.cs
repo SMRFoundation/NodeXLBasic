@@ -86,6 +86,12 @@ namespace Smrf.NodeXL.Adapters
 /// </para>
 ///
 /// <para>
+/// If there is an optional "suggestedTitle" attribute on the "graph" XML
+/// node, the LoadXX methods copy its value to a <see
+/// cref="ReservedMetadataKeys.SuggestedTitle" /> key on the returned graph.
+/// </para>
+///
+/// <para>
 /// If there is an optional "suggestedFileNameNoExtension" attribute on the
 /// "graph" XML node, the LoadXX methods copy its value to a <see
 /// cref="ReservedMetadataKeys.SuggestedFileNameNoExtension" /> key on the
@@ -236,6 +242,10 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
         ParseGraphAttribute(oGraph, oGraphXmlNode,
             "description",
             ReservedMetadataKeys.GraphDescription);
+
+        ParseGraphAttribute(oGraph, oGraphXmlNode,
+            "suggestedTitle",
+            ReservedMetadataKeys.SuggestedTitle);
 
         ParseGraphAttribute(oGraph, oGraphXmlNode,
             "suggestedFileNameNoExtension",

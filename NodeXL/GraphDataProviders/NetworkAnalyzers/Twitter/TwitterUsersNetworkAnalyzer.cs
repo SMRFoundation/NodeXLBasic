@@ -278,12 +278,15 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 oRequestStatistics);
         }
 
+        String sNetworkTitle =
+            "Twitter Users " + (bUseListName ? sListName : "Usernames");
+
         OnNetworkObtained(oGraphMLXmlDocument, oRequestStatistics, 
 
             GetNetworkDescription(bUseListName, sListName, oScreenNames,
                 eNetworkType, bExpandStatusUrls),
 
-            "Twitter Users " + (bUseListName ? sListName : "Usernames")
+            sNetworkTitle, sNetworkTitle
             );
 
         return (oGraphMLXmlDocument);

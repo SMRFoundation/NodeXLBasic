@@ -37,72 +37,6 @@ public class ExportToNodeXLGraphGalleryUserSettings :
     }
 
     //*************************************************************************
-    //  Property: Title
-    //
-    /// <summary>
-    /// Gets or sets the graph's title.
-    /// </summary>
-    ///
-    /// <value>
-    /// The graph's title.  The default value is String.Empty.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("") ]
-
-    public String
-    Title
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (String)this[TitleKey] );
-        }
-
-        set
-        {
-            this[TitleKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
-    //  Property: Description
-    //
-    /// <summary>
-    /// Gets or sets the graph's description.
-    /// </summary>
-    ///
-    /// <value>
-    /// The graph's description.  The default value is String.Empty.
-    /// </value>
-    //*************************************************************************
-
-    [ UserScopedSettingAttribute() ]
-    [ DefaultSettingValueAttribute("") ]
-
-    public String
-    Description
-    {
-        get
-        {
-            AssertValid();
-
-            return ( (String)this[DescriptionKey] );
-        }
-
-        set
-        {
-            this[DescriptionKey] = value;
-
-            AssertValid();
-        }
-    }
-
-    //*************************************************************************
     //  Property: SpaceDelimitedTags
     //
     /// <summary>
@@ -328,16 +262,6 @@ public class ExportToNodeXLGraphGalleryUserSettings :
     //*************************************************************************
     //  Protected fields
     //*************************************************************************
-
-    /// Name of the settings key for the Title property.
-
-    protected const String TitleKey =
-        "Title";
-
-    /// Name of the settings key for the Description property.
-
-    protected const String DescriptionKey =
-        "Description";
 
     /// Name of the settings key for the SpaceDelimitedTags property.
 

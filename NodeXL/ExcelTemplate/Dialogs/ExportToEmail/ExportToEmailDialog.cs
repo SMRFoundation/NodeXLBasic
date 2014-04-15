@@ -130,6 +130,8 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
     {
         this.Text += " Options";
 
+        txbSubject.Text = "[A subject will be provided]";
+
         EnableControls(false, lblDialogDescription, lblSubject, txbSubject);
     }
 
@@ -209,12 +211,6 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
                     sToAddresses) );
 
             m_oExportToEmailUserSettings.FromAddress = sFromAddress;
-
-            if (m_eMode == DialogMode.Normal)
-            {
-                m_oExportToEmailUserSettings.Subject = txbSubject.Text;
-            }
-
             m_oExportToEmailUserSettings.MessageBody = txbMessageBody.Text;
             m_oExportToEmailUserSettings.SmtpHost = sSmtpHost;
             m_oExportToEmailUserSettings.SmtpPort = iSmtpPort;
@@ -241,11 +237,11 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
 
             txbFromAddress.Text = m_oExportToEmailUserSettings.FromAddress;
 
-            txbSubject.Text = (m_eMode == DialogMode.Normal) ?
-                m_oExportToEmailUserSettings.Subject
-                :
-                "[The file name will be used as the subject.]"
-                ;
+            if (m_eMode == DialogMode.Normal)
+            {
+                txbSubject.Text =
+                    GraphTitleCreator.CreateGraphTitle(m_oWorkbook);
+            }
 
             txbMessageBody.Text = m_oExportToEmailUserSettings.MessageBody;
             txbSmtpHost.Text = m_oExportToEmailUserSettings.SmtpHost;
@@ -273,34 +269,6 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
         }
 
         return (true);
-    }
-
-    //*************************************************************************
-    //  Method: btnInsertSampleMessageBody_Click()
-    //
-    /// <summary>
-    /// Handles the Click event on the btnInsertSampleMessageBody button.
-    /// </summary>
-    ///
-    /// <param name="sender">
-    /// Standard event argument.
-    /// </param>
-    ///
-    /// <param name="e">
-    /// Standard event argument.
-    /// </param>
-    //*************************************************************************
-
-    private void
-    btnInsertSampleMessageBody_Click
-    (
-        object sender,
-        EventArgs e
-    )
-    {
-        AssertValid();
-
-        txbMessageBody.SelectedText = SampleMessageBody;
     }
 
     //*************************************************************************
@@ -347,7 +315,7 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
                         .SpaceDelimitedToAddresses.Split(' '),
 
                     m_oExportToEmailUserSettings.FromAddress,
-                    m_oExportToEmailUserSettings.Subject,
+                    txbSubject.Text,
                     m_oExportToEmailUserSettings.MessageBody,
                     m_oExportToEmailUserSettings.SmtpHost,
                     m_oExportToEmailUserSettings.SmtpPort,
@@ -439,27 +407,6 @@ public partial class ExportToEmailDialog : ExcelTemplateForm
         Debug.Assert(m_oPasswordUserSettings != null);
         Debug.Assert(m_oExportToEmailDialogUserSettings != null);
     }
-
-
-    //*************************************************************************
-    //  Protected constants
-    //*************************************************************************
-
-    /// Sample message body.
-
-    protected const String SampleMessageBody =
-
-        "<img src=\"http://www.nodexlgraphgallery.org/Images/SiteLogo.png\" />"
-        + "\r\n\r\n"
-        + "This graph was brought to you by NodeXL."
-        + "\r\n\r\n"
-        + "{Graph Image}"
-        + "\r\n\r\n"
-        + "{Graph Summary}"
-        + "\r\n\r\n"
-        + "For more information, go to <a href=\"http://nodexl.codeplex.com/\">"
-        + "NodeXL on CodePlex</a>."
-        ;
 
 
     //*************************************************************************

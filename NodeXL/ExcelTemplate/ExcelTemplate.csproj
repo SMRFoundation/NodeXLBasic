@@ -275,12 +275,6 @@
     <Compile Include="Controls\ColumnComboBoxes\VertexColumnComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ExportedFilesDescription\ExportedFilesDescriptionControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ExportedFilesDescription\ExportedFilesDescriptionControl.designer.cs">
-      <DependentUpon>ExportedFilesDescriptionControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ExportedFiles\ExportedFilesControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -906,6 +900,7 @@
     <Compile Include="Util\GraphML\GraphMLFilesImporter.cs" />
     <Compile Include="Util\GraphML\GraphMLToNodeXLWorkbookConverter.cs" />
     <Compile Include="Util\GraphSummarizer.cs" />
+    <Compile Include="Util\GraphTitleCreator.cs" />
     <Compile Include="Util\Groups\ExcelTemplateGroupInfo.cs" />
     <Compile Include="Util\Groups\ExcelTemplateGroupUtil.cs" />
     <Compile Include="Util\Groups\GroupCommands.cs" />
@@ -1047,9 +1042,6 @@
     <EmbeddedResource Include="..\Common\Controls\RegisterUser\RegisterUserControl.resx">
       <Link>Controls\RegisterUser\RegisterUserControl.resx</Link>
       <DependentUpon>RegisterUserControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ExportedFilesDescription\ExportedFilesDescriptionControl.resx">
-      <DependentUpon>ExportedFilesDescriptionControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\ExportedFiles\ExportedFilesControl.resx">
       <DependentUpon>ExportedFilesControl.cs</DependentUpon>

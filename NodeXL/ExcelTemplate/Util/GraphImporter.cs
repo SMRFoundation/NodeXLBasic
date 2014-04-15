@@ -206,6 +206,46 @@ public static class GraphImporter : Object
     }
 
     //*************************************************************************
+    //  Method: GetImportedGraphMLFileTitle()
+    //
+    /// <summary>
+    /// Gets a title for a graph that was imported from a GraphML file, if a
+    /// title is available.
+    /// </summary>
+    ///
+    /// <param name="graph">
+    /// Graph into which the GraphML file was imported.
+    /// </param>
+    ///
+    /// <returns>
+    /// A graph title, or null if no title is available.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// The returned string can be used as the importTitle argument to <see
+    /// cref="UpdateGraphHistoryAfterImport" />, for example.
+    /// </remarks>
+    //*************************************************************************
+
+    public static String
+    GetImportedGraphMLFileTitle
+    (
+        IGraph graph
+    )
+    {
+        Debug.Assert(graph != null);
+
+        // If the graph has a title, use it.
+        //
+        // This can occur, for example, if the GraphML was imported from a file
+        // created by the NetworkServer command line program, which stores a
+        // title in the GraphML.
+
+        return ( (String)graph.GetValue(
+            ReservedMetadataKeys.SuggestedTitle, typeof(String) ) );
+    }
+
+    //*************************************************************************
     //  Method: GetImportedGraphMLFileDescription()
     //
     /// <summary>
@@ -276,6 +316,10 @@ public static class GraphImporter : Object
     /// empty or null.
     /// </param>
     ///
+    /// <param name="suggestedTitle">
+    /// Title suggested for the graph.  Can be empty or null.
+    /// </param>
+    ///
     /// <param name="suggestedFileNameNoExtension">
     /// File name suggested for the NodeXL workbook, without a path or
     /// extension.  Can be empty or null.
@@ -287,6 +331,7 @@ public static class GraphImporter : Object
     (
         Microsoft.Office.Interop.Excel.Workbook destinationNodeXLWorkbook,
         String importDescription,
+        String suggestedTitle,
         String suggestedFileNameNoExtension
     )
     {
@@ -296,7 +341,7 @@ public static class GraphImporter : Object
         {
             UpdateGraphHistoryAfterImportWithoutPermissionCheck(
                 destinationNodeXLWorkbook, importDescription,
-                suggestedFileNameNoExtension,
+                suggestedTitle, suggestedFileNameNoExtension,
                 new PerWorkbookSettings(destinationNodeXLWorkbook) );
         }
     }
@@ -318,6 +363,10 @@ public static class GraphImporter : Object
     /// empty or null.
     /// </param>
     ///
+    /// <param name="suggestedTitle">
+    /// Title suggested for the graph.  Can be empty or null.
+    /// </param>
+    ///
     /// <param name="suggestedFileNameNoExtension">
     /// File name suggested for the NodeXL workbook, without a path or
     /// extension.  Can be empty or null.
@@ -333,6 +382,7 @@ public static class GraphImporter : Object
     (
         Microsoft.Office.Interop.Excel.Workbook destinationNodeXLWorkbook,
         String importDescription,
+        String suggestedTitle,
         String suggestedFileNameNoExtension,
         PerWorkbookSettings perWorkbookSettings
     )
@@ -343,6 +393,10 @@ public static class GraphImporter : Object
         perWorkbookSettings.SetGraphHistoryValue(
             GraphHistoryKeys.ImportDescription,
             importDescription ?? String.Empty);
+
+        perWorkbookSettings.SetGraphHistoryValue(
+            GraphHistoryKeys.ImportSuggestedTitle,
+            suggestedTitle ?? String.Empty);
 
         perWorkbookSettings.SetGraphHistoryValue(
             GraphHistoryKeys.ImportSuggestedFileNameNoExtension,

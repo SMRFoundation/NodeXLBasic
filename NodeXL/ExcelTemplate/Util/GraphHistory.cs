@@ -131,6 +131,13 @@ public static class GraphHistoryKeys
     public const String ImportDescription = "ImportDescription";
 
     /// <summary>
+    /// If the graph was imported into the workbook, this is a suggested title.
+    /// </summary>
+
+    public const String ImportSuggestedTitle =
+        "ImportSuggestedTitle";
+
+    /// <summary>
     /// If the graph was imported into the workbook, this is a suggested file
     /// name for the workbook, without a path or extension.
     /// </summary>
