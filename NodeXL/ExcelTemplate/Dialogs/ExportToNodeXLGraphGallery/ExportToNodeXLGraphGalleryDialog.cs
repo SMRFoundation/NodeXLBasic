@@ -320,15 +320,12 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        GraphHistory oGraphHistory =
-            ( new PerWorkbookSettings(m_oWorkbook) ).GraphHistory;
-
         String sDefaultDescription;
 
-        // Order of precedence: import description, empty string.
+        // Order of precedence: graph summary, empty string.
 
-        if ( !oGraphHistory.TryGetValue(
-            GraphHistoryKeys.ImportDescription, out sDefaultDescription) )
+        if ( !GraphSummarizer.TrySummarizeGraph(
+            m_oWorkbook, out sDefaultDescription) )
         {
             sDefaultDescription = String.Empty;
         }

@@ -28,13 +28,11 @@ public static class GraphSummarizer : Object
     //  Method: TrySummarizeGraph()
     //
     /// <overloads>
-    /// Gets a string that summarizes the graph, or shows a message that a
-    /// summary isn't available.
+    /// Attempts to get a string that summarizes the graph.
     /// </overloads>
     ///
     /// <summary>
-    /// Gets a string that summarizes the graph, or shows a message that a
-    /// summary isn't available, given a workbook.
+    /// Gets a string that summarizes the graph.
     /// </summary>
     ///
     /// <param name="workbook">
@@ -48,12 +46,6 @@ public static class GraphSummarizer : Object
     /// <returns>
     /// true if the graph summary was obtained.
     /// </returns>
-    ///
-    /// <remarks>
-    /// If a graph summary is available, it gets stored at <paramref
-    /// name="graphSummary" /> and true is returned.  Otherwise, a message is
-    /// shown and false is returned.
-    /// </remarks>
     //*************************************************************************
 
     public static Boolean
@@ -67,15 +59,15 @@ public static class GraphSummarizer : Object
 
         graphSummary = SummarizeGraph(workbook);
 
-        return ( ShowWarningIfNoGraphSummary(graphSummary) );
+        return (graphSummary.Length > 0);
     }
 
     //*************************************************************************
     //  Method: TrySummarizeGraph()
     //
     /// <summary>
-    /// Gets a string that summarizes the graph, or shows a message that a
-    /// summary isn't available, given various summary components.
+    /// Attempts to get a string that summarizes the graph, given various
+    /// summary components.
     /// </summary>
     ///
     /// <param name="graphHistory">
@@ -135,7 +127,7 @@ public static class GraphSummarizer : Object
             autoFillWorkbookResults, overallMetrics, topNByMetrics,
             twitterSearchNetworkTopItems);
 
-        return ( ShowWarningIfNoGraphSummary(graphSummary) );
+        return (graphSummary.Length > 0);
     }
 
     //*************************************************************************
@@ -314,39 +306,6 @@ public static class GraphSummarizer : Object
                     sGraphHistoryValue);
             }
         }
-    }
-
-    //*************************************************************************
-    //  Method: ShowWarningIfNoGraphSummary()
-    //
-    /// <summary>
-    /// Shows a message if a graph summary isn't available.
-    /// </summary>
-    ///
-    /// <param name="sGraphSummary">
-    /// The graph summary.  Can be empty but not null.
-    /// </param>
-    ///
-    /// <returns>
-    /// true if the graph summary is not empty.
-    /// </returns>
-    //*************************************************************************
-
-    private static Boolean
-    ShowWarningIfNoGraphSummary
-    (
-        String sGraphSummary
-    )
-    {
-        Debug.Assert(sGraphSummary != null);
-
-        if (sGraphSummary.Length == 0)
-        {
-            FormUtil.ShowWarning("A graph summary is not available.");
-            return (false);
-        }
-
-        return (true);
     }
 }
 

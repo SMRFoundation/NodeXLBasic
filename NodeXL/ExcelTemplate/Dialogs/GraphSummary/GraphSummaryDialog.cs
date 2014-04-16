@@ -307,6 +307,10 @@ public partial class GraphSummaryDialog : ExcelTemplateForm
             {
                 Clipboard.SetText(sGraphSummary);
             }
+            else
+            {
+                ShowWarning("A graph summary is not available.");
+            }
         }
     }
 
