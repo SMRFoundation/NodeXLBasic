@@ -35,9 +35,10 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.pnlUserInputs = new System.Windows.Forms.Panel();
             this.chkExpandStatusUrls = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.chkLimitToSpecifiedUsers = new System.Windows.Forms.CheckBox();
             this.hllNetworkTypeBasic = new Smrf.AppLib.HelpLinkLabel();
             this.hllNetworkTypeBasicPlusFollows = new Smrf.AppLib.HelpLinkLabel();
-            this.picNetworkType = new System.Windows.Forms.PictureBox();
+            this.picNetworkPreview = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.radNetworkTypeBasicPlusFollows = new System.Windows.Forms.RadioButton();
@@ -54,7 +55,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.slStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.pnlUserInputs.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picNetworkType)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picNetworkPreview)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -103,9 +104,10 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.chkLimitToSpecifiedUsers);
             this.groupBox2.Controls.Add(this.hllNetworkTypeBasic);
             this.groupBox2.Controls.Add(this.hllNetworkTypeBasicPlusFollows);
-            this.groupBox2.Controls.Add(this.picNetworkType);
+            this.groupBox2.Controls.Add(this.picNetworkPreview);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.radNetworkTypeBasicPlusFollows);
@@ -117,10 +119,21 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "What to import";
             // 
+            // chkLimitToSpecifiedUsers
+            // 
+            this.chkLimitToSpecifiedUsers.AutoSize = true;
+            this.chkLimitToSpecifiedUsers.Location = new System.Drawing.Point(15, 172);
+            this.chkLimitToSpecifiedUsers.Name = "chkLimitToSpecifiedUsers";
+            this.chkLimitToSpecifiedUsers.Size = new System.Drawing.Size(234, 17);
+            this.chkLimitToSpecifiedUsers.TabIndex = 6;
+            this.chkLimitToSpecifiedUsers.Text = "&Import only the Twitter users I\'m interested in";
+            this.chkLimitToSpecifiedUsers.UseVisualStyleBackColor = true;
+            this.chkLimitToSpecifiedUsers.CheckedChanged += new System.EventHandler(this.OnEventThatRequiresImageChange);
+            // 
             // hllNetworkTypeBasic
             // 
             this.hllNetworkTypeBasic.AutoSize = true;
-            this.hllNetworkTypeBasic.Location = new System.Drawing.Point(49, 77);
+            this.hllNetworkTypeBasic.Location = new System.Drawing.Point(49, 69);
             this.hllNetworkTypeBasic.Name = "hllNetworkTypeBasic";
             this.hllNetworkTypeBasic.Size = new System.Drawing.Size(112, 13);
             this.hllNetworkTypeBasic.TabIndex = 2;
@@ -131,7 +144,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // hllNetworkTypeBasicPlusFollows
             // 
             this.hllNetworkTypeBasicPlusFollows.AutoSize = true;
-            this.hllNetworkTypeBasicPlusFollows.Location = new System.Drawing.Point(49, 146);
+            this.hllNetworkTypeBasicPlusFollows.Location = new System.Drawing.Point(49, 138);
             this.hllNetworkTypeBasicPlusFollows.Name = "hllNetworkTypeBasicPlusFollows";
             this.hllNetworkTypeBasicPlusFollows.Size = new System.Drawing.Size(112, 13);
             this.hllNetworkTypeBasicPlusFollows.TabIndex = 5;
@@ -139,20 +152,20 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.hllNetworkTypeBasicPlusFollows.Tag = "";
             this.hllNetworkTypeBasicPlusFollows.Text = "More about this option";
             // 
-            // picNetworkType
+            // picNetworkPreview
             // 
-            this.picNetworkType.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.picNetworkType.Location = new System.Drawing.Point(390, 19);
-            this.picNetworkType.Name = "picNetworkType";
-            this.picNetworkType.Size = new System.Drawing.Size(166, 119);
-            this.picNetworkType.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.picNetworkType.TabIndex = 6;
-            this.picNetworkType.TabStop = false;
+            this.picNetworkPreview.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.picNetworkPreview.Location = new System.Drawing.Point(390, 19);
+            this.picNetworkPreview.Name = "picNetworkPreview";
+            this.picNetworkPreview.Size = new System.Drawing.Size(166, 119);
+            this.picNetworkPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.picNetworkPreview.TabIndex = 6;
+            this.picNetworkPreview.TabStop = false;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(49, 126);
+            this.label2.Location = new System.Drawing.Point(49, 118);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(213, 13);
             this.label2.TabIndex = 4;
@@ -161,7 +174,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(49, 57);
+            this.label1.Location = new System.Drawing.Point(49, 49);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(315, 13);
             this.label1.TabIndex = 1;
@@ -170,26 +183,26 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             // radNetworkTypeBasicPlusFollows
             // 
             this.radNetworkTypeBasicPlusFollows.AutoSize = true;
-            this.radNetworkTypeBasicPlusFollows.Location = new System.Drawing.Point(15, 104);
+            this.radNetworkTypeBasicPlusFollows.Location = new System.Drawing.Point(15, 96);
             this.radNetworkTypeBasicPlusFollows.Name = "radNetworkTypeBasicPlusFollows";
             this.radNetworkTypeBasicPlusFollows.Size = new System.Drawing.Size(269, 17);
             this.radNetworkTypeBasicPlusFollows.TabIndex = 3;
             this.radNetworkTypeBasicPlusFollows.TabStop = true;
             this.radNetworkTypeBasicPlusFollows.Text = "Basic network plus &friends and followers (very slow!)";
             this.radNetworkTypeBasicPlusFollows.UseVisualStyleBackColor = true;
-            this.radNetworkTypeBasicPlusFollows.CheckedChanged += new System.EventHandler(this.OnNetworkTypeChanged);
+            this.radNetworkTypeBasicPlusFollows.CheckedChanged += new System.EventHandler(this.OnEventThatRequiresImageChange);
             // 
             // radNetworkTypeBasic
             // 
             this.radNetworkTypeBasic.AutoSize = true;
-            this.radNetworkTypeBasic.Location = new System.Drawing.Point(15, 35);
+            this.radNetworkTypeBasic.Location = new System.Drawing.Point(15, 27);
             this.radNetworkTypeBasic.Name = "radNetworkTypeBasic";
             this.radNetworkTypeBasic.Size = new System.Drawing.Size(92, 17);
             this.radNetworkTypeBasic.TabIndex = 0;
             this.radNetworkTypeBasic.TabStop = true;
             this.radNetworkTypeBasic.Text = "&Basic network";
             this.radNetworkTypeBasic.UseVisualStyleBackColor = true;
-            this.radNetworkTypeBasic.CheckedChanged += new System.EventHandler(this.OnNetworkTypeChanged);
+            this.radNetworkTypeBasic.CheckedChanged += new System.EventHandler(this.OnEventThatRequiresImageChange);
             // 
             // groupBox1
             // 
@@ -308,7 +321,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.pnlUserInputs.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picNetworkType)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picNetworkPreview)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
@@ -339,8 +352,9 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.RadioButton radNetworkTypeBasicPlusFollows;
         private System.Windows.Forms.RadioButton radNetworkTypeBasic;
-        private System.Windows.Forms.PictureBox picNetworkType;
+        private System.Windows.Forms.PictureBox picNetworkPreview;
         private AppLib.HelpLinkLabel hllNetworkTypeBasicPlusFollows;
         private AppLib.HelpLinkLabel hllNetworkTypeBasic;
+        private System.Windows.Forms.CheckBox chkLimitToSpecifiedUsers;
     }
 }

@@ -312,10 +312,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\TwitterUsersNetworkType\BasicPlusFollows.png" />
+    <EmbeddedResource Include="Images\TwitterUsersNetworkPreview\Basic.png" />
+    <EmbeddedResource Include="Images\TwitterUsersNetworkPreview\BasicPlusFollows.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Images\TwitterUsersNetworkType\Basic.png" />
+    <EmbeddedResource Include="Images\TwitterUsersNetworkPreview\BasicLimitToSpecifiedUsers.png" />
+    <EmbeddedResource Include="Images\TwitterUsersNetworkPreview\BasicPlusFollowsLimitToSpecifiedUsers.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

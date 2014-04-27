@@ -55,6 +55,7 @@ public partial class TwitterGetUsersNetworkDialog
         // m_sScreenNames
         // m_sListName
         // m_eNetworkType
+        // m_bLimitToSpecifiedUsers
         // m_bExpandStatusUrls
 
         DoDataExchange(false);
@@ -196,6 +197,7 @@ public partial class TwitterGetUsersNetworkDialog
             }
 
             m_eNetworkType = GetNetworkType();
+            m_bLimitToSpecifiedUsers = chkLimitToSpecifiedUsers.Checked;
             m_bExpandStatusUrls = chkExpandStatusUrls.Checked;
         }
         else
@@ -207,6 +209,7 @@ public partial class TwitterGetUsersNetworkDialog
             txbScreenNames.Text = m_sScreenNames;
 
             SetNetworkType(m_eNetworkType);
+            chkLimitToSpecifiedUsers.Checked = m_bLimitToSpecifiedUsers;
             chkExpandStatusUrls.Checked = m_bExpandStatusUrls;
 
             EnableControls();
@@ -416,7 +419,7 @@ public partial class TwitterGetUsersNetworkDialog
         ( (TwitterUsersNetworkAnalyzer)m_oHttpNetworkAnalyzer ).
             GetNetworkAsync(m_bUseListName, m_sListName,
                 StringUtil.SplitOnCommonDelimiters(m_sScreenNames),
-                m_eNetworkType, m_bExpandStatusUrls);
+                m_eNetworkType, m_bLimitToSpecifiedUsers, m_bExpandStatusUrls);
     }
 
     //*************************************************************************
@@ -506,10 +509,11 @@ public partial class TwitterGetUsersNetworkDialog
     }
 
     //*************************************************************************
-    //  Method: OnNetworkTypeChanged()
+    //  Method: OnEventThatRequiresImageChange()
     //
     /// <summary>
-    /// Handles the CheckedChanged event on the network type radio buttons.
+    /// Handles any event that should change the image shown in the
+    /// picNetworkPreview PictureBox.
     /// </summary>
     ///
     /// <param name="sender">
@@ -522,7 +526,7 @@ public partial class TwitterGetUsersNetworkDialog
     //*************************************************************************
 
     private void
-    OnNetworkTypeChanged
+    OnEventThatRequiresImageChange
     (
         object sender,
         EventArgs e
@@ -530,22 +534,30 @@ public partial class TwitterGetUsersNetworkDialog
     {
         AssertValid();
 
-        // The sample images displayed in the picNetworkType PictureBox are
-        // stored as embedded resources.  The file names, without namespaces,
-        // are "Basic.png", "BasicPlusFollows.png", etc.
+        // The sample images displayed in the picNetworkPreview PictureBox are
+        // stored as embedded resources.  Here are the file names, without
+        // namespaces:
+        //
+        //   Basic.png
+        //   BasicPlusFollows.png
+        //   BasicPlusFollowsLimitToSpecifiedUsers.png
+        //   BasicLimitToSpecifiedUsers.png
 
         String sResourceName = String.Format(
 
-            "Images.TwitterUsersNetworkType.{0}.png"
+            "Images.TwitterUsersNetworkPreview.{0}{1}.png"
             ,
-            GetNetworkType()  // Sample text: "Basic"
+            GetNetworkType(),  // Sample text: "Basic"
+
+            chkLimitToSpecifiedUsers.Checked ?
+                "LimitToSpecifiedUsers" : String.Empty
             );
 
         // The namespace of the images is Smrf.NodeXL.GraphDataProviders, so
         // use a class that has that namespace as the "type" argument of the
         // Bitmap constructor.
 
-        picNetworkType.Image = new Bitmap(
+        picNetworkPreview.Image = new Bitmap(
             typeof(GraphDataProviderBase), sResourceName);
     }
 
@@ -636,6 +648,10 @@ public partial class TwitterGetUsersNetworkDialog
     ///  Specifies the type of Twitter users network to get.
 
     protected static TwitterUsersNetworkAnalyzer.NetworkType m_eNetworkType;
+
+    /// true if only the specified users should be included.
+
+    protected static Boolean m_bLimitToSpecifiedUsers = true;
 
     /// true to expand the URLs in the statuses.
 

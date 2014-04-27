@@ -57,16 +57,13 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     NetworkType
     {
         /// <summary>
-        /// Append vertices for the users specified by the caller, vertices for
-        /// the users replied to and mentioned in those users' recent statuses,
-        /// and edges for those recent statuses.
+        /// Include mentions and replies-to relationships.
         /// </summary>
 
         Basic = 0,
 
         /// <summary>
-        /// Basic plus vertices and edges for the users who are friends and
-        /// followers of the users who were specified by the caller.
+        /// Include mentions, replies-to and follows relationships.
         /// </summary>
 
         BasicPlusFollows = 1,
@@ -103,6 +100,12 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// The type of network to get.
     /// </param>
     ///
+    /// <param name="limitToSpecifiedUsers">
+    /// true to include the specified users only, false to also include
+    /// external replied-to users, mentioned users, and friend and follower
+    /// users, depending on the value of <paramref name="networkType" />.
+    /// </param>
+    ///
     /// <param name="expandStatusUrls">
     /// true to expand the URLs in the statuses.
     /// </param>
@@ -128,6 +131,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         String listName,
         ICollection<String> screenNames,
         NetworkType networkType,
+        Boolean limitToSpecifiedUsers,
         Boolean expandStatusUrls
     )
     {
@@ -147,6 +151,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         oGetNetworkAsyncArgs.ListName = listName;
         oGetNetworkAsyncArgs.ScreenNames = screenNames;
         oGetNetworkAsyncArgs.NetworkType = networkType;
+        oGetNetworkAsyncArgs.LimitToSpecifiedUsers = limitToSpecifiedUsers;
         oGetNetworkAsyncArgs.ExpandStatusUrls = expandStatusUrls;
 
         m_oBackgroundWorker.RunWorkerAsync(oGetNetworkAsyncArgs);
@@ -183,6 +188,12 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// The type of network to get.
     /// </param>
     ///
+    /// <param name="limitToSpecifiedUsers">
+    /// true to include the specified users only, false to also include
+    /// external replied-to users, mentioned users, and friend and follower
+    /// users, depending on the value of <paramref name="networkType" />.
+    /// </param>
+    ///
     /// <param name="expandStatusUrls">
     /// true to expand the URLs in the statuses.
     /// </param>
@@ -199,6 +210,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         String listName,
         ICollection<String> screenNames,
         NetworkType networkType,
+        Boolean limitToSpecifiedUsers,
         Boolean expandStatusUrls
     )
     {
@@ -207,7 +219,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         AssertValid();
 
         return ( GetNetworkInternal(useListName, listName, screenNames,
-            networkType, expandStatusUrls) );
+            networkType, limitToSpecifiedUsers, expandStatusUrls) );
     }
 
     //*************************************************************************
@@ -238,6 +250,10 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// The type of network to get.
     /// </param>
     ///
+    /// <param name="bLimitToSpecifiedUsers">
+    /// true to include the specified users only.
+    /// </param>
+    ///
     /// <param name="bExpandStatusUrls">
     /// true to expand the URLs in the statuses.
     /// </param>
@@ -254,6 +270,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         String sListName,
         ICollection<String> oScreenNames,
         NetworkType eNetworkType,
+        Boolean bLimitToSpecifiedUsers,
         Boolean bExpandStatusUrls
     )
     {
@@ -269,8 +286,8 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         try
         {
             GetNetworkInternal(bUseListName, sListName, oScreenNames,
-                eNetworkType, bExpandStatusUrls, oRequestStatistics,
-                oGraphMLXmlDocument);
+                eNetworkType, bLimitToSpecifiedUsers, bExpandStatusUrls,
+                oRequestStatistics, oGraphMLXmlDocument);
         }
         catch (Exception oException)
         {
@@ -284,7 +301,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         OnNetworkObtained(oGraphMLXmlDocument, oRequestStatistics, 
 
             GetNetworkDescription(bUseListName, sListName, oScreenNames,
-                eNetworkType, bExpandStatusUrls),
+                eNetworkType, bLimitToSpecifiedUsers, bExpandStatusUrls),
 
             sNetworkTitle, sNetworkTitle
             );
@@ -321,6 +338,10 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// The type of network to get.
     /// </param>
     ///
+    /// <param name="bLimitToSpecifiedUsers">
+    /// true to include the specified users only.
+    /// </param>
+    ///
     /// <param name="bExpandStatusUrls">
     /// true to expand the URLs in the statuses.
     /// </param>
@@ -342,6 +363,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         String sListName,
         ICollection<String> oScreenNames,
         NetworkType eNetworkType,
+        Boolean bLimitToSpecifiedUsers,
         Boolean bExpandStatusUrls,
         RequestStatistics oRequestStatistics,
         GraphMLXmlDocument oGraphMLXmlDocument
@@ -359,20 +381,13 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Dictionary<String, TwitterUser> oUserIDDictionary =
             new Dictionary<String, TwitterUser>();
 
-        // Append vertices for the users who were specified by the caller,
-        // vertices for the users replied to and mentioned in those users'
-        // recent statuses, and edges for those recent statuses.
-
         GetBasicNetwork(bUseListName, sListName, oScreenNames,
-            bExpandStatusUrls, oRequestStatistics, oUserIDDictionary,
-            oGraphMLXmlDocument);
+            bLimitToSpecifiedUsers, bExpandStatusUrls, oRequestStatistics,
+            oUserIDDictionary, oGraphMLXmlDocument);
 
         if (eNetworkType == NetworkType.BasicPlusFollows)
         {
-            // Append vertices and edges for the users who are friends and
-            // followers of the users who were specified by the caller.
-
-            AppendFriendsAndFollowers(
+            AppendFriendsAndFollowers(bLimitToSpecifiedUsers,
                 oRequestStatistics, oUserIDDictionary, oGraphMLXmlDocument);
         }
     }
@@ -381,8 +396,8 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     //  Method: GetBasicNetwork()
     //
     /// <summary>
-    /// Appends vertices for the users who were specified by the caller,
-    /// vertices for the users replied to and mentioned in those users' recent
+    /// Appends vertices for the specified users, optional vertices for
+    /// external users replied to and mentioned in the specified users' recent
     /// statuses, and edges for those recent statuses.
     /// </summary>
     ///
@@ -401,6 +416,10 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// <param name="oScreenNames">
     /// Zero or more Twitter screen names if <paramref name="bUseListName" />
     /// is false; unused otherwise.
+    /// </param>
+    ///
+    /// <param name="bLimitToSpecifiedUsers">
+    /// true to include the specified users only.
     /// </param>
     ///
     /// <param name="bExpandStatusUrls">
@@ -428,6 +447,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Boolean bUseListName,
         String sListName,
         ICollection<String> oScreenNames,
+        Boolean bLimitToSpecifiedUsers,
         Boolean bExpandStatusUrls,
         RequestStatistics oRequestStatistics,
         Dictionary<String, TwitterUser> oUserIDDictionary,
@@ -443,7 +463,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         ReportProgress("Getting information about the specified users.");
 
-        // Append a vertex for each user specified by the caller.
+        // Append vertices for the specified users.
 
         foreach ( Dictionary<String, Object> oUserValueDictionary in
 
@@ -455,15 +475,19 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 oGraphMLXmlDocument);
         }
 
-        // Append vertices for the users replied to and mentioned in the
-        // users' recent statuses.
+        if (!bLimitToSpecifiedUsers)
+        {
+            // Append vertices for external users replied to and mentioned in
+            // the specified users' recent statuses.
 
-        ReportProgress("Getting the specified users' recent tweets.");
+            ReportProgress("Getting information about replied-to and mentioned"
+                + " users.");
 
-        AppendRepliesToAndMentionsVertexXmlNodes(oRequestStatistics,
-            oUserIDDictionary, oGraphMLXmlDocument);
+            AppendExternalRepliesToAndMentionsVertexXmlNodes(
+                oRequestStatistics, oUserIDDictionary, oGraphMLXmlDocument);
+        }
 
-        // Append edges for those recent statuses.
+        // Append edges for replies-to and mentions.
 
         AppendRepliesToAndMentionsEdgeXmlNodes(
 
@@ -480,8 +504,12 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     //
     /// <summary>
     /// Appends vertices and edges for the users who are friends and followers
-    /// of the users who were specified by the caller.
+    /// of the specified users.
     /// </summary>
+    ///
+    /// <param name="bLimitToSpecifiedUsers">
+    /// true to include the specified users only.
+    /// </param>
     ///
     /// <param name="oRequestStatistics">
     /// A <see cref="RequestStatistics" /> object that is keeping track of
@@ -501,6 +529,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     protected void
     AppendFriendsAndFollowers
     (
+        Boolean bLimitToSpecifiedUsers,
         RequestStatistics oRequestStatistics,
         Dictionary<String, TwitterUser> oUserIDDictionary,
         GraphMLXmlDocument oGraphMLXmlDocument
@@ -511,18 +540,18 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
-        AppendFriendsOrFollowers(true, oRequestStatistics,
-            oUserIDDictionary, oGraphMLXmlDocument);
+        AppendFriendsOrFollowers(true, bLimitToSpecifiedUsers,
+            oRequestStatistics, oUserIDDictionary, oGraphMLXmlDocument);
 
-        AppendFriendsOrFollowers(false, oRequestStatistics,
-            oUserIDDictionary, oGraphMLXmlDocument);
+        AppendFriendsOrFollowers(false, bLimitToSpecifiedUsers,
+            oRequestStatistics, oUserIDDictionary, oGraphMLXmlDocument);
     }
 
     //*************************************************************************
     //  Method: AppendSpecifiedUserVertexXmlNode()
     //
     /// <summary>
-    /// Appends a vertex XML node for a user specified by the caller.
+    /// Appends a vertex XML node for a specified user.
     /// </summary>
     ///
     /// <param name="oUserValueDictionary">
@@ -668,10 +697,10 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: AppendRepliesToAndMentionsVertexXmlNodes()
+    //  Method: AppendExternalRepliesToAndMentionsVertexXmlNodes()
     //
     /// <summary>
-    /// Appends vertex XML nodes for the users replied to and mentioned in the
+    /// Appends vertices for external users replied to and mentioned in the
     /// specified users' recent statuses.
     /// </summary>
     ///
@@ -691,7 +720,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     //*************************************************************************
 
     protected void
-    AppendRepliesToAndMentionsVertexXmlNodes
+    AppendExternalRepliesToAndMentionsVertexXmlNodes
     (
         RequestStatistics oRequestStatistics,
         Dictionary<String, TwitterUser> oUserIDDictionary,
@@ -703,31 +732,32 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
-        // This is a collection of unique screen names replied-to or mentioned
-        // in the specified users' recent statuses.
+        // This is a collection of external unique screen names replied-to or
+        // mentioned in the specified users' recent statuses.
 
-        String[] asRepliesToAndMentionsScreenNames =
-            GetRepliesToAndMentionsScreenNames(oUserIDDictionary.Values);
+        String[] asExternalRepliesToAndMentionsScreenNames =
+            GetExternalRepliesToAndMentionsScreenNames(oUserIDDictionary);
 
         // Get information about each such user.
 
         foreach ( Dictionary<String, Object> oUserValueDictionary in
 
-            EnumerateUserValueDictionaries(asRepliesToAndMentionsScreenNames,
-                false, oRequestStatistics) )
+            EnumerateUserValueDictionaries(
+                asExternalRepliesToAndMentionsScreenNames, false,
+                oRequestStatistics) )
         {
-            String sScreenName, sUserID;
+            String sExternalScreenName, sExternalUserID;
 
             if ( TryGetScreenNameAndUserIDFromDictionary(oUserValueDictionary,
-                    out sScreenName, out sUserID) )
+                    out sExternalScreenName, out sExternalUserID) )
             {
-                // Append a vertex for the user if one doesn't already exist.
+                // Append a vertex for the external user.
 
-                TwitterUser oTwitterUser;
+                TwitterUser oExternalTwitterUser;
 
-                TryAppendVertexXmlNode(sScreenName, sUserID, false,
-                    oGraphMLXmlDocument, oUserIDDictionary,
-                    oUserValueDictionary, out oTwitterUser);
+                TryAppendVertexXmlNode(sExternalScreenName, sExternalUserID,
+                    false, oGraphMLXmlDocument, oUserIDDictionary,
+                    oUserValueDictionary, out oExternalTwitterUser);
             }
         }
     }
@@ -737,11 +767,15 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     //
     /// <summary>
     /// Appends vertices and edges for the users who are friends or followers
-    /// of the users who were specified by the caller.
+    /// of the specified users.
     /// </summary>
     ///
     /// <param name="bAppendFriends">
     /// true to append the friends, false to append the followers.
+    /// </param>
+    ///
+    /// <param name="bLimitToSpecifiedUsers">
+    /// true to include the specified users only.
     /// </param>
     ///
     /// <param name="oRequestStatistics">
@@ -763,6 +797,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     AppendFriendsOrFollowers
     (
         Boolean bAppendFriends,
+        Boolean bLimitToSpecifiedUsers,
         RequestStatistics oRequestStatistics,
         Dictionary<String, TwitterUser> oUserIDDictionary,
         GraphMLXmlDocument oGraphMLXmlDocument
@@ -773,10 +808,10 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
-        // Get the screen names of the users who were specified by the caller.
+        HashSet<String> oSpecifiedUserScreenNames =
+            GetSpecifiedUserScreenNames(oUserIDDictionary);
 
-        foreach ( String sScreenName in
-            GetScreenNames(oUserIDDictionary, true) )
+        foreach (String sScreenName in oSpecifiedUserScreenNames)
         {
             // Get the user's friends or followers.
 
@@ -791,19 +826,28 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
                     oUserValueDictionary, out sFriendOrFollowerScreenName,
                     out sFriendOrFollowerUserID) )
                 {
-                    // Append a vertex for the friend or follower if he is not
-                    // already in the network.
 
-                    TwitterUser oFriendOrFollower;
+                    if (
+                        !bLimitToSpecifiedUsers
+                        ||
+                        oSpecifiedUserScreenNames.Contains(
+                            sFriendOrFollowerScreenName)
+                        )
+                    {
+                        // Append a vertex for the friend or follower if he is
+                        // not already in the network.
 
-                    TryAppendVertexXmlNode(sFriendOrFollowerScreenName,
-                        sFriendOrFollowerUserID, false, oGraphMLXmlDocument,
-                        oUserIDDictionary, oUserValueDictionary,
-                        out oFriendOrFollower);
+                        TwitterUser oFriendOrFollower;
 
-                    AppendFriendOrFollowerEdgeXmlNode(sScreenName,
-                        sFriendOrFollowerScreenName, bAppendFriends,
-                        oGraphMLXmlDocument, oRequestStatistics);
+                        TryAppendVertexXmlNode(sFriendOrFollowerScreenName,
+                            sFriendOrFollowerUserID, false, oGraphMLXmlDocument,
+                            oUserIDDictionary, oUserValueDictionary,
+                            out oFriendOrFollower);
+
+                        AppendFriendOrFollowerEdgeXmlNode(sScreenName,
+                            sFriendOrFollowerScreenName, bAppendFriends,
+                            oGraphMLXmlDocument, oRequestStatistics);
+                    }
                 }
             }
         }
@@ -864,59 +908,111 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: GetRepliesToAndMentionsScreenNames()
+    //  Method: GetExternalRepliesToAndMentionsScreenNames()
     //
     /// <summary>
-    /// Gets all the unique screen names that were replied-to or mentioned
-    /// in all the specified users' recent statuses.
+    /// Gets the unique external screen names that were replied-to or mentioned
+    /// in the specified users' recent statuses.
     /// </summary>
     ///
-    /// <param name="oTwitterUsers">
-    /// Collection of TwitterUser objects.
+    /// <param name="oUserIDDictionary">
+    /// The key is the Twitter user ID and the value is the corresponding
+    /// TwitterUser.
     /// </param>
     ///
     /// <returns>
-    /// A collection of all the unique screen names, in lower case.
+    /// The unique external replies to or mentions screen names, in lower case.
+    /// Does not include the specified users' screen names.
     /// </returns>
     //*************************************************************************
 
     protected String[]
-    GetRepliesToAndMentionsScreenNames
+    GetExternalRepliesToAndMentionsScreenNames
     (
-        IEnumerable<TwitterUser> oTwitterUsers
+        Dictionary<String, TwitterUser> oUserIDDictionary
     )
     {
-        Debug.Assert(oTwitterUsers != null);
+        Debug.Assert(oUserIDDictionary != null);
         AssertValid();
 
-        HashSet<String> oUniqueScreenNames = new HashSet<String>();
+        HashSet<String> oSpecifiedUserScreenNames =
+            GetSpecifiedUserScreenNames(oUserIDDictionary);
+
+        HashSet<String> oExternalRepliesToAndMentionsScreenNames =
+            new HashSet<String>();
 
         TwitterStatusTextParser oTwitterStatusTextParser =
             new TwitterStatusTextParser();
 
         foreach ( TwitterStatus oTwitterStatus in
-            EnumerateTwitterStatuses(oTwitterUsers) )
+            EnumerateTwitterStatuses(oUserIDDictionary.Values) )
         {
-            String sRepliedToScreenName;
-            String [] asUniqueMentionedScreenNames;
+            String sRepliesToScreenName;
+            String [] asUniqueMentionsScreenNames;
 
             oTwitterStatusTextParser.GetScreenNames(oTwitterStatus.Text,
-                out sRepliedToScreenName,
-                out asUniqueMentionedScreenNames);
+                out sRepliesToScreenName,
+                out asUniqueMentionsScreenNames);
 
-            if ( !String.IsNullOrEmpty(sRepliedToScreenName) )
+            if ( !String.IsNullOrEmpty(sRepliesToScreenName) )
             {
-                oUniqueScreenNames.Add(sRepliedToScreenName);
+                AddExternalRepliesToOrMentionsScreenName(sRepliesToScreenName,
+                    oExternalRepliesToAndMentionsScreenNames,
+                    oSpecifiedUserScreenNames);
             }
 
-            foreach (String sUniqueMentionedScreenName in
-                asUniqueMentionedScreenNames)
+            foreach (String sUniqueMentionsScreenName in
+                asUniqueMentionsScreenNames)
             {
-                oUniqueScreenNames.Add(sUniqueMentionedScreenName);
+                AddExternalRepliesToOrMentionsScreenName(
+                    sUniqueMentionsScreenName,
+                    oExternalRepliesToAndMentionsScreenNames,
+                    oSpecifiedUserScreenNames);
             }
         }
 
-        return ( oUniqueScreenNames.ToArray() );
+        return ( oExternalRepliesToAndMentionsScreenNames.ToArray() );
+    }
+
+    //*************************************************************************
+    //  Method: AddExternalRepliesToOrMentionsScreenName()
+    //
+    /// <summary>
+    /// Adds an external replies to or mentions screen name to a HashSet.
+    /// </summary>
+    ///
+    /// <param name="sRepliesToOrMentionsScreenName">
+    /// The replies to or mentions screen name.
+    /// </param>
+    ///
+    /// <param name="oExternalRepliesToAndMentionsScreenNames">
+    /// The unique external replies to or mentions screen names, in lower case.
+    /// </param>
+    ///
+    /// <param name="oSpecifiedUserScreenNames">
+    /// The screen names for the specified users.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    AddExternalRepliesToOrMentionsScreenName
+    (
+        String sRepliesToOrMentionsScreenName,
+        HashSet<String> oExternalRepliesToAndMentionsScreenNames,
+        HashSet<String> oSpecifiedUserScreenNames
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sRepliesToOrMentionsScreenName) );
+        Debug.Assert(oExternalRepliesToAndMentionsScreenNames != null);
+        Debug.Assert(oSpecifiedUserScreenNames != null);
+        AssertValid();
+
+        if ( !oSpecifiedUserScreenNames.Contains(
+            sRepliesToOrMentionsScreenName) )
+        {
+            oExternalRepliesToAndMentionsScreenNames.Add(
+                sRepliesToOrMentionsScreenName);
+        }
     }
 
     //*************************************************************************
@@ -975,7 +1071,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     //  Method: EnumerateSpecifiedUsers()
     //
     /// <summary>
-    /// Enumerates the users who were specified by the caller.
+    /// Enumerates the specified users.
     /// </summary>
     ///
     /// <param name="bUseListName">
@@ -1269,10 +1365,10 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     }
 
     //*************************************************************************
-    //  Method: GetScreenNames()
+    //  Method: GetSpecifiedUserScreenNames()
     //
     /// <summary>
-    /// Gets the screen names for a set of users already in the network.
+    /// Gets the screen names for the specified users.
     /// </summary>
     ///
     /// <param name="oUserIDDictionary">
@@ -1280,37 +1376,31 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// TwitterUser.
     /// </param>
     ///
-    /// <param name="bSpecifiedUsers">
-    /// true to get the screen names that were specified by the caller, false
-    /// to get all other screen names in the network.
-    /// </param>
-    ///
     /// <returns>
-    /// An array of screen names.
+    /// A collection of screen names, in lower case.
     /// </returns>
     //*************************************************************************
 
-    protected String[]
-    GetScreenNames
+    protected HashSet<String>
+    GetSpecifiedUserScreenNames
     (
-        Dictionary<String, TwitterUser> oUserIDDictionary,
-        Boolean bSpecifiedUsers
+        Dictionary<String, TwitterUser> oUserIDDictionary
     )
     {
         Debug.Assert(oUserIDDictionary != null);
         AssertValid();
 
-        List<String> oUserScreenNames = new List<String>();
+        HashSet<String> oUserScreenNames = new HashSet<String>();
 
         foreach (TwitterUser oTwitterUser in oUserIDDictionary.Values)
         {
-            if (GetIsSpecifiedUser(oTwitterUser) == bSpecifiedUsers)
+            if ( GetIsSpecifiedUser(oTwitterUser) )
             {
                 oUserScreenNames.Add(oTwitterUser.ScreenName);
             }
         }
 
-        return ( oUserScreenNames.ToArray() );
+        return (oUserScreenNames);
     }
 
     //*************************************************************************
@@ -1376,6 +1466,10 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// The type of network to get.
     /// </param>
     ///
+    /// <param name="bLimitToSpecifiedUsers">
+    /// true to include the specified users only.
+    /// </param>
+    ///
     /// <param name="bExpandStatusUrls">
     /// true to expand the URLs in the statuses.
     /// </param>
@@ -1392,6 +1486,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         String sListName,
         ICollection<String> oScreenNames,
         NetworkType eNetworkType,
+        Boolean bLimitToSpecifiedUsers,
         Boolean bExpandStatusUrls
     )
     {
@@ -1456,6 +1551,12 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Debug.Assert( !String.IsNullOrEmpty(sNetworkType) );
         oNetworkDescriber.AddSentence(sNetworkType);
 
+        if (bLimitToSpecifiedUsers)
+        {
+            oNetworkDescriber.AddSentence(
+                "It includes only the specified users.");
+        }
+
         return ( oNetworkDescriber.ConcatenateSentences() );
     }
 
@@ -1484,6 +1585,8 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     {
         Debug.Assert(oTwitterUser != null);
         AssertValid();
+
+        // Use TwitterUser.Tag to store this custom property.
 
         oTwitterUser.Tag = bIsSpecifiedUser;
     }
@@ -1553,6 +1656,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 oGetNetworkAsyncArgs.ListName,
                 oGetNetworkAsyncArgs.ScreenNames,
                 oGetNetworkAsyncArgs.NetworkType,
+                oGetNetworkAsyncArgs.LimitToSpecifiedUsers,
                 oGetNetworkAsyncArgs.ExpandStatusUrls
                 );
         }
@@ -1632,6 +1736,8 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         public ICollection<String> ScreenNames;
         ///
         public NetworkType NetworkType;
+        ///
+        public Boolean LimitToSpecifiedUsers;
         ///
         public Boolean ExpandStatusUrls;
     };
