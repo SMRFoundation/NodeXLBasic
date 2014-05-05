@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Microsoft.Office.Interop.Excel;
 using System.Linq;
 using System.Diagnostics;
@@ -803,7 +803,7 @@ public class VertexWorksheetReader : WorksheetReaderBase
         // Note that sImageUri may or may not be a valid URI string.  If it is
         // not, GetImageSynchronousIgnoreDpi() will return an error image.
 
-        ImageSource oImage =
+        BitmapSource oImage =
             ( new WpfImageUtil() ).GetImageSynchronousIgnoreDpi(sImageUri);
 
         if (oVertexImageSize.HasValue)

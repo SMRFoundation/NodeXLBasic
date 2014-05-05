@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
+using Smrf.AppLib;
 
 namespace Smrf.WpfGraphicsLib
 {
@@ -207,7 +208,10 @@ public class WpfImageUtil
             {
                 try
                 {
+                    // This is a synchronous operation.
+
                     BitmapImage oBitmapImage = new BitmapImage(oUri);
+
                     WpfGraphicsUtil.FreezeIfFreezable(oBitmapImage);
 
                     return (oBitmapImage);
@@ -372,80 +376,56 @@ public class WpfImageUtil
     {
         Debug.Assert(uri != null);
 
-        Debug.Assert(uri.Scheme == Uri.UriSchemeHttp ||
-            uri.Scheme == Uri.UriSchemeHttps);
+        Debug.Assert(
+            uri.Scheme == Uri.UriSchemeHttp
+            ||
+            uri.Scheme == Uri.UriSchemeHttps
+            );
 
         AssertValid();
 
-        // Talk about inefficient...
-        //
-        // The following code uses HttpWebRequest to synchronously download the
-        // image into a List<Byte>, then passes that List as a MemoryStream to
-        // BitmapImage.StreamSource.  It works, but it involves way too much
-        // Byte copying.  There has to be a better way to do this, but so far I
-        // haven't found one.
-        //
-        // In the following post...
-        //
-        // http://stackoverflow.com/questions/426645/
-        // how-to-render-an-image-in-a-background-wpf-process
-        //
-        // ...the poster suggests feeding the WebResponse.GetResponseStream()
-        // indirectly to BitmapImage.StreamSource.  This sometimes works but
-        // sometimes doesn't, which you can tell by checking
-        // BitmapImage.IsDownloading at the end of his code.  It is true
-        // sometimes, indicating that the Bitmap is still downloading.
+        String sTemporaryFilePath =
+            GetTemporaryFilePathForDownloadedImage(uri);
 
-        HttpWebRequest oHttpWebRequest = (HttpWebRequest)WebRequest.Create(uri);
-        oHttpWebRequest.Timeout = HttpWebRequestTimeoutMs;
-
-        oHttpWebRequest.CachePolicy = new RequestCachePolicy(
-            RequestCacheLevel.CacheIfAvailable);
-
-        WebResponse oWebResponse = oHttpWebRequest.GetResponse();
-
-        BinaryReader oBinaryReader = new BinaryReader(
-            oWebResponse.GetResponseStream() );
-
-        List<Byte> oResponseBytes = new List<Byte>();
-
-        while (true)
+        try
         {
-            Byte [] abtSomeResponseBytes = oBinaryReader.ReadBytes(8192);
+            // Download the file using a simple synchronous technique.
 
-            if (abtSomeResponseBytes.Length == 0)
+            ( new WebClient() ).DownloadFile(uri, sTemporaryFilePath);
+
+            BitmapImage oBitmapImage = new BitmapImage();
+            oBitmapImage.BeginInit();
+            oBitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+
+            // Some Twitter images have corrupted color profiles, which causes
+            // BitmapImage.EndInit() to raise an ArgumentException with the
+            // message "Value does not fall within the expected range."  Follow
+            // the suggestion at the following page and ignore color profiles.
+            //
+            // http://www.hanselman.com/blog/
+            // DealingWithImagesWithBadMetadataCorruptedColorProfilesInWPF.aspx
+
+            oBitmapImage.CreateOptions =
+                BitmapCreateOptions.IgnoreColorProfile;
+
+            // Synchronously load the bitmap with the contents of the
+            // downloaded file.
+
+            using ( FileStream oFileStream =
+                new FileStream(sTemporaryFilePath, FileMode.Open) )
             {
-                break;
+                oBitmapImage.StreamSource = oFileStream;
+                oBitmapImage.EndInit();
             }
 
-            oResponseBytes.AddRange(abtSomeResponseBytes);
+            WpfGraphicsUtil.FreezeIfFreezable(oBitmapImage);
+
+            return (oBitmapImage);
         }
-
-        Byte [] abtAllResponseBytes = oResponseBytes.ToArray();
-        oResponseBytes = null;
-
-        MemoryStream oMemoryStream = new MemoryStream(abtAllResponseBytes,
-            false);
-
-        BitmapImage oBitmapImage = new BitmapImage();
-        oBitmapImage.BeginInit();
-
-        // Some Twitter images have corrupted color profiles, which causes
-        // BitmapImage.EndInit() to raise an ArgumentException with the message
-        // "Value does not fall within the expected range."  Follow the
-        // suggestion at the following page and ignore color profiles.
-        //
-        // http://www.hanselman.com/blog/
-        // DealingWithImagesWithBadMetadataCorruptedColorProfilesInWPF.aspx
-
-        oBitmapImage.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
-
-        oBitmapImage.StreamSource = oMemoryStream;
-        oBitmapImage.EndInit();
-
-        WpfGraphicsUtil.FreezeIfFreezable(oBitmapImage);
-
-        return (oBitmapImage);
+        finally
+        {
+            File.Delete(sTemporaryFilePath);
+        }
     }
 
     //*************************************************************************
@@ -535,7 +515,7 @@ public class WpfImageUtil
     public BitmapSource
     ResizeImage
     (
-        ImageSource image,
+        BitmapSource image,
         Int32 widthNew,
         Int32 heightNew
     )
@@ -545,16 +525,21 @@ public class WpfImageUtil
         Debug.Assert(heightNew > 0);
         AssertValid();
 
-        DrawingVisual oDrawingVisual = new DrawingVisual();
-        DrawingContext oDrawingContext = oDrawingVisual.RenderOpen();
+        // The following code was adapted from this post:
+        //
+        //   http://chironexsoftware.com/blog/?p=55
 
-        oDrawingContext.DrawImage( image,
-            new Rect( new Point(), new Size(widthNew, heightNew) ) );
+        TransformedBitmap resizedImage = new TransformedBitmap(image,
+            
+            new ScaleTransform(
+                (Double)widthNew / (Double)image.PixelWidth,
+                (Double)heightNew / (Double)image.PixelHeight,
+                0, 0)
+            );
 
-        oDrawingContext.Close();
+        WpfGraphicsUtil.FreezeIfFreezable(resizedImage);
 
-        return ( DrawingVisualToRenderTargetBitmap(oDrawingVisual, widthNew,
-            heightNew) );
+        return (resizedImage);
     }
 
     //*************************************************************************
@@ -582,7 +567,7 @@ public class WpfImageUtil
     public BitmapSource
     ResizeImage
     (
-        ImageSource image,
+        BitmapSource image,
         Int32 longerDimensionNew
     )
     {
@@ -614,6 +599,59 @@ public class WpfImageUtil
 
         return ( ResizeImage(image, iShorterDimensionNew,
             longerDimensionNew) );
+    }
+
+    //*************************************************************************
+    //  Method: GetTemporaryFilePathForDownloadedImage()
+    //
+    /// <summary>
+    /// Gets a temporary file path for a downloaded image.
+    /// </summary>
+    ///
+    /// <param name="oUri">
+    /// The URI the image will be downloaded from.  Must be HTTP or HTTPS.
+    /// </param>
+    ///
+    /// <returns>
+    /// A temporary file path.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// This method doesn't download the image and doesn't create a file.  It
+    /// just returns a temporary file path that the caller should used when it
+    /// downloads the image.
+    /// </remarks>
+    //*************************************************************************
+
+    protected String
+    GetTemporaryFilePathForDownloadedImage
+    (
+        Uri oUri
+    )
+    {
+        Debug.Assert(oUri != null);
+
+        Debug.Assert(
+            oUri.Scheme == Uri.UriSchemeHttp
+            ||
+            oUri.Scheme == Uri.UriSchemeHttps
+            );
+
+        AssertValid();
+
+        String[] asSegments = oUri.Segments;
+        String sFileName = asSegments[asSegments.Length - 1];
+        String sExtension = Path.GetExtension(sFileName);
+
+        if ( String.IsNullOrEmpty(sExtension) )
+        {
+            throw new FileFormatException(
+                "The URI doesn't have an extension.");
+        }
+
+        return ( Path.ChangeExtension(
+            FileUtil.GetPathToUseForTemporaryFile(),
+            sExtension) );
     }
 
     //*************************************************************************
