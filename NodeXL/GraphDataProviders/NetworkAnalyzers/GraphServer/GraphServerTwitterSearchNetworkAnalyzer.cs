@@ -19,7 +19,7 @@ using Smrf.NodeXL.GraphDataProviders.Twitter;
 namespace Smrf.NodeXL.GraphDataProviders.GraphServer
 {
 //*****************************************************************************
-//  Class: GraphServerNetworkAnalyzer
+//  Class: GraphServerTwitterSearchNetworkAnalyzer
 //
 /// <summary>
 /// Uses the NodeXL Graph Server to get a network of people who have tweeted
@@ -41,18 +41,18 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
 /// </remarks>
 //*****************************************************************************
 
-public class GraphServerNetworkAnalyzer : HttpNetworkAnalyzerBase
+public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
 {
     //*************************************************************************
-    //  Constructor: GraphServerNetworkAnalyzer()
+    //  Constructor: GraphServerTwitterSearchNetworkAnalyzer()
     //
     /// <summary>
     /// Initializes a new instance of the <see
-    /// cref="GraphServerNetworkAnalyzer" /> class.
+    /// cref="GraphServerTwitterSearchNetworkAnalyzer" /> class.
     /// </summary>
     //*************************************************************************
 
-    public GraphServerNetworkAnalyzer()
+    public GraphServerTwitterSearchNetworkAnalyzer()
     {
         // (Do nothing.)
 

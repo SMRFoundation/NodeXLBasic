@@ -55,9 +55,9 @@ public partial class MainForm : Form
         GetGraphData( new FlickrRelatedTagNetworkGraphDataProvider() );
     }
 
-    private void btnGraphServer_Click(object sender, EventArgs e)
+    private void btnGraphServerTwitterSearch_Click(object sender, EventArgs e)
     {
-        GetGraphData( new GraphServerNetworkGraphDataProvider() );
+        GetGraphData( new GraphServerTwitterSearchNetworkGraphDataProvider() );
     }
 
     private void GetGraphData(IGraphDataProvider2 oGraphDataProvider)

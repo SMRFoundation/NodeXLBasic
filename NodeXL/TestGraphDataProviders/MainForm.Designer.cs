@@ -34,7 +34,7 @@
             this.btnYouTubeUsers = new System.Windows.Forms.Button();
             this.btnYouTubeVideos = new System.Windows.Forms.Button();
             this.btnFlickrUsers = new System.Windows.Forms.Button();
-            this.btnGraphServer = new System.Windows.Forms.Button();
+            this.btnGraphServerTwitterSearch = new System.Windows.Forms.Button();
             this.btnTwitterUsers = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -99,15 +99,15 @@
             this.btnFlickrUsers.UseVisualStyleBackColor = true;
             this.btnFlickrUsers.Click += new System.EventHandler(this.btnFlickrUsers_Click);
             // 
-            // btnGraphServer
+            // btnGraphServerTwitterSearch
             // 
-            this.btnGraphServer.Location = new System.Drawing.Point(422, 12);
-            this.btnGraphServer.Name = "btnGraphServer";
-            this.btnGraphServer.Size = new System.Drawing.Size(120, 23);
-            this.btnGraphServer.TabIndex = 6;
-            this.btnGraphServer.Text = "Graph Server";
-            this.btnGraphServer.UseVisualStyleBackColor = true;
-            this.btnGraphServer.Click += new System.EventHandler(this.btnGraphServer_Click);
+            this.btnGraphServerTwitterSearch.Location = new System.Drawing.Point(422, 12);
+            this.btnGraphServerTwitterSearch.Name = "btnGraphServerTwitterSearch";
+            this.btnGraphServerTwitterSearch.Size = new System.Drawing.Size(120, 23);
+            this.btnGraphServerTwitterSearch.TabIndex = 6;
+            this.btnGraphServerTwitterSearch.Text = "Graph Server";
+            this.btnGraphServerTwitterSearch.UseVisualStyleBackColor = true;
+            this.btnGraphServerTwitterSearch.Click += new System.EventHandler(this.btnGraphServerTwitterSearch_Click);
             // 
             // btnTwitterUsers
             // 
@@ -125,7 +125,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(553, 394);
             this.Controls.Add(this.btnTwitterUsers);
-            this.Controls.Add(this.btnGraphServer);
+            this.Controls.Add(this.btnGraphServerTwitterSearch);
             this.Controls.Add(this.btnFlickrUsers);
             this.Controls.Add(this.btnYouTubeVideos);
             this.Controls.Add(this.btnYouTubeUsers);
@@ -147,7 +147,7 @@
         private System.Windows.Forms.Button btnYouTubeUsers;
         private System.Windows.Forms.Button btnYouTubeVideos;
         private System.Windows.Forms.Button btnFlickrUsers;
-        private System.Windows.Forms.Button btnGraphServer;
+        private System.Windows.Forms.Button btnGraphServerTwitterSearch;
         private System.Windows.Forms.Button btnTwitterUsers;
     }
 }

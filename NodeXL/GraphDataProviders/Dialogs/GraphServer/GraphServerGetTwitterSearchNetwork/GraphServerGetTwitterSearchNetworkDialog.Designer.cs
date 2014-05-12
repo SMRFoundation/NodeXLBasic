@@ -2,7 +2,7 @@
 
 namespace Smrf.NodeXL.GraphDataProviders.GraphServer
 {
-    partial class GraphServerGetNetworkDialog
+    partial class GraphServerGetTwitterSearchNetworkDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -214,7 +214,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.slStatusLabel.Spring = true;
             this.slStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // GraphServerGetNetworkDialog
+            // GraphServerGetTwitterSearchNetworkDialog
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -228,7 +228,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "GraphServerGetNetworkDialog";
+            this.Name = "GraphServerGetTwitterSearchNetworkDialog";
             this.Text = "[Gets set in code]";
             this.pnlUserInputs.ResumeLayout(false);
             this.pnlUserInputs.PerformLayout();

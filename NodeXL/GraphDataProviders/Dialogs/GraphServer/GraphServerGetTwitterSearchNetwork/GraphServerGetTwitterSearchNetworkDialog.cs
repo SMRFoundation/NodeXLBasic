@@ -7,7 +7,7 @@ using System.Diagnostics;
 namespace Smrf.NodeXL.GraphDataProviders.GraphServer
 {
 //*****************************************************************************
-//  Class: GraphServerGetNetworkDialog
+//  Class: GraphServerGetTwitterSearchNetworkDialog
 //
 /// <summary>
 /// Uses the NodeXL Graph Server to get a network of people who have tweeted
@@ -21,20 +21,21 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
 /// </remarks>
 //*****************************************************************************
 
-public partial class GraphServerGetNetworkDialog : GraphDataProviderDialogBase
+public partial class GraphServerGetTwitterSearchNetworkDialog :
+    GraphDataProviderDialogBase
 {
     //*************************************************************************
-    //  Constructor: GraphServerGetNetworkDialog()
+    //  Constructor: GraphServerGetTwitterSearchNetworkDialog()
     //
     /// <summary>
     /// Initializes a new instance of the <see
-    /// cref="GraphServerGetNetworkDialog" /> class.
+    /// cref="GraphServerGetTwitterSearchNetworkDialog" /> class.
     /// </summary>
     //*************************************************************************
 
-    public GraphServerGetNetworkDialog()
+    public GraphServerGetTwitterSearchNetworkDialog()
     :
-    base( new GraphServerNetworkAnalyzer() )
+    base( new GraphServerTwitterSearchNetworkAnalyzer() )
     {
         InitializeComponent();
 
@@ -184,9 +185,10 @@ public partial class GraphServerGetNetworkDialog : GraphDataProviderDialogBase
 
         m_oGraphMLXmlDocument = null;
 
-        Debug.Assert(m_oHttpNetworkAnalyzer is GraphServerNetworkAnalyzer);
+        Debug.Assert(m_oHttpNetworkAnalyzer is
+            GraphServerTwitterSearchNetworkAnalyzer);
 
-        ( (GraphServerNetworkAnalyzer)m_oHttpNetworkAnalyzer ).
+        ( (GraphServerTwitterSearchNetworkAnalyzer)m_oHttpNetworkAnalyzer ).
             GetNetworkAsync(m_sSearchTerm, m_oMinimumStatusDateUtc,
                 AddDayToMaximumStatusDateUtc(m_oMaximumStatusDateUtc),
                 m_bExpandStatusUrls, m_sGraphServerUserName,

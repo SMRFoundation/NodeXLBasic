@@ -5,7 +5,7 @@ using System.Diagnostics;
 namespace Smrf.NodeXL.GraphDataProviders.GraphServer
 {
 //*****************************************************************************
-//  Class: GraphServerNetworkGraphDataProvider
+//  Class: GraphServerTwitterSearchNetworkGraphDataProvider
 //
 /// <summary>
 /// Uses the NodeXL Graph Server to get a network of people who have tweeted
@@ -18,18 +18,19 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
 /// </remarks>
 //*****************************************************************************
 
-public class GraphServerNetworkGraphDataProvider : GraphDataProviderBase
+public class GraphServerTwitterSearchNetworkGraphDataProvider :
+    GraphDataProviderBase
 {
    //*************************************************************************
-    //  Constructor: GraphServerNetworkGraphDataProvider()
+    //  Constructor: GraphServerTwitterSearchNetworkGraphDataProvider()
     //
     /// <summary>
     /// Initializes a new instance of the <see
-    /// cref="GraphServerNetworkGraphDataProvider" /> class.
+    /// cref="GraphServerTwitterSearchNetworkGraphDataProvider" /> class.
     /// </summary>
     //*************************************************************************
 
-    public GraphServerNetworkGraphDataProvider()
+    public GraphServerTwitterSearchNetworkGraphDataProvider()
     :
     base(GraphDataProviderName,
         "get the network of people whose tweets contain a specified word."
@@ -59,7 +60,7 @@ public class GraphServerNetworkGraphDataProvider : GraphDataProviderBase
     {
         AssertValid();
 
-        return ( new GraphServerGetNetworkDialog() );
+        return ( new GraphServerGetTwitterSearchNetworkDialog() );
     }
 
 

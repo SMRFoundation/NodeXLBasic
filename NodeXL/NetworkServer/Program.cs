@@ -366,8 +366,9 @@ class Program
             OnNetworkConfigurationFileException(oXmlException);
         }
 
-        GraphServerNetworkAnalyzer oGraphServerTwitterSearchNetworkAnalyzer =
-            new GraphServerNetworkAnalyzer();
+        GraphServerTwitterSearchNetworkAnalyzer
+            oGraphServerTwitterSearchNetworkAnalyzer =
+                new GraphServerTwitterSearchNetworkAnalyzer();
 
         SubscribeToProgressChangedEvent(
             oGraphServerTwitterSearchNetworkAnalyzer);
