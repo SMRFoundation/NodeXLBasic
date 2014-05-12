@@ -105,9 +105,6 @@
     <Compile Include="..\..\Common\Dialogs\SaveImageFileDialog.cs">
       <Link>Dialogs\SaveImageFileDialog.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\ExceptionUtil.cs">
-      <Link>Util\ExceptionUtil.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\FormSettings.cs">
       <Link>Util\FormSettings.cs</Link>
     </Compile>

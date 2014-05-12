@@ -1,0 +1,129 @@
+<!--
+
+*******************************************************************************
+Overview
+*******************************************************************************
+
+This is a sample network configuration file for getting a Twitter search
+network from the Graph Server using the NodeXL Network Server.  It specifies
+which network the NodeXL Network Server should get and where the network file
+should be saved.
+
+A particular network configuration file might specify the following, for
+example:
+
+    * Get the network for people whose tweets contain "NodeXL"
+    
+    * Use a date range of 2014/05/01 through 2014/05/04
+    
+    * Store the network as a GraphML file in the C:\NodeXLNetworks folder
+
+
+To create your own network configuration file, make a copy of this file and
+edit the copy in Notepad or another text editor.
+-->
+
+
+<!--
+*******************************************************************************
+The Configuration That Must be Edited
+*******************************************************************************
+-->
+
+<NetworkConfiguration>
+
+    <!--
+    ***************************************************************************
+    Network Type
+    
+    Specifies the type of network to get.  For a Twitter search network from
+    the Graph Server, this must be "GraphServerTwitterSearch".
+    ***************************************************************************
+    -->
+
+    <NetworkType>GraphServerTwitterSearch</NetworkType>
+
+    <GraphServerTwitterSearchNetworkConfiguration>
+
+        <!--
+        ***********************************************************************
+        Search Term
+        
+        What to search for.
+        ***********************************************************************
+        -->
+
+        <SearchTerm>NodeXL</SearchTerm>
+
+
+        <!--
+        ***********************************************************************
+        Start Date UTC
+        
+        The start of the tweet date range, in UTC.  The format is "yyyy/mm/dd".
+        Sample: "2014/05/01".
+        ***********************************************************************
+        -->
+
+        <StartDateUtc>2014/05/01</StartDateUtc>
+
+
+        <!--
+        ***********************************************************************
+        End Date UTC
+        
+        The end of the tweet date range, in UTC.  The format is "yyyy/mm/dd".
+        Sample: "2014/05/04".
+        ***********************************************************************
+        -->
+
+        <EndDateUtc>2014/05/04</EndDateUtc>
+
+
+        <!--
+        ***********************************************************************
+        Expand URLs in Tweets?
+        
+        "True" to expand the URLs in the tweets, "False" to not expand them.
+        "True" is slower.
+        ***********************************************************************
+        -->
+
+        <ExpandStatusUrls>False</ExpandStatusUrls>
+
+
+        <!--
+        ***********************************************************************
+        Graph Server User Name
+        
+        The user name to use for accessing the Graph Server.
+        ***********************************************************************
+        -->
+
+        <GraphServerUserName>TheUserName</GraphServerUserName>
+
+
+        <!--
+        ***********************************************************************
+        Graph Server Password
+        
+        The password to use for accessing the Graph Server.
+        ***********************************************************************
+        -->
+
+        <GraphServerPassword>ThePassword</GraphServerPassword>
+
+
+        <!--
+        ***********************************************************************
+        NetworkFileFolder
+        
+        Full path to the folder where the network file should be stored.
+        ***********************************************************************
+        -->
+
+        <NetworkFileFolder>C:\NodeXLNetworks</NetworkFileFolder>
+
+    </GraphServerTwitterSearchNetworkConfiguration>
+
+</NetworkConfiguration>

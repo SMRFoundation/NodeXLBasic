@@ -2,10 +2,9 @@
 using System;
 using System.IO;
 using System.Xml;
-using System.Collections.Generic;
+using System.Globalization;
 using System.Diagnostics;
 using Smrf.NodeXL.GraphDataProviders.Twitter;
-using Smrf.SocialNetworkLib;
 using Smrf.XmlLib;
 
 namespace Smrf.NodeXL.NetworkServer
@@ -117,7 +116,10 @@ public class NetworkConfigurationFileParser : Object
         catch (XmlException oXmlException)
         {
             throw new XmlException(
-                "The network configuration file does not contain valid XML.",
+
+                "The network configuration file does not contain valid XML."
+                + "  Details: " + oXmlException.Message,
+
                 oXmlException);
         }
     }
@@ -151,7 +153,8 @@ public class NetworkConfigurationFileParser : Object
     //  Method: GetTwitterSearchNetworkConfiguration()
     //
     /// <summary>
-    /// Gets the configuration details for a Twitter search network.
+    /// Gets the configuration details for a Twitter search network obtained
+    /// directly from Twitter.
     /// </summary>
     ///
     /// <param name="searchTerm">
@@ -171,21 +174,6 @@ public class NetworkConfigurationFileParser : Object
     /// Where the full path to the folder where the network files should be
     /// written gets stored.
     /// </param>
-    ///
-    /// <param name="networkFileFormats">
-    /// Where the file formats to save the network to get stored.
-    /// </param>
-    ///
-    /// <param name="nodeXLWorkbookSettingsFilePath">
-    /// Where the full path to the workbook settings file to use for the NodeXL
-    /// workbook gets stored.  If null, no workbook settings file should be
-    /// used.
-    /// </param>
-    ///
-    /// <param name="automateNodeXLWorkbook">
-    /// Where a flag specifying whether automation should be run on the NodeXL
-    /// workbook gets stored.
-    /// </param>
     //*************************************************************************
 
     public void
@@ -194,10 +182,7 @@ public class NetworkConfigurationFileParser : Object
         out String searchTerm,
         out TwitterSearchNetworkAnalyzer.WhatToInclude whatToInclude,
         out Int32 maximumStatuses,
-        out String networkFileFolderPath,
-        out NetworkFileFormats networkFileFormats,
-        out String nodeXLWorkbookSettingsFilePath,
-        out Boolean automateNodeXLWorkbook
+        out String networkFileFolderPath
     )
     {
         AssertValid();
@@ -242,16 +227,114 @@ public class NetworkConfigurationFileParser : Object
                 oTwitterSearchNetworkConfigurationNode, "WhatToInclude/text()",
                 "WhatToInclude");
 
-        GetTwitterCommonConfiguration(oTwitterSearchNetworkConfigurationNode,
-            out networkFileFolderPath, out networkFileFormats,
-            out nodeXLWorkbookSettingsFilePath, out automateNodeXLWorkbook);
+        GetCommonConfiguration(oTwitterSearchNetworkConfigurationNode,
+            out networkFileFolderPath);
     }
 
     //*************************************************************************
-    //  Method: GetTwitterCommonConfiguration()
+    //  Method: GetGraphServerTwitterSearchNetworkConfiguration()
     //
     /// <summary>
-    /// Gets the configuration details common to all Twitter networks.
+    /// Gets the configuration details for a Twitter search network obtained
+    /// from the Graph Server.
+    /// </summary>
+    ///
+    /// <param name="searchTerm">
+    /// Where the term to search for gets stored.
+    /// </param>
+    ///
+    /// <param name="startDateUtc">
+    /// Where the start date gets stored, in UTC.
+    /// </param>
+    ///
+    /// <param name="endDateUtc">
+    /// Where the end date gets stored, in UTC.
+    /// </param>
+    ///
+    /// <param name="expandStatusUrls">
+    /// Where the "expand status URLs" flag gets stored.
+    /// </param>
+    ///
+    /// <param name="graphServerUserName">
+    /// Where the Graph Server user name gets stored.
+    /// </param>
+    ///
+    /// <param name="graphServerPassword">
+    /// Where the Graph Server password gets stored.
+    /// </param>
+    ///
+    /// <param name="networkFileFolderPath">
+    /// Where the full path to the folder where the network files should be
+    /// written gets stored.
+    /// </param>
+    //*************************************************************************
+
+    public void
+    GetGraphServerTwitterSearchNetworkConfiguration
+    (
+        out String searchTerm,
+        out DateTime startDateUtc,
+        out DateTime endDateUtc,
+        out Boolean expandStatusUrls,
+        out String graphServerUserName,
+        out String graphServerPassword,
+        out String networkFileFolderPath
+    )
+    {
+        AssertValid();
+        Debug.Assert(m_oNetworkConfigurationXmlDocument != null);
+        Debug.Assert(GetNetworkType() == NetworkType.GraphServerTwitterSearch);
+
+        XmlNode oGraphServerTwitterSearchNetworkConfigurationNode =
+            XmlUtil2.SelectRequiredSingleNode(
+                m_oNetworkConfigurationXmlDocument,
+
+                "/NetworkConfiguration/"
+                    + " GraphServerTwitterSearchNetworkConfiguration",
+
+                null);
+
+        searchTerm = XmlUtil2.SelectRequiredSingleNodeAsString(
+            oGraphServerTwitterSearchNetworkConfigurationNode,
+            "SearchTerm/text()", null);
+
+        startDateUtc = SelectRequiredSingleNodeAsDateTime(
+            oGraphServerTwitterSearchNetworkConfigurationNode,
+            "StartDateUtc/text()");
+
+        endDateUtc = SelectRequiredSingleNodeAsDateTime(
+            oGraphServerTwitterSearchNetworkConfigurationNode,
+            "EndDateUtc/text()");
+
+        if (endDateUtc < startDateUtc)
+        {
+            throw new XmlException(
+                "The EndDateUtc can't be earlier than the StartDateUtc."
+                );
+        }
+
+        expandStatusUrls = XmlUtil2.SelectRequiredSingleNodeAsBoolean(
+            oGraphServerTwitterSearchNetworkConfigurationNode,
+            "ExpandStatusUrls/text()", null);
+
+        graphServerUserName = XmlUtil2.SelectRequiredSingleNodeAsString(
+            oGraphServerTwitterSearchNetworkConfigurationNode,
+            "GraphServerUserName/text()", null);
+
+        graphServerPassword = XmlUtil2.SelectRequiredSingleNodeAsString(
+            oGraphServerTwitterSearchNetworkConfigurationNode,
+            "GraphServerPassword/text()", null);
+
+        GetCommonConfiguration(
+            oGraphServerTwitterSearchNetworkConfigurationNode,
+            out networkFileFolderPath);
+    }
+
+    //*************************************************************************
+    //  Method: GetCommonConfiguration()
+    //
+    /// <summary>
+    /// Gets the configuration details common to all networks.
     /// </summary>
     ///
     /// <param name="oParentNode">
@@ -262,31 +345,13 @@ public class NetworkConfigurationFileParser : Object
     /// Where the full path to the folder where the network files should be
     /// written gets stored.
     /// </param>
-    ///
-    /// <param name="eNetworkFileFormats">
-    /// Where the file formats to save the network to get stored.
-    /// </param>
-    ///
-    /// <param name="sNodeXLSettingsFilePath">
-    /// Where the full path to the workbook settings file to use for the NodeXL
-    /// workbook gets stored.  If null, no workbook settings file should be
-    /// used.
-    /// </param>
-    ///
-    /// <param name="bAutomateNodeXLWorkbook">
-    /// Where a flag specifying whether automation should be run on the NodeXL
-    /// workbook gets stored.
-    /// </param>
     //*************************************************************************
 
     protected void
-    GetTwitterCommonConfiguration
+    GetCommonConfiguration
     (
         XmlNode oParentNode,
-        out String sNetworkFileFolderPath,
-        out NetworkFileFormats eNetworkFileFormats,
-        out String sNodeXLSettingsFilePath,
-        out Boolean bAutomateNodeXLWorkbook
+        out String sNetworkFileFolderPath
     )
     {
         Debug.Assert(oParentNode != null);
@@ -294,41 +359,6 @@ public class NetworkConfigurationFileParser : Object
 
         sNetworkFileFolderPath = XmlUtil2.SelectRequiredSingleNodeAsString(
             oParentNode, "NetworkFileFolder/text()", null);
-
-        eNetworkFileFormats = GetRequiredEnumValue<NetworkFileFormats>(
-            oParentNode, "NetworkFileFormats/text()", "NetworkFileFormats");
-
-        // The NodeXLWorkbookOptionsFile node was added in a later version of
-        // the program, so it is not required.
-
-        if ( !XmlUtil2.TrySelectSingleNodeAsString(oParentNode,
-            "NodeXLOptionsFile/text()", null, out sNodeXLSettingsFilePath) )
-        {
-            sNodeXLSettingsFilePath = null;
-        }
-
-        // The AutomateNodeXLWorkbook node was added in a later version of the
-        // program, so it is not required.
-
-        String sAutomateNodeXLWorkbook;
-
-        if ( XmlUtil2.TrySelectSingleNodeAsString(oParentNode,
-            "AutomateNodeXLWorkbook/text()", null,
-            out sAutomateNodeXLWorkbook) )
-        {
-            if ( !Boolean.TryParse(sAutomateNodeXLWorkbook,
-                out bAutomateNodeXLWorkbook) )
-            {
-                throw new XmlException(
-                    "The AutomateNodeXLWorkbook value must be \"true\" or"
-                    + " \"false\"."
-                    );
-            }
-        }
-        else
-        {
-            bAutomateNodeXLWorkbook = false;
-        }
     }
 
     //*************************************************************************
@@ -393,6 +423,64 @@ public class NetworkConfigurationFileParser : Object
             );
 
         throw new XmlException(sErrorMessage, oException);
+    }
+
+    //*************************************************************************
+    //  Method: SelectRequiredSingleNodeAsDateTime()
+    //
+    /// <summary>
+    /// Selects a required XML node and gets its DateTime value.
+    /// </summary>
+    ///
+    /// <param name="oNode">
+    /// Node to select from.
+    /// </param>
+    ///
+    /// <param name="sXPath">
+    /// XPath expression.
+    /// </param>
+    ///
+    /// <returns>
+    /// The selected node's DateTime value.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// If the specified node is missing or its value isn't a DateTime in the
+    /// format "yyyy/mm/dd", an XmlException is thrown.
+    /// </remarks>
+    //*************************************************************************
+
+    protected DateTime
+    SelectRequiredSingleNodeAsDateTime
+    (
+        XmlNode oNode,
+        String sXPath
+    )
+    {
+        Debug.Assert(oNode != null);
+        Debug.Assert( !String.IsNullOrEmpty(sXPath) );
+        AssertValid();
+
+        String sDateTimeAsString = XmlUtil2.SelectRequiredSingleNodeAsString(
+            oNode, sXPath, null);
+
+        const String RequiredFormat = "yyyy/MM/dd";
+        DateTime oDateTime;
+
+        if ( !DateTime.TryParseExact(sDateTimeAsString,
+            new String[] {RequiredFormat}, CultureInfo.InvariantCulture,
+            DateTimeStyles.None, out oDateTime) )
+        {
+            throw new XmlException(String.Format(
+
+                "The {0} value must be a date in the format {1}."
+                ,
+                sXPath,
+                RequiredFormat.ToLower()
+                ) );
+        }
+
+        return (oDateTime);
     }
 
 

@@ -109,7 +109,30 @@ public class NetworkConfigurationFileParserTest : Object
     public void
     TestOpenNetworkConfigurationFile()
     {
-        WriteSampleNetworkConfigurationFile();
+        // Twitter search network.
+
+        WriteSampleTwitterSearchNetworkConfigurationFile();
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+    }
+
+    //*************************************************************************
+    //  Method: TestOpenNetworkConfigurationFile2()
+    //
+    /// <summary>
+    /// Tests the OpenNetworkConfigurationFile() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestOpenNetworkConfigurationFile2()
+    {
+        // Graph Server Twitter search network.
+
+        WriteSampleGraphServerTwitterSearchNetworkConfigurationFile();
 
         m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
             m_sTempFileName);
@@ -206,11 +229,9 @@ public class NetworkConfigurationFileParserTest : Object
         }
         catch (XmlException oXmlException)
         {
-            Assert.AreEqual(
+            Assert.IsTrue(oXmlException.Message.StartsWith(
                 "The network configuration file does not contain valid XML."
-                ,
-                oXmlException.Message
-                );
+                 ) );
 
             throw oXmlException;
         }
@@ -231,12 +252,36 @@ public class NetworkConfigurationFileParserTest : Object
     {
         // TwitterSearch.
 
-        WriteSampleNetworkConfigurationFile();
+        WriteSampleTwitterSearchNetworkConfigurationFile();
 
         m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
             m_sTempFileName);
 
         Assert.AreEqual( NetworkType.TwitterSearch,
+            m_oNetworkConfigurationFileParser.GetNetworkType() );
+    }
+
+    //*************************************************************************
+    //  Method: TestGetNetworkType2()
+    //
+    /// <summary>
+    /// Tests the GetNetworkType() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetNetworkType2()
+    {
+        // GraphServerTwitterSearch.
+
+        WriteSampleGraphServerTwitterSearchNetworkConfigurationFile();
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        Assert.AreEqual( NetworkType.GraphServerTwitterSearch,
             m_oNetworkConfigurationFileParser.GetNetworkType() );
     }
 
@@ -256,7 +301,7 @@ public class NetworkConfigurationFileParserTest : Object
     {
         // Missing value.
 
-        WriteSampleNetworkConfigurationFile(
+        WriteSampleTwitterSearchNetworkConfigurationFile(
             "<NetworkType>.*</NetworkType>",
             "<NetworkType></NetworkType>"
             );
@@ -296,7 +341,7 @@ public class NetworkConfigurationFileParserTest : Object
     {
         // Bad NetworkType.
 
-        WriteSampleNetworkConfigurationFile(
+        WriteSampleTwitterSearchNetworkConfigurationFile(
             "<NetworkType>.*</NetworkType>",
             "<NetworkType>BadValue</NetworkType>"
             );
@@ -333,7 +378,9 @@ public class NetworkConfigurationFileParserTest : Object
     public void
     TestGetTwitterSearchNetworkConfiguration()
     {
-        WriteSampleNetworkConfigurationFile();
+        // Unmodified configuration.
+
+        WriteSampleTwitterSearchNetworkConfigurationFile();
 
         m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
             m_sTempFileName);
@@ -341,28 +388,22 @@ public class NetworkConfigurationFileParserTest : Object
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
         Int32 iMaximumStatuses;
-        String sNetworkFileFolder;
-        NetworkFileFormats eNetworkFileFormats;
-        String sNodeXLWorkbookSettingsFilePath;
-        Boolean bAutomateNodeXLWorkbook;
+        String sNetworkFileFolderPath;
 
         m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
             out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
-            out sNetworkFileFolder, out eNetworkFileFormats,
-            out sNodeXLWorkbookSettingsFilePath, out bAutomateNodeXLWorkbook);
+            out sNetworkFileFolderPath);
 
         Assert.AreEqual("NodeXL", sSearchTerm);
 
         Assert.AreEqual(
-            TwitterSearchNetworkAnalyzer.WhatToInclude.Statuses |
-            TwitterSearchNetworkAnalyzer.WhatToInclude.MentionsEdges,
+            TwitterSearchNetworkAnalyzer.WhatToInclude.RepliesToEdges |
+            TwitterSearchNetworkAnalyzer.WhatToInclude.MentionsEdges |
+            TwitterSearchNetworkAnalyzer.WhatToInclude.NonRepliesToNonMentionsEdges,
             eWhatToInclude);
 
-        Assert.AreEqual(10, iMaximumStatuses);
-        Assert.AreEqual(@"C:\", sNetworkFileFolder);
-        Assert.AreEqual(NetworkFileFormats.GraphML, eNetworkFileFormats);
-        Assert.IsNull(sNodeXLWorkbookSettingsFilePath);
-        Assert.IsFalse(bAutomateNodeXLWorkbook);
+        Assert.AreEqual(100, iMaximumStatuses);
+        Assert.AreEqual(@"C:\NodeXLNetworks", sNetworkFileFolderPath);
     }
 
     //*************************************************************************
@@ -380,7 +421,7 @@ public class NetworkConfigurationFileParserTest : Object
     {
         // No MaximumPeoplePerRequest.
 
-        WriteSampleNetworkConfigurationFile(
+        WriteSampleTwitterSearchNetworkConfigurationFile(
             "<MaximumPeoplePerRequest>100</MaximumPeoplePerRequest>",
             "<MaximumPeoplePerRequest></MaximumPeoplePerRequest>"
             );
@@ -391,218 +432,13 @@ public class NetworkConfigurationFileParserTest : Object
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
         Int32 iMaximumStatuses;
-        String sNetworkFileFolder;
-        NetworkFileFormats eNetworkFileFormats;
-        String sNodeXLWorkbookSettingsFilePath;
-        Boolean bAutomateNodeXLWorkbook;
+        String sNetworkFileFolderPath;
 
         m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
             out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
-            out sNetworkFileFolder, out eNetworkFileFormats,
-            out sNodeXLWorkbookSettingsFilePath, out bAutomateNodeXLWorkbook);
+            out sNetworkFileFolderPath);
 
-        Assert.AreEqual(10, iMaximumStatuses);
-    }
-
-    //*************************************************************************
-    //  Method: TestGetTwitterSearchNetworkConfiguration3()
-    //
-    /// <summary>
-    /// Tests the GetTwitterSearchNetworkConfiguration() method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-
-    public void
-    TestGetTwitterSearchNetworkConfiguration3()
-    {
-        // Multiple file formats.
-
-        WriteSampleNetworkConfigurationFile(
-            "<NetworkFileFormats>GraphML</NetworkFileFormats>",
-            "<NetworkFileFormats>GraphML,NodeXLWorkbook</NetworkFileFormats>"
-            );
-
-        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
-            m_sTempFileName);
-
-        String sSearchTerm;
-        TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
-        String sNetworkFileFolder;
-        NetworkFileFormats eNetworkFileFormats;
-        String sNodeXLWorkbookSettingsFilePath;
-        Boolean bAutomateNodeXLWorkbook;
-
-        m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
-            out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
-            out sNetworkFileFolder, out eNetworkFileFormats,
-            out sNodeXLWorkbookSettingsFilePath,
-            out bAutomateNodeXLWorkbook);
-
-        Assert.AreEqual(
-            NetworkFileFormats.GraphML | NetworkFileFormats.NodeXLWorkbook,
-            eNetworkFileFormats);
-    }
-
-    //*************************************************************************
-    //  Method: TestGetTwitterSearchNetworkConfiguration4()
-    //
-    /// <summary>
-    /// Tests the GetTwitterSearchNetworkConfiguration() method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-
-    public void
-    TestGetTwitterSearchNetworkConfiguration4()
-    {
-        // Automate NodeXL workbook.
-
-        WriteSampleNetworkConfigurationFile(
-            "<AutomateNodeXLWorkbook>false</AutomateNodeXLWorkbook>",
-            "<AutomateNodeXLWorkbook>true</AutomateNodeXLWorkbook>"
-            );
-
-        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
-            m_sTempFileName);
-
-        String sSearchTerm;
-        TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
-        String sNetworkFileFolder;
-        NetworkFileFormats eNetworkFileFormats;
-        String sNodeXLWorkbookSettingsFilePath;
-        Boolean bAutomateNodeXLWorkbook;
-
-        m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
-            out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
-            out sNetworkFileFolder, out eNetworkFileFormats,
-            out sNodeXLWorkbookSettingsFilePath, out bAutomateNodeXLWorkbook);
-
-        Assert.IsTrue(bAutomateNodeXLWorkbook);
-    }
-
-    //*************************************************************************
-    //  Method: TestGetTwitterSearchNetworkConfiguration5()
-    //
-    /// <summary>
-    /// Tests the GetTwitterSearchNetworkConfiguration() method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-
-    public void
-    TestGetTwitterSearchNetworkConfiguration5()
-    {
-        // Specify NodeXL workbook options file.
-
-        WriteSampleNetworkConfigurationFile(
-            "<NodeXLOptionsFile></NodeXLOptionsFile>",
-
-            "<NodeXLOptionsFile>C:\\Folder\\NodeXLOptions.graphml"
-                + "</NodeXLOptionsFile>"
-            );
-
-        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
-            m_sTempFileName);
-
-        String sSearchTerm;
-        TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
-        String sNetworkFileFolder;
-        NetworkFileFormats eNetworkFileFormats;
-        String sNodeXLWorkbookSettingsFilePath;
-        Boolean bAutomateNodeXLWorkbook;
-
-        m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
-            out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
-            out sNetworkFileFolder, out eNetworkFileFormats,
-            out sNodeXLWorkbookSettingsFilePath, out bAutomateNodeXLWorkbook);
-
-        Assert.AreEqual("C:\\Folder\\NodeXLOptions.graphml",
-            sNodeXLWorkbookSettingsFilePath);
-    }
-
-    //*************************************************************************
-    //  Method: TestGetTwitterSearchNetworkConfiguration6()
-    //
-    /// <summary>
-    /// Tests the GetTwitterSearchNetworkConfiguration() method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-
-    public void
-    TestGetTwitterSearchNetworkConfiguration6()
-    {
-        // Missing NodeXL workbook options file.
-
-        WriteSampleNetworkConfigurationFile(
-            "<NodeXLOptionsFile></NodeXLOptionsFile>",
-            String.Empty
-            );
-
-        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
-            m_sTempFileName);
-
-        String sSearchTerm;
-        TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
-        String sNetworkFileFolder;
-        NetworkFileFormats eNetworkFileFormats;
-        String sNodeXLWorkbookSettingsFilePath;
-        Boolean bAutomateNodeXLWorkbook;
-
-        m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
-            out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
-            out sNetworkFileFolder, out eNetworkFileFormats,
-            out sNodeXLWorkbookSettingsFilePath, out bAutomateNodeXLWorkbook);
-
-        Assert.IsNull(sNodeXLWorkbookSettingsFilePath);
-    }
-
-    //*************************************************************************
-    //  Method: TestGetTwitterSearchNetworkConfiguration7()
-    //
-    /// <summary>
-    /// Tests the GetTwitterSearchNetworkConfiguration() method.
-    /// </summary>
-    //*************************************************************************
-
-    [TestMethodAttribute]
-
-    public void
-    TestGetTwitterSearchNetworkConfiguration7()
-    {
-        // Automate NodeXL workbook, mixed case.
-
-        WriteSampleNetworkConfigurationFile(
-            "<AutomateNodeXLWorkbook>false</AutomateNodeXLWorkbook>",
-            "<AutomateNodeXLWorkbook>TrUe</AutomateNodeXLWorkbook>"
-            );
-
-        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
-            m_sTempFileName);
-
-        String sSearchTerm;
-        TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
-        String sNetworkFileFolder;
-        NetworkFileFormats eNetworkFileFormats;
-        String sNodeXLWorkbookSettingsFilePath;
-        Boolean bAutomateNodeXLWorkbook;
-
-        m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
-            out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
-            out sNetworkFileFolder, out eNetworkFileFormats,
-            out sNodeXLWorkbookSettingsFilePath, out bAutomateNodeXLWorkbook);
-
-        Assert.IsTrue(bAutomateNodeXLWorkbook);
+        Assert.AreEqual(100, iMaximumStatuses);
     }
 
     //*************************************************************************
@@ -621,7 +457,7 @@ public class NetworkConfigurationFileParserTest : Object
     {
         // Missing SearchTerm.
 
-        WriteSampleNetworkConfigurationFile(
+        WriteSampleTwitterSearchNetworkConfigurationFile(
             "<SearchTerm>.*</SearchTerm>",
             "<SearchTerm></SearchTerm>"
             );
@@ -632,19 +468,14 @@ public class NetworkConfigurationFileParserTest : Object
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
         Int32 iMaximumStatuses;
-        String sNetworkFileFolder;
-        NetworkFileFormats eNetworkFileFormats;
-        String sNodeXLWorkbookSettingsFilePath;
-        Boolean bAutomateNodeXLWorkbook;
+        String sNetworkFileFolderPath;
 
         try
         {
             m_oNetworkConfigurationFileParser.
                 GetTwitterSearchNetworkConfiguration(out sSearchTerm,
                 out eWhatToInclude, out iMaximumStatuses,
-                out sNetworkFileFolder, out eNetworkFileFormats,
-                out sNodeXLWorkbookSettingsFilePath,
-                out bAutomateNodeXLWorkbook);
+                out sNetworkFileFolderPath);
         }
         catch (XmlException oXmlException)
         {
@@ -671,7 +502,7 @@ public class NetworkConfigurationFileParserTest : Object
     {
         // Missing WhatToInclude.
 
-        WriteSampleNetworkConfigurationFile(
+        WriteSampleTwitterSearchNetworkConfigurationFile(
             "<WhatToInclude>.*</WhatToInclude>",
             "<WhatToInclude></WhatToInclude>"
             );
@@ -682,19 +513,14 @@ public class NetworkConfigurationFileParserTest : Object
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
         Int32 iMaximumStatuses;
-        String sNetworkFileFolder;
-        NetworkFileFormats eNetworkFileFormats;
-        String sNodeXLWorkbookSettingsFilePath;
-        Boolean bAutomateNodeXLWorkbook;
+        String sNetworkFileFolderPath;
 
         try
         {
             m_oNetworkConfigurationFileParser.
                 GetTwitterSearchNetworkConfiguration(out sSearchTerm,
                 out eWhatToInclude, out iMaximumStatuses,
-                out sNetworkFileFolder, out eNetworkFileFormats,
-                out sNodeXLWorkbookSettingsFilePath,
-                out bAutomateNodeXLWorkbook);
+                out sNetworkFileFolderPath);
         }
         catch (XmlException oXmlException)
         {
@@ -724,7 +550,7 @@ public class NetworkConfigurationFileParserTest : Object
     {
         // Bad WhatToInclude.
 
-        WriteSampleNetworkConfigurationFile(
+        WriteSampleTwitterSearchNetworkConfigurationFile(
             "<WhatToInclude>.*</WhatToInclude>",
             "<WhatToInclude>Xyz</WhatToInclude>"
             );
@@ -735,19 +561,14 @@ public class NetworkConfigurationFileParserTest : Object
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
         Int32 iMaximumStatuses;
-        String sNetworkFileFolder;
-        NetworkFileFormats eNetworkFileFormats;
-        String sNodeXLWorkbookSettingsFilePath;
-        Boolean bAutomateNodeXLWorkbook;
+        String sNetworkFileFolderPath;
 
         try
         {
             m_oNetworkConfigurationFileParser.
                 GetTwitterSearchNetworkConfiguration(out sSearchTerm,
                 out eWhatToInclude, out iMaximumStatuses,
-                out sNetworkFileFolder, out eNetworkFileFormats,
-                out sNodeXLWorkbookSettingsFilePath,
-                out bAutomateNodeXLWorkbook);
+                out sNetworkFileFolderPath);
         }
         catch (XmlException oXmlException)
         {
@@ -777,7 +598,7 @@ public class NetworkConfigurationFileParserTest : Object
     {
         // Bad MaximumStatuses.
 
-        WriteSampleNetworkConfigurationFile(
+        WriteSampleTwitterSearchNetworkConfigurationFile(
             "<MaximumStatuses>.*</MaximumStatuses>",
             "<MaximumStatuses>Xyz</MaximumStatuses>"
             );
@@ -788,19 +609,14 @@ public class NetworkConfigurationFileParserTest : Object
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
         Int32 iMaximumStatuses;
-        String sNetworkFileFolder;
-        NetworkFileFormats eNetworkFileFormats;
-        String sNodeXLWorkbookSettingsFilePath;
-        Boolean bAutomateNodeXLWorkbook;
+        String sNetworkFileFolderPath;
 
         try
         {
             m_oNetworkConfigurationFileParser.
                 GetTwitterSearchNetworkConfiguration(out sSearchTerm,
                 out eWhatToInclude, out iMaximumStatuses,
-                out sNetworkFileFolder, out eNetworkFileFormats,
-                out sNodeXLWorkbookSettingsFilePath,
-                out bAutomateNodeXLWorkbook);
+                out sNetworkFileFolderPath);
         }
         catch (XmlException oXmlException)
         {
@@ -831,7 +647,7 @@ public class NetworkConfigurationFileParserTest : Object
     {
         // Missing NetworkFileFolder.
 
-        WriteSampleNetworkConfigurationFile(
+        WriteSampleTwitterSearchNetworkConfigurationFile(
             "<NetworkFileFolder>.*</NetworkFileFolder>",
             "<NetworkFileFolder></NetworkFileFolder>"
             );
@@ -842,19 +658,14 @@ public class NetworkConfigurationFileParserTest : Object
         String sSearchTerm;
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
         Int32 iMaximumStatuses;
-        String sNetworkFileFolder;
-        NetworkFileFormats eNetworkFileFormats;
-        String sNodeXLWorkbookSettingsFilePath;
-        Boolean bAutomateNodeXLWorkbook;
+        String sNetworkFileFolderPath;
 
         try
         {
             m_oNetworkConfigurationFileParser.
                 GetTwitterSearchNetworkConfiguration(out sSearchTerm,
                 out eWhatToInclude, out iMaximumStatuses,
-                out sNetworkFileFolder, out eNetworkFileFormats,
-                out sNodeXLWorkbookSettingsFilePath,
-                out bAutomateNodeXLWorkbook);
+                out sNetworkFileFolderPath);
         }
         catch (XmlException oXmlException)
         {
@@ -866,7 +677,94 @@ public class NetworkConfigurationFileParserTest : Object
     }
 
     //*************************************************************************
-    //  Method: TestGetTwitterSearchNetworkConfigurationBad6()
+    //  Method: TestGetGraphServerTwitterSearchNetworkConfiguration()
+    //
+    /// <summary>
+    /// Tests the GetGraphServerTwitterSearchNetworkConfiguration() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetGraphServerTwitterSearchNetworkConfiguration()
+    {
+        // Unmodified configuration.
+
+        WriteSampleGraphServerTwitterSearchNetworkConfigurationFile();
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        String sSearchTerm;
+        DateTime oStartDateUtc, oEndDateUtc;
+        Boolean bExpandStatusUrls;
+        String sGraphServerUserName;
+        String sGraphServerPassword;
+        String sNetworkFileFolderPath;
+
+        m_oNetworkConfigurationFileParser
+        .GetGraphServerTwitterSearchNetworkConfiguration(
+            out sSearchTerm, out oStartDateUtc, out oEndDateUtc,
+            out bExpandStatusUrls, out sGraphServerUserName,
+            out sGraphServerPassword, out sNetworkFileFolderPath);
+
+        Assert.AreEqual("NodeXL", sSearchTerm);
+        Assert.AreEqual(new DateTime(2014, 05, 01), oStartDateUtc);
+        Assert.AreEqual(new DateTime(2014, 05, 04), oEndDateUtc);
+        Assert.IsFalse(bExpandStatusUrls);
+        Assert.AreEqual("TheUserName", sGraphServerUserName);
+        Assert.AreEqual("ThePassword", sGraphServerPassword);
+        Assert.AreEqual(@"C:\NodeXLNetworks", sNetworkFileFolderPath);
+    }
+
+    //*************************************************************************
+    //  Method: TestGetGraphServerTwitterSearchNetworkConfiguration2()
+    //
+    /// <summary>
+    /// Tests the GetGraphServerTwitterSearchNetworkConfiguration() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetGraphServerTwitterSearchNetworkConfiguration2()
+    {
+        // Expand status URLs.
+
+        WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
+            "<ExpandStatusUrls>.*</ExpandStatusUrls>",
+            "<ExpandStatusUrls>True</ExpandStatusUrls>"
+            );
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        String sSearchTerm;
+        DateTime oStartDateUtc, oEndDateUtc;
+        Boolean bExpandStatusUrls;
+        String sGraphServerUserName;
+        String sGraphServerPassword;
+        String sNetworkFileFolderPath;
+
+        m_oNetworkConfigurationFileParser
+        .GetGraphServerTwitterSearchNetworkConfiguration(
+            out sSearchTerm, out oStartDateUtc, out oEndDateUtc,
+            out bExpandStatusUrls, out sGraphServerUserName,
+            out sGraphServerPassword, out sNetworkFileFolderPath);
+
+        Assert.AreEqual("NodeXL", sSearchTerm);
+        Assert.AreEqual(new DateTime(2014, 05, 01), oStartDateUtc);
+        Assert.AreEqual(new DateTime(2014, 05, 04), oEndDateUtc);
+        Assert.IsTrue(bExpandStatusUrls);
+        Assert.AreEqual("TheUserName", sGraphServerUserName);
+        Assert.AreEqual("ThePassword", sGraphServerPassword);
+        Assert.AreEqual(@"C:\NodeXLNetworks", sNetworkFileFolderPath);
+    }
+
+    //*************************************************************************
+    //  Method: TestGetGraphServerTwitterSearchNetworkConfigurationBad()
     //
     /// <summary>
     /// Tests the GetTwitterSearchNetworkConfiguration() method.
@@ -877,49 +775,44 @@ public class NetworkConfigurationFileParserTest : Object
     [ ExpectedException( typeof(XmlException) ) ]
 
     public void
-    TestGetTwitterSearchNetworkConfigurationBad6()
+    TestGetGraphServerTwitterSearchNetworkConfigurationBad()
     {
-        // Missing NetworkFileFormats.
+        // Missing SearchTerm.
 
-        WriteSampleNetworkConfigurationFile(
-            "<NetworkFileFormats>.*</NetworkFileFormats>",
-            "<NetworkFileFormats></NetworkFileFormats>"
+        WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
+            "<SearchTerm>.*</SearchTerm>",
+            "<SearchTerm></SearchTerm>"
             );
 
         m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
             m_sTempFileName);
 
         String sSearchTerm;
-        TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
-        String sNetworkFileFolder;
-        NetworkFileFormats eNetworkFileFormats;
-        String sNodeXLWorkbookSettingsFilePath;
-        Boolean bAutomateNodeXLWorkbook;
+        DateTime oStartDateUtc, oEndDateUtc;
+        Boolean bExpandStatusUrls;
+        String sGraphServerUserName;
+        String sGraphServerPassword;
+        String sNetworkFileFolderPath;
 
         try
         {
-            m_oNetworkConfigurationFileParser.
-                GetTwitterSearchNetworkConfiguration(out sSearchTerm,
-                out eWhatToInclude, out iMaximumStatuses,
-                out sNetworkFileFolder, out eNetworkFileFormats,
-                out sNodeXLWorkbookSettingsFilePath,
-                out bAutomateNodeXLWorkbook);
+            m_oNetworkConfigurationFileParser
+            .GetGraphServerTwitterSearchNetworkConfiguration(
+                out sSearchTerm, out oStartDateUtc, out oEndDateUtc,
+                out bExpandStatusUrls, out sGraphServerUserName,
+                out sGraphServerPassword, out sNetworkFileFolderPath);
         }
         catch (XmlException oXmlException)
         {
-            Assert.AreEqual(
-                "The NetworkFileFormats value is missing or invalid."
-                ,
-                oXmlException.Message
-                );
+            Assert.IsTrue( oXmlException.Message.IndexOf(
+                "The XPath is \"SearchTerm") >= 0);
 
             throw oXmlException;
         }
     }
 
     //*************************************************************************
-    //  Method: TestGetTwitterSearchNetworkConfigurationBad7()
+    //  Method: TestGetGraphServerTwitterSearchNetworkConfigurationBad2()
     //
     /// <summary>
     /// Tests the GetTwitterSearchNetworkConfiguration() method.
@@ -930,49 +823,44 @@ public class NetworkConfigurationFileParserTest : Object
     [ ExpectedException( typeof(XmlException) ) ]
 
     public void
-    TestGetTwitterSearchNetworkConfigurationBad7()
+    TestGetGraphServerTwitterSearchNetworkConfigurationBad2()
     {
-        // Bad NetworkFileFormats.
+        // Missing StartDateUtc.
 
-        WriteSampleNetworkConfigurationFile(
-            "<NetworkFileFormats>.*</NetworkFileFormats>",
-            "<NetworkFileFormats>Xyz</NetworkFileFormats>"
+        WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
+            "<StartDateUtc>.*</StartDateUtc>",
+            "<StartDateUtc></StartDateUtc>"
             );
 
         m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
             m_sTempFileName);
 
         String sSearchTerm;
-        TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
-        String sNetworkFileFolder;
-        NetworkFileFormats eNetworkFileFormats;
-        String sNodeXLWorkbookSettingsFilePath;
-        Boolean bAutomateNodeXLWorkbook;
+        DateTime oStartDateUtc, oEndDateUtc;
+        Boolean bExpandStatusUrls;
+        String sGraphServerUserName;
+        String sGraphServerPassword;
+        String sNetworkFileFolderPath;
 
         try
         {
-            m_oNetworkConfigurationFileParser.
-                GetTwitterSearchNetworkConfiguration(out sSearchTerm,
-                out eWhatToInclude, out iMaximumStatuses,
-                out sNetworkFileFolder, out eNetworkFileFormats,
-                out sNodeXLWorkbookSettingsFilePath,
-                out bAutomateNodeXLWorkbook);
+            m_oNetworkConfigurationFileParser
+            .GetGraphServerTwitterSearchNetworkConfiguration(
+                out sSearchTerm, out oStartDateUtc, out oEndDateUtc,
+                out bExpandStatusUrls, out sGraphServerUserName,
+                out sGraphServerPassword, out sNetworkFileFolderPath);
         }
         catch (XmlException oXmlException)
         {
-            Assert.AreEqual(
-                "The NetworkFileFormats value is missing or invalid."
-                ,
-                oXmlException.Message
-                );
+            Assert.IsTrue( oXmlException.Message.IndexOf(
+                "The XPath is \"StartDateUtc") >= 0);
 
             throw oXmlException;
         }
     }
 
     //*************************************************************************
-    //  Method: TestGetTwitterSearchNetworkConfigurationBad8()
+    //  Method: TestGetGraphServerTwitterSearchNetworkConfigurationBad3()
     //
     /// <summary>
     /// Tests the GetTwitterSearchNetworkConfiguration() method.
@@ -983,55 +871,505 @@ public class NetworkConfigurationFileParserTest : Object
     [ ExpectedException( typeof(XmlException) ) ]
 
     public void
-    TestGetTwitterSearchNetworkConfigurationBad8()
+    TestGetGraphServerTwitterSearchNetworkConfigurationBad3()
     {
-        // Bad AutomateNodeXLWorkbook.
+        // Bad StartDateUtc.
 
-        WriteSampleNetworkConfigurationFile(
-            "<AutomateNodeXLWorkbook>false</AutomateNodeXLWorkbook>",
-            "<AutomateNodeXLWorkbook>xx</AutomateNodeXLWorkbook>"
+        WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
+            "<StartDateUtc>.*</StartDateUtc>",
+            "<StartDateUtc>BadValue</StartDateUtc>"
             );
 
         m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
             m_sTempFileName);
 
         String sSearchTerm;
-        TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
-        Int32 iMaximumStatuses;
-        String sNetworkFileFolder;
-        NetworkFileFormats eNetworkFileFormats;
-        String sNodeXLWorkbookSettingsFilePath;
-        Boolean bAutomateNodeXLWorkbook;
+        DateTime oStartDateUtc, oEndDateUtc;
+        Boolean bExpandStatusUrls;
+        String sGraphServerUserName;
+        String sGraphServerPassword;
+        String sNetworkFileFolderPath;
 
         try
         {
-            m_oNetworkConfigurationFileParser.
-                GetTwitterSearchNetworkConfiguration(out sSearchTerm,
-                out eWhatToInclude, out iMaximumStatuses,
-                out sNetworkFileFolder, out eNetworkFileFormats,
-                out sNodeXLWorkbookSettingsFilePath,
-                out bAutomateNodeXLWorkbook);
+            m_oNetworkConfigurationFileParser
+            .GetGraphServerTwitterSearchNetworkConfiguration(
+                out sSearchTerm, out oStartDateUtc, out oEndDateUtc,
+                out bExpandStatusUrls, out sGraphServerUserName,
+                out sGraphServerPassword, out sNetworkFileFolderPath);
         }
         catch (XmlException oXmlException)
         {
             Assert.AreEqual(
-                "The AutomateNodeXLWorkbook value must be \"true\" or"
-                + " \"false\"."
-                ,
-                oXmlException.Message
-                );
+
+                "The StartDateUtc/text() value must be a date in the format"
+                    + " yyyy/mm/dd.",
+
+                oXmlException.Message);
 
             throw oXmlException;
         }
+    }
+
+    //*************************************************************************
+    //  Method: TestGetGraphServerTwitterSearchNetworkConfigurationBad4()
+    //
+    /// <summary>
+    /// Tests the GetTwitterSearchNetworkConfiguration() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+    [ ExpectedException( typeof(XmlException) ) ]
+
+    public void
+    TestGetGraphServerTwitterSearchNetworkConfigurationBad4()
+    {
+        // Missing EndDateUtc.
+
+        WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
+            "<EndDateUtc>.*</EndDateUtc>",
+            "<EndDateUtc></EndDateUtc>"
+            );
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        String sSearchTerm;
+        DateTime oStartDateUtc, oEndDateUtc;
+        Boolean bExpandStatusUrls;
+        String sGraphServerUserName;
+        String sGraphServerPassword;
+        String sNetworkFileFolderPath;
+
+        try
+        {
+            m_oNetworkConfigurationFileParser
+            .GetGraphServerTwitterSearchNetworkConfiguration(
+                out sSearchTerm, out oStartDateUtc, out oEndDateUtc,
+                out bExpandStatusUrls, out sGraphServerUserName,
+                out sGraphServerPassword, out sNetworkFileFolderPath);
+        }
+        catch (XmlException oXmlException)
+        {
+            Assert.IsTrue( oXmlException.Message.IndexOf(
+                "The XPath is \"EndDateUtc") >= 0);
+
+            throw oXmlException;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: TestGetGraphServerTwitterSearchNetworkConfigurationBad5()
+    //
+    /// <summary>
+    /// Tests the GetTwitterSearchNetworkConfiguration() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+    [ ExpectedException( typeof(XmlException) ) ]
+
+    public void
+    TestGetGraphServerTwitterSearchNetworkConfigurationBad5()
+    {
+        // Bad EndDateUtc.
+
+        WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
+            "<EndDateUtc>.*</EndDateUtc>",
+            "<EndDateUtc>BadValue</EndDateUtc>"
+            );
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        String sSearchTerm;
+        DateTime oStartDateUtc, oEndDateUtc;
+        Boolean bExpandStatusUrls;
+        String sGraphServerUserName;
+        String sGraphServerPassword;
+        String sNetworkFileFolderPath;
+
+        try
+        {
+            m_oNetworkConfigurationFileParser
+            .GetGraphServerTwitterSearchNetworkConfiguration(
+                out sSearchTerm, out oStartDateUtc, out oEndDateUtc,
+                out bExpandStatusUrls, out sGraphServerUserName,
+                out sGraphServerPassword, out sNetworkFileFolderPath);
+        }
+        catch (XmlException oXmlException)
+        {
+            Assert.AreEqual(
+
+                "The EndDateUtc/text() value must be a date in the format"
+                    + " yyyy/mm/dd.",
+
+                oXmlException.Message);
+
+            throw oXmlException;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: TestGetGraphServerTwitterSearchNetworkConfigurationBad6()
+    //
+    /// <summary>
+    /// Tests the GetTwitterSearchNetworkConfiguration() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+    [ ExpectedException( typeof(XmlException) ) ]
+
+    public void
+    TestGetGraphServerTwitterSearchNetworkConfigurationBad6()
+    {
+        // EndDateUtc < StartDateUtc.
+
+        WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
+
+            "<StartDateUtc>.*</StartDateUtc>",
+            "<StartDateUtc>2014/01/02</StartDateUtc>",
+
+            "<EndDateUtc>.*</EndDateUtc>",
+            "<EndDateUtc>2014/01/01</EndDateUtc>"
+            );
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        String sSearchTerm;
+        DateTime oStartDateUtc, oEndDateUtc;
+        Boolean bExpandStatusUrls;
+        String sGraphServerUserName;
+        String sGraphServerPassword;
+        String sNetworkFileFolderPath;
+
+        try
+        {
+            m_oNetworkConfigurationFileParser
+            .GetGraphServerTwitterSearchNetworkConfiguration(
+                out sSearchTerm, out oStartDateUtc, out oEndDateUtc,
+                out bExpandStatusUrls, out sGraphServerUserName,
+                out sGraphServerPassword, out sNetworkFileFolderPath);
+        }
+        catch (XmlException oXmlException)
+        {
+            Assert.AreEqual(
+                "The EndDateUtc can't be earlier than the StartDateUtc.",
+                oXmlException.Message);
+
+            throw oXmlException;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: TestGetGraphServerTwitterSearchNetworkConfigurationBad7()
+    //
+    /// <summary>
+    /// Tests the GetTwitterSearchNetworkConfiguration() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+    [ ExpectedException( typeof(XmlException) ) ]
+
+    public void
+    TestGetGraphServerTwitterSearchNetworkConfigurationBad7()
+    {
+        // Missing ExpandStatusUrls.
+
+        WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
+            "<ExpandStatusUrls>.*</ExpandStatusUrls>",
+            "<ExpandStatusUrls></ExpandStatusUrls>"
+            );
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        String sSearchTerm;
+        DateTime oStartDateUtc, oEndDateUtc;
+        Boolean bExpandStatusUrls;
+        String sGraphServerUserName;
+        String sGraphServerPassword;
+        String sNetworkFileFolderPath;
+
+        try
+        {
+            m_oNetworkConfigurationFileParser
+            .GetGraphServerTwitterSearchNetworkConfiguration(
+                out sSearchTerm, out oStartDateUtc, out oEndDateUtc,
+                out bExpandStatusUrls, out sGraphServerUserName,
+                out sGraphServerPassword, out sNetworkFileFolderPath);
+        }
+        catch (XmlException oXmlException)
+        {
+            Assert.IsTrue( oXmlException.Message.IndexOf(
+                "The XPath is \"ExpandStatusUrls") >= 0);
+
+            throw oXmlException;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: TestGetGraphServerTwitterSearchNetworkConfigurationBad8()
+    //
+    /// <summary>
+    /// Tests the GetTwitterSearchNetworkConfiguration() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+    [ ExpectedException( typeof(XmlException) ) ]
+
+    public void
+    TestGetGraphServerTwitterSearchNetworkConfigurationBad8()
+    {
+        // Bad ExpandStatusUrls.
+
+        WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
+            "<ExpandStatusUrls>.*</ExpandStatusUrls>",
+            "<ExpandStatusUrls>BadValue</ExpandStatusUrls>"
+            );
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        String sSearchTerm;
+        DateTime oStartDateUtc, oEndDateUtc;
+        Boolean bExpandStatusUrls;
+        String sGraphServerUserName;
+        String sGraphServerPassword;
+        String sNetworkFileFolderPath;
+
+        try
+        {
+            m_oNetworkConfigurationFileParser
+            .GetGraphServerTwitterSearchNetworkConfiguration(
+                out sSearchTerm, out oStartDateUtc, out oEndDateUtc,
+                out bExpandStatusUrls, out sGraphServerUserName,
+                out sGraphServerPassword, out sNetworkFileFolderPath);
+        }
+        catch (XmlException oXmlException)
+        {
+            Assert.IsTrue( oXmlException.Message.IndexOf(
+                "whose value must be a Boolean") >= 0);
+
+            throw oXmlException;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: TestGetGraphServerTwitterSearchNetworkConfigurationBad9()
+    //
+    /// <summary>
+    /// Tests the GetTwitterSearchNetworkConfiguration() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+    [ ExpectedException( typeof(XmlException) ) ]
+
+    public void
+    TestGetGraphServerTwitterSearchNetworkConfigurationBad9()
+    {
+        // Missing GraphServerUserName.
+
+        WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
+            "<GraphServerUserName>.*</GraphServerUserName>",
+            "<GraphServerUserName></GraphServerUserName>"
+            );
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        String sSearchTerm;
+        DateTime oStartDateUtc, oEndDateUtc;
+        Boolean bExpandStatusUrls;
+        String sGraphServerUserName;
+        String sGraphServerPassword;
+        String sNetworkFileFolderPath;
+
+        try
+        {
+            m_oNetworkConfigurationFileParser
+            .GetGraphServerTwitterSearchNetworkConfiguration(
+                out sSearchTerm, out oStartDateUtc, out oEndDateUtc,
+                out bExpandStatusUrls, out sGraphServerUserName,
+                out sGraphServerPassword, out sNetworkFileFolderPath);
+        }
+        catch (XmlException oXmlException)
+        {
+            Assert.IsTrue( oXmlException.Message.IndexOf(
+                "The XPath is \"GraphServerUserName") >= 0);
+
+            throw oXmlException;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: TestGetGraphServerTwitterSearchNetworkConfigurationBad10()
+    //
+    /// <summary>
+    /// Tests the GetTwitterSearchNetworkConfiguration() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+    [ ExpectedException( typeof(XmlException) ) ]
+
+    public void
+    TestGetGraphServerTwitterSearchNetworkConfigurationBad10()
+    {
+        // Missing GraphServerPassword.
+
+        WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
+            "<GraphServerPassword>.*</GraphServerPassword>",
+            "<GraphServerPassword></GraphServerPassword>"
+            );
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        String sSearchTerm;
+        DateTime oStartDateUtc, oEndDateUtc;
+        Boolean bExpandStatusUrls;
+        String sGraphServerUserName;
+        String sGraphServerPassword;
+        String sNetworkFileFolderPath;
+
+        try
+        {
+            m_oNetworkConfigurationFileParser
+            .GetGraphServerTwitterSearchNetworkConfiguration(
+                out sSearchTerm, out oStartDateUtc, out oEndDateUtc,
+                out bExpandStatusUrls, out sGraphServerUserName,
+                out sGraphServerPassword, out sNetworkFileFolderPath);
+        }
+        catch (XmlException oXmlException)
+        {
+            Assert.IsTrue( oXmlException.Message.IndexOf(
+                "The XPath is \"GraphServerPassword") >= 0);
+
+            throw oXmlException;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: TestGetGraphServerTwitterSearchNetworkConfigurationBad11()
+    //
+    /// <summary>
+    /// Tests the GetTwitterSearchNetworkConfiguration() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+    [ ExpectedException( typeof(XmlException) ) ]
+
+    public void
+    TestGetGraphServerTwitterSearchNetworkConfigurationBad11()
+    {
+        // Missing NetworkFileFolder.
+
+        WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
+            "<NetworkFileFolder>.*</NetworkFileFolder>",
+            "<NetworkFileFolder></NetworkFileFolder>"
+            );
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        String sSearchTerm;
+        DateTime oStartDateUtc, oEndDateUtc;
+        Boolean bExpandStatusUrls;
+        String sGraphServerUserName;
+        String sGraphServerPassword;
+        String sNetworkFileFolderPath;
+
+        try
+        {
+            m_oNetworkConfigurationFileParser
+            .GetGraphServerTwitterSearchNetworkConfiguration(
+                out sSearchTerm, out oStartDateUtc, out oEndDateUtc,
+                out bExpandStatusUrls, out sGraphServerUserName,
+                out sGraphServerPassword, out sNetworkFileFolderPath);
+        }
+        catch (XmlException oXmlException)
+        {
+            Assert.IsTrue( oXmlException.Message.IndexOf(
+                "The XPath is \"NetworkFileFolder") >= 0);
+
+            throw oXmlException;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: WriteSampleTwitterSearchNetworkConfigurationFile()
+    //
+    /// <summary>
+    /// Writes a copy of a sample Twitter search network configuration file to
+    /// a temporary file after optionally modifying the copy.
+    /// </summary>
+    ///
+    /// <param name="asPatternReplacementPairs">
+    /// Array of string pairs.  The first element of each pair is the Regex
+    /// pattern to replace in the file.  The second element of each pair is the
+    /// replacement string.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    WriteSampleTwitterSearchNetworkConfigurationFile
+    (
+        params String [] asPatternReplacementPairs
+    )
+    {
+        WriteSampleNetworkConfigurationFile(
+            SampleTwitterSearchNetworkConfigurationFileName,
+            asPatternReplacementPairs
+            );
+    }
+
+    //*************************************************************************
+    //  Method: WriteSampleGraphServerTwitterSearchNetworkConfigurationFile()
+    //
+    /// <summary>
+    /// Writes a copy of a sample Graph Server Twitter search network
+    /// configuration file to a temporary file after optionally modifying the
+    /// copy.
+    /// </summary>
+    ///
+    /// <param name="asPatternReplacementPairs">
+    /// Array of string pairs.  The first element of each pair is the Regex
+    /// pattern to replace in the file.  The second element of each pair is the
+    /// replacement string.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    WriteSampleGraphServerTwitterSearchNetworkConfigurationFile
+    (
+        params String [] asPatternReplacementPairs
+    )
+    {
+        WriteSampleNetworkConfigurationFile(
+            SampleGraphServerTwitterSearchNetworkConfigurationFileName,
+            asPatternReplacementPairs
+            );
     }
 
     //*************************************************************************
     //  Method: WriteSampleNetworkConfigurationFile()
     //
     /// <summary>
-    /// Writes a copy of the sample network configuration file to a temporary
+    /// Writes a copy of a sample network configuration file to a temporary
     /// file after optionally modifying the copy.
     /// </summary>
+    ///
+    /// <param name="sSampleNetworkConfigurationFileName">
+    /// Name of the sample network configuration file to copy, without a path.
+    /// </param>
     ///
     /// <param name="asPatternReplacementPairs">
     /// Array of string pairs.  The first element of each pair is the Regex
@@ -1043,11 +1381,17 @@ public class NetworkConfigurationFileParserTest : Object
     protected void
     WriteSampleNetworkConfigurationFile
     (
+        String sSampleNetworkConfigurationFileName,
         params String [] asPatternReplacementPairs
     )
     {
+        String sSampleNetworkConfigurationFilePath = Path.Combine(
+            SampleNetworkConfigurationFolderRelativePath,
+            sSampleNetworkConfigurationFileName
+            );
+
         using ( StreamReader oStreamReader = new StreamReader(
-            SampleNetworkConfigurationRelativePath) )
+            sSampleNetworkConfigurationFilePath) )
         {
             String sFileContents = oStreamReader.ReadToEnd();
 
@@ -1091,11 +1435,25 @@ public class NetworkConfigurationFileParserTest : Object
     //  Protected constants
     //*************************************************************************
 
-    /// Path to the sample network configuration file that is distributed
-    /// with the application, relative to the unit test executable.
+    /// Path to the folder that contains the sample network configuration files
+    /// that are distributed with the application, relative to the unit test
+    /// executable.
 
-    protected const String SampleNetworkConfigurationRelativePath
-        = @"..\..\..\NetworkServer\SampleNetworkConfiguration.xml";
+    protected const String SampleNetworkConfigurationFolderRelativePath
+        = @"..\..\..\NetworkServer\Documents";
+
+    /// Name of the sample Twitter search network configuration file, without a
+    /// path.
+
+    protected const String SampleTwitterSearchNetworkConfigurationFileName
+        = "SampleTwitterSearchNetworkConfiguration.xml";
+
+    /// Name of the sample Graph Server Twitter search network configuration
+    /// file, without a path.
+
+    protected const String
+        SampleGraphServerTwitterSearchNetworkConfigurationFileName
+        = "SampleGraphServerTwitterSearchNetworkConfiguration.xml";
 
 
     //*************************************************************************

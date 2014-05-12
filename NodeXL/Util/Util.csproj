@@ -80,6 +80,9 @@
     <Compile Include="..\..\Common\Excel\ExcelDateTimeUtil.cs">
       <Link>Excel\ExcelDateTimeUtil.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\ExceptionUtil.cs">
+      <Link>ExceptionUtil.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\FileUtil.cs">
       <Link>FileUtil.cs</Link>
     </Compile>

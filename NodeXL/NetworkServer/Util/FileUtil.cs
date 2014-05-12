@@ -50,9 +50,7 @@ public static class FileUtil
     /// </param>
     ///
     /// <returns>
-    /// The full path to an output file.  (An output file is either a network
-    /// file in one of the <see cref="NetworkFileFormats" /> format, or a text
-    /// file.)  Sample:
+    /// The full path to an output file.  Sample:
     ///
     /// <para>
     /// C:\Error_NetworkConfiguration_2010-06-01_02-00-00.txt

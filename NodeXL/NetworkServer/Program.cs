@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Smrf.NodeXL.GraphDataProviders;
 using Smrf.NodeXL.GraphDataProviders.Twitter;
+using Smrf.NodeXL.GraphDataProviders.GraphServer;
 using Smrf.NodeXL.Core;
 using Smrf.SocialNetworkLib;
 using Smrf.AppLib;
@@ -99,9 +100,6 @@ class Program
         XmlDocument oXmlDocument = null;
         String sNetworkFileFolderPath = null;
         DateTime oStartTime = DateTime.Now;
-        NetworkFileFormats eNetworkFileFormats = NetworkFileFormats.None;
-        String sNodeXLWorkbookSettingsFilePath = null;
-        Boolean bAutomateNodeXLWorkbook = false;
 
         switch (eNetworkType)
         {
@@ -110,9 +108,16 @@ class Program
                 GetTwitterSearchNetwork(oStartTime,
                     sNetworkConfigurationFilePath,
                     oNetworkConfigurationFileParser, out oXmlDocument,
-                    out sNetworkFileFolderPath, out eNetworkFileFormats,
-                    out sNodeXLWorkbookSettingsFilePath,
-                    out bAutomateNodeXLWorkbook);
+                    out sNetworkFileFolderPath);
+
+                break;
+
+            case NetworkType.GraphServerTwitterSearch:
+
+                GetGraphServerTwitterSearchNetwork(oStartTime,
+                    sNetworkConfigurationFilePath,
+                    oNetworkConfigurationFileParser, out oXmlDocument,
+                    out sNetworkFileFolderPath);
 
                 break;
 
@@ -124,9 +129,8 @@ class Program
 
         Debug.Assert(oXmlDocument != null);
 
-        SaveNetwork(oStartTime, oXmlDocument, sNetworkConfigurationFilePath,
-            sNetworkFileFolderPath, eNetworkFileFormats,
-            sNodeXLWorkbookSettingsFilePath, bAutomateNodeXLWorkbook);
+        SaveNetworkToGraphML(oStartTime, oXmlDocument,
+            sNetworkConfigurationFilePath, sNetworkFileFolderPath);
 
         Exit(ExitCode.Success, null);
     }
@@ -190,7 +194,7 @@ class Program
     //  Method: GetTwitterSearchNetwork()
     //
     /// <summary>
-    /// Gets a Twitter search network.
+    /// Gets a Twitter search network directly from Twitter.
     /// </summary>
     ///
     /// <param name="oStartTime">
@@ -214,21 +218,6 @@ class Program
     /// written gets stored.
     /// </param>
     ///
-    /// <param name="eNetworkFileFormats">
-    /// Where the file formats to save the network to get stored.
-    /// </param>
-    ///
-    /// <param name="sNodeXLWorkbookSettingsFilePath">
-    /// Where the full path to the workbook settings file to use for the NodeXL
-    /// workbook gets stored.  If null, no workbook settings file should be
-    /// used.
-    /// </param>
-    ///
-    /// <param name="bAutomateNodeXLWorkbook">
-    /// Where a flag specifying whether automation should be run on the NodeXL
-    /// workbook gets stored.
-    /// </param>
-    ///
     /// <remarks>
     /// If an error is encountered, this method handles it and then exits the
     /// program.
@@ -242,10 +231,7 @@ class Program
         String sNetworkConfigurationFilePath,
         NetworkConfigurationFileParser oNetworkConfigurationFileParser,
         out XmlDocument oXmlDocument,
-        out String sNetworkFileFolderPath,
-        out NetworkFileFormats eNetworkFileFormats,
-        out String sNodeXLWorkbookSettingsFilePath,
-        out Boolean bAutomateNodeXLWorkbook
+        out String sNetworkFileFolderPath
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sNetworkConfigurationFilePath) );
@@ -253,9 +239,6 @@ class Program
 
         oXmlDocument = null;
         sNetworkFileFolderPath = null;
-        eNetworkFileFormats = NetworkFileFormats.None;
-        sNodeXLWorkbookSettingsFilePath = null;
-        bAutomateNodeXLWorkbook = false;
 
         String sSearchTerm = null;
 
@@ -269,9 +252,7 @@ class Program
             oNetworkConfigurationFileParser.
                 GetTwitterSearchNetworkConfiguration(out sSearchTerm,
                 out eWhatToInclude, out iMaximumTweets,
-                out sNetworkFileFolderPath, out eNetworkFileFormats,
-                out sNodeXLWorkbookSettingsFilePath,
-                out bAutomateNodeXLWorkbook);
+                out sNetworkFileFolderPath);
         }
         catch (XmlException oXmlException)
         {
@@ -283,12 +264,10 @@ class Program
         TwitterSearchNetworkAnalyzer oTwitterSearchNetworkAnalyzer =
             new TwitterSearchNetworkAnalyzer();
 
-        oTwitterSearchNetworkAnalyzer.ProgressChanged +=
-            new ProgressChangedEventHandler(
-                HttpNetworkAnalyzer_ProgressChanged);
+        SubscribeToProgressChangedEvent(oTwitterSearchNetworkAnalyzer);
 
         Console.WriteLine(
-            "Getting the Twitter Search network specified in \"{0}\".  The"
+            "Getting the Twitter search network specified in \"{0}\".  The"
             + " search term is \"{1}\"."
             ,
             sNetworkConfigurationFilePath,
@@ -300,91 +279,146 @@ class Program
             oXmlDocument = oTwitterSearchNetworkAnalyzer.GetNetwork(
                 sSearchTerm, eWhatToInclude, iMaximumTweets);
         }
-        catch (PartialNetworkException oPartialNetworkException)
-        {
-            oXmlDocument = OnGetNetworkPartialNetworkException(
-                oStartTime, oPartialNetworkException,
-                sNetworkConfigurationFilePath, sNetworkFileFolderPath,
-                oTwitterSearchNetworkAnalyzer);
-        }
         catch (Exception oException)
         {
-            // (This call exits the program.)
+            // Note that this call might exit the program.
 
-            OnGetNetworkOtherException(oStartTime, oException,
+            oXmlDocument = OnGetNetworkException(oStartTime, oException,
                 sNetworkConfigurationFilePath, sNetworkFileFolderPath,
                 oTwitterSearchNetworkAnalyzer);
         }
     }
 
     //*************************************************************************
-    //  Method: SaveNetwork()
+    //  Method: GetGraphServerTwitterSearchNetwork()
     //
     /// <summary>
-    /// Saves a network to disk.
+    /// Gets a Twitter search network from the Graph Server.
     /// </summary>
     ///
     /// <param name="oStartTime">
     /// Time at which the network download started.
     /// </param>
     ///
-    /// <param name="oXmlDocument">
-    /// The XML document containing the network as GraphML.
+    /// <param name="sNetworkConfigurationFilePath">
+    /// Full path to the network configuration file.
     /// </param>
     ///
-    /// <param name="sNetworkConfigurationFilePath">
-    /// The path of the specified network configuration file.
+    /// <param name="oNetworkConfigurationFileParser">
+    /// Parses a network configuration file.
+    /// </param>
+    ///
+    /// <param name="oXmlDocument">
+    /// Where the XML document containing the network as GraphML gets stored.
     /// </param>
     ///
     /// <param name="sNetworkFileFolderPath">
-    /// The full path to the folder where the network files should be written.
+    /// Where the full path to the folder where the network files should be
+    /// written gets stored.
     /// </param>
     ///
-    /// <param name="eNetworkFileFormats">
-    /// The file formats to save the network to.
-    /// </param>
+    /// <remarks>
+    /// If an error is encountered, this method handles it and then exits the
+    /// program.
+    /// </remarks>
+    //*************************************************************************
+
+    private static void
+    GetGraphServerTwitterSearchNetwork
+    (
+        DateTime oStartTime,
+        String sNetworkConfigurationFilePath,
+        NetworkConfigurationFileParser oNetworkConfigurationFileParser,
+        out XmlDocument oXmlDocument,
+        out String sNetworkFileFolderPath
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sNetworkConfigurationFilePath) );
+        Debug.Assert(oNetworkConfigurationFileParser != null);
+
+        oXmlDocument = null;
+        sNetworkFileFolderPath = null;
+
+        String sSearchTerm = null;
+        DateTime oStartDateUtc = DateTime.MinValue;
+        DateTime oEndDateUtc = DateTime.MinValue;
+        Boolean bExpandStatusUrls = false;
+        String sGraphServerUserName = null;
+        String sGraphServerPassword = null;
+
+        try
+        {
+            oNetworkConfigurationFileParser.
+            GetGraphServerTwitterSearchNetworkConfiguration(
+                out sSearchTerm,
+                out oStartDateUtc,
+                out oEndDateUtc,
+                out bExpandStatusUrls,
+                out sGraphServerUserName,
+                out sGraphServerPassword,
+                out sNetworkFileFolderPath
+                );
+        }
+        catch (XmlException oXmlException)
+        {
+            // (This call exits the program.)
+
+            OnNetworkConfigurationFileException(oXmlException);
+        }
+
+        GraphServerNetworkAnalyzer oGraphServerTwitterSearchNetworkAnalyzer =
+            new GraphServerNetworkAnalyzer();
+
+        SubscribeToProgressChangedEvent(
+            oGraphServerTwitterSearchNetworkAnalyzer);
+
+        Console.WriteLine(
+            "Getting the Graph Server Twitter search network specified in"
+            + " \"{0}\".  The search term is \"{1}\"."
+            ,
+            sNetworkConfigurationFilePath,
+            sSearchTerm
+            );
+
+        try
+        {
+            oXmlDocument = oGraphServerTwitterSearchNetworkAnalyzer.GetNetwork(
+                sSearchTerm, oStartDateUtc, oEndDateUtc, bExpandStatusUrls,
+                sGraphServerUserName, sGraphServerPassword);
+        }
+        catch (Exception oException)
+        {
+            // Note that this call might exit the program.
+
+            oXmlDocument = OnGetNetworkException(oStartTime, oException,
+                sNetworkConfigurationFilePath, sNetworkFileFolderPath,
+                oGraphServerTwitterSearchNetworkAnalyzer);
+        }
+    }
+
+    //*************************************************************************
+    //  Method: SubscribeToProgressChangedEvent()
+    //
+    /// <summary>
+    /// Subscribes to the ProgressChanged event on a network analyzer.
+    /// </summary>
     ///
-    /// <param name="sNodeXLWorkbookSettingsFilePath">
-    /// The full path to the workbook settings file to use for the NodeXL
-    /// workbook.  If null, no workbook settings file is used.
-    /// </param>
-    ///
-    /// <param name="bAutomateNodeXLWorkbook">
-    /// true to run automation on the NodeXL workbook, if eNetworkFileFormats
-    /// includes NetworkFileFormats.NodeXLWorkbook.
+    /// <param name="oHttpNetworkAnalyzerBase">
+    /// The network analyzer used to get the network.
     /// </param>
     //*************************************************************************
 
     private static void
-    SaveNetwork
+    SubscribeToProgressChangedEvent
     (
-        DateTime oStartTime,
-        XmlDocument oXmlDocument,
-        String sNetworkConfigurationFilePath,
-        String sNetworkFileFolderPath,
-        NetworkFileFormats eNetworkFileFormats,
-        String sNodeXLWorkbookSettingsFilePath,
-        Boolean bAutomateNodeXLWorkbook
+        HttpNetworkAnalyzerBase oHttpNetworkAnalyzerBase
     )
     {
-        Debug.Assert(oXmlDocument != null);
-        Debug.Assert( !String.IsNullOrEmpty(sNetworkConfigurationFilePath) );
-        Debug.Assert( !String.IsNullOrEmpty(sNetworkFileFolderPath) );
+        Debug.Assert(oHttpNetworkAnalyzerBase != null);
 
-        if ( (eNetworkFileFormats & NetworkFileFormats.GraphML)
-            != NetworkFileFormats.None )
-        {
-            SaveNetworkToGraphML(oStartTime, oXmlDocument,
-                sNetworkConfigurationFilePath, sNetworkFileFolderPath);
-        }
-
-        if ( (eNetworkFileFormats & NetworkFileFormats.NodeXLWorkbook)
-            != NetworkFileFormats.None )
-        {
-            SaveNetworkToNodeXLWorkbook(oStartTime, oXmlDocument,
-                sNetworkConfigurationFilePath, sNetworkFileFolderPath,
-                sNodeXLWorkbookSettingsFilePath, bAutomateNodeXLWorkbook);
-        }
+        oHttpNetworkAnalyzerBase.ProgressChanged +=
+            new ProgressChangedEventHandler(
+                HttpNetworkAnalyzer_ProgressChanged);
     }
 
     //*************************************************************************
@@ -460,69 +494,6 @@ class Program
     }
 
     //*************************************************************************
-    //  Method: SaveNetworkToNodeXLWorkbook()
-    //
-    /// <summary>
-    /// Saves a network to a NodeXL workbook.
-    /// </summary>
-    ///
-    /// <param name="oStartTime">
-    /// Time at which the network download started.
-    /// </param>
-    ///
-    /// <param name="oXmlDocument">
-    /// The XML document containing the network as GraphML.
-    /// </param>
-    ///
-    /// <param name="sNetworkConfigurationFilePath">
-    /// The path of the specified network configuration file.
-    /// </param>
-    ///
-    /// <param name="sNetworkFileFolderPath">
-    /// The full path to the folder where the network files should be written.
-    /// </param>
-    ///
-    /// <param name="sNodeXLWorkbookSettingsFilePath">
-    /// The full path to the workbook settings file to use for the NodeXL
-    /// workbook.  If null, no workbook settings file is used.
-    /// </param>
-    ///
-    /// <param name="bAutomateNodeXLWorkbook">
-    /// true to run automation on the NodeXL workbook.
-    /// </param>
-    //*************************************************************************
-
-    private static void
-    SaveNetworkToNodeXLWorkbook
-    (
-        DateTime oStartTime,
-        XmlDocument oXmlDocument,
-        String sNetworkConfigurationFilePath,
-        String sNetworkFileFolderPath,
-        String sNodeXLWorkbookSettingsFilePath,
-        Boolean bAutomateNodeXLWorkbook
-    )
-    {
-        Debug.Assert(oXmlDocument != null);
-        Debug.Assert( !String.IsNullOrEmpty(sNetworkConfigurationFilePath) );
-        Debug.Assert( !String.IsNullOrEmpty(sNetworkFileFolderPath) );
-
-        try
-        {
-            NodeXLWorkbookSaver.SaveGraphToNodeXLWorkbook(oStartTime,
-                oXmlDocument, sNetworkConfigurationFilePath,
-                sNetworkFileFolderPath, sNodeXLWorkbookSettingsFilePath,
-                bAutomateNodeXLWorkbook);
-        }
-        catch (SaveGraphToNodeXLWorkbookException
-            oSaveGraphToNodeXLWorkbookException)
-        {
-            Exit(oSaveGraphToNodeXLWorkbookException.ExitCode, 
-                oSaveGraphToNodeXLWorkbookException.Message);
-        }
-    }
-
-    //*************************************************************************
     //  Method: OnNetworkConfigurationFileException()
     //
     /// <summary>
@@ -556,6 +527,76 @@ class Program
         Exit(ExitCode.InvalidNetworkConfigurationFile,
             "\r\n" + oXmlException.Message + "\r\n" + UsageMessage
             );
+    }
+
+    //*************************************************************************
+    //  Method: OnGetNetworkException()
+    //
+    /// <summary>
+    /// Handles an exception thrown while getting a network.
+    /// </summary>
+    ///
+    /// <param name="oStartTime">
+    /// Time at which the network download started.
+    /// </param>
+    ///
+    /// <param name="oException">
+    /// The exception that was thrown.
+    /// </param>
+    ///
+    /// <param name="sNetworkConfigurationFilePath">
+    /// Full path to the network configuration file.
+    /// </param>
+    ///
+    /// <param name="sNetworkFileFolderPath">
+    /// The full path to the folder where the network files should be written.
+    /// </param>
+    ///
+    /// <param name="oHttpNetworkAnalyzerBase">
+    /// The network analyzer used to get the network.
+    /// </param>
+    ///
+    /// <returns>
+    /// If the exception is a <see cref="PartialNetworkException" />, an
+    /// XmlDocument describing the partial network is returned.  Otherwise,
+    /// the program exits.
+    /// </returns>
+    //*************************************************************************
+
+    private static XmlDocument
+    OnGetNetworkException
+    (
+        DateTime oStartTime,
+        Exception oException,
+        String sNetworkConfigurationFilePath,
+        String sNetworkFileFolderPath,
+        HttpNetworkAnalyzerBase oHttpNetworkAnalyzerBase
+    )
+    {
+        Debug.Assert(oException != null);
+        Debug.Assert( !String.IsNullOrEmpty(sNetworkConfigurationFilePath) );
+        Debug.Assert( !String.IsNullOrEmpty(sNetworkFileFolderPath) );
+        Debug.Assert(oHttpNetworkAnalyzerBase != null);
+
+        if (oException is PartialNetworkException)
+        {
+            return ( OnGetNetworkPartialNetworkException(
+                oStartTime, (PartialNetworkException)oException,
+                sNetworkConfigurationFilePath, sNetworkFileFolderPath,
+                oHttpNetworkAnalyzerBase) );
+        }
+        else
+        {
+            // (This call exits the program.)
+
+            OnGetNetworkOtherException(oStartTime, oException,
+                sNetworkConfigurationFilePath, sNetworkFileFolderPath,
+                oHttpNetworkAnalyzerBase);
+
+            // Make the compiler happy.
+
+            return (null);
+        }
     }
 
     //*************************************************************************

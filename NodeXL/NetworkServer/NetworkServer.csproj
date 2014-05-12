@@ -53,9 +53,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -68,19 +65,12 @@
     <Compile Include="Util\ExitCode.cs" />
     <Compile Include="Util\FileUtil.cs" />
     <Compile Include="Util\NetworkConfigurationFileParser.cs" />
-    <Compile Include="Util\NetworkFileFormats.cs" />
     <Compile Include="Util\NetworkType.cs" />
-    <Compile Include="Util\NodeXLWorkbookSaver.cs" />
-    <Compile Include="Util\SaveGraphToNodeXLWorkbookException.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Adapters\Adapters.csproj">
       <Project>{49BF210B-2FB1-4955-9553-B4C9DB275352}</Project>
       <Name>Adapters</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ApplicationUtil\ApplicationUtil.csproj">
-      <Project>{f7845042-b212-4d74-9343-da2052f83234}</Project>
-      <Name>ApplicationUtil</Name>
     </ProjectReference>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{8BA6250F-0771-43A0-8EE7-EBD24FB1ECCE}</Project>
@@ -93,10 +83,6 @@
     <ProjectReference Include="..\Util\Util.csproj">
       <Project>{9F0DA064-8E3A-45D9-826A-3CCB1A748E47}</Project>
       <Name>Util</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ExcelTemplate\ExcelTemplate.csproj">
-      <Project>{33AB75F0-43C2-4B1D-A0FC-2E682BC65386}</Project>
-      <Name>ExcelTemplate</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

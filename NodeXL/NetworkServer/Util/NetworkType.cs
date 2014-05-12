@@ -16,10 +16,16 @@ public enum
 NetworkType
 {
     /// <summary>
-    /// Twitter search network.
+    /// Twitter search network, obtained directly from Twitter.
     /// </summary>
 
     TwitterSearch,
+
+    /// <summary>
+    /// Twitter search network, obtained from the Graph Server.
+    /// </summary>
+
+    GraphServerTwitterSearch,
 }
 
 }
