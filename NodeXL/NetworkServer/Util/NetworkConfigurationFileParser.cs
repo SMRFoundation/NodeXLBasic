@@ -243,12 +243,12 @@ public class NetworkConfigurationFileParser : Object
     /// Where the term to search for gets stored.
     /// </param>
     ///
-    /// <param name="startDateUtc">
-    /// Where the start date gets stored, in UTC.
+    /// <param name="minimumStatusDateUtc">
+    /// Where the minimum status date gets stored, in UTC.
     /// </param>
     ///
-    /// <param name="endDateUtc">
-    /// Where the end date gets stored, in UTC.
+    /// <param name="maximumStatusDateUtc">
+    /// Where the maximum status date gets stored, in UTC.
     /// </param>
     ///
     /// <param name="expandStatusUrls">
@@ -273,8 +273,8 @@ public class NetworkConfigurationFileParser : Object
     GetGraphServerTwitterSearchNetworkConfiguration
     (
         out String searchTerm,
-        out DateTime startDateUtc,
-        out DateTime endDateUtc,
+        out DateTime minimumStatusDateUtc,
+        out DateTime maximumStatusDateUtc,
         out Boolean expandStatusUrls,
         out String graphServerUserName,
         out String graphServerPassword,
@@ -298,15 +298,15 @@ public class NetworkConfigurationFileParser : Object
             oGraphServerTwitterSearchNetworkConfigurationNode,
             "SearchTerm/text()", null);
 
-        startDateUtc = SelectRequiredSingleNodeAsDateTime(
+        minimumStatusDateUtc = SelectRequiredSingleNodeAsDateTime(
             oGraphServerTwitterSearchNetworkConfigurationNode,
             "StartDateUtc/text()");
 
-        endDateUtc = SelectRequiredSingleNodeAsDateTime(
+        maximumStatusDateUtc = SelectRequiredSingleNodeAsDateTime(
             oGraphServerTwitterSearchNetworkConfigurationNode,
             "EndDateUtc/text()");
 
-        if (endDateUtc < startDateUtc)
+        if (maximumStatusDateUtc < minimumStatusDateUtc)
         {
             throw new XmlException(
                 "The EndDateUtc can't be earlier than the StartDateUtc."

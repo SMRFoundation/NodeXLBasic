@@ -340,8 +340,8 @@ class Program
         sNetworkFileFolderPath = null;
 
         String sSearchTerm = null;
-        DateTime oStartDateUtc = DateTime.MinValue;
-        DateTime oEndDateUtc = DateTime.MinValue;
+        DateTime oMinimumStatusDateUtc = DateTime.MinValue;
+        DateTime oMaximumStatusDateUtc = DateTime.MinValue;
         Boolean bExpandStatusUrls = false;
         String sGraphServerUserName = null;
         String sGraphServerPassword = null;
@@ -351,8 +351,8 @@ class Program
             oNetworkConfigurationFileParser.
             GetGraphServerTwitterSearchNetworkConfiguration(
                 out sSearchTerm,
-                out oStartDateUtc,
-                out oEndDateUtc,
+                out oMinimumStatusDateUtc,
+                out oMaximumStatusDateUtc,
                 out bExpandStatusUrls,
                 out sGraphServerUserName,
                 out sGraphServerPassword,
@@ -384,8 +384,8 @@ class Program
         try
         {
             oXmlDocument = oGraphServerTwitterSearchNetworkAnalyzer.GetNetwork(
-                sSearchTerm, oStartDateUtc, oEndDateUtc, bExpandStatusUrls,
-                sGraphServerUserName, sGraphServerPassword);
+                sSearchTerm, oMinimumStatusDateUtc, oMaximumStatusDateUtc,
+                bExpandStatusUrls, sGraphServerUserName, sGraphServerPassword);
         }
         catch (Exception oException)
         {
