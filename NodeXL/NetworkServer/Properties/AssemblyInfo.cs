@@ -5,12 +5,13 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
+
 [assembly: AssemblyTitle("NodeXL Network Server")]
 [assembly: AssemblyDescription("Gets network data and stores it on disk")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Social Media Research Foundation")]
 [assembly: AssemblyProduct("NodeXL")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCopyright("Copyright © 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

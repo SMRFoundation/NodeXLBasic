@@ -5,12 +5,13 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
+
 [assembly: AssemblyTitle("NodeXL Excel Template Post Deployment Action")]
 [assembly: AssemblyDescription("Performs required tasks after the Excel Template project is deployed")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Social Media Research Foundation")]
 [assembly: AssemblyProduct("NodeXL")]
-[assembly: AssemblyCopyright("")]
+[assembly: AssemblyCopyright("Copyright © 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
