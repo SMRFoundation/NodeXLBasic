@@ -30,8 +30,8 @@ Here is the workaround for the problem:
    executables during the build process.  They aren't needed during
    development.
 
-   Note that these files are not checked in.  They do not exist until the
-   solution is built.
+   Note that the checked-in versions of these files are actually dummy text
+   files that get overwritten in steps 2 and 3, below.
 
 2. The GraphMLFileProcessor project has a post-build event that copies 
    NodeXLGraphMLFileProcessor.exe to the AdditionalFilesToPublish folder after
