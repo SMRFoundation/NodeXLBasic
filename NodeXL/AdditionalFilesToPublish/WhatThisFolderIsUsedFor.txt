@@ -1,0 +1,51 @@
+
+This folder is used to get a couple of NodeXL executables into the
+ExcelTemplate ClickOnce release.
+
+The executables created by the GraphMLFileProcessor and NetworkServer projects
+need to be distributed in the ClickOnce package that gets created when the
+ExcelTemplate project is published.  The easy way to do that would be to
+include these projects as references in the ExcelTemplate project, because
+Visual Studio automatically includes the output of all referenced projects in
+the published package.  Visual Studio won't allow GraphMLFileProcessor to be
+included as a reference, however, because that would introduce a circular
+dependency.  (NetworkServer doesn't have a circular dependency and could be
+included as a reference, but for consistency it is treated in the same manner
+as GraphMLFileProcessor.)
+
+Here is the workaround for the problem:
+
+1. The ExcelTemplate project includes the following two executables as items
+   with a Build Action of "Content" and a "Copy to Output Directory" of "Do not
+   copy":
+
+       AdditionalFilesToPublish\NodeXLGraphMLFileProcessor.exe
+
+       AdditionalFilesToPublish\NodeXLNetworkServer.exe
+
+   The "Content" value forces Visual Studio to include the executables in the
+   ClickOnce package, which is the goal of the workaround.
+
+   The "Do not copy" value prevents Visual Studio from doing anything with the
+   executables during the build process.  They aren't needed during
+   development.
+
+   Note that these files are not checked in.  They do not exist until the
+   solution is built.
+
+2. The GraphMLFileProcessor project has a post-build event that copies 
+   NodeXLGraphMLFileProcessor.exe to the AdditionalFilesToPublish folder after
+   the project builds it.
+
+3. Similarly, the NetworkServer project has a post-build event that copies 
+   NodeXLNetworkServer.exe to the AdditionalFilesToPublish folder after
+   the project builds it.
+
+4. When ExcelTemplate is published, Visual Studio finds the required
+   executables in the AdditionalFilesToPublish folder and includes them in the
+   ClickOnce package.
+
+The net result is that the executables end up in the published ClickOnce
+package without having to include them as references, which would be impossible
+for one of them.
+

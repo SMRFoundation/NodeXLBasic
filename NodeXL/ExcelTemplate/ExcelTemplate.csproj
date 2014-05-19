@@ -749,6 +749,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Content Include="..\AdditionalFilesToPublish\NodeXLNetworkServer.exe">
+      <Link>NodeXLNetworkServer.exe</Link>
+    </Content>
+    <Content Include="..\AdditionalFilesToPublish\NodeXLGraphMLFileProcessor.exe">
+      <Link>NodeXLGraphMLFileProcessor.exe</Link>
+    </Content>
     <Content Include="..\Algorithms\SnapGraphMetricCalculator.exe">
       <Link>SnapGraphMetricCalculator.exe</Link>
     </Content>

@@ -86,6 +86,16 @@ the NetworkServer program do not work properly.  GraphMLFileProcessor never
 instantiates more than one Excel instance at a time.
 
 
+GraphMLFileProcessorStarter
+---------------------------
+Console project.  Starts the GraphMLFileProcessor program.  The
+GraphMLFileProcessor program is buried in a folder within the ClickOnce cache
+and the folder changes with every NodeXL ClickOnce update, so starting the
+program is difficult.  GraphMLFileProcessorStarter looks in the Windows Start
+menu for the NodeXL Excel Template shortcut, gets NodeXL's ClickOnce path from
+the shortcut, and starts the GraphMLFileProcessor program using that path.
+
+
 Layouts
 -------------
 Class library project.  Contains classes that lay out graphs.
@@ -96,6 +106,16 @@ NetworkServer
 Console project.  Gets a network using the classes in GraphDataProviders and
 stores it in a GraphML file.  This is a console-based alternative to getting
 the same graph data from within the ExcelTemplate.
+
+
+NetworkServerStarter
+--------------------
+Console project.  Starts the NetworkServer program.  The NetworkServer program
+is buried in a folder within the ClickOnce cache and the folder changes with
+every NodeXL ClickOnce update, so starting the program is difficult.
+NetworkServerStarter looks in the Windows Start menu for the NodeXL Excel
+Template shortcut, gets NodeXL's ClickOnce path from the shortcut, and starts
+the NetworkServer program using that path.
 
 
 TestGraphDataProviders

@@ -9,7 +9,6 @@ using System.Diagnostics;
 using Smrf.NodeXL.GraphDataProviders;
 using Smrf.NodeXL.GraphDataProviders.Twitter;
 using Smrf.NodeXL.GraphDataProviders.GraphServer;
-using Smrf.NodeXL.Core;
 using Smrf.SocialNetworkLib;
 using Smrf.AppLib;
 
@@ -814,11 +813,8 @@ class Program
     private const String UsageMessage =
 
         "\r\n"
-        + "For information on how to use this program, see the"
-        + " NodeXLNetworkServerFAQ.docx"
-        + "\r\n"
-        + "document.  It can be found in the same folder that contains the"
-        + " program."
+        + "For information on how to use this program, please go to "
+        + " http://nodexl.codeplex.com/discussions/545884."
         ;
 }
 

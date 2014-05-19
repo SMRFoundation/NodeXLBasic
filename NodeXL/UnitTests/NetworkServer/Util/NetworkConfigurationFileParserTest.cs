@@ -1440,7 +1440,7 @@ public class NetworkConfigurationFileParserTest : Object
     /// executable.
 
     protected const String SampleNetworkConfigurationFolderRelativePath
-        = @"..\..\..\NetworkServer\Documents";
+        = @"..\..\..\NetworkServer\SampleNetworkConfigurationFiles";
 
     /// Name of the sample Twitter search network configuration file, without a
     /// path.

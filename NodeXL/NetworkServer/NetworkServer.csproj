@@ -68,14 +68,6 @@
     <Compile Include="Util\NetworkType.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Adapters\Adapters.csproj">
-      <Project>{49BF210B-2FB1-4955-9553-B4C9DB275352}</Project>
-      <Name>Adapters</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Core\Core.csproj">
-      <Project>{8BA6250F-0771-43A0-8EE7-EBD24FB1ECCE}</Project>
-      <Name>Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GraphDataProviders\GraphDataProviders.csproj">
       <Project>{64BD817E-C145-413C-BD58-9E053C4B20B5}</Project>
       <Name>GraphDataProviders</Name>
@@ -101,6 +93,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)\AdditionalFilesToPublish</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
