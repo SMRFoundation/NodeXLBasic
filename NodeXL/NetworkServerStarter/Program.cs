@@ -29,7 +29,7 @@ class Program
     /// The main entry point for the application.
     /// </summary>
     ///
-    /// <param name="args">
+    /// <param name="commandLineArguments">
     /// Command line arguments.
     /// </param>
     //*************************************************************************
@@ -37,12 +37,12 @@ class Program
     static void
     Main
     (
-        String[] args
+        String[] commandLineArguments
     )
     {
         try
         {
-            Int32 iNetworkServerExitCode = RunProgram(args);
+            Int32 iNetworkServerExitCode = RunProgram(commandLineArguments);
 
             Environment.Exit(iNetworkServerExitCode);
         }
@@ -76,7 +76,7 @@ class Program
     /// Runs this program.
     /// </summary>
     ///
-    /// <param name="aArgs">
+    /// <param name="asCommandLineArguments">
     /// Command line arguments.
     /// </param>
     ///
@@ -88,10 +88,10 @@ class Program
     private static Int32
     RunProgram
     (
-        String[] aArgs
+        String[] asCommandLineArguments
     )
     {
-        Debug.Assert(aArgs != null);
+        Debug.Assert(asCommandLineArguments != null);
 
         // Run the NetworkServer executable in another process while
         // redirecting that process's stardard output and standard error to
@@ -101,7 +101,7 @@ class Program
         // for information on how the use of BeginOutputReadLine() is used to
         // avoid deadlock.
 
-        Process oProcess = CreateNetworkServerProcess(aArgs);
+        Process oProcess = CreateNetworkServerProcess(asCommandLineArguments);
 
         oProcess.OutputDataReceived +=
             (Object sendingProcess, DataReceivedEventArgs e) =>
@@ -139,7 +139,7 @@ class Program
     /// Creates a Process object for calling the NetworkServer executable.
     /// </summary>
     ///
-    /// <param name="aArgs">
+    /// <param name="asCommandLineArguments">
     /// Command line arguments.
     /// </param>
     ///
@@ -151,10 +151,10 @@ class Program
     private static Process
     CreateNetworkServerProcess
     (
-        String[] aArgs
+        String[] asCommandLineArguments
     )
     {
-        Debug.Assert(aArgs != null);
+        Debug.Assert(asCommandLineArguments != null);
 
         ProcessStartInfo oProcessStartInfo = new ProcessStartInfo();
 
@@ -162,7 +162,8 @@ class Program
             NodeXLClickOncePathUtil.GetPathOfFileInNodeXLFolder(
                 NetworkServerFileName);
 
-        oProcessStartInfo.Arguments = String.Join(" ", aArgs);
+        oProcessStartInfo.Arguments =
+            FormatCommandLineArguments(asCommandLineArguments);
 
         oProcessStartInfo.UseShellExecute = false;
         oProcessStartInfo.RedirectStandardOutput = true;
@@ -174,6 +175,52 @@ class Program
         oProcess.StartInfo = oProcessStartInfo;
 
         return (oProcess);
+    }
+
+    //*************************************************************************
+    //  Method: FormatCommandLineArguments()
+    //
+    /// <summary>
+    /// Formats the arguments to pass to the Process object.
+    /// </summary>
+    ///
+    /// <param name="asCommandLineArguments">
+    /// Command line arguments.
+    /// </param>
+    ///
+    /// <returns>
+    /// The formatted arguments.
+    /// </returns>
+    //*************************************************************************
+
+    private static String
+    FormatCommandLineArguments
+    (
+        String[] asCommandLineArguments
+    )
+    {
+        Debug.Assert(asCommandLineArguments != null);
+
+        // Surround each argument with quotes and separate them with spaces.
+
+        StringBuilder oStringBuilder = new StringBuilder();
+
+        foreach (String sCommandLineArgument in asCommandLineArguments)
+        {
+            if (oStringBuilder.Length > 0)
+            {
+                oStringBuilder.Append(' ');
+            }
+
+            oStringBuilder.AppendFormat(
+
+                "\"{0}\""
+                ,
+                sCommandLineArgument
+                );
+        }
+
+        return ( oStringBuilder.ToString() );
     }
 
     //*************************************************************************
