@@ -56,6 +56,7 @@ public partial class TwitterGetUsersNetworkDialog
         // m_sListName
         // m_eNetworkType
         // m_bLimitToSpecifiedUsers
+        // m_iMaximumStatusesPerUser
         // m_bExpandStatusUrls
 
         DoDataExchange(false);
@@ -104,9 +105,9 @@ public partial class TwitterGetUsersNetworkDialog
     protected void
     SetHelpText()
     {
-        hllNetworkTypeBasic.Tag = String.Format(
+        hllNetworkTypeBasic.Tag = 
 
-            "When you select this option, NodeXL analyzes each user's {0} most"
+            "When you select this option, NodeXL analyzes each user's most"
             + " recent tweets."
             + "\r\n\r\n" 
             + "If a tweet was a reply to someone else, NodeXL creates an edge"
@@ -123,9 +124,7 @@ public partial class TwitterGetUsersNetworkDialog
             + "If a tweet neither replied to nor mentioned anyone else, NodeXL"
             + " creates a self-loop edge from the tweeter to herself and gives"
             + " it a \"Relationship\" value of \"Tweet.\""
-            ,
-            TwitterUsersNetworkAnalyzer.MaximumRecentStatuses
-            );
+            ;
 
         hllNetworkTypeBasicPlusFollows.Tag = String.Format(
 
@@ -198,6 +197,7 @@ public partial class TwitterGetUsersNetworkDialog
 
             m_eNetworkType = GetNetworkType();
             m_bLimitToSpecifiedUsers = chkLimitToSpecifiedUsers.Checked;
+            m_iMaximumStatusesPerUser = (Int32)nudMaximumStatusesPerUser.Value;
             m_bExpandStatusUrls = chkExpandStatusUrls.Checked;
         }
         else
@@ -210,6 +210,7 @@ public partial class TwitterGetUsersNetworkDialog
 
             SetNetworkType(m_eNetworkType);
             chkLimitToSpecifiedUsers.Checked = m_bLimitToSpecifiedUsers;
+            nudMaximumStatusesPerUser.Value = m_iMaximumStatusesPerUser;
             chkExpandStatusUrls.Checked = m_bExpandStatusUrls;
 
             EnableControls();
@@ -419,7 +420,8 @@ public partial class TwitterGetUsersNetworkDialog
         ( (TwitterUsersNetworkAnalyzer)m_oHttpNetworkAnalyzer ).
             GetNetworkAsync(m_bUseListName, m_sListName,
                 StringUtil.SplitOnCommonDelimiters(m_sScreenNames),
-                m_eNetworkType, m_bLimitToSpecifiedUsers, m_bExpandStatusUrls);
+                m_eNetworkType, m_bLimitToSpecifiedUsers,
+                m_iMaximumStatusesPerUser, m_bExpandStatusUrls);
     }
 
     //*************************************************************************
@@ -652,6 +654,10 @@ public partial class TwitterGetUsersNetworkDialog
     /// true if only the specified users should be included.
 
     protected static Boolean m_bLimitToSpecifiedUsers = true;
+
+    /// Maximum number of recent statuses to request for each specified user.
+
+    protected static Int32 m_iMaximumStatusesPerUser = 200;
 
     /// true to expand the URLs in the statuses.
 

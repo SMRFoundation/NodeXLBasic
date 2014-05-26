@@ -30,9 +30,15 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
         /// </summary>
         private void InitializeComponent()
         {
-            this.txbScreenNames = new System.Windows.Forms.TextBox();
-            this.lblScreenNamesHelp = new System.Windows.Forms.Label();
+            this.btnOK = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.usrTwitterRateLimits = new Smrf.NodeXL.GraphDataProviders.Twitter.TwitterRateLimitsControl();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.slStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.pnlUserInputs = new System.Windows.Forms.Panel();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.nudMaximumStatusesPerUser = new System.Windows.Forms.NumericUpDown();
             this.chkExpandStatusUrls = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.chkLimitToSpecifiedUsers = new System.Windows.Forms.CheckBox();
@@ -47,42 +53,66 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.radUseScreenNames = new System.Windows.Forms.RadioButton();
             this.radUseListName = new System.Windows.Forms.RadioButton();
             this.txbListName = new System.Windows.Forms.TextBox();
+            this.txbScreenNames = new System.Windows.Forms.TextBox();
+            this.lblScreenNamesHelp = new System.Windows.Forms.Label();
             this.usrTwitterAuthorization = new Smrf.NodeXL.GraphDataProviders.Twitter.TwitterAuthorizationControl();
-            this.usrTwitterRateLimits = new Smrf.NodeXL.GraphDataProviders.Twitter.TwitterRateLimitsControl();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.btnOK = new System.Windows.Forms.Button();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.slStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusStrip1.SuspendLayout();
             this.pnlUserInputs.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaximumStatusesPerUser)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picNetworkPreview)).BeginInit();
             this.groupBox1.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // txbScreenNames
+            // btnOK
             // 
-            this.txbScreenNames.AcceptsReturn = true;
-            this.txbScreenNames.Enabled = false;
-            this.txbScreenNames.Location = new System.Drawing.Point(34, 41);
-            this.txbScreenNames.Multiline = true;
-            this.txbScreenNames.Name = "txbScreenNames";
-            this.txbScreenNames.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txbScreenNames.Size = new System.Drawing.Size(541, 38);
-            this.txbScreenNames.TabIndex = 1;
+            this.btnOK.Location = new System.Drawing.Point(522, 555);
+            this.btnOK.Name = "btnOK";
+            this.btnOK.Size = new System.Drawing.Size(80, 23);
+            this.btnOK.TabIndex = 1;
+            this.btnOK.Text = "OK";
+            this.btnOK.UseVisualStyleBackColor = true;
+            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
-            // lblScreenNamesHelp
+            // btnCancel
             // 
-            this.lblScreenNamesHelp.AutoSize = true;
-            this.lblScreenNamesHelp.Enabled = false;
-            this.lblScreenNamesHelp.Location = new System.Drawing.Point(34, 84);
-            this.lblScreenNamesHelp.Name = "lblScreenNamesHelp";
-            this.lblScreenNamesHelp.Size = new System.Drawing.Size(207, 13);
-            this.lblScreenNamesHelp.TabIndex = 2;
-            this.lblScreenNamesHelp.Text = "(Separate with spaces, commas or returns)";
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(608, 555);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(80, 23);
+            this.btnCancel.TabIndex = 2;
+            this.btnCancel.Text = "Cancel";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            // 
+            // usrTwitterRateLimits
+            // 
+            this.usrTwitterRateLimits.Location = new System.Drawing.Point(12, 12);
+            this.usrTwitterRateLimits.Name = "usrTwitterRateLimits";
+            this.usrTwitterRateLimits.Size = new System.Drawing.Size(352, 14);
+            this.usrTwitterRateLimits.TabIndex = 3;
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.slStatusLabel});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 592);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(702, 22);
+            this.statusStrip1.TabIndex = 4;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // slStatusLabel
+            // 
+            this.slStatusLabel.Name = "slStatusLabel";
+            this.slStatusLabel.Size = new System.Drawing.Size(687, 17);
+            this.slStatusLabel.Spring = true;
+            this.slStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // pnlUserInputs
             // 
+            this.pnlUserInputs.Controls.Add(this.label4);
+            this.pnlUserInputs.Controls.Add(this.label3);
+            this.pnlUserInputs.Controls.Add(this.nudMaximumStatusesPerUser);
             this.pnlUserInputs.Controls.Add(this.chkExpandStatusUrls);
             this.pnlUserInputs.Controls.Add(this.groupBox2);
             this.pnlUserInputs.Controls.Add(this.groupBox1);
@@ -92,13 +122,59 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.pnlUserInputs.Size = new System.Drawing.Size(685, 512);
             this.pnlUserInputs.TabIndex = 0;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(387, 424);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(40, 13);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Li&mit to";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(499, 424);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(112, 13);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "recent tweets per user";
+            // 
+            // nudMaximumStatusesPerUser
+            // 
+            this.nudMaximumStatusesPerUser.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nudMaximumStatusesPerUser.Location = new System.Drawing.Point(433, 422);
+            this.nudMaximumStatusesPerUser.Maximum = new decimal(new int[] {
+            200,
+            0,
+            0,
+            0});
+            this.nudMaximumStatusesPerUser.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudMaximumStatusesPerUser.Name = "nudMaximumStatusesPerUser";
+            this.nudMaximumStatusesPerUser.Size = new System.Drawing.Size(60, 20);
+            this.nudMaximumStatusesPerUser.TabIndex = 4;
+            this.nudMaximumStatusesPerUser.ThousandsSeparator = true;
+            this.nudMaximumStatusesPerUser.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            // 
             // chkExpandStatusUrls
             // 
             this.chkExpandStatusUrls.AutoSize = true;
-            this.chkExpandStatusUrls.Location = new System.Drawing.Point(390, 415);
+            this.chkExpandStatusUrls.Location = new System.Drawing.Point(390, 458);
             this.chkExpandStatusUrls.Name = "chkExpandStatusUrls";
             this.chkExpandStatusUrls.Size = new System.Drawing.Size(209, 17);
-            this.chkExpandStatusUrls.TabIndex = 3;
+            this.chkExpandStatusUrls.TabIndex = 6;
             this.chkExpandStatusUrls.Text = "E&xpand URLs in recent tweets (slower)";
             this.chkExpandStatusUrls.UseVisualStyleBackColor = true;
             // 
@@ -248,6 +324,27 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.txbListName.Size = new System.Drawing.Size(222, 20);
             this.txbListName.TabIndex = 4;
             // 
+            // txbScreenNames
+            // 
+            this.txbScreenNames.AcceptsReturn = true;
+            this.txbScreenNames.Enabled = false;
+            this.txbScreenNames.Location = new System.Drawing.Point(34, 41);
+            this.txbScreenNames.Multiline = true;
+            this.txbScreenNames.Name = "txbScreenNames";
+            this.txbScreenNames.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txbScreenNames.Size = new System.Drawing.Size(541, 38);
+            this.txbScreenNames.TabIndex = 1;
+            // 
+            // lblScreenNamesHelp
+            // 
+            this.lblScreenNamesHelp.AutoSize = true;
+            this.lblScreenNamesHelp.Enabled = false;
+            this.lblScreenNamesHelp.Location = new System.Drawing.Point(34, 84);
+            this.lblScreenNamesHelp.Name = "lblScreenNamesHelp";
+            this.lblScreenNamesHelp.Size = new System.Drawing.Size(207, 13);
+            this.lblScreenNamesHelp.TabIndex = 2;
+            this.lblScreenNamesHelp.Text = "(Separate with spaces, commas or returns)";
+            // 
             // usrTwitterAuthorization
             // 
             this.usrTwitterAuthorization.Location = new System.Drawing.Point(0, 386);
@@ -255,50 +352,6 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.usrTwitterAuthorization.Size = new System.Drawing.Size(352, 124);
             this.usrTwitterAuthorization.Status = Smrf.NodeXL.GraphDataProviders.Twitter.TwitterAuthorizationStatus.HasTwitterAccountNotAuthorized;
             this.usrTwitterAuthorization.TabIndex = 2;
-            // 
-            // usrTwitterRateLimits
-            // 
-            this.usrTwitterRateLimits.Location = new System.Drawing.Point(12, 12);
-            this.usrTwitterRateLimits.Name = "usrTwitterRateLimits";
-            this.usrTwitterRateLimits.Size = new System.Drawing.Size(352, 14);
-            this.usrTwitterRateLimits.TabIndex = 3;
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(608, 555);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(80, 23);
-            this.btnCancel.TabIndex = 2;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            // 
-            // btnOK
-            // 
-            this.btnOK.Location = new System.Drawing.Point(522, 555);
-            this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(80, 23);
-            this.btnOK.TabIndex = 1;
-            this.btnOK.Text = "OK";
-            this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
-            // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.slStatusLabel});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 592);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(702, 22);
-            this.statusStrip1.TabIndex = 4;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // slStatusLabel
-            // 
-            this.slStatusLabel.Name = "slStatusLabel";
-            this.slStatusLabel.Size = new System.Drawing.Size(687, 17);
-            this.slStatusLabel.Spring = true;
-            this.slStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // TwitterGetUsersNetworkDialog
             // 
@@ -317,15 +370,16 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
             this.MinimizeBox = false;
             this.Name = "TwitterGetUsersNetworkDialog";
             this.Text = "[Gets set in code]";
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.pnlUserInputs.ResumeLayout(false);
             this.pnlUserInputs.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaximumStatusesPerUser)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picNetworkPreview)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -356,5 +410,8 @@ namespace Smrf.NodeXL.GraphDataProviders.Twitter
         private AppLib.HelpLinkLabel hllNetworkTypeBasicPlusFollows;
         private AppLib.HelpLinkLabel hllNetworkTypeBasic;
         private System.Windows.Forms.CheckBox chkLimitToSpecifiedUsers;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.NumericUpDown nudMaximumStatusesPerUser;
     }
 }

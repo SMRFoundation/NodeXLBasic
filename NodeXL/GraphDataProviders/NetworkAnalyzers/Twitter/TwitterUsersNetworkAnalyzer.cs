@@ -106,6 +106,11 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// users, depending on the value of <paramref name="networkType" />.
     /// </param>
     ///
+    /// <param name="maximumStatusesPerUser">
+    /// Maximum number of recent statuses to request for each specified user.
+    /// Can't be greater than 200.
+    /// </param>
+    ///
     /// <param name="expandStatusUrls">
     /// true to expand the URLs in the statuses.
     /// </param>
@@ -132,11 +137,13 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         ICollection<String> screenNames,
         NetworkType networkType,
         Boolean limitToSpecifiedUsers,
+        Int32 maximumStatusesPerUser,
         Boolean expandStatusUrls
     )
     {
         Debug.Assert( !useListName || !String.IsNullOrEmpty(listName) );
         Debug.Assert(useListName || screenNames != null);
+        Debug.Assert(maximumStatusesPerUser <= 200);
         AssertValid();
 
         const String MethodName = "GetNetworkAsync";
@@ -152,6 +159,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         oGetNetworkAsyncArgs.ScreenNames = screenNames;
         oGetNetworkAsyncArgs.NetworkType = networkType;
         oGetNetworkAsyncArgs.LimitToSpecifiedUsers = limitToSpecifiedUsers;
+        oGetNetworkAsyncArgs.MaximumStatusesPerUser = maximumStatusesPerUser;
         oGetNetworkAsyncArgs.ExpandStatusUrls = expandStatusUrls;
 
         m_oBackgroundWorker.RunWorkerAsync(oGetNetworkAsyncArgs);
@@ -194,6 +202,11 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// users, depending on the value of <paramref name="networkType" />.
     /// </param>
     ///
+    /// <param name="maximumStatusesPerUser">
+    /// Maximum number of recent statuses to request for each specified user.
+    /// Can't be greater than 200.
+    /// </param>
+    ///
     /// <param name="expandStatusUrls">
     /// true to expand the URLs in the statuses.
     /// </param>
@@ -211,15 +224,18 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         ICollection<String> screenNames,
         NetworkType networkType,
         Boolean limitToSpecifiedUsers,
+        Int32 maximumStatusesPerUser,
         Boolean expandStatusUrls
     )
     {
         Debug.Assert( !useListName || !String.IsNullOrEmpty(listName) );
         Debug.Assert(useListName || screenNames != null);
+        Debug.Assert(maximumStatusesPerUser <= 200);
         AssertValid();
 
         return ( GetNetworkInternal(useListName, listName, screenNames,
-            networkType, limitToSpecifiedUsers, expandStatusUrls) );
+            networkType, limitToSpecifiedUsers, maximumStatusesPerUser,
+            expandStatusUrls) );
     }
 
     //*************************************************************************
@@ -254,6 +270,11 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// true to include the specified users only.
     /// </param>
     ///
+    /// <param name="iMaximumStatusesPerUser">
+    /// Maximum number of recent statuses to request for each specified user.
+    /// Can't be greater than 200.
+    /// </param>
+    ///
     /// <param name="bExpandStatusUrls">
     /// true to expand the URLs in the statuses.
     /// </param>
@@ -271,11 +292,13 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         ICollection<String> oScreenNames,
         NetworkType eNetworkType,
         Boolean bLimitToSpecifiedUsers,
+        Int32 iMaximumStatusesPerUser,
         Boolean bExpandStatusUrls
     )
     {
         Debug.Assert( !bUseListName || !String.IsNullOrEmpty(sListName) );
         Debug.Assert(bUseListName || oScreenNames != null);
+        Debug.Assert(iMaximumStatusesPerUser <= 200);
         AssertValid();
 
         BeforeGetNetwork();
@@ -286,8 +309,9 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         try
         {
             GetNetworkInternal(bUseListName, sListName, oScreenNames,
-                eNetworkType, bLimitToSpecifiedUsers, bExpandStatusUrls,
-                oRequestStatistics, oGraphMLXmlDocument);
+                eNetworkType, bLimitToSpecifiedUsers,
+                iMaximumStatusesPerUser, bExpandStatusUrls, oRequestStatistics,
+                oGraphMLXmlDocument);
         }
         catch (Exception oException)
         {
@@ -342,6 +366,11 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// true to include the specified users only.
     /// </param>
     ///
+    /// <param name="iMaximumStatusesPerUser">
+    /// Maximum number of recent statuses to request for each specified user.
+    /// Can't be greater than 200.
+    /// </param>
+    ///
     /// <param name="bExpandStatusUrls">
     /// true to expand the URLs in the statuses.
     /// </param>
@@ -364,6 +393,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         ICollection<String> oScreenNames,
         NetworkType eNetworkType,
         Boolean bLimitToSpecifiedUsers,
+        Int32 iMaximumStatusesPerUser,
         Boolean bExpandStatusUrls,
         RequestStatistics oRequestStatistics,
         GraphMLXmlDocument oGraphMLXmlDocument
@@ -371,6 +401,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     {
         Debug.Assert( !bUseListName || !String.IsNullOrEmpty(sListName) );
         Debug.Assert(bUseListName || oScreenNames != null);
+        Debug.Assert(iMaximumStatusesPerUser <= 200);
         Debug.Assert(oRequestStatistics != null);
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
@@ -382,8 +413,8 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
             new Dictionary<String, TwitterUser>();
 
         GetBasicNetwork(bUseListName, sListName, oScreenNames,
-            bLimitToSpecifiedUsers, bExpandStatusUrls, oRequestStatistics,
-            oUserIDDictionary, oGraphMLXmlDocument);
+            bLimitToSpecifiedUsers, iMaximumStatusesPerUser, bExpandStatusUrls,
+            oRequestStatistics, oUserIDDictionary, oGraphMLXmlDocument);
 
         if (eNetworkType == NetworkType.BasicPlusFollows)
         {
@@ -422,6 +453,11 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// true to include the specified users only.
     /// </param>
     ///
+    /// <param name="iMaximumStatusesPerUser">
+    /// Maximum number of recent statuses to request for each specified user.
+    /// Can't be greater than 200.
+    /// </param>
+    ///
     /// <param name="bExpandStatusUrls">
     /// true to expand the URLs in the statuses.
     /// </param>
@@ -448,6 +484,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         String sListName,
         ICollection<String> oScreenNames,
         Boolean bLimitToSpecifiedUsers,
+        Int32 iMaximumStatusesPerUser,
         Boolean bExpandStatusUrls,
         RequestStatistics oRequestStatistics,
         Dictionary<String, TwitterUser> oUserIDDictionary,
@@ -456,6 +493,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     {
         Debug.Assert( !bUseListName || !String.IsNullOrEmpty(sListName) );
         Debug.Assert(bUseListName || oScreenNames != null);
+        Debug.Assert(iMaximumStatusesPerUser <= 200);
         Debug.Assert(oRequestStatistics != null);
         Debug.Assert(oUserIDDictionary != null);
         Debug.Assert(oGraphMLXmlDocument != null);
@@ -471,8 +509,8 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 oRequestStatistics) )
         {
             AppendSpecifiedUserVertexXmlNode(oUserValueDictionary,
-                bExpandStatusUrls, oRequestStatistics, oUserIDDictionary,
-                oGraphMLXmlDocument);
+                iMaximumStatusesPerUser, bExpandStatusUrls, oRequestStatistics,
+                oUserIDDictionary, oGraphMLXmlDocument);
         }
 
         if (!bLimitToSpecifiedUsers)
@@ -559,6 +597,11 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// information about a user.
     /// </param>
     ///
+    /// <param name="iMaximumStatusesPerUser">
+    /// Maximum number of recent statuses to request for each specified user.
+    /// Can't be greater than 200.
+    /// </param>
+    ///
     /// <param name="bExpandStatusUrls">
     /// true to expand the URLs in the statuses.
     /// </param>
@@ -582,6 +625,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     AppendSpecifiedUserVertexXmlNode
     (
         Dictionary<String, Object> oUserValueDictionary,
+        Int32 iMaximumStatusesPerUser,
         Boolean bExpandStatusUrls,
         RequestStatistics oRequestStatistics,
         Dictionary<String, TwitterUser> oUserIDDictionary,
@@ -589,6 +633,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     )
     {
         Debug.Assert(oUserValueDictionary != null);
+        Debug.Assert(iMaximumStatusesPerUser <= 200);
         Debug.Assert(oRequestStatistics != null);
         Debug.Assert(oUserIDDictionary != null);
         Debug.Assert(oGraphMLXmlDocument != null);
@@ -610,8 +655,8 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
             // Get the user's recent statuses and store them in the user's
             // TwitterUser object.
 
-            GetRecentStatuses(sUserID, oTwitterUser, bExpandStatusUrls,
-                oRequestStatistics);
+            GetRecentStatuses(sUserID, oTwitterUser, iMaximumStatusesPerUser,
+                bExpandStatusUrls, oRequestStatistics);
         }
     }
 
@@ -869,6 +914,11 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// Represents the user.
     /// </param>
     ///
+    /// <param name="iMaximumStatusesPerUser">
+    /// Maximum number of recent statuses to request for each specified user.
+    /// Can't be greater than 200.
+    /// </param>
+    ///
     /// <param name="bExpandStatusUrls">
     /// true to expand the URLs in the statuses.
     /// </param>
@@ -884,17 +934,21 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     (
         String sUserID,
         TwitterUser oTwitterUser,
+        Int32 iMaximumStatusesPerUser,
         Boolean bExpandStatusUrls,
         RequestStatistics oRequestStatistics
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sUserID) );
         Debug.Assert(oTwitterUser != null);
+        Debug.Assert(iMaximumStatusesPerUser <= 200);
         Debug.Assert(oRequestStatistics != null);
         AssertValid();
 
         foreach ( Dictionary<String, Object> oStatusValueDictionary in
-            EnumerateRecentStatuses(sUserID, oRequestStatistics) )
+
+            EnumerateRecentStatuses(sUserID, iMaximumStatusesPerUser,
+                oRequestStatistics) )
         {
             TwitterStatus oTwitterStatus;
 
@@ -1138,6 +1192,11 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     /// The user's ID.
     /// </param>
     ///
+    /// <param name="iMaximumStatusesPerUser">
+    /// Maximum number of recent statuses to request for each specified user.
+    /// Can't be greater than 200.
+    /// </param>
+    ///
     /// <param name="oRequestStatistics">
     /// A <see cref="RequestStatistics" /> object that is keeping track of
     /// requests made while getting the network.
@@ -1153,10 +1212,12 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     EnumerateRecentStatuses
     (
         String sUserID,
+        Int32 iMaximumStatusesPerUser,
         RequestStatistics oRequestStatistics
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(sUserID) );
+        Debug.Assert(iMaximumStatusesPerUser <= 200);
         Debug.Assert(oRequestStatistics != null);
         AssertValid();
 
@@ -1172,7 +1233,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         // GET statuses/user_timeline will return in one page (200) eliminates
         // the need for paging.
 
-        Debug.Assert(MaximumRecentStatuses <= 200);
+        Debug.Assert(iMaximumStatusesPerUser <= 200);
 
         String sUrl = String.Format(
 
@@ -1180,13 +1241,13 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
             ,
             TwitterApiUrls.Rest,
             TwitterUtil.EncodeUrlParameter(sUserID),
-            MaximumRecentStatuses
+            iMaximumStatusesPerUser
             );
 
         // The JSON contains an array of status value dictionaries.
 
         foreach ( Object oResult in EnumerateJsonValues(sUrl, null,
-            MaximumRecentStatuses, true, oRequestStatistics) )
+            iMaximumStatusesPerUser, true, oRequestStatistics) )
         {
             yield return ( ( Dictionary<String, Object> )oResult );
         }
@@ -1657,6 +1718,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
                 oGetNetworkAsyncArgs.ScreenNames,
                 oGetNetworkAsyncArgs.NetworkType,
                 oGetNetworkAsyncArgs.LimitToSpecifiedUsers,
+                oGetNetworkAsyncArgs.MaximumStatusesPerUser,
                 oGetNetworkAsyncArgs.ExpandStatusUrls
                 );
         }
@@ -1700,13 +1762,8 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     //  Public constants
     //*************************************************************************
 
-    // These limits are arbitrary and may need to be adjusted.
-
-    /// Maximum number of recent statuses to request for each specified user.
-
-    public const Int32 MaximumRecentStatuses = 100;
-
     /// Maximum number of friend or follower IDs to request for each user.
+    /// This limit is arbitrary and may need to be adjusted.
 
     public const Int32 MaximumFriendsOrFollowers = 1000;
 
@@ -1738,6 +1795,8 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         public NetworkType NetworkType;
         ///
         public Boolean LimitToSpecifiedUsers;
+        ///
+        public Int32 MaximumStatusesPerUser;
         ///
         public Boolean ExpandStatusUrls;
     };
