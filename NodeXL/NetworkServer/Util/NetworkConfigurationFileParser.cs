@@ -218,7 +218,7 @@ public class NetworkConfigurationFileParser : Object
                     "There must be a MaximumStatuses value.  (This was called"
                     + " MaximumPeoplePerRequest in previous versions of"
                     + " NodeXL.)"
-                );
+                    );
             }
         }
 
@@ -243,12 +243,11 @@ public class NetworkConfigurationFileParser : Object
     /// Where the term to search for gets stored.
     /// </param>
     ///
-    /// <param name="minimumStatusDateUtc">
-    /// Where the minimum status date gets stored, in UTC.
-    /// </param>
-    ///
-    /// <param name="maximumStatusDateUtc">
-    /// Where the maximum status date gets stored, in UTC.
+    /// <param name="daysIncludingToday">
+    /// Where the number of days to include in the tweet date range gets
+    /// stored.  The range always ends today.  If today is May 26, for example,
+    /// and daysIncludingToday is set to 2, then the tweet date range is May 25
+    /// through May 26, inclusive.
     /// </param>
     ///
     /// <param name="expandStatusUrls">
@@ -273,8 +272,7 @@ public class NetworkConfigurationFileParser : Object
     GetGraphServerTwitterSearchNetworkConfiguration
     (
         out String searchTerm,
-        out DateTime minimumStatusDateUtc,
-        out DateTime maximumStatusDateUtc,
+        out Int32 daysIncludingToday,
         out Boolean expandStatusUrls,
         out String graphServerUserName,
         out String graphServerPassword,
@@ -298,18 +296,14 @@ public class NetworkConfigurationFileParser : Object
             oGraphServerTwitterSearchNetworkConfigurationNode,
             "SearchTerm/text()", null);
 
-        minimumStatusDateUtc = SelectRequiredSingleNodeAsDateTime(
+        daysIncludingToday = XmlUtil2.SelectRequiredSingleNodeAsInt32(
             oGraphServerTwitterSearchNetworkConfigurationNode,
-            "StartDateUtc/text()");
+            "DaysIncludingToday/text()", null);
 
-        maximumStatusDateUtc = SelectRequiredSingleNodeAsDateTime(
-            oGraphServerTwitterSearchNetworkConfigurationNode,
-            "EndDateUtc/text()");
-
-        if (maximumStatusDateUtc < minimumStatusDateUtc)
+        if (daysIncludingToday < 1)
         {
             throw new XmlException(
-                "The EndDateUtc can't be earlier than the StartDateUtc."
+                "The daysIncludingToday value can't be less than 1."
                 );
         }
 
@@ -423,64 +417,6 @@ public class NetworkConfigurationFileParser : Object
             );
 
         throw new XmlException(sErrorMessage, oException);
-    }
-
-    //*************************************************************************
-    //  Method: SelectRequiredSingleNodeAsDateTime()
-    //
-    /// <summary>
-    /// Selects a required XML node and gets its DateTime value.
-    /// </summary>
-    ///
-    /// <param name="oNode">
-    /// Node to select from.
-    /// </param>
-    ///
-    /// <param name="sXPath">
-    /// XPath expression.
-    /// </param>
-    ///
-    /// <returns>
-    /// The selected node's DateTime value.
-    /// </returns>
-    ///
-    /// <remarks>
-    /// If the specified node is missing or its value isn't a DateTime in the
-    /// format "yyyy/mm/dd", an XmlException is thrown.
-    /// </remarks>
-    //*************************************************************************
-
-    protected DateTime
-    SelectRequiredSingleNodeAsDateTime
-    (
-        XmlNode oNode,
-        String sXPath
-    )
-    {
-        Debug.Assert(oNode != null);
-        Debug.Assert( !String.IsNullOrEmpty(sXPath) );
-        AssertValid();
-
-        String sDateTimeAsString = XmlUtil2.SelectRequiredSingleNodeAsString(
-            oNode, sXPath, null);
-
-        const String RequiredFormat = "yyyy/MM/dd";
-        DateTime oDateTime;
-
-        if ( !DateTime.TryParseExact(sDateTimeAsString,
-            new String[] {RequiredFormat}, CultureInfo.InvariantCulture,
-            DateTimeStyles.None, out oDateTime) )
-        {
-            throw new XmlException(String.Format(
-
-                "The {0} value must be a date in the format {1}."
-                ,
-                sXPath,
-                RequiredFormat.ToLower()
-                ) );
-        }
-
-        return (oDateTime);
     }
 
 

@@ -339,8 +339,7 @@ class Program
         sNetworkFileFolderPath = null;
 
         String sSearchTerm = null;
-        DateTime oMinimumStatusDateUtc = DateTime.MinValue;
-        DateTime oMaximumStatusDateUtc = DateTime.MinValue;
+        Int32 iDaysIncludingToday = Int32.MinValue;
         Boolean bExpandStatusUrls = false;
         String sGraphServerUserName = null;
         String sGraphServerPassword = null;
@@ -350,8 +349,7 @@ class Program
             oNetworkConfigurationFileParser.
             GetGraphServerTwitterSearchNetworkConfiguration(
                 out sSearchTerm,
-                out oMinimumStatusDateUtc,
-                out oMaximumStatusDateUtc,
+                out iDaysIncludingToday,
                 out bExpandStatusUrls,
                 out sGraphServerUserName,
                 out sGraphServerPassword,
@@ -365,6 +363,11 @@ class Program
             OnNetworkConfigurationFileException(oXmlException);
         }
 
+        DateTime oMinimumStatusDateUtc, oMaximumStatusDateUtc;
+
+        GetStatusDateRange(oStartTime, iDaysIncludingToday,
+            out oMinimumStatusDateUtc, out oMaximumStatusDateUtc);
+
         GraphServerTwitterSearchNetworkAnalyzer
             oGraphServerTwitterSearchNetworkAnalyzer =
                 new GraphServerTwitterSearchNetworkAnalyzer();
@@ -374,10 +377,13 @@ class Program
 
         Console.WriteLine(
             "Getting the Graph Server Twitter search network specified in"
-            + " \"{0}\".  The search term is \"{1}\"."
+            + " \"{0}\".  The search term is \"{1}\".  The date range is from"
+            + " {2} through {3}, UTC."
             ,
             sNetworkConfigurationFilePath,
-            sSearchTerm
+            sSearchTerm,
+            oMinimumStatusDateUtc,
+            oMaximumStatusDateUtc
             );
 
         try
@@ -394,6 +400,55 @@ class Program
                 sNetworkConfigurationFilePath, sNetworkFileFolderPath,
                 oGraphServerTwitterSearchNetworkAnalyzer);
         }
+    }
+
+    //*************************************************************************
+    //  Method: GetStatusDateRange()
+    //
+    /// <summary>
+    /// </summary>
+    ///
+    /// <param name="oStartTime">
+    /// Time at which the network download started.
+    /// </param>
+    ///
+    /// <param name="iDaysIncludingToday">
+    /// The number of days to include in the tweet date range.
+    /// </param>
+    ///
+    /// <param name="oMinimumStatusDateUtc">
+    /// Where the maximum status date gets stored, in UTC.
+    /// </param>
+    ///
+    /// <param name="oMaximumStatusDateUtc">
+    /// Where the minimum status date gets stored, in UTC.
+    /// </param>
+    //*************************************************************************
+
+    private static void
+    GetStatusDateRange
+    (
+        DateTime oStartTime,
+        Int32 iDaysIncludingToday,
+        out DateTime oMinimumStatusDateUtc,
+        out DateTime oMaximumStatusDateUtc
+    )
+    {
+        Debug.Assert(iDaysIncludingToday >= 1);
+
+        // Sample oStartTime: 2014/05/26 3:00 PM
+
+        // Sample oStartTime.Date: 2014/05/26 12:00 AM
+
+        // Sample oMaximumStatusDateUtc: 2014/05/27 12:00 AM
+
+        oMaximumStatusDateUtc = oStartTime.Date.AddDays(1);
+
+        // Sample oMinimumStatusDateUtc if iDaysIncludingToday is 1:
+        // 2014/05/26 12:00 AM
+
+        oMinimumStatusDateUtc =
+            oMaximumStatusDateUtc.AddDays(-iDaysIncludingToday);
     }
 
     //*************************************************************************

@@ -14,7 +14,7 @@ example:
 
     * Get the network for people whose tweets contain "NodeXL"
     
-    * Use a date range of 2014/05/01 through 2014/05/04
+    * Use a date range of today through 3 days back
     
     * Store the network as a GraphML file in the C:\NodeXLNetworks folder
 
@@ -58,26 +58,15 @@ The Configuration That Must be Edited
 
         <!--
         ***********************************************************************
-        Start Date UTC
+        Date range
         
-        The start of the tweet date range, in UTC.  The format is "yyyy/mm/dd".
-        Sample: "2014/05/01".
+        The tweet date range.  The range always ends today.  If today is
+        May 26, for example, and DaysIncludingToday is set to 2, then the tweet
+        date range is May 25 through May 26, inclusive.
         ***********************************************************************
         -->
 
-        <StartDateUtc>2014/05/01</StartDateUtc>
-
-
-        <!--
-        ***********************************************************************
-        End Date UTC
-        
-        The end of the tweet date range, in UTC.  The format is "yyyy/mm/dd".
-        Sample: "2014/05/04".
-        ***********************************************************************
-        -->
-
-        <EndDateUtc>2014/05/04</EndDateUtc>
+        <DaysIncludingToday>7</DaysIncludingToday>
 
 
         <!--
