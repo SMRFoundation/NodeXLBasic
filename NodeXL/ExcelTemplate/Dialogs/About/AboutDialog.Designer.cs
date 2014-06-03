@@ -38,6 +38,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.label3 = new System.Windows.Forms.Label();
             this.lnkSocialMediaResearchFoundation = new Smrf.AppLib.StartProcessLinkLabel();
             this.lnkDonate = new Smrf.AppLib.StartProcessLinkLabel();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -64,21 +65,21 @@ namespace Smrf.NodeXL.ExcelTemplate
             // lblVersion
             // 
             this.lblVersion.AutoSize = true;
-            this.lblVersion.Location = new System.Drawing.Point(424, 281);
+            this.lblVersion.Location = new System.Drawing.Point(424, 89);
             this.lblVersion.Name = "lblVersion";
             this.lblVersion.Size = new System.Drawing.Size(126, 13);
-            this.lblVersion.TabIndex = 4;
+            this.lblVersion.TabIndex = 2;
             this.lblVersion.Text = "Version [gets set in code]";
             // 
             // lnkNodeXLTeamMembers
             // 
             this.lnkNodeXLTeamMembers.AutoSize = true;
             this.lnkNodeXLTeamMembers.LinkArea = new System.Windows.Forms.LinkArea(22, 11);
-            this.lnkNodeXLTeamMembers.Location = new System.Drawing.Point(424, 86);
+            this.lnkNodeXLTeamMembers.Location = new System.Drawing.Point(424, 200);
             this.lnkNodeXLTeamMembers.Margin = new System.Windows.Forms.Padding(0);
             this.lnkNodeXLTeamMembers.Name = "lnkNodeXLTeamMembers";
             this.lnkNodeXLTeamMembers.Size = new System.Drawing.Size(183, 17);
-            this.lnkNodeXLTeamMembers.TabIndex = 2;
+            this.lnkNodeXLTeamMembers.TabIndex = 4;
             this.lnkNodeXLTeamMembers.TabStop = true;
             this.lnkNodeXLTeamMembers.Text = "It was created by the NodeXL team.";
             this.lnkNodeXLTeamMembers.UseCompatibleTextRendering = true;
@@ -90,17 +91,17 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.label3.Location = new System.Drawing.Point(346, 407);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(66, 13);
-            this.label3.TabIndex = 5;
+            this.label3.TabIndex = 6;
             this.label3.Text = "Cody Dunne";
             this.label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // lnkSocialMediaResearchFoundation
             // 
             this.lnkSocialMediaResearchFoundation.LinkArea = new System.Windows.Forms.LinkArea(32, 32);
-            this.lnkSocialMediaResearchFoundation.Location = new System.Drawing.Point(424, 35);
+            this.lnkSocialMediaResearchFoundation.Location = new System.Drawing.Point(424, 149);
             this.lnkSocialMediaResearchFoundation.Name = "lnkSocialMediaResearchFoundation";
-            this.lnkSocialMediaResearchFoundation.Size = new System.Drawing.Size(203, 40);
-            this.lnkSocialMediaResearchFoundation.TabIndex = 1;
+            this.lnkSocialMediaResearchFoundation.Size = new System.Drawing.Size(213, 40);
+            this.lnkSocialMediaResearchFoundation.TabIndex = 3;
             this.lnkSocialMediaResearchFoundation.TabStop = true;
             this.lnkSocialMediaResearchFoundation.Text = "NodeXL is brought to you by the Social Media Research Foundation.";
             this.lnkSocialMediaResearchFoundation.UseCompatibleTextRendering = true;
@@ -108,13 +109,23 @@ namespace Smrf.NodeXL.ExcelTemplate
             // lnkDonate
             // 
             this.lnkDonate.LinkArea = new System.Windows.Forms.LinkArea(127, 8);
-            this.lnkDonate.Location = new System.Drawing.Point(424, 123);
+            this.lnkDonate.Location = new System.Drawing.Point(424, 237);
             this.lnkDonate.Name = "lnkDonate";
-            this.lnkDonate.Size = new System.Drawing.Size(203, 111);
-            this.lnkDonate.TabIndex = 3;
+            this.lnkDonate.Size = new System.Drawing.Size(213, 111);
+            this.lnkDonate.TabIndex = 5;
             this.lnkDonate.TabStop = true;
             this.lnkDonate.Text = resources.GetString("lnkDonate.Text");
             this.lnkDonate.UseCompatibleTextRendering = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(424, 62);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(203, 18);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "NodeXL Excel Template 2014";
             // 
             // AboutDialog
             // 
@@ -122,7 +133,8 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnOK;
-            this.ClientSize = new System.Drawing.Size(639, 426);
+            this.ClientSize = new System.Drawing.Size(649, 426);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.lnkDonate);
             this.Controls.Add(this.lnkSocialMediaResearchFoundation);
             this.Controls.Add(this.lnkNodeXLTeamMembers);
@@ -150,5 +162,6 @@ namespace Smrf.NodeXL.ExcelTemplate
         private System.Windows.Forms.Label label3;
         private Smrf.AppLib.StartProcessLinkLabel lnkSocialMediaResearchFoundation;
         private Smrf.AppLib.StartProcessLinkLabel lnkDonate;
+        private System.Windows.Forms.Label label1;
     }
 }
