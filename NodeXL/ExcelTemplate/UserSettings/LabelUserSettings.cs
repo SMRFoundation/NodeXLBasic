@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Drawing;
+using System.Configuration;
 using System.Globalization;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -32,19 +33,35 @@ public class LabelUserSettings : Object
 
     public LabelUserSettings()
     {
-        m_oFont = (Font)( new FontConverter() ).ConvertFromInvariantString(
+        //***********
+        //  Vertex
+        //***********
+
+        m_oVertexFont = LabelUserSettingsTypeConverter.InvariantStringToFont(
             GeneralUserSettings.DefaultFont);
 
         m_oVertexLabelFillColor = Color.White;
         m_eVertexLabelPosition = VertexLabelPosition.BottomCenter;
-
-        m_iVertexLabelMaximumLength = m_iEdgeLabelMaximumLength =
-            Int32.MaxValue;
-
+        m_iVertexLabelMaximumLength = Int32.MaxValue;
         m_bVertexLabelWrapText = true;
         m_dVertexLabelWrapMaxTextWidth = 200;
 
+        //***********
+        //  Edge
+        //***********
+
+        m_oEdgeFont = LabelUserSettingsTypeConverter.InvariantStringToFont(
+            GeneralUserSettings.DefaultFont);
+
         m_oEdgeLabelTextColor = Color.Black;
+        m_iEdgeLabelMaximumLength = Int32.MaxValue;
+
+        //***********
+        //  Group
+        //***********
+
+        m_oGroupFont = LabelUserSettingsTypeConverter.InvariantStringToFont(
+            GeneralUserSettings.DefaultGroupLabelFont);
 
         m_oGroupLabelTextColor = Color.Black;
         m_fGroupLabelTextAlpha = 86;
@@ -54,20 +71,20 @@ public class LabelUserSettings : Object
     }
 
     //*************************************************************************
-    //  Property: Font
+    //  Property: VertexFont
     //
     /// <summary>
-    /// Gets or sets the font used for the graph's labels.
+    /// Gets or sets the font used for the graph's vertex labels.
     /// </summary>
     ///
     /// <value>
-    /// The label font, as a Font.  The default value is Microsoft Sans Serif,
-    /// 8.25pt.
+    /// The vertex label font, as a Font.  The default value is Microsoft Sans
+    /// Serif, 8.25pt.
     /// </value>
     //*************************************************************************
 
     public Font
-    Font
+    VertexFont
     {
         // Note that the font type is System.Drawing.Font, which is what the
         // System.Windows.Forms.FontDialog class uses.  It gets converted to
@@ -77,12 +94,12 @@ public class LabelUserSettings : Object
         {
             AssertValid();
 
-            return (m_oFont);
+            return (m_oVertexFont);
         }
 
         set
         {
-            m_oFont = value;
+            m_oVertexFont = value;
 
             AssertValid();
         }
@@ -256,6 +273,41 @@ public class LabelUserSettings : Object
     }
 
     //*************************************************************************
+    //  Property: EdgeFont
+    //
+    /// <summary>
+    /// Gets or sets the font used for the graph's edge labels.
+    /// </summary>
+    ///
+    /// <value>
+    /// The edge label font, as a Font.  The default value is Microsoft Sans
+    /// Serif, 8.25pt.
+    /// </value>
+    //*************************************************************************
+
+    public Font
+    EdgeFont
+    {
+        // Note that the font type is System.Drawing.Font, which is what the
+        // System.Windows.Forms.FontDialog class uses.  It gets converted to
+        // WPF font types in TransferToGraphDrawer().
+
+        get
+        {
+            AssertValid();
+
+            return (m_oEdgeFont);
+        }
+
+        set
+        {
+            m_oEdgeFont = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Property: EdgeLabelTextColor
     //
     /// <summary>
@@ -313,6 +365,41 @@ public class LabelUserSettings : Object
         set
         {
             m_iEdgeLabelMaximumLength = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Property: GroupFont
+    //
+    /// <summary>
+    /// Gets or sets the font used for the graph's group labels.
+    /// </summary>
+    ///
+    /// <value>
+    /// The group label font, as a Font.  The default value is Microsoft Sans
+    /// Serif, 8.25pt.
+    /// </value>
+    //*************************************************************************
+
+    public Font
+    GroupFont
+    {
+        // Note that the font type is System.Drawing.Font, which is what the
+        // System.Windows.Forms.FontDialog class uses.  It gets converted to
+        // WPF font types in TransferToGraphDrawer().
+
+        get
+        {
+            AssertValid();
+
+            return (m_oGroupFont);
+        }
+
+        set
+        {
+            m_oGroupFont = value;
 
             AssertValid();
         }
@@ -434,14 +521,30 @@ public class LabelUserSettings : Object
 
         LabelUserSettings oCopy = new LabelUserSettings();
 
-        oCopy.Font = this.Font;
+        //***********
+        //  Vertex
+        //***********
+
+        oCopy.VertexFont = this.VertexFont;
         oCopy.VertexLabelFillColor = this.VertexLabelFillColor;
         oCopy.VertexLabelPosition = this.VertexLabelPosition;
         oCopy.VertexLabelMaximumLength = this.VertexLabelMaximumLength;
         oCopy.VertexLabelWrapText = this.VertexLabelWrapText;
         oCopy.VertexLabelWrapMaxTextWidth = this.VertexLabelWrapMaxTextWidth;
+
+        //***********
+        //  Edge
+        //***********
+
+        oCopy.EdgeFont = this.EdgeFont;
         oCopy.EdgeLabelTextColor = this.EdgeLabelTextColor;
         oCopy.EdgeLabelMaximumLength = this.EdgeLabelMaximumLength;
+
+        //***********
+        //  Group
+        //***********
+
+        oCopy.GroupFont = this.GroupFont;
         oCopy.GroupLabelTextColor = this.GroupLabelTextColor;
         oCopy.GroupLabelTextAlpha = this.GroupLabelTextAlpha;
         oCopy.GroupLabelPosition = this.GroupLabelPosition;
@@ -470,15 +573,17 @@ public class LabelUserSettings : Object
         Debug.Assert(graphDrawer != null);
         AssertValid();
 
-        Font oFont = this.Font;
+        System.Windows.Media.Typeface oTypeface;
+        Double dFontSize;
 
-        System.Windows.Media.Typeface oTypeface =
-            WpfGraphicsUtil.FontToTypeface(oFont);
-
-        Double dFontSize = WpfGraphicsUtil.SystemDrawingFontSizeToWpfFontSize(
-            oFont.Size);
+        //***********
+        //  Vertex
+        //***********
 
         VertexDrawer oVertexDrawer = graphDrawer.VertexDrawer;
+
+        FontToTypefaceAndFontSize(this.VertexFont,
+            out oTypeface, out dFontSize);
 
         oVertexDrawer.SetFont(oTypeface, dFontSize);
 
@@ -492,7 +597,13 @@ public class LabelUserSettings : Object
         oVertexDrawer.LabelWrapMaxTextWidth =
             this.VertexLabelWrapMaxTextWidth;
 
+        //***********
+        //  Edge
+        //***********
+
         EdgeDrawer oEdgeDrawer = graphDrawer.EdgeDrawer;
+
+        FontToTypefaceAndFontSize(this.EdgeFont, out oTypeface, out dFontSize);
 
         oEdgeDrawer.SetFont(oTypeface, dFontSize);
 
@@ -501,9 +612,16 @@ public class LabelUserSettings : Object
 
         oEdgeDrawer.MaximumLabelLength = this.EdgeLabelMaximumLength;
 
+        //***********
+        //  Group
+        //***********
+
         GroupDrawer oGroupDrawer = graphDrawer.GroupDrawer;
 
-        oGroupDrawer.SetFont(oTypeface, GroupLabelFontSize);
+        FontToTypefaceAndFontSize(this.GroupFont,
+            out oTypeface, out dFontSize);
+
+        oGroupDrawer.SetFont(oTypeface, dFontSize);
 
         oGroupDrawer.LabelTextColor = WpfGraphicsUtil.ColorToWpfColor(
 
@@ -514,6 +632,43 @@ public class LabelUserSettings : Object
             );
 
         oGroupDrawer.LabelPosition = this.GroupLabelPosition;
+    }
+
+    //*************************************************************************
+    //  Method: FontToTypefaceAndFontSize()
+    //
+    /// <summary>
+    /// Converts a Font to a Typeface and a font size.
+    /// </summary>
+    ///
+    /// <param name="oFont">
+    /// The Font to convert.
+    /// </param>
+    ///
+    /// <param name="oTypeface">
+    /// Where the Typeface gets stored.
+    /// </param>
+    ///
+    /// <param name="dFontSize">
+    /// Where the font size gets stored.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    FontToTypefaceAndFontSize
+    (
+        Font oFont,
+        out System.Windows.Media.Typeface oTypeface,
+        out Double dFontSize
+    )
+    {
+        Debug.Assert(oFont != null);
+        AssertValid();
+
+        oTypeface = WpfGraphicsUtil.FontToTypeface(oFont);
+
+        dFontSize = WpfGraphicsUtil.SystemDrawingFontSizeToWpfFontSize(
+            oFont.Size);
     }
 
 
@@ -530,14 +685,30 @@ public class LabelUserSettings : Object
     public void
     AssertValid()
     {
-        Debug.Assert(m_oFont != null);
+        //***********
+        //  Vertex
+        //***********
+
+        Debug.Assert(m_oVertexFont != null);
         // m_oVertexLabelFillColor
         // m_eVertexLabelPosition
         Debug.Assert(m_iVertexLabelMaximumLength >= 0);
         // m_bVertexLabelWrapText
         Debug.Assert(m_dVertexLabelWrapMaxTextWidth > 0);
+
+        //***********
+        //  Edge
+        //***********
+
+        Debug.Assert(m_oEdgeFont != null);
         // m_oEdgeLabelTextColor
         Debug.Assert(m_iEdgeLabelMaximumLength >= 0);
+
+        //***********
+        //  Group
+        //***********
+
+        Debug.Assert(m_oGroupFont != null);
         // m_oGroupLabelTextColor
         // m_eGroupLabelPosition
 
@@ -550,22 +721,16 @@ public class LabelUserSettings : Object
 
 
     //*************************************************************************
-    //  Protected constants
-    //*************************************************************************
-
-    /// Font size to use for group labels, in WPF units.  This is hard-coded
-    /// for now.  It may be turned into a user setting in a future release.
-
-    protected const Double GroupLabelFontSize = 19.0;
-
-
-    //*************************************************************************
     //  Protected fields
     //*************************************************************************
 
-    /// Font.
+    //***********
+    //  Vertex
+    //***********
 
-    protected Font m_oFont;
+    /// Vertex font.
+
+    protected Font m_oVertexFont;
 
     /// The fill color of vertices that have the Label shape.
 
@@ -588,6 +753,14 @@ public class LabelUserSettings : Object
 
     protected Double m_dVertexLabelWrapMaxTextWidth;
 
+    //***********
+    //  Edge
+    //***********
+
+    /// Edge font.
+
+    protected Font m_oEdgeFont;
+
     /// The color of edge label text.
 
     protected Color m_oEdgeLabelTextColor;
@@ -596,6 +769,14 @@ public class LabelUserSettings : Object
     /// Int32.MaxValue for no maximum.
 
     protected Int32 m_iEdgeLabelMaximumLength;
+
+    //***********
+    //  Group
+    //***********
+
+    /// Group font.
+
+    protected Font m_oGroupFont;
 
     /// The color of group label text when groups are laid out in boxes.
 
@@ -766,10 +947,9 @@ public class LabelUserSettingsTypeConverter : TypeConverter
 
         return ( String.Format(CultureInfo.InvariantCulture,
 
-            "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}"
+            "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}"
             ,
-            ( new FontConverter() ).ConvertToInvariantString(
-                oLabelUserSettings.Font),
+            FontToInvariantString(oLabelUserSettings.VertexFont),
 
             oColorConverter.ConvertToInvariantString(
                 oLabelUserSettings.VertexLabelFillColor),
@@ -788,7 +968,10 @@ public class LabelUserSettingsTypeConverter : TypeConverter
                 oLabelUserSettings.GroupLabelTextColor),
 
             oLabelUserSettings.GroupLabelTextAlpha,
-            oLabelUserSettings.GroupLabelPosition
+            oLabelUserSettings.GroupLabelPosition,
+
+            FontToInvariantString(oLabelUserSettings.EdgeFont),
+            FontToInvariantString(oLabelUserSettings.GroupFont)
             ) );
     }
 
@@ -837,8 +1020,7 @@ public class LabelUserSettingsTypeConverter : TypeConverter
 
         ColorConverter oColorConverter = new ColorConverter();
 
-        oLabelUserSettings.Font = (Font)
-            ( new FontConverter() ).ConvertFromInvariantString(asStrings[0] );
+        oLabelUserSettings.VertexFont = InvariantStringToFont( asStrings[0] );
 
         oLabelUserSettings.VertexLabelFillColor = (Color)
             oColorConverter.ConvertFromInvariantString(asStrings[1] );
@@ -891,7 +1073,89 @@ public class LabelUserSettingsTypeConverter : TypeConverter
                 Enum.Parse( typeof(VertexLabelPosition), asStrings[10] );
         }
 
+        if (asStrings.Length > 11)
+        {
+            // Prior to version 1.0.1.328, there was just one "Font" property
+            // that applied to vertex and edge labels.  Group labels used a
+            // hard-coded font.
+            //
+            // In version 1.0.1.328, "Font" was renamed to VertexFont, and
+            // EdgeFone and GroupFont properties were added.
+
+            oLabelUserSettings.EdgeFont =
+                InvariantStringToFont( asStrings[11] );
+
+            oLabelUserSettings.GroupFont =
+                InvariantStringToFont( asStrings[12] );
+        }
+        else
+        {
+            // When opening an older workbook, use the old "Font" property
+            // (which is now VertexFont) for both vertex and edge labels.  For
+            // group labels, use GeneralUserSettings.DefaultGroupLabelFont,
+            // which is what group labels used prior to version 1.0.1.328.
+
+            oLabelUserSettings.EdgeFont =
+                (Font)oLabelUserSettings.VertexFont.Clone();
+        }
+
         return (oLabelUserSettings);
+    }
+
+    //*************************************************************************
+    //  Method: InvariantStringToFont()
+    //
+    /// <summary>
+    /// Converts an invariant string to a Font.
+    /// </summary>
+    ///
+    /// <param name="sInvariantString">
+    /// The invariant string to convert.
+    /// </param>
+    ///
+    /// <returns>
+    /// A Font.
+    /// </returns>
+    //*************************************************************************
+
+    public static Font
+    InvariantStringToFont
+    (
+        String sInvariantString
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(sInvariantString) );
+
+        return ( (Font)( new FontConverter() ).ConvertFromInvariantString(
+            sInvariantString) );
+    }
+
+    //*************************************************************************
+    //  Method: FontToInvariantString()
+    //
+    /// <summary>
+    /// Converts a Font to an invariant string.
+    /// </summary>
+    ///
+    /// <param name="oFont">
+    /// The Font to convert.
+    /// </param>
+    ///
+    /// <returns>
+    /// An invariant string.
+    /// </returns>
+    //*************************************************************************
+
+    protected String
+    FontToInvariantString
+    (
+        Font oFont
+    )
+    {
+        Debug.Assert(oFont != null);
+        AssertValid();
+
+        return ( ( new FontConverter() ).ConvertToInvariantString(oFont) );
     }
 
 

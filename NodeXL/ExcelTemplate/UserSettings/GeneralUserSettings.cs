@@ -1008,6 +1008,8 @@ public class GeneralUserSettings : NodeXLApplicationSettingsBase
     [ DefaultSettingValueAttribute(
         DefaultFont + "\tWhite\tBottomCenter\t2147483647\t2147483647\tBlack"
         + "\ttrue\t200\tBlack\t86\tMiddleCenter"
+        + "\t" + DefaultFont
+        + "\t" + DefaultGroupLabelFont
         ) ]
 
     public LabelUserSettings
@@ -1251,9 +1253,15 @@ public class GeneralUserSettings : NodeXLApplicationSettingsBase
     //  Public constants
     //*************************************************************************
 
-    /// Default font to use for the graph's labels and axes.
+    /// Default font to use for most of the graph's text.
 
     public const String DefaultFont = "Microsoft Sans Serif, 8.25pt";
+
+    /// Default font to use for the graph's group labels.
+
+    public const String DefaultGroupLabelFont =
+        "Microsoft Sans Serif, 14.25pt";
+
 
 
     //*************************************************************************

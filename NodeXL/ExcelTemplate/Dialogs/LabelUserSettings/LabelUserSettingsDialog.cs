@@ -48,7 +48,6 @@ public partial class LabelUserSettingsDialog : ExcelTemplateForm
         labelUserSettings.AssertValid();
 
         m_oLabelUserSettings = labelUserSettings;
-        m_oFont = m_oLabelUserSettings.Font;
 
         // Instantiate an object that saves and retrieves the position of this
         // dialog.  Note that the object automatically saves the settings when
@@ -59,9 +58,14 @@ public partial class LabelUserSettingsDialog : ExcelTemplateForm
 
         InitializeComponent();
 
+        m_oVertexFont = m_oLabelUserSettings.VertexFont;
         usrVertexLabelMaximumLength.AccessKey = 'c';
-        usrEdgeLabelMaximumLength.AccessKey = 'T';
         cbxVertexLabelPosition.Populate();
+
+        m_oEdgeFont = m_oLabelUserSettings.EdgeFont;
+        usrEdgeLabelMaximumLength.AccessKey = 'T';
+
+        m_oGroupFont = m_oLabelUserSettings.GroupFont;
 
         nudGroupLabelTextAlpha.Minimum =
             (Decimal)AlphaConverter.MinimumAlphaWorkbook;
@@ -115,6 +119,8 @@ public partial class LabelUserSettingsDialog : ExcelTemplateForm
                 return (false);
             }
 
+            m_oLabelUserSettings.VertexFont = m_oVertexFont;
+
             m_oLabelUserSettings.VertexLabelMaximumLength =
                 usrVertexLabelMaximumLength.Value;
 
@@ -130,11 +136,15 @@ public partial class LabelUserSettingsDialog : ExcelTemplateForm
             m_oLabelUserSettings.VertexLabelWrapMaxTextWidth =
                 tbVertexLabelWrapMaxTextWidth.Value;
 
+            m_oLabelUserSettings.EdgeFont = m_oEdgeFont;
+
             m_oLabelUserSettings.EdgeLabelMaximumLength =
                 usrEdgeLabelMaximumLength.Value;
 
             m_oLabelUserSettings.EdgeLabelTextColor =
                 usrEdgeLabelTextColor.Color;
+
+            m_oLabelUserSettings.GroupFont = m_oGroupFont;
 
             m_oLabelUserSettings.GroupLabelTextColor =
                 usrGroupLabelTextColor.Color;
@@ -143,11 +153,11 @@ public partial class LabelUserSettingsDialog : ExcelTemplateForm
 
             m_oLabelUserSettings.GroupLabelPosition =
                 (VertexLabelPosition)cbxGroupLabelPosition.SelectedValue;
-
-            m_oLabelUserSettings.Font = m_oFont;
         }
         else
         {
+            m_oVertexFont = m_oLabelUserSettings.VertexFont;
+
             usrVertexLabelMaximumLength.Value =
                 m_oLabelUserSettings.VertexLabelMaximumLength;
 
@@ -163,11 +173,15 @@ public partial class LabelUserSettingsDialog : ExcelTemplateForm
             tbVertexLabelWrapMaxTextWidth.Value = (Int32)
                 m_oLabelUserSettings.VertexLabelWrapMaxTextWidth;
 
+            m_oEdgeFont = m_oLabelUserSettings.EdgeFont;
+
             usrEdgeLabelMaximumLength.Value =
                 m_oLabelUserSettings.EdgeLabelMaximumLength;
 
             usrEdgeLabelTextColor.Color =
                 m_oLabelUserSettings.EdgeLabelTextColor;
+
+            m_oGroupFont = m_oLabelUserSettings.GroupFont;
 
             usrGroupLabelTextColor.Color =
                 m_oLabelUserSettings.GroupLabelTextColor;
@@ -177,8 +191,6 @@ public partial class LabelUserSettingsDialog : ExcelTemplateForm
 
             cbxGroupLabelPosition.SelectedValue =
                 m_oLabelUserSettings.GroupLabelPosition;
-
-            m_oFont = m_oLabelUserSettings.Font;
 
             EnableControls();
         }
@@ -236,10 +248,10 @@ public partial class LabelUserSettingsDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
-    //  Method: btnFont_Click()
+    //  Method: btnVertexFont_Click()
     //
     /// <summary>
-    /// Handles the Click event on the btnFont button.
+    /// Handles the Click event on the btnVertexFont button.
     /// </summary>
     ///
     /// <param name="sender">
@@ -252,7 +264,7 @@ public partial class LabelUserSettingsDialog : ExcelTemplateForm
     //*************************************************************************
 
     private void
-    btnFont_Click
+    btnVertexFont_Click
     (
         object sender,
         EventArgs e
@@ -260,7 +272,63 @@ public partial class LabelUserSettingsDialog : ExcelTemplateForm
     {
         AssertValid();
 
-        EditFont(ref m_oFont);
+        EditFont(ref m_oVertexFont);
+    }
+
+    //*************************************************************************
+    //  Method: btnEdgeFont_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnEdgeFont button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnEdgeFont_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        EditFont(ref m_oEdgeFont);
+    }
+
+    //*************************************************************************
+    //  Method: btnGroupFont_Click()
+    //
+    /// <summary>
+    /// Handles the Click event on the btnGroupFont button.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    btnGroupFont_Click
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        EditFont(ref m_oGroupFont);
     }
 
     //*************************************************************************
@@ -310,7 +378,9 @@ public partial class LabelUserSettingsDialog : ExcelTemplateForm
         base.AssertValid();
 
         Debug.Assert(m_oLabelUserSettings != null);
-        Debug.Assert(m_oFont != null);
+        Debug.Assert(m_oVertexFont != null);
+        Debug.Assert(m_oEdgeFont != null);
+        Debug.Assert(m_oGroupFont != null);
         Debug.Assert(m_oLabelUserSettingsDialogUserSettings != null);
     }
 
@@ -326,7 +396,11 @@ public partial class LabelUserSettingsDialog : ExcelTemplateForm
     /// Font properties of m_oLabelUserSettings.  These get edited by a
     /// FontDialog.
 
-    protected Font m_oFont;
+    protected Font m_oVertexFont;
+    ///
+    protected Font m_oEdgeFont;
+    ///
+    protected Font m_oGroupFont;
 
     /// User settings for this dialog.
 
