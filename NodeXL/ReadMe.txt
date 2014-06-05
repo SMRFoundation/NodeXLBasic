@@ -150,3 +150,4 @@ WpfVisualization
 ----------------
 Class library project.  Contains classes used to draw graphs in the WPF
 environment.
+
