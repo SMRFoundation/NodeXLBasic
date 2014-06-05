@@ -72,50 +72,16 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         None = 0,
 
         /// <summary>
-        /// Include each status.
+        /// Expand the URLs contained within each status.
         /// </summary>
 
-        Statuses = 1,
-
-        /// <summary>
-        /// Expand the URLs contained within each status.  Used only if <see
-        /// cref="Statuses" /> is specified.
-        /// </summary>
-
-        ExpandedStatusUrls = 2,
-
-        /// <summary>
-        /// Include each person's statistics.
-        /// </summary>
-
-        Statistics = 4,
+        ExpandedStatusUrls = 1,
 
         /// <summary>
         /// Include an edge for each followed relationship.
         /// </summary>
 
-        FollowedEdges = 8,
-
-        /// <summary>
-        /// Include an edge from person A to person B if person A's tweet is a
-        /// reply to person B.
-        /// </summary>
-
-        RepliesToEdges = 16,
-
-        /// <summary>
-        /// Include an edge from person A to person B if person A's tweet
-        /// mentions person B.
-        /// </summary>
-
-        MentionsEdges = 32,
-
-        /// <summary>
-        /// Include an edge from person A to person A (a self-loop) if person
-        /// A's tweet doesn't reply to or mention anyone.
-        /// </summary>
-
-        NonRepliesToNonMentionsEdges = 64,
+        FollowedEdges = 2,
     }
 
     //*************************************************************************
@@ -265,15 +231,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
         BeforeGetNetwork();
 
-        Boolean bIncludeStatistics = WhatToIncludeFlagIsSet(
-            eWhatToInclude, WhatToInclude.Statistics);
-
-        Boolean bIncludeStatuses = WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.Statuses);
-
         GraphMLXmlDocument oGraphMLXmlDocument =
-            TwitterSearchNetworkGraphMLUtil.CreateGraphMLXmlDocument(
-                bIncludeStatistics, bIncludeStatuses);
+            TwitterSearchNetworkGraphMLUtil.CreateGraphMLXmlDocument();
 
         RequestStatistics oRequestStatistics = new RequestStatistics();
 
@@ -375,7 +334,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             // Look at each author's friends, and if a friend has also tweeted
             // the search term, add an edge between the author and the friend.
 
-            AppendFriendEdgeXmlNodes(oUserIDDictionary, MaximumFollowers,
+            AppendFriendEdgeXmlNodes(oUserIDDictionary, MaximumFriends,
                 oGraphMLXmlDocument, oRequestStatistics);
         }
 
@@ -383,19 +342,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             oUserIDDictionary.Values,
 
             TwitterGraphMLUtil.TwitterUsersToUniqueScreenNames(
-                oUserIDDictionary.Values),
-
-            WhatToIncludeFlagIsSet(eWhatToInclude,
-                WhatToInclude.RepliesToEdges),
-
-            WhatToIncludeFlagIsSet(eWhatToInclude,
-                WhatToInclude.MentionsEdges),
-
-            WhatToIncludeFlagIsSet(eWhatToInclude,
-                WhatToInclude.NonRepliesToNonMentionsEdges),
-
-            WhatToIncludeFlagIsSet(eWhatToInclude,
-                WhatToInclude.Statuses)
+                oUserIDDictionary.Values)
             );
     }
 
@@ -457,9 +404,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Boolean bExpandStatusUrls = WhatToIncludeFlagIsSet(
             eWhatToInclude, WhatToInclude.ExpandedStatusUrls);
 
-        Boolean bIncludeStatistics = WhatToIncludeFlagIsSet(
-            eWhatToInclude, WhatToInclude.Statistics);
-
         ReportProgress("Getting a list of tweets.");
 
         // Get the tweets that contain the search term.  Note that multiple
@@ -494,9 +438,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             TwitterUser oTwitterUser;
 
             if ( !TwitterSearchNetworkGraphMLUtil.
-                TryAppendVertexXmlNode(oUserValueDictionary,
-                    bIncludeStatistics, true, oGraphMLXmlDocument,
-                    oUserIDDictionary, out oTwitterUser) )
+                TryAppendVertexXmlNode(oUserValueDictionary, true,
+                    oGraphMLXmlDocument, oUserIDDictionary, out oTwitterUser) )
             {
                 continue;
             }
@@ -563,9 +506,6 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             TwitterSearchNetworkGraphMLUtil.GetMentionsAndRepliesToScreenNames(
                 oUserIDDictionary);
 
-        Boolean bIncludeStatistics = WhatToIncludeFlagIsSet(
-            eWhatToInclude, WhatToInclude.Statistics);
-
         // Get information about each of those screen names and append vertex
         // XML nodes for them if necessary.
 
@@ -577,8 +517,8 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
             TwitterUser oTwitterUser;
 
             TwitterSearchNetworkGraphMLUtil.TryAppendVertexXmlNode(
-                oUserValueDictionary, bIncludeStatistics, false,
-                oGraphMLXmlDocument, oUserIDDictionary, out oTwitterUser);
+                oUserValueDictionary, false, oGraphMLXmlDocument,
+                oUserIDDictionary, out oTwitterUser);
         }
     }
 
@@ -819,63 +759,29 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         Boolean bIncludeFollowedEdges = WhatToIncludeFlagIsSet(eWhatToInclude,
             WhatToInclude.FollowedEdges);
 
-        Boolean bIncludeRepliesToEdges = WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.RepliesToEdges);
+        // Every collected tweet has an edge that contains the date of the
+        // tweet, so the range of tweet dates can be determined.
 
-        Boolean bIncludeMentionsEdges = WhatToIncludeFlagIsSet(eWhatToInclude,
-            WhatToInclude.MentionsEdges);
+        oNetworkDescriber.StartNewParagraph();
 
-        Boolean bIncludeNonRepliesToNonMentionsEdges = WhatToIncludeFlagIsSet(
-            eWhatToInclude, WhatToInclude.NonRepliesToNonMentionsEdges);
-
-        if (bIncludeRepliesToEdges && bIncludeMentionsEdges &&
-            bIncludeNonRepliesToNonMentionsEdges)
-        {
-            // Every collected tweet has an edge that contains the date of the
-            // tweet, so the range of tweet dates can be determined.
-
-            oNetworkDescriber.StartNewParagraph();
-
-            TweetDateRangeAnalyzer.AddTweetDateRangeToNetworkDescription(
-                oGraphMLXmlDocument, oNetworkDescriber);
-        }
-
-        if (bIncludeFollowedEdges || bIncludeRepliesToEdges ||
-            bIncludeMentionsEdges || bIncludeNonRepliesToNonMentionsEdges)
-        {
-            oNetworkDescriber.StartNewParagraph();
-        }
+        TweetDateRangeAnalyzer.AddTweetDateRangeToNetworkDescription(
+            oGraphMLXmlDocument, oNetworkDescriber);
 
         if (bIncludeFollowedEdges)
         {
+            oNetworkDescriber.StartNewParagraph();
+
             oNetworkDescriber.AddSentence(
-                "There is an edge for each follows relationship."
+                "There is an edge for each friend relationship."
                 );
         }
 
-        if (bIncludeRepliesToEdges)
-        {
-            oNetworkDescriber.AddSentence(
-                "There is an edge for each \"replies-to\" relationship in a"
-                + " tweet."
-                );
-        }
-
-        if (bIncludeMentionsEdges)
-        {
-            oNetworkDescriber.AddSentence(
-                "There is an edge for each \"mentions\" relationship in a"
-                + " tweet."
-                );
-        }
-
-        if (bIncludeNonRepliesToNonMentionsEdges)
-        {
-            oNetworkDescriber.AddSentence(
-                "There is a self-loop edge for each tweet that is not a"
-                + " \"replies-to\" or \"mentions\"."
-                );
-        }
+        oNetworkDescriber.AddSentence(
+            "There is an edge for each \"replies-to\" relationship in a"
+            + " tweet, an edge for each \"mentions\" relationship in a tweet,"
+            + " and a self-loop edge for each tweet that is not a"
+            + " \"replies-to\" or \"mentions\"."
+            );
 
         return ( oNetworkDescriber.ConcatenateSentences() );
     }
@@ -943,14 +849,14 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
 
 
     //*************************************************************************
-    //  Protected constants
+    //  Public constants
     //*************************************************************************
 
-    /// Maximum number of followers to request.  This is arbitrarily set to the
-    /// number of followers returned in one page of the Twitter friends/ids
-    /// API.  It can be parameterized later if required.
+    /// Maximum number of friends to request.  This is arbitrarily set to the
+    /// number of friends returned in one page of the Twitter friends/ids API.
+    /// It can be parameterized later if required.  
 
-    protected const Int32 MaximumFollowers = 5000;
+    public const Int32 MaximumFriends = 5000;
 
 
     //*************************************************************************

@@ -657,22 +657,6 @@ public static class TwitterGraphMLUtil : Object
     /// <param name="uniqueScreenNames">
     /// Collection of the unique screen names in the network.
     /// </param>
-    ///
-    /// <param name="includeRepliesToEdges">
-    /// true to append edges for replies-to relationships.
-    /// </param>
-    ///
-    /// <param name="includeMentionsEdges">
-    /// true to append edges for mentions relationships.
-    /// </param>
-    ///
-    /// <param name="includeNonRepliesToNonMentionsEdges">
-    /// true to append edges for tweets that don't reply to or mention anyone.
-    /// </param>
-    ///
-    /// <param name="includeStatuses">
-    /// true to include the status in the edge XML nodes.
-    /// </param>
     //*************************************************************************
 
     public static void
@@ -680,22 +664,12 @@ public static class TwitterGraphMLUtil : Object
     (
         GraphMLXmlDocument graphmlXmlDocument,
         IEnumerable<TwitterUser> twitterUsers,
-        HashSet<String> uniqueScreenNames,
-        Boolean includeRepliesToEdges,
-        Boolean includeMentionsEdges,
-        Boolean includeNonRepliesToNonMentionsEdges,
-        Boolean includeStatuses
+        HashSet<String> uniqueScreenNames
     )
     {
         Debug.Assert(graphmlXmlDocument != null);
         Debug.Assert(twitterUsers != null);
         Debug.Assert(uniqueScreenNames != null);
-
-        if (!includeRepliesToEdges && !includeMentionsEdges &&
-            !includeNonRepliesToNonMentionsEdges)
-        {
-            return;
-        }
 
         // This method uses only one instance of TwitterStatusTextParser to
         // avoid making it repeatedly recompile all of its regular expressions.
@@ -709,9 +683,7 @@ public static class TwitterGraphMLUtil : Object
             {
                 AppendRepliesToAndMentionsEdgeXmlNodes(
                     graphmlXmlDocument, twitterStatusTextParser,
-                    uniqueScreenNames, includeRepliesToEdges,
-                    includeMentionsEdges, includeNonRepliesToNonMentionsEdges,
-                    twitterUser.ScreenName, twitterStatus, includeStatuses);
+                    uniqueScreenNames, twitterUser.ScreenName, twitterStatus);
             }
         }
     }
@@ -939,28 +911,12 @@ public static class TwitterGraphMLUtil : Object
     /// Collection of the unique screen names in the network.
     /// </param>
     ///
-    /// <param name="includeRepliesToEdges">
-    /// true to append edges for replies-to relationships.
-    /// </param>
-    ///
-    /// <param name="includeMentionsEdges">
-    /// true to append edges for mentions relationships.
-    /// </param>
-    ///
-    /// <param name="includeNonRepliesToNonMentionsEdges">
-    /// true to append edges for tweets that don't reply to or mention anyone.
-    /// </param>
-    ///
     /// <param name="screenName">
     /// The user's screen name.
     /// </param>
     ///
     /// <param name="twitterStatus">
     /// One of the user's statuses.
-    /// </param>
-    ///
-    /// <param name="includeStatus">
-    /// true to include the status in the edge XML nodes.
     /// </param>
     //*************************************************************************
 
@@ -970,12 +926,8 @@ public static class TwitterGraphMLUtil : Object
         GraphMLXmlDocument graphMLXmlDocument,
         TwitterStatusTextParser twitterStatusTextParser,
         HashSet<String> uniqueScreenNames,
-        Boolean includeRepliesToEdges,
-        Boolean includeMentionsEdges,
-        Boolean includeNonRepliesToNonMentionsEdges,
         String screenName,
-        TwitterStatus twitterStatus,
-        Boolean includeStatus
+        TwitterStatus twitterStatus
     )
     {
         Debug.Assert(graphMLXmlDocument != null);
@@ -1006,12 +958,9 @@ public static class TwitterGraphMLUtil : Object
             {
                 isReplyTo = true;
 
-                if (includeRepliesToEdges)
-                {
-                    AppendRepliesToAndMentionsEdgeXmlNode(
-                        graphMLXmlDocument, screenName, repliedToScreenName,
-                        RepliesToRelationship, twitterStatus, includeStatus);
-                }
+                AppendRepliesToAndMentionsEdgeXmlNode(
+                    graphMLXmlDocument, screenName, repliedToScreenName,
+                    RepliesToRelationship, twitterStatus);
             }
         }
 
@@ -1025,23 +974,19 @@ public static class TwitterGraphMLUtil : Object
             {
                 isMentions = true;
 
-                if (includeMentionsEdges)
-                {
-                    AppendRepliesToAndMentionsEdgeXmlNode(
-                        graphMLXmlDocument, screenName, mentionedScreenName,
-                        MentionsRelationship, twitterStatus, includeStatus);
-                }
+                AppendRepliesToAndMentionsEdgeXmlNode(
+                    graphMLXmlDocument, screenName, mentionedScreenName,
+                    MentionsRelationship, twitterStatus);
             }
         }
 
-        if (includeNonRepliesToNonMentionsEdges && !isReplyTo && !isMentions)
+        if (!isReplyTo && !isMentions)
         {
             // Append a self-loop edge to represent the tweet.
 
             AppendRepliesToAndMentionsEdgeXmlNode(
                 graphMLXmlDocument, screenName, screenName,
-                NonRepliesToNonMentionsRelationship, twitterStatus,
-                includeStatus);
+                NonRepliesToNonMentionsRelationship, twitterStatus);
         }
     }
 
@@ -1072,10 +1017,6 @@ public static class TwitterGraphMLUtil : Object
     /// <param name="twitterStatus">
     /// A twitter status.
     /// </param>
-    ///
-    /// <param name="includeStatus">
-    /// true to include the status in the edge XML node.
-    /// </param>
     //*************************************************************************
 
     private static void
@@ -1085,8 +1026,7 @@ public static class TwitterGraphMLUtil : Object
         String screenName1,
         String screenName2,
         String relationship,
-        TwitterStatus twitterStatus,
-        Boolean includeStatus
+        TwitterStatus twitterStatus
     )
     {
         Debug.Assert(graphMLXmlDocument != null);
@@ -1109,56 +1049,53 @@ public static class TwitterGraphMLUtil : Object
                 EdgeRelationshipDateUtcID, statusDateUtc);
         }
 
-        if (includeStatus)
+        String statusText = twitterStatus.Text;
+
+        graphMLXmlDocument.AppendGraphMLAttributeValue(edgeXmlNode,
+            EdgeStatusID, statusText);
+
+        String urls = twitterStatus.Urls;
+
+        if ( !String.IsNullOrEmpty(urls) )
         {
-            String statusText = twitterStatus.Text;
-
             graphMLXmlDocument.AppendGraphMLAttributeValue(edgeXmlNode,
-                EdgeStatusID, statusText);
+                EdgeStatusUrlsID, urls);
 
-            String urls = twitterStatus.Urls;
-
-            if ( !String.IsNullOrEmpty(urls) )
-            {
-                graphMLXmlDocument.AppendGraphMLAttributeValue(edgeXmlNode,
-                    EdgeStatusUrlsID, urls);
-
-                graphMLXmlDocument.AppendGraphMLAttributeValue( edgeXmlNode,
-                    EdgeStatusDomainsID, UrlsToDomains(urls) );
-            }
-
-            if ( !String.IsNullOrEmpty(twitterStatus.Hashtags) )
-            {
-                graphMLXmlDocument.AppendGraphMLAttributeValue(edgeXmlNode,
-                    EdgeStatusHashtagsID, twitterStatus.Hashtags);
-            }
-
-            if (hasStatusDateUtc)
-            {
-                graphMLXmlDocument.AppendGraphMLAttributeValue(edgeXmlNode,
-                    EdgeStatusDateUtcID, statusDateUtc);
-            }
-
-            graphMLXmlDocument.AppendGraphMLAttributeValue(edgeXmlNode,
-                EdgeStatusWebPageUrlID, 
-
-                FormatStatusWebPageUrl(screenName1, twitterStatus)
-                );
-
-            AppendLatitudeAndLongitudeGraphMLAttributeValues(
-                graphMLXmlDocument, edgeXmlNode, twitterStatus.Latitude,
-                twitterStatus.Longitude);
-
-            // Precede the ID with a single quote to force Excel to treat the
-            // ID as text.  Otherwise, it formats the ID, which is a large
-            // number, in scientific notation.
-
-            graphMLXmlDocument.AppendGraphMLAttributeValue(edgeXmlNode,
-                NodeXLGraphMLUtil.ImportedIDID, "'" + twitterStatus.ID);
-
-            AppendInReplyToStatusIDGraphMLAttributeValue(graphMLXmlDocument,
-                edgeXmlNode, twitterStatus.InReplyToStatusID);
+            graphMLXmlDocument.AppendGraphMLAttributeValue( edgeXmlNode,
+                EdgeStatusDomainsID, UrlsToDomains(urls) );
         }
+
+        if ( !String.IsNullOrEmpty(twitterStatus.Hashtags) )
+        {
+            graphMLXmlDocument.AppendGraphMLAttributeValue(edgeXmlNode,
+                EdgeStatusHashtagsID, twitterStatus.Hashtags);
+        }
+
+        if (hasStatusDateUtc)
+        {
+            graphMLXmlDocument.AppendGraphMLAttributeValue(edgeXmlNode,
+                EdgeStatusDateUtcID, statusDateUtc);
+        }
+
+        graphMLXmlDocument.AppendGraphMLAttributeValue(edgeXmlNode,
+            EdgeStatusWebPageUrlID, 
+
+            FormatStatusWebPageUrl(screenName1, twitterStatus)
+            );
+
+        AppendLatitudeAndLongitudeGraphMLAttributeValues(
+            graphMLXmlDocument, edgeXmlNode, twitterStatus.Latitude,
+            twitterStatus.Longitude);
+
+        // Precede the ID with a single quote to force Excel to treat the
+        // ID as text.  Otherwise, it formats the ID, which is a large
+        // number, in scientific notation.
+
+        graphMLXmlDocument.AppendGraphMLAttributeValue(edgeXmlNode,
+            NodeXLGraphMLUtil.ImportedIDID, "'" + twitterStatus.ID);
+
+        AppendInReplyToStatusIDGraphMLAttributeValue(graphMLXmlDocument,
+            edgeXmlNode, twitterStatus.InReplyToStatusID);
     }
 
     //*************************************************************************

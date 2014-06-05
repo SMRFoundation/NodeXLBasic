@@ -2,6 +2,7 @@
 
 using System;
 using System.Windows.Forms;
+using System.Drawing;
 using System.ComponentModel;
 using System.Diagnostics;
 
@@ -40,20 +41,12 @@ public partial class TwitterGetSearchNetworkDialog :
         InitializeComponent();
         InitializeTwitterAuthorizationManager(usrTwitterAuthorization);
 
+        SetHelpText();
+
         // m_sSearchTerm
-        // m_bIncludeFollowedEdges
-        // m_bIncludeRepliesToEdges
-        // m_bIncludeMentionsEdges
-        // m_bIncludeNonRepliesToNonMentionsEdges
-
+        // m_bIncludeFriendEdges
         // m_iMaximumStatuses
-        // m_bIncludeStatuses
         // m_bExpandStatusUrls
-        // m_bIncludeStatistics
-
-        clbWhatEdgesToInclude.Items.AddRange(
-            WhatEdgeToIncludeInformation.GetAllWhatEdgeToIncludeInformation()
-            );
 
         DoDataExchange(false);
 
@@ -88,6 +81,87 @@ public partial class TwitterGetSearchNetworkDialog :
 
             return (this.slStatusLabel);
         }
+    }
+
+    //*************************************************************************
+    //  Method: SetHelpText()
+    //
+    /// <summary>
+    /// Sets the text in the dialog's HelpLinkLabels.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    SetHelpText()
+    {
+        // The text for the HelpLinkLabels is set programmatically instead of
+        // via the designer because one of them uses String.Format().
+
+        hllNetworkTypeBasic.Tag = 
+
+            "When you select this option, NodeXL asks Twitter for recent"
+            + " tweets that match your search query.  It then creates a vertex"
+            + " for each unique user who either tweeted one of those tweets,"
+            + " was replied to in one of those tweets, or was mentioned in one"
+            + " of those tweets.  Finally, it connects those vertices with"
+            + " edges."
+            + "\r\n\r\n" 
+            + "If a tweet was a reply to someone else, NodeXL creates an edge"
+            + " from the tweeter to the replied-to user and gives it a"
+            + " \"Relationship\" value of \"Replies-to.\"  There can be only"
+            + " one such Replies-to edge for each tweet."
+            + "\r\n\r\n" 
+            + "If a tweet mentioned someone else, NodeXL creates an edge from"
+            + " the tweeter to the mentioned user and gives it a"
+            + " \"Relationship\" value of \"Mentions.\"  There can be multiple"
+            + " Mentions edges for each tweet.  (Note that a \"Replies-to\" is"
+            + " NOT also a \"Mentions.\")"
+            + "\r\n\r\n" 
+            + "If a tweet neither replied to nor mentioned anyone else, NodeXL"
+            + " creates a self-loop edge from the tweeter to herself and gives"
+            + " it a \"Relationship\" value of \"Tweet.\""
+            + "\r\n\r\n" 
+            + "Here are a few important limitations you should be aware of:"
+            + "\r\n\r\n" 
+            + "1. The search results provided by Twitter are often"
+            + " incomplete--you will most likely NOT get all recent tweets"
+            + " that match your search query.  The way Twitter puts it is that"
+            + " the results are \"focused on relevance and not completeness.\""
+            + "\r\n\r\n" 
+            + "2. Twitter will not provide NodeXL with tweets older than about"
+            + " a week.  It is NOT possible to use NodeXL to get tweets older"
+            + " than that."
+            + "\r\n\r\n" 
+            + "3. The algorithm that Twitter uses to match tweets with a search"
+            + " query is undocumented.  It is NOT, however, the same algorithm"
+            + " that Twitter uses on its own search page, so you may get"
+            + " results from NodeXL that differ from what you get directly"
+            + " from Twitter using the same search query."
+            ;
+
+        hllNetworkTypeBasicPlusFollows.Tag = String.Format(
+
+            "Importing the network can take a long time when you select this"
+            + " option."
+            + "\r\n\r\n" 
+            + "Due to Twitter rate limiting, NodeXL can import the friends"
+            + " of only fifteen users every fifteen minutes.  If the network"
+            + " has more than fifteen users, NodeXL has to pause before"
+            + " Twitter will allow it to continue importing the network."
+            + "\r\n\r\n" 
+            + "If the network has 300 users, for example, and you ask for"
+            + " friends, it will take at least five hours for NodeXL to import"
+            + " the network."
+            + "\r\n\r\n" 
+            + "Because it takes so long to import friends, NodeXL doesn't"
+            + " attempt to import all of them.  Instead, it asks Twitter for"
+            + " each user's {0:N0} newest friends.  If a user has {1:N0}"
+            + " friends, for example, NodeXL will import only her {0:N0}"
+            + " newest friends."
+            ,
+            TwitterSearchNetworkAnalyzer.MaximumFriends,
+            2 * TwitterSearchNetworkAnalyzer.MaximumFriends
+            );
     }
 
     //*************************************************************************
@@ -147,36 +221,17 @@ public partial class TwitterGetSearchNetworkDialog :
                 }
             }
 
-            m_bIncludeRepliesToEdges = clbWhatEdgesToInclude.GetItemChecked(0);
-            m_bIncludeMentionsEdges = clbWhatEdgesToInclude.GetItemChecked(1);
-
-            m_bIncludeNonRepliesToNonMentionsEdges =
-                clbWhatEdgesToInclude.GetItemChecked(2);
-
-            m_bIncludeFollowedEdges = clbWhatEdgesToInclude.GetItemChecked(3);
-
+            m_bIncludeFriendEdges = radIncludeFriendEdges.Checked;
             m_iMaximumStatuses = (Int32)nudMaximumStatuses.Value;
-
-            m_bIncludeStatuses = chkIncludeStatuses.Checked;
             m_bExpandStatusUrls = chkExpandStatusUrls.Checked;
-            m_bIncludeStatistics = chkIncludeStatistics.Checked;
         }
         else
         {
             txbSearchTerm.Text = m_sSearchTerm;
-
-            clbWhatEdgesToInclude.SetItemChecked(0, m_bIncludeRepliesToEdges);
-            clbWhatEdgesToInclude.SetItemChecked(1, m_bIncludeMentionsEdges);
-
-            clbWhatEdgesToInclude.SetItemChecked(2,
-                m_bIncludeNonRepliesToNonMentionsEdges);
-
-            clbWhatEdgesToInclude.SetItemChecked(3, m_bIncludeFollowedEdges);
-
+            radIncludeFriendEdges.Checked = m_bIncludeFriendEdges;
+            radNoFriendEdges.Checked = !m_bIncludeFriendEdges;
             nudMaximumStatuses.Value = m_iMaximumStatuses;
-            chkIncludeStatuses.Checked = m_bIncludeStatuses;
             chkExpandStatusUrls.Checked = m_bExpandStatusUrls;
-            chkIncludeStatistics.Checked = m_bIncludeStatistics;
 
             EnableControls();
         }
@@ -207,28 +262,12 @@ public partial class TwitterGetSearchNetworkDialog :
 
         TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude =
 
-            (m_bIncludeStatuses ?
-                TwitterSearchNetworkAnalyzer.WhatToInclude.Statuses : 0)
-            |
             (m_bExpandStatusUrls ?
                 TwitterSearchNetworkAnalyzer
                     .WhatToInclude.ExpandedStatusUrls : 0)
             |
-            (m_bIncludeStatistics ?
-                TwitterSearchNetworkAnalyzer.WhatToInclude.Statistics : 0)
-            |
-            (m_bIncludeFollowedEdges ?
+            (m_bIncludeFriendEdges ?
                 TwitterSearchNetworkAnalyzer.WhatToInclude.FollowedEdges : 0)
-            |
-            (m_bIncludeRepliesToEdges ?
-                TwitterSearchNetworkAnalyzer.WhatToInclude.RepliesToEdges : 0)
-            |
-            (m_bIncludeMentionsEdges ?
-                TwitterSearchNetworkAnalyzer.WhatToInclude.MentionsEdges : 0)
-            |
-            (m_bIncludeNonRepliesToNonMentionsEdges ?
-                TwitterSearchNetworkAnalyzer.
-                WhatToInclude.NonRepliesToNonMentionsEdges : 0)
             ;
 
         ( (TwitterSearchNetworkAnalyzer)m_oHttpNetworkAnalyzer ).
@@ -251,9 +290,49 @@ public partial class TwitterGetSearchNetworkDialog :
         Boolean bIsBusy = m_oHttpNetworkAnalyzer.IsBusy;
 
         EnableControls(!bIsBusy, pnlUserInputs);
-        chkExpandStatusUrls.Enabled = chkIncludeStatuses.Checked;
         btnOK.Enabled = !bIsBusy;
         this.UseWaitCursor = bIsBusy;
+    }
+
+    //*************************************************************************
+    //  Method: TwitterGetSearchNetworkDialog_KeyDown()
+    //
+    /// <summary>
+    /// Handles the KeyDown event on the TwitterGetSearchNetworkDialog.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    TwitterGetSearchNetworkDialog_KeyDown
+    (
+        object sender,
+        KeyEventArgs e
+    )
+    {
+        if (
+            e.KeyCode == Keys.M
+            &&
+            e.Control
+            &&
+            DoDataExchange(true)
+            )
+        {
+            // Ctrl+M is a special shortcut that sets controls to get a large
+            // network.
+
+            m_iMaximumStatuses = 18000;
+            m_bExpandStatusUrls = true;
+
+            DoDataExchange(false);
+        }
     }
 
     //*************************************************************************
@@ -303,6 +382,54 @@ public partial class TwitterGetSearchNetworkDialog :
     }
 
     //*************************************************************************
+    //  Method: OnEventThatRequiresImageChange()
+    //
+    /// <summary>
+    /// Handles any event that should change the image shown in the
+    /// picNetworkPreview PictureBox.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    private void
+    OnEventThatRequiresImageChange
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        // The sample images displayed in the picNetworkPreview PictureBox are
+        // stored as embedded resources.  Here are the file names, without
+        // namespaces:
+        //
+        //   NoFriendEdges.png
+        //   IncludeFriendEdges.png
+
+        String sResourceName = String.Format(
+
+            "Images.TwitterSearchNetworkPreview.{0}FriendEdges.png"
+            ,
+            radIncludeFriendEdges.Checked ? "Include" : "No"
+            );
+
+        // The namespace of the images is Smrf.NodeXL.GraphDataProviders, so
+        // use a class that has that namespace as the "type" argument of the
+        // Bitmap constructor.
+
+        picNetworkPreview.Image = new Bitmap(
+            typeof(GraphDataProviderBase), sResourceName);
+    }
+
+    //*************************************************************************
     //  Method: btnOK_Click()
     //
     /// <summary>
@@ -347,16 +474,10 @@ public partial class TwitterGetSearchNetworkDialog :
         base.AssertValid();
 
         Debug.Assert(m_sSearchTerm != null);
-        // m_bIncludeFollowedEdges
-        // m_bIncludeRepliesToEdges
-        // m_bIncludeMentionsEdges
-        // m_bIncludeNonRepliesToNonMentionsEdges
-
+        // m_bIncludeFriendEdges
         Debug.Assert(m_iMaximumStatuses > 0);
         Debug.Assert(m_iMaximumStatuses != Int32.MaxValue);
-        // m_bIncludeStatuses
         // m_bExpandStatusUrls
-        // m_bIncludeStatistics
     }
 
 
@@ -373,236 +494,17 @@ public partial class TwitterGetSearchNetworkDialog :
 
     protected static String m_sSearchTerm = "NodeXL";
 
-    /// true to include an edge for each followed relationship.
+    /// true to include friend edges.
 
-    protected static Boolean m_bIncludeFollowedEdges = false;
-
-    /// true to include an edge from person A to person B if person A's tweet
-    /// is a reply to person B.
-
-    protected static Boolean m_bIncludeRepliesToEdges = true;
-
-    /// true to include an edge from person A to person B if person A's tweet
-    /// is mentions person B.
-
-    protected static Boolean m_bIncludeMentionsEdges = true;
-
-    /// Include an edge from person A to person A (a self-loop) if person A's
-    /// tweet doesn't reply to or mention anyone.
-
-    protected static Boolean m_bIncludeNonRepliesToNonMentionsEdges = true;
+    protected static Boolean m_bIncludeFriendEdges = false;
 
     /// Maximum number of tweets to request.
 
     protected static Int32 m_iMaximumStatuses = 100;
 
-    /// true to include each status.
-
-    protected static Boolean m_bIncludeStatuses = false;
-
     /// true to expand the URLs in each status.
 
     protected static Boolean m_bExpandStatusUrls = false;
-
-    /// true to include statistics for each user.
-
-    protected static Boolean m_bIncludeStatistics = false;
-
-
-//*****************************************************************************
-//  Embedded class: WhatEdgeToIncludeInformation
-//
-/// <summary>
-/// Stores information about one edge-related flag in the <see
-/// cref="TwitterSearchNetworkAnalyzer.WhatToInclude" /> enumeration.
-/// </summary>
-///
-/// <remarks>
-/// Call <see cref="GetAllWhatEdgeToIncludeInformation"/> to get information
-/// about each edge-related flag in the <see
-/// cref="TwitterSearchNetworkAnalyzer.WhatToInclude" /> enumeration.
-/// </remarks>
-//*****************************************************************************
-
-private class
-WhatEdgeToIncludeInformation
-{
-    //*************************************************************************
-    //  Property: WhatEdgeToInclude
-    //
-    /// <summary>
-    /// Gets the edge-related flag.
-    /// </summary>
-    ///
-    /// <value>
-    /// The flag in the <see
-    /// cref="TwitterSearchNetworkAnalyzer.WhatToInclude" /> enumeration.
-    /// </value>
-    //*************************************************************************
-
-    public TwitterSearchNetworkAnalyzer.WhatToInclude
-    WhatEdgeToInclude
-    {
-        get
-        {
-            AssertValid();
-
-            return (m_eWhatEdgeToInclude);
-        }
-    }
-
-    //*************************************************************************
-    //  Property: Name
-    //
-    /// <summary>
-    /// Gets the flag's friendly name.
-    /// </summary>
-    ///
-    /// <value>
-    /// The flag's friendly name, suitable for display in a dialog box.
-    /// </value>
-    //*************************************************************************
-
-    public String
-    Name
-    {
-        get
-        {
-            AssertValid();
-
-            return (m_sName);
-        }
-    }
-
-    //*************************************************************************
-    //  Method: GetAllWhatEdgeToIncludeInformation()
-    //
-    /// <summary>
-    /// Gets an array of <see cref="WhatEdgeToIncludeInformation" /> objects.
-    /// </summary>
-    ///
-    /// <returns>
-    /// An array of <see cref="WhatEdgeToIncludeInformation" /> objects, one
-    /// for each edge-related flag in the <see
-    /// cref="TwitterSearchNetworkAnalyzer.WhatToInclude" /> enumeration.
-    /// </returns>
-    //*************************************************************************
-
-    public static WhatEdgeToIncludeInformation []
-    GetAllWhatEdgeToIncludeInformation()
-    {
-        // NOTE:
-        //
-        // If this list is modified, including the item order, DoDataExchange()
-        // must also be modified.
-
-        return ( new WhatEdgeToIncludeInformation[] {
-
-            new WhatEdgeToIncludeInformation(
-                TwitterSearchNetworkAnalyzer.WhatToInclude.RepliesToEdges,
-                "\"Replies-to\" relationship in tweet"
-                ),
-
-            new WhatEdgeToIncludeInformation(
-                TwitterSearchNetworkAnalyzer.WhatToInclude.MentionsEdges,
-                "\"Mentions\" relationship in tweet"
-                ),
-
-            new WhatEdgeToIncludeInformation(
-                TwitterSearchNetworkAnalyzer.WhatToInclude
-                    .NonRepliesToNonMentionsEdges,
-                "Tweet that is not a \"replies-to\" or \"mentions\""
-                ),
-
-            new WhatEdgeToIncludeInformation(
-                TwitterSearchNetworkAnalyzer.WhatToInclude.FollowedEdges,
-                "Follows relationship (very slow!)"
-                ),
-            } );
-    }
-
-    //*************************************************************************
-    //  Method: ToString()
-    //
-    /// <summary>
-    /// Formats the value of the current instance using the default format. 
-    /// </summary>
-    ///
-    /// <returns>
-    /// The formatted string.
-    /// </returns>
-    //*************************************************************************
-
-    public override String
-    ToString()
-    {
-        AssertValid();
-
-        return (m_sName);
-    }
-
-    //*************************************************************************
-    //  Constructor: WhatEdgeToIncludeInformation()
-    //
-    /// <summary>
-    /// Initializes a new instance of the <see
-    /// cref="WhatEdgeToIncludeInformation" /> class.
-    /// </summary>
-    ///
-    /// <param name="whatEdgeToInclude">
-    /// The flag in the <see
-    /// cref="TwitterSearchNetworkAnalyzer.WhatToInclude" /> enumeration.
-    /// </param>
-    ///
-    /// <param name="name">
-    /// The flag's friendly name, suitable for display in a dialog box.
-    /// </param>
-    //*************************************************************************
-
-    private WhatEdgeToIncludeInformation
-    (
-        TwitterSearchNetworkAnalyzer.WhatToInclude whatEdgeToInclude,
-        String name
-    )
-    {
-        m_eWhatEdgeToInclude = whatEdgeToInclude;
-        m_sName = name;
-
-        AssertValid();
-    }
-
-
-    //*************************************************************************
-    //  Method: AssertValid()
-    //
-    /// <summary>
-    /// Asserts if the object is in an invalid state.  Debug-only.
-    /// </summary>
-    //*************************************************************************
-
-    [Conditional("DEBUG")]
-
-    public void
-    AssertValid()
-    {
-        // m_eWhatEdgeToInclude
-        Debug.Assert( !String.IsNullOrEmpty(m_sName) );
-    }
-
-
-    //*************************************************************************
-    //  Protected fields
-    //*************************************************************************
-
-    /// The flag in the WhatToInclude enumeration.
-
-    protected TwitterSearchNetworkAnalyzer.WhatToInclude m_eWhatEdgeToInclude;
-
-    /// The flag's friendly name.
-
-    protected String m_sName;
-}
-
 }
 
 }

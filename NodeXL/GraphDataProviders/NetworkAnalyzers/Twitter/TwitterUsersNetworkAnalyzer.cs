@@ -532,9 +532,8 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
             oGraphMLXmlDocument, oUserIDDictionary.Values,
 
             TwitterGraphMLUtil.TwitterUsersToUniqueScreenNames(
-                oUserIDDictionary.Values),
-
-            true, true, true, true);
+                oUserIDDictionary.Values)
+            );
     }
 
     //*************************************************************************

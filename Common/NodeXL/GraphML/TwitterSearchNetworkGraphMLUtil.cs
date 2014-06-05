@@ -27,14 +27,6 @@ public static class TwitterSearchNetworkGraphMLUtil : Object
     /// Creates a GraphMLXmlDocument representing a network of Twitter users.
     /// </summary>
     ///
-    /// <param name="includeStatistics">
-    /// true to include each user's statistics on the vertex worksheet.
-    /// </param>
-    ///
-    /// <param name="includeStatuses">
-    /// true to include each status on the edge worksheet.
-    /// </param>
-    ///
     /// <returns>
     /// A GraphMLXmlDocument containing a Twitter search network.  The document
     /// includes GraphML-attribute definitions but no vertices or edges.
@@ -42,19 +34,12 @@ public static class TwitterSearchNetworkGraphMLUtil : Object
     //*************************************************************************
 
     public static GraphMLXmlDocument
-    CreateGraphMLXmlDocument
-    (
-        Boolean includeStatistics,
-        Boolean includeStatuses
-    )
+    CreateGraphMLXmlDocument()
     {
         GraphMLXmlDocument graphMLXmlDocument = new GraphMLXmlDocument(true);
 
-        if (includeStatistics)
-        {
-            TwitterGraphMLUtil.DefineVertexStatisticsGraphMLAttributes(
-                graphMLXmlDocument);
-        }
+        TwitterGraphMLUtil.DefineVertexStatisticsGraphMLAttributes(
+            graphMLXmlDocument);
 
         TwitterGraphMLUtil.DefineCommonGraphMLAttributes(graphMLXmlDocument);
 
@@ -64,11 +49,8 @@ public static class TwitterSearchNetworkGraphMLUtil : Object
         graphMLXmlDocument.DefineVertexStringGraphMLAttributes(
             VertexToolTipID, "Tooltip");
 
-        if (includeStatuses)
-        {
-            TwitterGraphMLUtil.DefineEdgeStatusGraphMLAttributes(
-                graphMLXmlDocument);
-        }
+        TwitterGraphMLUtil.DefineEdgeStatusGraphMLAttributes(
+            graphMLXmlDocument);
 
         return (graphMLXmlDocument);
     }
@@ -84,10 +66,6 @@ public static class TwitterSearchNetworkGraphMLUtil : Object
     /// <param name="userValueDictionary">
     /// Name/value pairs parsed from a Twitter JSON response.  Contains
     /// information about a user.
-    /// </param>
-    ///
-    /// <param name="includeStatistics">
-    /// true to include the user's statistics as GraphML-Attribute values.
     /// </param>
     ///
     /// <param name="userTweetedSearchTerm">
@@ -118,7 +96,6 @@ public static class TwitterSearchNetworkGraphMLUtil : Object
     TryAppendVertexXmlNode
     (
         Dictionary<String, Object> userValueDictionary,
-        Boolean includeStatistics,
         Boolean userTweetedSearchTerm,
         GraphMLXmlDocument graphMLXmlDocument,
         Dictionary<String, TwitterUser> userIDDictionary,
@@ -156,11 +133,8 @@ public static class TwitterSearchNetworkGraphMLUtil : Object
             TwitterGraphMLUtil.AppendCommonUserInformationFromValueDictionary(
                 userValueDictionary, graphMLXmlDocument, twitterUser);
 
-            if (includeStatistics)
-            {
-                TwitterGraphMLUtil.AppendUserStatisticsFromValueDictionary(
-                    userValueDictionary, graphMLXmlDocument, twitterUser);
-            }
+            TwitterGraphMLUtil.AppendUserStatisticsFromValueDictionary(
+                userValueDictionary, graphMLXmlDocument, twitterUser);
 
             AppendTweetedSearchTermGraphMLAttributeValue(
                 graphMLXmlDocument, twitterUser, userTweetedSearchTerm);

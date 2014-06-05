@@ -105,6 +105,9 @@ public partial class TwitterGetUsersNetworkDialog
     protected void
     SetHelpText()
     {
+        // The text for the HelpLinkLabels is set programmatically instead of
+        // via the designer because one of them uses String.Format().
+
         hllNetworkTypeBasic.Tag = 
 
             "When you select this option, NodeXL analyzes each user's most"

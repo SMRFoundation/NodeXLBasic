@@ -397,9 +397,7 @@ public class NetworkConfigurationFileParserTest : Object
         Assert.AreEqual("NodeXL", sSearchTerm);
 
         Assert.AreEqual(
-            TwitterSearchNetworkAnalyzer.WhatToInclude.RepliesToEdges |
-            TwitterSearchNetworkAnalyzer.WhatToInclude.MentionsEdges |
-            TwitterSearchNetworkAnalyzer.WhatToInclude.NonRepliesToNonMentionsEdges,
+            TwitterSearchNetworkAnalyzer.WhatToInclude.None,
             eWhatToInclude);
 
         Assert.AreEqual(100, iMaximumStatuses);
@@ -438,7 +436,198 @@ public class NetworkConfigurationFileParserTest : Object
             out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
             out sNetworkFileFolderPath);
 
+        Assert.AreEqual("NodeXL", sSearchTerm);
+
+        Assert.AreEqual(
+            TwitterSearchNetworkAnalyzer.WhatToInclude.None,
+            eWhatToInclude);
+
         Assert.AreEqual(100, iMaximumStatuses);
+        Assert.AreEqual(@"C:\NodeXLNetworks", sNetworkFileFolderPath);
+    }
+
+    //*************************************************************************
+    //  Method: TestGetTwitterSearchNetworkConfiguration3()
+    //
+    /// <summary>
+    /// Tests the GetTwitterSearchNetworkConfiguration() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetTwitterSearchNetworkConfiguration3()
+    {
+        // All WhatToInclude options.
+
+        WriteSampleTwitterSearchNetworkConfigurationFile(
+            "<WhatToInclude>.*</WhatToInclude>",
+            "<WhatToInclude>ExpandedStatusUrls,  FollowedEdges</WhatToInclude>"
+            );
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        String sSearchTerm;
+        TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
+        Int32 iMaximumStatuses;
+        String sNetworkFileFolderPath;
+
+        m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
+            out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
+            out sNetworkFileFolderPath);
+
+        Assert.AreEqual("NodeXL", sSearchTerm);
+
+        Assert.AreEqual(
+
+            TwitterSearchNetworkAnalyzer.WhatToInclude.ExpandedStatusUrls
+            |
+            TwitterSearchNetworkAnalyzer.WhatToInclude.FollowedEdges
+            ,
+            eWhatToInclude);
+
+        Assert.AreEqual(100, iMaximumStatuses);
+        Assert.AreEqual(@"C:\NodeXLNetworks", sNetworkFileFolderPath);
+    }
+
+    //*************************************************************************
+    //  Method: TestGetTwitterSearchNetworkConfiguration4()
+    //
+    /// <summary>
+    /// Tests the GetTwitterSearchNetworkConfiguration() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetTwitterSearchNetworkConfiguration4()
+    {
+        // All WhatToInclude options, no spaces.
+
+        WriteSampleTwitterSearchNetworkConfigurationFile(
+            "<WhatToInclude>.*</WhatToInclude>",
+            "<WhatToInclude>ExpandedStatusUrls,FollowedEdges</WhatToInclude>"
+            );
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        String sSearchTerm;
+        TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
+        Int32 iMaximumStatuses;
+        String sNetworkFileFolderPath;
+
+        m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
+            out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
+            out sNetworkFileFolderPath);
+
+        Assert.AreEqual("NodeXL", sSearchTerm);
+
+        Assert.AreEqual(
+
+            TwitterSearchNetworkAnalyzer.WhatToInclude.ExpandedStatusUrls
+            |
+            TwitterSearchNetworkAnalyzer.WhatToInclude.FollowedEdges
+            ,
+            eWhatToInclude);
+
+        Assert.AreEqual(100, iMaximumStatuses);
+        Assert.AreEqual(@"C:\NodeXLNetworks", sNetworkFileFolderPath);
+    }
+
+    //*************************************************************************
+    //  Method: TestGetTwitterSearchNetworkConfiguration5()
+    //
+    /// <summary>
+    /// Tests the GetTwitterSearchNetworkConfiguration() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetTwitterSearchNetworkConfiguration5()
+    {
+        // All WhatToInclude options, including old values that no longer
+        // exist. 
+
+        WriteSampleTwitterSearchNetworkConfigurationFile(
+            "<WhatToInclude>.*</WhatToInclude>",
+
+            "<WhatToInclude>"
+            + "Statuses,ExpandedStatusUrls,Statistics,FollowedEdges,"
+            + "RepliesToEdges,MentionsEdges,NonRepliesToNonMentionsEdges,"
+            + "</WhatToInclude>"
+            );
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        String sSearchTerm;
+        TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
+        Int32 iMaximumStatuses;
+        String sNetworkFileFolderPath;
+
+        m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
+            out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
+            out sNetworkFileFolderPath);
+
+        Assert.AreEqual("NodeXL", sSearchTerm);
+
+        Assert.AreEqual(
+
+            TwitterSearchNetworkAnalyzer.WhatToInclude.ExpandedStatusUrls
+            |
+            TwitterSearchNetworkAnalyzer.WhatToInclude.FollowedEdges
+            ,
+            eWhatToInclude);
+
+        Assert.AreEqual(100, iMaximumStatuses);
+        Assert.AreEqual(@"C:\NodeXLNetworks", sNetworkFileFolderPath);
+    }
+
+    //*************************************************************************
+    //  Method: TestGetTwitterSearchNetworkConfiguration6()
+    //
+    /// <summary>
+    /// Tests the GetTwitterSearchNetworkConfiguration() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+
+    public void
+    TestGetTwitterSearchNetworkConfiguration6()
+    {
+        // "None" WhatToInclude option.
+
+        WriteSampleTwitterSearchNetworkConfigurationFile(
+            "<WhatToInclude>.*</WhatToInclude>",
+            "<WhatToInclude>None</WhatToInclude>"
+            );
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        String sSearchTerm;
+        TwitterSearchNetworkAnalyzer.WhatToInclude eWhatToInclude;
+        Int32 iMaximumStatuses;
+        String sNetworkFileFolderPath;
+
+        m_oNetworkConfigurationFileParser.GetTwitterSearchNetworkConfiguration(
+            out sSearchTerm, out eWhatToInclude, out iMaximumStatuses,
+            out sNetworkFileFolderPath);
+
+        Assert.AreEqual("NodeXL", sSearchTerm);
+
+        Assert.AreEqual(TwitterSearchNetworkAnalyzer.WhatToInclude.None,
+            eWhatToInclude);
+
+        Assert.AreEqual(100, iMaximumStatuses);
+        Assert.AreEqual(@"C:\NodeXLNetworks", sNetworkFileFolderPath);
     }
 
     //*************************************************************************

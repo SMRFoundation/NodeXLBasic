@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Xml;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Diagnostics;
 using Smrf.NodeXL.GraphDataProviders.Twitter;
@@ -145,6 +146,8 @@ public class NetworkConfigurationFileParser : Object
         return ( GetRequiredEnumValue<NetworkType>(
             m_oNetworkConfigurationXmlDocument,
             "/NetworkConfiguration/NetworkType/text()",
+            null,
+            String.Empty,
             "NetworkType"
             ) );
     }
@@ -224,8 +227,26 @@ public class NetworkConfigurationFileParser : Object
 
         whatToInclude =
             GetRequiredEnumValue<TwitterSearchNetworkAnalyzer.WhatToInclude>(
-                oTwitterSearchNetworkConfigurationNode, "WhatToInclude/text()",
-                "WhatToInclude");
+
+                oTwitterSearchNetworkConfigurationNode,
+                "WhatToInclude/text()",
+
+                // These WhatToInclude values were removed in version
+                // 1.0.1.328.  They are now automatically included in the
+                // network.   Old configuration files might still specify them,
+                // so they need to be ignored.
+
+                new String[] {
+                    "Statuses",
+                    "Statistics",
+                    "RepliesToEdges",
+                    "MentionsEdges",
+                    "NonRepliesToNonMentionsEdges",
+                    },
+
+                "None",
+                "WhatToInclude"
+                );
 
         GetCommonConfiguration(oTwitterSearchNetworkConfigurationNode,
             out networkFileFolderPath);
@@ -370,6 +391,18 @@ public class NetworkConfigurationFileParser : Object
     /// XPath expression.
     /// </param>
     ///
+    /// <param name="asEnumValuesToIgnore">
+    /// One or more values to remove from the Enum string before converting it
+    /// to the Enum value, or null to not remove any values.  This is used for
+    /// backward compatibility in the situation where an Enum used to have a
+    /// value that it no longer has.
+    /// </param>
+    ///
+    /// <param name="sValueToUseIfEmpty">
+    /// The Enum value to use if the text of the specified node is empty after
+    /// asEnumValuesToIgnore are removed.  Sample: "None".
+    /// </param>
+    ///
     /// <param name="sTagName">
     /// Name of the tag containing the Enum value.  Used in error messages.
     /// </param>
@@ -384,11 +417,14 @@ public class NetworkConfigurationFileParser : Object
     (
         XmlNode oNode,
         String sXPath,
+        String[] asEnumValuesToIgnore,
+        String sValueToUseIfEmpty,
         String sTagName
     )
     {
         Debug.Assert(oNode != null);
         Debug.Assert( !String.IsNullOrEmpty(sXPath) );
+        Debug.Assert(sValueToUseIfEmpty != null);
         Debug.Assert( !String.IsNullOrEmpty(sTagName) );
         AssertValid();
 
@@ -396,10 +432,21 @@ public class NetworkConfigurationFileParser : Object
 
         try
         {
-            String sText = XmlUtil2.SelectRequiredSingleNodeAsString(oNode,
-                sXPath, null);
+            String sEnumAsString = XmlUtil2.SelectRequiredSingleNodeAsString(
+                oNode, sXPath, null);
 
-            return ( (T)Enum.Parse(typeof(T), sText) );
+            if (asEnumValuesToIgnore != null)
+            {
+                sEnumAsString = RemoveEnumValues(
+                    sEnumAsString, asEnumValuesToIgnore);
+
+                if (sEnumAsString.Length == 0)
+                {
+                    sEnumAsString = sValueToUseIfEmpty;
+                }
+            }
+
+            return ( (T)Enum.Parse(typeof(T), sEnumAsString) );
         }
         catch (XmlException oXmlException)
         {
@@ -417,6 +464,54 @@ public class NetworkConfigurationFileParser : Object
             );
 
         throw new XmlException(sErrorMessage, oException);
+    }
+
+    //*************************************************************************
+    //  Method: RemoveEnumValues()
+    //
+    /// <summary>
+    /// Removes specified values from Enum text.
+    /// </summary>
+    ///
+    /// <param name="sEnumAsString">
+    /// An Enum value as a string.  Sample:
+    /// "ExpandedStatusUrls, Statuses, FollowedEdges".
+    /// </param>
+    ///
+    /// <param name="asEnumValuesToIgnore">
+    /// One or more values to remove from the Enum string before converting it
+    /// to the Enum value.  Sample: "Statuses".
+    /// </param>
+    ///
+    /// <returns>
+    /// The Enum value as a string, without the ignored values.  Sample:
+    /// "ExpandedStatusUrls,FollowedEdges".
+    /// </returns>
+    //*************************************************************************
+
+    protected String
+    RemoveEnumValues
+    (
+        String sEnumAsString,
+        String[] asEnumValuesToIgnore
+    )
+    {
+        Debug.Assert(sEnumAsString != null);
+        Debug.Assert(asEnumValuesToIgnore != null);
+        AssertValid();
+
+        List<String> oFilteredEnumValues = new List<String>(
+
+            sEnumAsString.Split(new Char[]{',', ' '},
+                StringSplitOptions.RemoveEmptyEntries)
+            );
+
+        foreach (String sEnumValueToIgnore in asEnumValuesToIgnore)
+        {
+            oFilteredEnumValues.Remove(sEnumValueToIgnore);
+        }
+
+        return ( String.Join(",", oFilteredEnumValues.ToArray() ) );
     }
 
 

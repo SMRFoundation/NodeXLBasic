@@ -970,22 +970,6 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     /// <param name="oUniqueScreenNames">
     /// Collection of the unique screen names in the network.
     /// </param>
-    ///
-    /// <param name="bIncludeRepliesToEdges">
-    /// true to append edges for replies-to relationships.
-    /// </param>
-    ///
-    /// <param name="bIncludeMentionsEdges">
-    /// true to append edges for mentions relationships.
-    /// </param>
-    ///
-    /// <param name="bIncludeNonRepliesToNonMentionsEdges">
-    /// true to append edges for tweets that don't reply to or mention anyone.
-    /// </param>
-    ///
-    /// <param name="bIncludeStatuses">
-    /// true to include the status in the edge XML nodes.
-    /// </param>
     //*************************************************************************
 
     protected void
@@ -993,11 +977,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
     (
         GraphMLXmlDocument oGraphMLXmlDocument,
         IEnumerable<TwitterUser> oTwitterUsers,
-        HashSet<String> oUniqueScreenNames,
-        Boolean bIncludeRepliesToEdges,
-        Boolean bIncludeMentionsEdges,
-        Boolean bIncludeNonRepliesToNonMentionsEdges,
-        Boolean bIncludeStatuses
+        HashSet<String> oUniqueScreenNames
     )
     {
         Debug.Assert(oGraphMLXmlDocument != null);
@@ -1008,9 +988,7 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
         ReportProgress("Examining relationships.");
 
         TwitterGraphMLUtil.AppendRepliesToAndMentionsEdgeXmlNodes(
-            oGraphMLXmlDocument, oTwitterUsers, oUniqueScreenNames,
-            bIncludeRepliesToEdges, bIncludeMentionsEdges,
-            bIncludeNonRepliesToNonMentionsEdges, bIncludeStatuses);
+            oGraphMLXmlDocument, oTwitterUsers, oUniqueScreenNames);
     }
 
     //*************************************************************************

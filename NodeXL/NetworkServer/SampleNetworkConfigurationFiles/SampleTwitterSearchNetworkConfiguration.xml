@@ -14,12 +14,6 @@ example:
 
     * Get the Twitter search network for people whose tweets contain "NodeXL"
     
-    * Add an edge for each "replies-to" relationship
-    
-    * Add an edge for each "mentions" relationship
-    
-    * Add an edge for each tweet that is not a "replies-to" or "mentions"
-
     * Limit the network to 100 tweets
 
     * Store the network as a GraphML file in the C:\NodeXLNetworks folder
@@ -87,45 +81,23 @@ The Configuration That Must be Edited
 
         <!--
         ***********************************************************************
-        What to Include
+        Optional Network Elements
         
-        What to include in the network.  This must be a combination of the
-        following values, separated by commas:
-
-            RepliesToEdges
-
-                Add an edge for each "replies-to" relationship in tweet.
-
-            MentionsEdges
-
-                Add an edge for each "mentions" relationship in tweet.
-
-            NonRepliesToNonMentionsEdges
-
-                Add an edge for each tweet that is not a "replies-to" or
-                "mentions."
+        Optional elements to include in the network.  This can be either "None"
+        or a combination of the following values, separated by commas:
 
             FollowedEdges
 
                 Add an edge for each follows relationship.  Very slow!
 
-            Statuses
-
-                Add a Tweet column to the Edges worksheet.
-
             ExpandedStatusUrls
 
-                Expand URLs in tweets.  Used only if Statuses is specified.
-                Slower.
-
-            Statistics
-
-                Add statistics columns to the Vertices worksheet.
+                Expand URLs in tweets.  Slow.
 
         ***********************************************************************
         -->
 
-        <WhatToInclude>RepliesToEdges,MentionsEdges,NonRepliesToNonMentionsEdges </WhatToInclude>
+        <WhatToInclude>None</WhatToInclude>
 
 
         <!--
