@@ -41,7 +41,9 @@ public partial class GraphServerGetTwitterSearchNetworkDialog :
 
         // m_sSearchTerm
         // m_oMinimumStatusDateUtc
+        // m_bUseMaximumStatusDateUtc
         // m_oMaximumStatusDateUtc
+        // m_iMaximumStatuses
         // m_bExpandStatusUrls
         // m_sGraphServerUserName
         // m_sGraphServerPassword
@@ -106,21 +108,43 @@ public partial class GraphServerGetTwitterSearchNetworkDialog :
     {
         if (bFromControls)
         {
+            return ( DoDataExchangeFromControls() );
+        }
 
-            // Validate the controls.
+        DoDataExchangeToControls();
+        return (true);
+    }
 
-            if (
-                !ValidateRequiredTextBox(txbSearchTerm,
-                    "Enter one or more words to search for.",
-                    out m_sSearchTerm)
-                )
-            {
-                return (false);
-            }
+    //*************************************************************************
+    //  Method: DoDataExchangeFromControls()
+    //
+    /// <summary>
+    /// Transfers data from the dialog's controls to its fields.
+    /// </summary>
+    ///
+    /// <returns>
+    /// true if the transfer was successful.
+    /// </returns>
+    //*************************************************************************
 
-            m_oMinimumStatusDateUtc = dtpMinimumStatusDateUtc.Value;
-            m_oMaximumStatusDateUtc = dtpMaximumStatusDateUtc.Value;
+    protected Boolean
+    DoDataExchangeFromControls()
+    {
+        if (
+            !ValidateRequiredTextBox(txbSearchTerm,
+                "Enter one or more words to search for.",
+                out m_sSearchTerm)
+            )
+        {
+            return (false);
+        }
 
+        m_oMinimumStatusDateUtc = dtpMinimumStatusDateUtc.Value;
+        m_bUseMaximumStatusDateUtc = radUseMaximumStatusDateUtc.Checked;
+        m_oMaximumStatusDateUtc = dtpMaximumStatusDateUtc.Value;
+
+        if (m_bUseMaximumStatusDateUtc)
+        {
             if (m_oMaximumStatusDateUtc < m_oMinimumStatusDateUtc)
             {
                 OnInvalidDateTimePicker(dtpMaximumStatusDateUtc,
@@ -129,41 +153,73 @@ public partial class GraphServerGetTwitterSearchNetworkDialog :
 
                 return (false);
             }
-
-            m_bExpandStatusUrls = chkExpandStatusUrls.Checked;
-
-            if (
-                !ValidateRequiredTextBox(txbGraphServerUserName,
-
-                    "Enter the user name for your account on the NodeXL Graph"
-                        + " Server.", 
-
-                    out m_sGraphServerUserName)
-                ||
-                !ValidateRequiredTextBox(txbGraphServerPassword,
-
-                    "Enter the password for your account on the NodeXL Graph"
-                        + " Server.", 
-
-                    out m_sGraphServerPassword)
-                )
-            {
-                return (false);
-            }
         }
         else
         {
-            txbSearchTerm.Text = m_sSearchTerm;
-            dtpMinimumStatusDateUtc.Value = m_oMinimumStatusDateUtc;
-            dtpMaximumStatusDateUtc.Value = m_oMaximumStatusDateUtc;
-            chkExpandStatusUrls.Checked = m_bExpandStatusUrls;
-            txbGraphServerUserName.Text = m_sGraphServerUserName;
-            txbGraphServerPassword.Text = m_sGraphServerPassword;
+            // Don't validate directly into m_iMaximumStatuses here.  If you
+            // blank out a NumericUpDown control, its value is Int32.MinValue,
+            // and we don't want that stored in m_iMaximumStatuses.
 
-            EnableControls();
+            Int32 iMaximumStatuses;
+
+            if ( !ValidateNumericUpDown(nudMaximumStatuses,
+                "a maximum number of tweets", out iMaximumStatuses) )
+            {
+                return (false);
+            }
+
+            m_iMaximumStatuses = iMaximumStatuses;
+        }
+
+        m_bExpandStatusUrls = chkExpandStatusUrls.Checked;
+
+        if (
+            !ValidateRequiredTextBox(txbGraphServerUserName,
+
+                "Enter the user name for your account on the NodeXL Graph"
+                    + " Server.", 
+
+                out m_sGraphServerUserName)
+            ||
+            !ValidateRequiredTextBox(txbGraphServerPassword,
+
+                "Enter the password for your account on the NodeXL Graph"
+                    + " Server.", 
+
+                out m_sGraphServerPassword)
+            )
+        {
+            return (false);
         }
 
         return (true);
+    }
+
+    //*************************************************************************
+    //  Method: DoDataExchangeToControls()
+    //
+    /// <summary>
+    /// Transfers data from the dialog's fields to its controls.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    DoDataExchangeToControls()
+    {
+        txbSearchTerm.Text = m_sSearchTerm;
+        dtpMinimumStatusDateUtc.Value = m_oMinimumStatusDateUtc;
+
+        radUseMaximumStatusDateUtc.Checked = m_bUseMaximumStatusDateUtc;
+        radUseMaximumStatuses.Checked = !m_bUseMaximumStatusDateUtc;
+
+        dtpMaximumStatusDateUtc.Value = m_oMaximumStatusDateUtc;
+        nudMaximumStatuses.Value = m_iMaximumStatuses;
+
+        chkExpandStatusUrls.Checked = m_bExpandStatusUrls;
+        txbGraphServerUserName.Text = m_sGraphServerUserName;
+        txbGraphServerPassword.Text = m_sGraphServerPassword;
+
+        EnableControls();
     }
 
     //*************************************************************************
@@ -188,11 +244,33 @@ public partial class GraphServerGetTwitterSearchNetworkDialog :
         Debug.Assert(m_oHttpNetworkAnalyzer is
             GraphServerTwitterSearchNetworkAnalyzer);
 
-        ( (GraphServerTwitterSearchNetworkAnalyzer)m_oHttpNetworkAnalyzer ).
-            GetNetworkAsync(m_sSearchTerm, m_oMinimumStatusDateUtc,
+        GraphServerTwitterSearchNetworkAnalyzer
+            oGraphServerTwitterSearchNetworkAnalyzer =
+                (GraphServerTwitterSearchNetworkAnalyzer)
+                    m_oHttpNetworkAnalyzer;
+
+        if (m_bUseMaximumStatusDateUtc)
+        {
+            oGraphServerTwitterSearchNetworkAnalyzer.GetNetworkAsync(
+                m_sSearchTerm,
+                m_oMinimumStatusDateUtc,
                 AddDayToMaximumStatusDateUtc(m_oMaximumStatusDateUtc),
-                m_bExpandStatusUrls, m_sGraphServerUserName,
-                m_sGraphServerPassword);
+                m_bExpandStatusUrls,
+                m_sGraphServerUserName,
+                m_sGraphServerPassword
+                );
+        }
+        else
+        {
+            oGraphServerTwitterSearchNetworkAnalyzer.GetNetworkAsync(
+                m_sSearchTerm,
+                m_oMinimumStatusDateUtc,
+                m_iMaximumStatuses,
+                m_bExpandStatusUrls,
+                m_sGraphServerUserName,
+                m_sGraphServerPassword
+                );
+        }
     }
 
     //*************************************************************************
@@ -207,6 +285,10 @@ public partial class GraphServerGetTwitterSearchNetworkDialog :
     EnableControls()
     {
         AssertValid();
+
+        Boolean bUseMaximumStatusDateUtc = radUseMaximumStatusDateUtc.Checked;
+        flpUseMaximumStatusDateUtc.Enabled = bUseMaximumStatusDateUtc;
+        flpUseMaximumStatuses.Enabled = !bUseMaximumStatusDateUtc;
 
         Boolean bIsBusy = m_oHttpNetworkAnalyzer.IsBusy;
 
@@ -278,6 +360,35 @@ public partial class GraphServerGetTwitterSearchNetworkDialog :
     }
 
     //*************************************************************************
+    //  Method: OnEventThatRequiresControlEnabling()
+    //
+    /// <summary>
+    /// Handles any event that should changed the enabled state of the dialog's
+    /// controls.
+    /// </summary>
+    ///
+    /// <param name="sender">
+    /// Standard event argument.
+    /// </param>
+    ///
+    /// <param name="e">
+    /// Standard event argument.
+    /// </param>
+    //*************************************************************************
+
+    protected void
+    OnEventThatRequiresControlEnabling
+    (
+        object sender,
+        EventArgs e
+    )
+    {
+        AssertValid();
+
+        EnableControls();
+    }
+
+    //*************************************************************************
     //  Method: btnOK_Click()
     //
     /// <summary>
@@ -323,7 +434,9 @@ public partial class GraphServerGetTwitterSearchNetworkDialog :
 
         Debug.Assert(m_sSearchTerm != null);
         // m_oMinimumStatusDateUtc
+        // m_bUseMaximumStatusDateUtc
         // m_oMaximumStatusDateUtc
+        // m_iMaximumStatuses
         // m_bExpandStatusUrls
         Debug.Assert(m_sGraphServerUserName != null);
         Debug.Assert(m_sGraphServerPassword != null);
@@ -348,9 +461,18 @@ public partial class GraphServerGetTwitterSearchNetworkDialog :
     protected static DateTime m_oMinimumStatusDateUtc =
         DateTime.Now.Date.AddDays(-1);
 
+    /// true to use a maximum status date, false to use a maximum number of
+    /// statuses.
+
+    protected static Boolean m_bUseMaximumStatusDateUtc = false;
+
     /// Maximum status date, in UTC.
 
     protected static DateTime m_oMaximumStatusDateUtc = DateTime.Now.Date;
+
+    /// Maximum number of statuses to get.
+
+    protected static Int32 m_iMaximumStatuses = 1000;
 
     /// true to expand the URLs in each status.
 

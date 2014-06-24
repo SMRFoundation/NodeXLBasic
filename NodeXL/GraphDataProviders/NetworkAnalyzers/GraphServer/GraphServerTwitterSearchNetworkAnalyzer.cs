@@ -22,13 +22,14 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
 //  Class: GraphServerTwitterSearchNetworkAnalyzer
 //
 /// <summary>
-/// Uses the NodeXL Graph Server to get a network of people who have tweeted
-/// a specified search term.
+/// Uses the NodeXL Graph Server to get a network created from a specified set
+/// of tweets.
 /// </summary>
 ///
 /// <remarks>
-/// Use <see cref="GetNetworkAsync" /> to asynchronously get the network, or
-/// <see cref="GetNetwork" /> to get it synchronously.
+/// Use <see cref="GetNetworkAsync(String, DateTime, DateTime, Boolean,
+/// String, String)" /> to asynchronously get the network, or <see
+/// cref="GetNetwork" /> to get it synchronously.
 ///
 /// <para>
 /// The network is obtained from the NodeXL Graph Server, which is a server
@@ -62,9 +63,13 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
     //*************************************************************************
     //  Method: GetNetworkAsync()
     //
+    /// <overloads>
+    /// Asynchronously gets a network created from a specified set of tweets.
+    /// </overloads>
+    ///
     /// <summary>
-    /// Asynchronously gets a directed network of people who have tweeted a
-    /// specified search term.
+    /// Asynchronously gets a network created from a set of tweets specified by
+    /// a search term and a date range.
     /// </summary>
     ///
     /// <param name="searchTerm">
@@ -130,9 +135,90 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
 
         GetNetworkAsyncArgs oGetNetworkAsyncArgs = new GetNetworkAsyncArgs();
 
-        oGetNetworkAsyncArgs.SearchTerm = searchTerm;
-        oGetNetworkAsyncArgs.MinimumStatusDateUtc = minimumStatusDateUtc;
-        oGetNetworkAsyncArgs.MaximumStatusDateUtc = maximumStatusDateUtc;
+        oGetNetworkAsyncArgs.StatusCriteria = new StatusCriteria(
+            searchTerm, minimumStatusDateUtc, maximumStatusDateUtc);
+
+        oGetNetworkAsyncArgs.ExpandStatusUrls = expandStatusUrls;
+        oGetNetworkAsyncArgs.GraphServerUserName = graphServerUserName;
+        oGetNetworkAsyncArgs.GraphServerPassword = graphServerPassword;
+
+        m_oBackgroundWorker.RunWorkerAsync(oGetNetworkAsyncArgs);
+    }
+
+    //*************************************************************************
+    //  Method: GetNetworkAsync()
+    //
+    /// <summary>
+    /// Asynchronously gets a network created from a set of tweets specified by
+    /// a search term, a minimum date and a maximum number of tweets.
+    /// </summary>
+    ///
+    /// <param name="searchTerm">
+    /// The term to search for.
+    /// </param>
+    ///
+    /// <param name="minimumStatusDateUtc">
+    /// Minimum status date, in UTC.
+    /// </param>
+    ///
+    /// <param name="maximumStatuses">
+    /// Maximum number of statuses to get.
+    /// </param>
+    ///
+    /// <param name="expandStatusUrls">
+    /// true to expand the URLs in each status.
+    /// </param>
+    ///
+    /// <param name="graphServerUserName">
+    /// User name for the account to use on the NodeXL Graph Server.
+    /// </param>
+    ///
+    /// <param name="graphServerPassword">
+    /// Password for the account to use on the NodeXL Graph Server.
+    /// </param>
+    ///
+    /// <remarks>
+    /// When the analysis completes, the <see
+    /// cref="HttpNetworkAnalyzerBase.AnalysisCompleted" /> event fires.  The
+    /// <see cref="RunWorkerCompletedEventArgs.Result" /> property will return
+    /// an XmlDocument containing the network as GraphML.
+    ///
+    /// <para>
+    /// To cancel the analysis, call <see
+    /// cref="HttpNetworkAnalyzerBase.CancelAsync" />.
+    /// </para>
+    ///
+    /// </remarks>
+    //*************************************************************************
+
+    public void
+    GetNetworkAsync
+    (
+        String searchTerm,
+        DateTime minimumStatusDateUtc,
+        Int32 maximumStatuses,
+        Boolean expandStatusUrls,
+        String graphServerUserName,
+        String graphServerPassword
+    )
+    {
+        Debug.Assert( !String.IsNullOrEmpty(searchTerm) );
+        Debug.Assert(maximumStatuses > 0);
+        Debug.Assert( !String.IsNullOrEmpty(graphServerUserName) );
+        Debug.Assert( !String.IsNullOrEmpty(graphServerPassword) );
+        AssertValid();
+
+        const String MethodName = "GetNetworkAsync";
+        CheckIsBusy(MethodName);
+
+        // Wrap the arguments in an object that can be passed to
+        // BackgroundWorker.RunWorkerAsync().
+
+        GetNetworkAsyncArgs oGetNetworkAsyncArgs = new GetNetworkAsyncArgs();
+
+        oGetNetworkAsyncArgs.StatusCriteria = new StatusCriteria(
+            searchTerm, minimumStatusDateUtc, maximumStatuses);
+
         oGetNetworkAsyncArgs.ExpandStatusUrls = expandStatusUrls;
         oGetNetworkAsyncArgs.GraphServerUserName = graphServerUserName;
         oGetNetworkAsyncArgs.GraphServerPassword = graphServerPassword;
@@ -144,8 +230,7 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
     //  Method: GetNetwork()
     //
     /// <summary>
-    /// Synchronously gets a directed network of people who have tweeted a
-    /// specified search term.
+    /// Synchronously gets a network created from a specified set of tweets.
     /// </summary>
     ///
     /// <param name="searchTerm">
@@ -156,8 +241,8 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
     /// Minimum status date, in UTC.
     /// </param>
     ///
-    /// <param name="maximumStatusDateUtc">
-    /// Maximum status date, in UTC.
+    /// <param name="maximumStatuses">
+    /// Maximum number of statuses to get.
     /// </param>
     ///
     /// <param name="expandStatusUrls">
@@ -182,21 +267,23 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
     (
         String searchTerm,
         DateTime minimumStatusDateUtc,
-        DateTime maximumStatusDateUtc,
+        Int32 maximumStatuses,
         Boolean expandStatusUrls,
         String graphServerUserName,
         String graphServerPassword
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(searchTerm) );
-        Debug.Assert(maximumStatusDateUtc >= minimumStatusDateUtc);
+        Debug.Assert(maximumStatuses > 0);
         Debug.Assert( !String.IsNullOrEmpty(graphServerUserName) );
         Debug.Assert( !String.IsNullOrEmpty(graphServerPassword) );
         AssertValid();
 
-        return ( GetNetworkInternal(searchTerm, minimumStatusDateUtc,
-            maximumStatusDateUtc, expandStatusUrls, graphServerUserName,
-            graphServerPassword) );
+        StatusCriteria oStatusCriteria = new StatusCriteria(
+            searchTerm, minimumStatusDateUtc, maximumStatuses);
+
+        return ( GetNetworkInternal(oStatusCriteria, expandStatusUrls,
+            graphServerUserName, graphServerPassword) );
     }
 
     //*************************************************************************
@@ -255,16 +342,9 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
     /// Gets the requested network and handles exceptions.
     /// </summary>
     ///
-    /// <param name="sSearchTerm">
-    /// The term to search for.
-    /// </param>
-    ///
-    /// <param name="oMinimumStatusDateUtc">
-    /// Minimum status date, in UTC.
-    /// </param>
-    ///
-    /// <param name="oMaximumStatusDateUtc">
-    /// Maximum status date, in UTC.
+    /// <param name="oStatusCriteria">
+    /// Specifies the criteria used for getting statuses from the NodeXL Graph
+    /// Server.
     /// </param>
     ///
     /// <param name="bExpandStatusUrls">
@@ -287,16 +367,13 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
     protected XmlDocument
     GetNetworkInternal
     (
-        String sSearchTerm,
-        DateTime oMinimumStatusDateUtc,
-        DateTime oMaximumStatusDateUtc,
+        StatusCriteria oStatusCriteria,
         Boolean bExpandStatusUrls,
         String sGraphServerUserName,
         String sGraphServerPassword
     )
     {
-        Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
-        Debug.Assert(oMaximumStatusDateUtc >= oMinimumStatusDateUtc);
+        Debug.Assert(oStatusCriteria != null);
         Debug.Assert( !String.IsNullOrEmpty(sGraphServerUserName) );
         Debug.Assert( !String.IsNullOrEmpty(sGraphServerPassword) );
         AssertValid();
@@ -307,9 +384,8 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
         try
         {
             oGraphMLXmlDocument = GetNetworkInternal(
-                sSearchTerm, oMinimumStatusDateUtc, oMaximumStatusDateUtc,
-                bExpandStatusUrls, sGraphServerUserName, sGraphServerPassword,
-                oRequestStatistics);
+                oStatusCriteria, bExpandStatusUrls, sGraphServerUserName,
+                sGraphServerPassword, oRequestStatistics);
         }
         catch (Exception oException)
         {
@@ -319,12 +395,13 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
 
         OnNetworkObtained(oGraphMLXmlDocument, oRequestStatistics, 
 
-            GetNetworkDescription(sSearchTerm, oMinimumStatusDateUtc,
-                oMaximumStatusDateUtc, sGraphServerUserName,
-                sGraphServerPassword, oGraphMLXmlDocument),
+            GetNetworkDescription(oStatusCriteria, oGraphMLXmlDocument),
 
-            SnaTitleCreator.CreateSnaTitle(sSearchTerm, oRequestStatistics),
-            "Graph Server " + sSearchTerm
+            SnaTitleCreator.CreateSnaTitle(
+                oStatusCriteria.SearchTerm,
+                oRequestStatistics),
+
+            "Graph Server " + oStatusCriteria.SearchTerm
             );
 
         return (oGraphMLXmlDocument);
@@ -337,16 +414,9 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
     /// Gets the requested network.
     /// </summary>
     ///
-    /// <param name="sSearchTerm">
-    /// The term to search for.
-    /// </param>
-    ///
-    /// <param name="oMinimumStatusDateUtc">
-    /// Minimum status date, in UTC.
-    /// </param>
-    ///
-    /// <param name="oMaximumStatusDateUtc">
-    /// Maximum status date, in UTC.
+    /// <param name="oStatusCriteria">
+    /// Specifies the criteria used for getting statuses from the NodeXL Graph
+    /// Server.
     /// </param>
     ///
     /// <param name="bExpandStatusUrls">
@@ -374,17 +444,14 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
     protected XmlDocument
     GetNetworkInternal
     (
-        String sSearchTerm,
-        DateTime oMinimumStatusDateUtc,
-        DateTime oMaximumStatusDateUtc,
+        StatusCriteria oStatusCriteria,
         Boolean bExpandStatusUrls,
         String sGraphServerUserName,
         String sGraphServerPassword,
         RequestStatistics oRequestStatistics
     )
     {
-        Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
-        Debug.Assert(oMaximumStatusDateUtc >= oMinimumStatusDateUtc);
+        Debug.Assert(oStatusCriteria != null);
         Debug.Assert( !String.IsNullOrEmpty(sGraphServerUserName) );
         Debug.Assert( !String.IsNullOrEmpty(sGraphServerPassword) );
         Debug.Assert(oRequestStatistics != null);
@@ -393,10 +460,33 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
         GraphServiceClient oClient = new GraphServiceClient(
             GetWcfServiceBinding(), new EndpointAddress(GraphServiceUrl) );
 
-        Byte [] abtZippedGraphML =
-            oClient.GetTwitterSearchNetworkAsZippedGraphML(
-                sSearchTerm, oMinimumStatusDateUtc, oMaximumStatusDateUtc,
-                bExpandStatusUrls, sGraphServerUserName, sGraphServerPassword);
+        Byte [] abtZippedGraphML;
+
+        // There are two ways to get the network: With a maximum status date,
+        // and with a maximum number of statuses.
+
+        if (oStatusCriteria.HasMaximumStatusDateUtc)
+        {
+            abtZippedGraphML = oClient.GetTwitterSearchNetworkAsZippedGraphML(
+                oStatusCriteria.SearchTerm,
+                oStatusCriteria.MinimumStatusDateUtc,
+                oStatusCriteria.MaximumStatusDateUtc,
+                bExpandStatusUrls,
+                sGraphServerUserName,
+                sGraphServerPassword
+                );
+        }
+        else
+        {
+            abtZippedGraphML = oClient.GetTwitterSearchNetworkAsZippedGraphML2(
+                oStatusCriteria.SearchTerm,
+                oStatusCriteria.MinimumStatusDateUtc,
+                oStatusCriteria.MaximumStatuses,
+                bExpandStatusUrls,
+                sGraphServerUserName,
+                sGraphServerPassword
+                );
+        }
 
         String sGraphML = ZipUtil.UnzipOneTextFile(abtZippedGraphML);
         abtZippedGraphML = null;
@@ -418,24 +508,9 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
     /// Gets a description of the network.
     /// </summary>
     ///
-    /// <param name="sSearchTerm">
-    /// The term to search for.
-    /// </param>
-    ///
-    /// <param name="oMinimumStatusDateUtc">
-    /// Minimum status date, in UTC.
-    /// </param>
-    ///
-    /// <param name="oMaximumStatusDateUtc">
-    /// Maximum status date, in UTC.
-    /// </param>
-    ///
-    /// <param name="sGraphServerUserName">
-    /// User name for the account to use on the NodeXL Graph Server.
-    /// </param>
-    ///
-    /// <param name="sGraphServerPassword">
-    /// Password for the account to use on the NodeXL Graph Server.
+    /// <param name="oStatusCriteria">
+    /// Specifies the criteria used for getting statuses from the NodeXL Graph
+    /// Server.
     /// </param>
     ///
     /// <param name="oGraphMLXmlDocument">
@@ -450,18 +525,11 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
     protected String
     GetNetworkDescription
     (
-        String sSearchTerm,
-        DateTime oMinimumStatusDateUtc,
-        DateTime oMaximumStatusDateUtc,
-        String sGraphServerUserName,
-        String sGraphServerPassword,
+        StatusCriteria oStatusCriteria,
         XmlDocument oGraphMLXmlDocument
     )
     {
-        Debug.Assert( !String.IsNullOrEmpty(sSearchTerm) );
-        Debug.Assert(oMaximumStatusDateUtc >= oMinimumStatusDateUtc);
-        Debug.Assert( !String.IsNullOrEmpty(sGraphServerUserName) );
-        Debug.Assert( !String.IsNullOrEmpty(sGraphServerPassword) );
+        Debug.Assert(oStatusCriteria != null);
         Debug.Assert(oGraphMLXmlDocument != null);
         AssertValid();
 
@@ -474,24 +542,43 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
         oNetworkDescriber.AddSentence(
 
             "The graph represents a network of {0} Twitter {1} whose tweets in"
-            + " the requested date range contained \"{2}\", or who {3} replied"
-            + " to or mentioned in those tweets."
+            + " the requested range contained \"{2}\", or who {3} replied to"
+            + " or mentioned in those tweets."
             ,
             iVertexCount.ToString(Int32FormatString),
             StringUtil.MakePlural("user", iVertexCount),
-            sSearchTerm,
+            oStatusCriteria.SearchTerm,
             iVertexCount > 1 ? "were" : "was"
             );
 
         oNetworkDescriber.AddNetworkTime(NetworkSource);
 
-        oNetworkDescriber.AddSentenceNewParagraph(
+        if (oStatusCriteria.HasMaximumStatusDateUtc)
+        {
+            oNetworkDescriber.AddSentenceNewParagraph(
 
-            "The requested date range was from {0} through {1}."
-            ,
-            oNetworkDescriber.FormatEventTime(oMinimumStatusDateUtc),
-            oNetworkDescriber.FormatEventTime(oMaximumStatusDateUtc)
-            );
+                "The requested date range was from {0} through {1}."
+                ,
+                oNetworkDescriber.FormatEventTime(
+                    oStatusCriteria.MinimumStatusDateUtc),
+
+                oNetworkDescriber.FormatEventTime(
+                    oStatusCriteria.MaximumStatusDateUtc)
+                );
+        }
+        else
+        {
+            oNetworkDescriber.AddSentenceNewParagraph(
+
+                "The requested start date was {0} and the maximum number of"
+                + " tweets was {1}."
+                ,
+                oNetworkDescriber.FormatEventTime(
+                    oStatusCriteria.MinimumStatusDateUtc),
+
+                oStatusCriteria.MaximumStatuses.ToString(Int32FormatString)
+                );
+        }
 
         oNetworkDescriber.StartNewParagraph();
 
@@ -632,9 +719,7 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
         try
         {
             e.Result = GetNetworkInternal(
-                oGetNetworkAsyncArgs.SearchTerm,
-                oGetNetworkAsyncArgs.MinimumStatusDateUtc,
-                oGetNetworkAsyncArgs.MaximumStatusDateUtc,
+                oGetNetworkAsyncArgs.StatusCriteria,
                 oGetNetworkAsyncArgs.ExpandStatusUrls,
                 oGetNetworkAsyncArgs.GraphServerUserName,
                 oGetNetworkAsyncArgs.GraphServerPassword
@@ -731,11 +816,7 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
     protected class GetNetworkAsyncArgs : Object
     {
         ///
-        public String SearchTerm;
-        ///
-        public DateTime MinimumStatusDateUtc;
-        ///
-        public DateTime MaximumStatusDateUtc;
+        public StatusCriteria StatusCriteria;
         ///
         public Boolean ExpandStatusUrls;
         ///

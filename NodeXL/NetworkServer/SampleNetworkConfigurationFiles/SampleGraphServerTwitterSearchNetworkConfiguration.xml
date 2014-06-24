@@ -12,10 +12,10 @@ should be saved.
 A particular network configuration file might specify the following, for
 example:
 
-    * Get the network for people whose tweets contain "NodeXL"
+    * Get the network for people whose tweets matched the query "NodeXL"
     
-    * Use a date range of today through 3 days back
-    
+    * Start with tweets one week ago and get up to 5,000 tweets.
+
     * Store the network as a GraphML file in the C:\NodeXLNetworks folder
 
 
@@ -49,7 +49,8 @@ The Configuration That Must be Edited
         ***********************************************************************
         Search Term
         
-        What to search for.
+        The search term to match.  This must be one of the search terms that
+        has been collected by the Graph Server.
         ***********************************************************************
         -->
 
@@ -58,15 +59,25 @@ The Configuration That Must be Edited
 
         <!--
         ***********************************************************************
-        Date range
+        Start Date
         
-        The tweet date range.  The range always ends today.  If today is
-        May 26, for example, and DaysIncludingToday is set to 2, then the tweet
-        date range is May 25 through May 26, inclusive.
+        The tweet start date, specified as the number of days before today.  If
+        today is June 10, for example, and you set this to 7, then the start
+        date will be June 3.  Must be greater than or equal to zero.
         ***********************************************************************
         -->
 
-        <DaysIncludingToday>7</DaysIncludingToday>
+        <StartDateInDaysBeforeToday>7</StartDateInDaysBeforeToday>
+
+        <!--
+        ***********************************************************************
+        Maximum Tweets
+        
+        The maximum number of tweets to get.  Must be greater than zero.
+        ***********************************************************************
+        -->
+
+        <MaximumStatuses>5000</MaximumStatuses>
 
 
         <!--

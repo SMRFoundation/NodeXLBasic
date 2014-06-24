@@ -8,8 +8,8 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
 //  Class: GraphServerTwitterSearchNetworkGraphDataProvider
 //
 /// <summary>
-/// Uses the NodeXL Graph Server to get a network of people who have tweeted
-/// a specified search term.
+/// Uses the NodeXL Graph Server to get a network created from a specified set
+/// of tweets.
 /// </summary>
 ///
 /// <remarks>
@@ -33,9 +33,7 @@ public class GraphServerTwitterSearchNetworkGraphDataProvider :
     public GraphServerTwitterSearchNetworkGraphDataProvider()
     :
     base(GraphDataProviderName,
-        "get the network of people whose tweets contain a specified word."
-        + "  The network is obtained from the NodeXL Graph Server, not"
-        + " directly from Twitter"
+        "get a Twitter search network from the NodeXL Graph Server"
         )
     {
         // (Do nothing.)

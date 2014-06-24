@@ -339,7 +339,8 @@ class Program
         sNetworkFileFolderPath = null;
 
         String sSearchTerm = null;
-        Int32 iDaysIncludingToday = Int32.MinValue;
+        Int32 iStartDateInDaysBeforeToday = Int32.MinValue;
+        Int32 iMaximumStatuses = Int32.MinValue;
         Boolean bExpandStatusUrls = false;
         String sGraphServerUserName = null;
         String sGraphServerPassword = null;
@@ -349,7 +350,8 @@ class Program
             oNetworkConfigurationFileParser.
             GetGraphServerTwitterSearchNetworkConfiguration(
                 out sSearchTerm,
-                out iDaysIncludingToday,
+                out iStartDateInDaysBeforeToday,
+                out iMaximumStatuses,
                 out bExpandStatusUrls,
                 out sGraphServerUserName,
                 out sGraphServerPassword,
@@ -363,10 +365,8 @@ class Program
             OnNetworkConfigurationFileException(oXmlException);
         }
 
-        DateTime oMinimumStatusDateUtc, oMaximumStatusDateUtc;
-
-        GetStatusDateRange(oStartTime, iDaysIncludingToday,
-            out oMinimumStatusDateUtc, out oMaximumStatusDateUtc);
+        DateTime oMinimumStatusDateUtc = GetMinimumStatusDateUtc(
+            oStartTime, iStartDateInDaysBeforeToday);
 
         GraphServerTwitterSearchNetworkAnalyzer
             oGraphServerTwitterSearchNetworkAnalyzer =
@@ -377,19 +377,19 @@ class Program
 
         Console.WriteLine(
             "Getting the Graph Server Twitter search network specified in"
-            + " \"{0}\".  The search term is \"{1}\".  The date range is from"
-            + " {2} through {3}, UTC."
+            + " \"{0}\".  The search term is \"{1}\".  The start date is"
+            + " {2}, UTC.  The maximum number of tweets is {3}."
             ,
             sNetworkConfigurationFilePath,
             sSearchTerm,
             oMinimumStatusDateUtc,
-            oMaximumStatusDateUtc
+            iMaximumStatuses
             );
 
         try
         {
             oXmlDocument = oGraphServerTwitterSearchNetworkAnalyzer.GetNetwork(
-                sSearchTerm, oMinimumStatusDateUtc, oMaximumStatusDateUtc,
+                sSearchTerm, oMinimumStatusDateUtc, iMaximumStatuses,
                 bExpandStatusUrls, sGraphServerUserName, sGraphServerPassword);
         }
         catch (Exception oException)
@@ -403,52 +403,43 @@ class Program
     }
 
     //*************************************************************************
-    //  Method: GetStatusDateRange()
+    //  Method: GetMinimumStatusDateUtc()
     //
     /// <summary>
+    /// Gets the minimum status date.
     /// </summary>
     ///
     /// <param name="oStartTime">
     /// Time at which the network download started.
     /// </param>
     ///
-    /// <param name="iDaysIncludingToday">
-    /// The number of days to include in the tweet date range.
+    /// <param name="iStartDateInDaysBeforeToday">
+    /// The tweet start date, specified as the number of days before today.
+    /// If today is June 10, for example, and you set this to 7, then the
+    /// returned date will be June 3.  Must be greater than or equal to zero.
     /// </param>
     ///
-    /// <param name="oMinimumStatusDateUtc">
-    /// Where the maximum status date gets stored, in UTC.
-    /// </param>
-    ///
-    /// <param name="oMaximumStatusDateUtc">
-    /// Where the minimum status date gets stored, in UTC.
-    /// </param>
+    /// <returns>
+    /// The minimum status date, in UTC.
+    /// </returns>
     //*************************************************************************
 
-    private static void
-    GetStatusDateRange
+    private static DateTime
+    GetMinimumStatusDateUtc
     (
         DateTime oStartTime,
-        Int32 iDaysIncludingToday,
-        out DateTime oMinimumStatusDateUtc,
-        out DateTime oMaximumStatusDateUtc
+        Int32 iStartDateInDaysBeforeToday
     )
     {
-        Debug.Assert(iDaysIncludingToday >= 1);
+        Debug.Assert(iStartDateInDaysBeforeToday >= 0);
 
-        // Sample oStartTime: 2014/05/26 3:00 PM
+        // Sample oStartTime: 2014/06/10 3:00 PM
 
-        // Sample oStartTime.Date: 2014/05/26 12:00 AM
+        // Sample oStartTime.Date: 2014/06/10 12:00 AM
 
-        // Sample oMaximumStatusDateUtc: 2014/05/27 12:00 AM
+        // Sample oMinimumStatusDateUtc: 2014/06/03 12:00 AM
 
-        oMaximumStatusDateUtc = oStartTime.Date.AddDays(1);
-
-        // Sample oMinimumStatusDateUtc if iDaysIncludingToday is 1:
-        // 2014/05/26 12:00 AM
-
-        oMinimumStatusDateUtc =
-            oMaximumStatusDateUtc.AddDays(-iDaysIncludingToday);
+        return ( oStartTime.Date.AddDays(-iStartDateInDaysBeforeToday) );
     }
 
     //*************************************************************************

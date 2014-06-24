@@ -234,6 +234,7 @@
     <Compile Include="NetworkAnalyzers\Flickr\FlickrUserNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\GraphServer\GraphServerTwitterSearchNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\GraphServer\GraphService.cs" />
+    <Compile Include="NetworkAnalyzers\GraphServer\StatusCriteria.cs" />
     <Compile Include="NetworkAnalyzers\HttpNetworkAnalyzerBase.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\Authorization\TwitterAccessToken.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\Authorization\TwitterAuthorizationStatus.cs" />

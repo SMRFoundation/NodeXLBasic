@@ -886,7 +886,8 @@ public class NetworkConfigurationFileParserTest : Object
             m_sTempFileName);
 
         String sSearchTerm;
-        Int32 iDaysIncludingToday;
+        Int32 iStartDateInDaysBeforeToday;
+        Int32 iMaximumStatuses;
         Boolean bExpandStatusUrls;
         String sGraphServerUserName;
         String sGraphServerPassword;
@@ -894,12 +895,14 @@ public class NetworkConfigurationFileParserTest : Object
 
         m_oNetworkConfigurationFileParser
         .GetGraphServerTwitterSearchNetworkConfiguration(
-            out sSearchTerm, out iDaysIncludingToday, out bExpandStatusUrls,
+            out sSearchTerm, out iStartDateInDaysBeforeToday,
+            out iMaximumStatuses, out bExpandStatusUrls,
             out sGraphServerUserName, out sGraphServerPassword,
             out sNetworkFileFolderPath);
 
         Assert.AreEqual("NodeXL", sSearchTerm);
-        Assert.AreEqual(7, iDaysIncludingToday);
+        Assert.AreEqual(7, iStartDateInDaysBeforeToday);
+        Assert.AreEqual(5000, iMaximumStatuses);
         Assert.IsFalse(bExpandStatusUrls);
         Assert.AreEqual("TheUserName", sGraphServerUserName);
         Assert.AreEqual("ThePassword", sGraphServerPassword);
@@ -930,7 +933,8 @@ public class NetworkConfigurationFileParserTest : Object
             m_sTempFileName);
 
         String sSearchTerm;
-        Int32 iDaysIncludingToday;
+        Int32 iStartDateInDaysBeforeToday;
+        Int32 iMaximumStatuses;
         Boolean bExpandStatusUrls;
         String sGraphServerUserName;
         String sGraphServerPassword;
@@ -938,12 +942,14 @@ public class NetworkConfigurationFileParserTest : Object
 
         m_oNetworkConfigurationFileParser
         .GetGraphServerTwitterSearchNetworkConfiguration(
-            out sSearchTerm, out iDaysIncludingToday, out bExpandStatusUrls,
+            out sSearchTerm, out iStartDateInDaysBeforeToday,
+            out iMaximumStatuses, out bExpandStatusUrls,
             out sGraphServerUserName, out sGraphServerPassword,
             out sNetworkFileFolderPath);
 
         Assert.AreEqual("NodeXL", sSearchTerm);
-        Assert.AreEqual(7, iDaysIncludingToday);
+        Assert.AreEqual(7, iStartDateInDaysBeforeToday);
+        Assert.AreEqual(5000, iMaximumStatuses);
         Assert.IsTrue(bExpandStatusUrls);
         Assert.AreEqual("TheUserName", sGraphServerUserName);
         Assert.AreEqual("ThePassword", sGraphServerPassword);
@@ -975,7 +981,8 @@ public class NetworkConfigurationFileParserTest : Object
             m_sTempFileName);
 
         String sSearchTerm;
-        Int32 iDaysIncludingToday;
+        Int32 iStartDateInDaysBeforeToday;
+        Int32 iMaximumStatuses;
         Boolean bExpandStatusUrls;
         String sGraphServerUserName;
         String sGraphServerPassword;
@@ -985,9 +992,10 @@ public class NetworkConfigurationFileParserTest : Object
         {
             m_oNetworkConfigurationFileParser
             .GetGraphServerTwitterSearchNetworkConfiguration(
-                out sSearchTerm, out iDaysIncludingToday,
-                out bExpandStatusUrls, out sGraphServerUserName,
-                out sGraphServerPassword, out sNetworkFileFolderPath);
+                out sSearchTerm, out iStartDateInDaysBeforeToday,
+                out iMaximumStatuses, out bExpandStatusUrls,
+                out sGraphServerUserName, out sGraphServerPassword,
+                out sNetworkFileFolderPath);
         }
         catch (XmlException oXmlException)
         {
@@ -1012,18 +1020,19 @@ public class NetworkConfigurationFileParserTest : Object
     public void
     TestGetGraphServerTwitterSearchNetworkConfigurationBad2()
     {
-        // Missing DaysIncludingToday.
+        // Missing StartDateInDaysBeforeToday.
 
         WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
-            "<DaysIncludingToday>.*</DaysIncludingToday>",
-            "<DaysIncludingToday></DaysIncludingToday>"
+            "<StartDateInDaysBeforeToday>.*</StartDateInDaysBeforeToday>",
+            "<StartDateInDaysBeforeToday></StartDateInDaysBeforeToday>"
             );
 
         m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
             m_sTempFileName);
 
         String sSearchTerm;
-        Int32 iDaysIncludingToday;
+        Int32 iStartDateInDaysBeforeToday;
+        Int32 iMaximumStatuses;
         Boolean bExpandStatusUrls;
         String sGraphServerUserName;
         String sGraphServerPassword;
@@ -1033,14 +1042,15 @@ public class NetworkConfigurationFileParserTest : Object
         {
             m_oNetworkConfigurationFileParser
             .GetGraphServerTwitterSearchNetworkConfiguration(
-                out sSearchTerm, out iDaysIncludingToday,
-                out bExpandStatusUrls, out sGraphServerUserName,
-                out sGraphServerPassword, out sNetworkFileFolderPath);
+                out sSearchTerm, out iStartDateInDaysBeforeToday,
+                out iMaximumStatuses, out bExpandStatusUrls,
+                out sGraphServerUserName, out sGraphServerPassword,
+                out sNetworkFileFolderPath);
         }
         catch (XmlException oXmlException)
         {
             Assert.IsTrue( oXmlException.Message.IndexOf(
-                "The XPath is \"DaysIncludingToday") >= 0);
+                "The XPath is \"StartDateInDaysBeforeToday") >= 0);
 
             throw oXmlException;
         }
@@ -1060,18 +1070,19 @@ public class NetworkConfigurationFileParserTest : Object
     public void
     TestGetGraphServerTwitterSearchNetworkConfigurationBad3()
     {
-        // Bad DaysIncludingToday.
+        // Bad StartDateInDaysBeforeToday.
 
         WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
-            "<DaysIncludingToday>.*</DaysIncludingToday>",
-            "<DaysIncludingToday>BadValue</DaysIncludingToday>"
+            "<StartDateInDaysBeforeToday>.*</StartDateInDaysBeforeToday>",
+            "<StartDateInDaysBeforeToday>BadValue</StartDateInDaysBeforeToday>"
             );
 
         m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
             m_sTempFileName);
 
         String sSearchTerm;
-        Int32 iDaysIncludingToday;
+        Int32 iStartDateInDaysBeforeToday;
+        Int32 iMaximumStatuses;
         Boolean bExpandStatusUrls;
         String sGraphServerUserName;
         String sGraphServerPassword;
@@ -1081,14 +1092,15 @@ public class NetworkConfigurationFileParserTest : Object
         {
             m_oNetworkConfigurationFileParser
             .GetGraphServerTwitterSearchNetworkConfiguration(
-                out sSearchTerm, out iDaysIncludingToday,
-                out bExpandStatusUrls, out sGraphServerUserName,
-                out sGraphServerPassword, out sNetworkFileFolderPath);
+                out sSearchTerm, out iStartDateInDaysBeforeToday,
+                out iMaximumStatuses, out bExpandStatusUrls,
+                out sGraphServerUserName, out sGraphServerPassword,
+                out sNetworkFileFolderPath);
         }
         catch (XmlException oXmlException)
         {
             Assert.IsTrue( oXmlException.Message.IndexOf(
-                "The XPath is \"DaysIncludingToday") >= 0);
+                "The XPath is \"StartDateInDaysBeforeToday") >= 0);
 
             throw oXmlException;
         }
@@ -1108,18 +1120,19 @@ public class NetworkConfigurationFileParserTest : Object
     public void
     TestGetGraphServerTwitterSearchNetworkConfigurationBad4()
     {
-        // Bad DaysIncludingToday.
+        // Bad StartDateInDaysBeforeToday.
 
         WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
-            "<DaysIncludingToday>.*</DaysIncludingToday>",
-            "<DaysIncludingToday>0</DaysIncludingToday>"
+            "<StartDateInDaysBeforeToday>.*</StartDateInDaysBeforeToday>",
+            "<StartDateInDaysBeforeToday>-1</StartDateInDaysBeforeToday>"
             );
 
         m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
             m_sTempFileName);
 
         String sSearchTerm;
-        Int32 iDaysIncludingToday;
+        Int32 iStartDateInDaysBeforeToday;
+        Int32 iMaximumStatuses;
         Boolean bExpandStatusUrls;
         String sGraphServerUserName;
         String sGraphServerPassword;
@@ -1129,14 +1142,15 @@ public class NetworkConfigurationFileParserTest : Object
         {
             m_oNetworkConfigurationFileParser
             .GetGraphServerTwitterSearchNetworkConfiguration(
-                out sSearchTerm, out iDaysIncludingToday,
-                out bExpandStatusUrls, out sGraphServerUserName,
-                out sGraphServerPassword, out sNetworkFileFolderPath);
+                out sSearchTerm, out iStartDateInDaysBeforeToday,
+                out iMaximumStatuses, out bExpandStatusUrls,
+                out sGraphServerUserName, out sGraphServerPassword,
+                out sNetworkFileFolderPath);
         }
         catch (XmlException oXmlException)
         {
             Assert.IsTrue( oXmlException.Message.IndexOf(
-                "can't be less than 1") >= 0);
+                "can't be less than 0") >= 0);
 
             throw oXmlException;
         }
@@ -1156,18 +1170,19 @@ public class NetworkConfigurationFileParserTest : Object
     public void
     TestGetGraphServerTwitterSearchNetworkConfigurationBad5()
     {
-        // Missing ExpandStatusUrls.
+        // Missing MaximumStatuses.
 
         WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
-            "<ExpandStatusUrls>.*</ExpandStatusUrls>",
-            "<ExpandStatusUrls></ExpandStatusUrls>"
+            "<MaximumStatuses>.*</MaximumStatuses>",
+            "<MaximumStatuses></MaximumStatuses>"
             );
 
         m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
             m_sTempFileName);
 
         String sSearchTerm;
-        Int32 iDaysIncludingToday;
+        Int32 iStartDateInDaysBeforeToday;
+        Int32 iMaximumStatuses;
         Boolean bExpandStatusUrls;
         String sGraphServerUserName;
         String sGraphServerPassword;
@@ -1177,14 +1192,15 @@ public class NetworkConfigurationFileParserTest : Object
         {
             m_oNetworkConfigurationFileParser
             .GetGraphServerTwitterSearchNetworkConfiguration(
-                out sSearchTerm, out iDaysIncludingToday,
-                out bExpandStatusUrls, out sGraphServerUserName,
-                out sGraphServerPassword, out sNetworkFileFolderPath);
+                out sSearchTerm, out iStartDateInDaysBeforeToday,
+                out iMaximumStatuses, out bExpandStatusUrls,
+                out sGraphServerUserName, out sGraphServerPassword,
+                out sNetworkFileFolderPath);
         }
         catch (XmlException oXmlException)
         {
             Assert.IsTrue( oXmlException.Message.IndexOf(
-                "The XPath is \"ExpandStatusUrls") >= 0);
+                "The XPath is \"MaximumStatuses") >= 0);
 
             throw oXmlException;
         }
@@ -1204,18 +1220,19 @@ public class NetworkConfigurationFileParserTest : Object
     public void
     TestGetGraphServerTwitterSearchNetworkConfigurationBad6()
     {
-        // Bad ExpandStatusUrls.
+        // Bad MaximumStatuses.
 
         WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
-            "<ExpandStatusUrls>.*</ExpandStatusUrls>",
-            "<ExpandStatusUrls>BadValue</ExpandStatusUrls>"
+            "<MaximumStatuses>.*</MaximumStatuses>",
+            "<MaximumStatuses>BadValue</MaximumStatuses>"
             );
 
         m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
             m_sTempFileName);
 
         String sSearchTerm;
-        Int32 iDaysIncludingToday;
+        Int32 iStartDateInDaysBeforeToday;
+        Int32 iMaximumStatuses;
         Boolean bExpandStatusUrls;
         String sGraphServerUserName;
         String sGraphServerPassword;
@@ -1225,14 +1242,15 @@ public class NetworkConfigurationFileParserTest : Object
         {
             m_oNetworkConfigurationFileParser
             .GetGraphServerTwitterSearchNetworkConfiguration(
-                out sSearchTerm, out iDaysIncludingToday,
-                out bExpandStatusUrls, out sGraphServerUserName,
-                out sGraphServerPassword, out sNetworkFileFolderPath);
+                out sSearchTerm, out iStartDateInDaysBeforeToday,
+                out iMaximumStatuses, out bExpandStatusUrls,
+                out sGraphServerUserName, out sGraphServerPassword,
+                out sNetworkFileFolderPath);
         }
         catch (XmlException oXmlException)
         {
             Assert.IsTrue( oXmlException.Message.IndexOf(
-                "whose value must be a Boolean") >= 0);
+                "The XPath is \"MaximumStatuses") >= 0);
 
             throw oXmlException;
         }
@@ -1252,18 +1270,19 @@ public class NetworkConfigurationFileParserTest : Object
     public void
     TestGetGraphServerTwitterSearchNetworkConfigurationBad7()
     {
-        // Missing GraphServerUserName.
+        // Bad MaximumStatuses.
 
         WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
-            "<GraphServerUserName>.*</GraphServerUserName>",
-            "<GraphServerUserName></GraphServerUserName>"
+            "<MaximumStatuses>.*</MaximumStatuses>",
+            "<MaximumStatuses>0</MaximumStatuses>"
             );
 
         m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
             m_sTempFileName);
 
         String sSearchTerm;
-        Int32 iDaysIncludingToday;
+        Int32 iStartDateInDaysBeforeToday;
+        Int32 iMaximumStatuses;
         Boolean bExpandStatusUrls;
         String sGraphServerUserName;
         String sGraphServerPassword;
@@ -1273,14 +1292,15 @@ public class NetworkConfigurationFileParserTest : Object
         {
             m_oNetworkConfigurationFileParser
             .GetGraphServerTwitterSearchNetworkConfiguration(
-                out sSearchTerm, out iDaysIncludingToday,
-                out bExpandStatusUrls, out sGraphServerUserName,
-                out sGraphServerPassword, out sNetworkFileFolderPath);
+                out sSearchTerm, out iStartDateInDaysBeforeToday,
+                out iMaximumStatuses, out bExpandStatusUrls,
+                out sGraphServerUserName, out sGraphServerPassword,
+                out sNetworkFileFolderPath);
         }
         catch (XmlException oXmlException)
         {
             Assert.IsTrue( oXmlException.Message.IndexOf(
-                "The XPath is \"GraphServerUserName") >= 0);
+                "can't be less than 1") >= 0);
 
             throw oXmlException;
         }
@@ -1300,18 +1320,19 @@ public class NetworkConfigurationFileParserTest : Object
     public void
     TestGetGraphServerTwitterSearchNetworkConfigurationBad8()
     {
-        // Missing GraphServerPassword.
+        // Missing ExpandStatusUrls.
 
         WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
-            "<GraphServerPassword>.*</GraphServerPassword>",
-            "<GraphServerPassword></GraphServerPassword>"
+            "<ExpandStatusUrls>.*</ExpandStatusUrls>",
+            "<ExpandStatusUrls></ExpandStatusUrls>"
             );
 
         m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
             m_sTempFileName);
 
         String sSearchTerm;
-        Int32 iDaysIncludingToday;
+        Int32 iStartDateInDaysBeforeToday;
+        Int32 iMaximumStatuses;
         Boolean bExpandStatusUrls;
         String sGraphServerUserName;
         String sGraphServerPassword;
@@ -1321,14 +1342,15 @@ public class NetworkConfigurationFileParserTest : Object
         {
             m_oNetworkConfigurationFileParser
             .GetGraphServerTwitterSearchNetworkConfiguration(
-                out sSearchTerm, out iDaysIncludingToday,
-                out bExpandStatusUrls, out sGraphServerUserName,
-                out sGraphServerPassword, out sNetworkFileFolderPath);
+                out sSearchTerm, out iStartDateInDaysBeforeToday,
+                out iMaximumStatuses, out bExpandStatusUrls,
+                out sGraphServerUserName, out sGraphServerPassword,
+                out sNetworkFileFolderPath);
         }
         catch (XmlException oXmlException)
         {
             Assert.IsTrue( oXmlException.Message.IndexOf(
-                "The XPath is \"GraphServerPassword") >= 0);
+                "The XPath is \"ExpandStatusUrls") >= 0);
 
             throw oXmlException;
         }
@@ -1348,6 +1370,156 @@ public class NetworkConfigurationFileParserTest : Object
     public void
     TestGetGraphServerTwitterSearchNetworkConfigurationBad9()
     {
+        // Bad ExpandStatusUrls.
+
+        WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
+            "<ExpandStatusUrls>.*</ExpandStatusUrls>",
+            "<ExpandStatusUrls>BadValue</ExpandStatusUrls>"
+            );
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        String sSearchTerm;
+        Int32 iStartDateInDaysBeforeToday;
+        Int32 iMaximumStatuses;
+        Boolean bExpandStatusUrls;
+        String sGraphServerUserName;
+        String sGraphServerPassword;
+        String sNetworkFileFolderPath;
+
+        try
+        {
+            m_oNetworkConfigurationFileParser
+            .GetGraphServerTwitterSearchNetworkConfiguration(
+                out sSearchTerm, out iStartDateInDaysBeforeToday,
+                out iMaximumStatuses, out bExpandStatusUrls,
+                out sGraphServerUserName, out sGraphServerPassword,
+                out sNetworkFileFolderPath);
+        }
+        catch (XmlException oXmlException)
+        {
+            Assert.IsTrue( oXmlException.Message.IndexOf(
+                "whose value must be a Boolean") >= 0);
+
+            throw oXmlException;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: TestGetGraphServerTwitterSearchNetworkConfigurationBad10()
+    //
+    /// <summary>
+    /// Tests the GetTwitterSearchNetworkConfiguration() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+    [ ExpectedException( typeof(XmlException) ) ]
+
+    public void
+    TestGetGraphServerTwitterSearchNetworkConfigurationBad10()
+    {
+        // Missing GraphServerUserName.
+
+        WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
+            "<GraphServerUserName>.*</GraphServerUserName>",
+            "<GraphServerUserName></GraphServerUserName>"
+            );
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        String sSearchTerm;
+        Int32 iStartDateInDaysBeforeToday;
+        Int32 iMaximumStatuses;
+        Boolean bExpandStatusUrls;
+        String sGraphServerUserName;
+        String sGraphServerPassword;
+        String sNetworkFileFolderPath;
+
+        try
+        {
+            m_oNetworkConfigurationFileParser
+            .GetGraphServerTwitterSearchNetworkConfiguration(
+                out sSearchTerm, out iStartDateInDaysBeforeToday,
+                out iMaximumStatuses, out bExpandStatusUrls,
+                out sGraphServerUserName, out sGraphServerPassword,
+                out sNetworkFileFolderPath);
+        }
+        catch (XmlException oXmlException)
+        {
+            Assert.IsTrue( oXmlException.Message.IndexOf(
+                "The XPath is \"GraphServerUserName") >= 0);
+
+            throw oXmlException;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: TestGetGraphServerTwitterSearchNetworkConfigurationBad11()
+    //
+    /// <summary>
+    /// Tests the GetTwitterSearchNetworkConfiguration() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+    [ ExpectedException( typeof(XmlException) ) ]
+
+    public void
+    TestGetGraphServerTwitterSearchNetworkConfigurationBad11()
+    {
+        // Missing GraphServerPassword.
+
+        WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
+            "<GraphServerPassword>.*</GraphServerPassword>",
+            "<GraphServerPassword></GraphServerPassword>"
+            );
+
+        m_oNetworkConfigurationFileParser.OpenNetworkConfigurationFile(
+            m_sTempFileName);
+
+        String sSearchTerm;
+        Int32 iStartDateInDaysBeforeToday;
+        Int32 iMaximumStatuses;
+        Boolean bExpandStatusUrls;
+        String sGraphServerUserName;
+        String sGraphServerPassword;
+        String sNetworkFileFolderPath;
+
+        try
+        {
+            m_oNetworkConfigurationFileParser
+            .GetGraphServerTwitterSearchNetworkConfiguration(
+                out sSearchTerm, out iStartDateInDaysBeforeToday,
+                out iMaximumStatuses, out bExpandStatusUrls,
+                out sGraphServerUserName, out sGraphServerPassword,
+                out sNetworkFileFolderPath);
+        }
+        catch (XmlException oXmlException)
+        {
+            Assert.IsTrue( oXmlException.Message.IndexOf(
+                "The XPath is \"GraphServerPassword") >= 0);
+
+            throw oXmlException;
+        }
+    }
+
+    //*************************************************************************
+    //  Method: TestGetGraphServerTwitterSearchNetworkConfigurationBad12()
+    //
+    /// <summary>
+    /// Tests the GetTwitterSearchNetworkConfiguration() method.
+    /// </summary>
+    //*************************************************************************
+
+    [TestMethodAttribute]
+    [ ExpectedException( typeof(XmlException) ) ]
+
+    public void
+    TestGetGraphServerTwitterSearchNetworkConfigurationBad12()
+    {
         // Missing NetworkFileFolder.
 
         WriteSampleGraphServerTwitterSearchNetworkConfigurationFile(
@@ -1359,7 +1531,8 @@ public class NetworkConfigurationFileParserTest : Object
             m_sTempFileName);
 
         String sSearchTerm;
-        Int32 iDaysIncludingToday;
+        Int32 iStartDateInDaysBeforeToday;
+        Int32 iMaximumStatuses;
         Boolean bExpandStatusUrls;
         String sGraphServerUserName;
         String sGraphServerPassword;
@@ -1369,9 +1542,10 @@ public class NetworkConfigurationFileParserTest : Object
         {
             m_oNetworkConfigurationFileParser
             .GetGraphServerTwitterSearchNetworkConfiguration(
-                out sSearchTerm, out iDaysIncludingToday,
-                out bExpandStatusUrls, out sGraphServerUserName,
-                out sGraphServerPassword, out sNetworkFileFolderPath);
+                out sSearchTerm, out iStartDateInDaysBeforeToday,
+                out iMaximumStatuses, out bExpandStatusUrls,
+                out sGraphServerUserName, out sGraphServerPassword,
+                out sNetworkFileFolderPath);
         }
         catch (XmlException oXmlException)
         {

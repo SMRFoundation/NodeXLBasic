@@ -264,11 +264,15 @@ public class NetworkConfigurationFileParser : Object
     /// Where the term to search for gets stored.
     /// </param>
     ///
-    /// <param name="daysIncludingToday">
-    /// Where the number of days to include in the tweet date range gets
-    /// stored.  The range always ends today.  If today is May 26, for example,
-    /// and daysIncludingToday is set to 2, then the tweet date range is May 25
-    /// through May 26, inclusive.
+    /// <param name="startDateInDaysBeforeToday">
+    /// Where the tweet start date gets stored.  It's specified as the number
+    /// of days before today.  If today is June 10, for example, and you set
+    /// this to 7, then the start date will be June 3.  Must be greater than or
+    /// equal to zero.
+    /// </param>
+    ///
+    /// <param name="maximumStatuses">
+    /// Where the maximum number of statuses to request gets stored.
     /// </param>
     ///
     /// <param name="expandStatusUrls">
@@ -293,7 +297,8 @@ public class NetworkConfigurationFileParser : Object
     GetGraphServerTwitterSearchNetworkConfiguration
     (
         out String searchTerm,
-        out Int32 daysIncludingToday,
+        out Int32 startDateInDaysBeforeToday,
+        out Int32 maximumStatuses,
         out Boolean expandStatusUrls,
         out String graphServerUserName,
         out String graphServerPassword,
@@ -317,14 +322,25 @@ public class NetworkConfigurationFileParser : Object
             oGraphServerTwitterSearchNetworkConfigurationNode,
             "SearchTerm/text()", null);
 
-        daysIncludingToday = XmlUtil2.SelectRequiredSingleNodeAsInt32(
+        startDateInDaysBeforeToday = XmlUtil2.SelectRequiredSingleNodeAsInt32(
             oGraphServerTwitterSearchNetworkConfigurationNode,
-            "DaysIncludingToday/text()", null);
+            "StartDateInDaysBeforeToday/text()", null);
 
-        if (daysIncludingToday < 1)
+        if (startDateInDaysBeforeToday < 0)
         {
             throw new XmlException(
-                "The daysIncludingToday value can't be less than 1."
+                "The startDateInDaysBeforeToday value can't be less than 0."
+                );
+        }
+
+        maximumStatuses = XmlUtil2.SelectRequiredSingleNodeAsInt32(
+            oGraphServerTwitterSearchNetworkConfigurationNode,
+            "MaximumStatuses/text()", null);
+
+        if (maximumStatuses < 1)
+        {
+            throw new XmlException(
+                "The maximumStatuses value can't be less than 1."
                 );
         }
 
