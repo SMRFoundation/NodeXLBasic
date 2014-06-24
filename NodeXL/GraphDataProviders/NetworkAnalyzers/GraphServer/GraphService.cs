@@ -78,28 +78,16 @@ public interface IGraphService
         "t", Name="string", Namespace="http://schemas.microsoft.com/2003/10/Serialization/")]
     byte[] GetTwitterSearchNetworkAsZippedGraphML(string searchTerm, System.DateTime minimumStatusDateUtc, System.DateTime maximumStatusDateUtc, bool expandStatusUrls, string graphServerUserName, string graphServerPassword);
     
-    [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGraphService/GetTwitterSearchNetworkAsZippedGraphML", ReplyAction="http://tempuri.org/IGraphService/GetTwitterSearchNetworkAsZippedGraphMLResponse")]
-    System.Threading.Tasks.Task<byte[]> GetTwitterSearchNetworkAsZippedGraphMLAsync(string searchTerm, System.DateTime minimumStatusDateUtc, System.DateTime maximumStatusDateUtc, bool expandStatusUrls, string graphServerUserName, string graphServerPassword);
-    
     [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGraphService/GetTwitterSearchNetworkAsZippedGraphML2", ReplyAction="http://tempuri.org/IGraphService/GetTwitterSearchNetworkAsZippedGraphML2Response")]
     [System.ServiceModel.FaultContractAttribute(typeof(string), Action="http://tempuri.org/IGraphService/GetTwitterSearchNetworkAsZippedGraphML2StringFau" +
         "lt", Name="string", Namespace="http://schemas.microsoft.com/2003/10/Serialization/")]
     byte[] GetTwitterSearchNetworkAsZippedGraphML2(string searchTerm, System.DateTime minimumStatusDateUtc, int maximumStatuses, bool expandStatusUrls, string graphServerUserName, string graphServerPassword);
     
-    [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGraphService/GetTwitterSearchNetworkAsZippedGraphML2", ReplyAction="http://tempuri.org/IGraphService/GetTwitterSearchNetworkAsZippedGraphML2Response")]
-    System.Threading.Tasks.Task<byte[]> GetTwitterSearchNetworkAsZippedGraphML2Async(string searchTerm, System.DateTime minimumStatusDateUtc, int maximumStatuses, bool expandStatusUrls, string graphServerUserName, string graphServerPassword);
-    
     [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGraphService/GetData", ReplyAction="http://tempuri.org/IGraphService/GetDataResponse")]
     string GetData(int value);
     
-    [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGraphService/GetData", ReplyAction="http://tempuri.org/IGraphService/GetDataResponse")]
-    System.Threading.Tasks.Task<string> GetDataAsync(int value);
-    
     [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGraphService/GetDataUsingDataContract", ReplyAction="http://tempuri.org/IGraphService/GetDataUsingDataContractResponse")]
     Smrf.GraphServer.WcfService.CompositeType GetDataUsingDataContract(Smrf.GraphServer.WcfService.CompositeType composite);
-    
-    [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGraphService/GetDataUsingDataContract", ReplyAction="http://tempuri.org/IGraphService/GetDataUsingDataContractResponse")]
-    System.Threading.Tasks.Task<Smrf.GraphServer.WcfService.CompositeType> GetDataUsingDataContractAsync(Smrf.GraphServer.WcfService.CompositeType composite);
 }
 
 [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -141,19 +129,9 @@ public partial class GraphServiceClient : System.ServiceModel.ClientBase<IGraphS
         return base.Channel.GetTwitterSearchNetworkAsZippedGraphML(searchTerm, minimumStatusDateUtc, maximumStatusDateUtc, expandStatusUrls, graphServerUserName, graphServerPassword);
     }
     
-    public System.Threading.Tasks.Task<byte[]> GetTwitterSearchNetworkAsZippedGraphMLAsync(string searchTerm, System.DateTime minimumStatusDateUtc, System.DateTime maximumStatusDateUtc, bool expandStatusUrls, string graphServerUserName, string graphServerPassword)
-    {
-        return base.Channel.GetTwitterSearchNetworkAsZippedGraphMLAsync(searchTerm, minimumStatusDateUtc, maximumStatusDateUtc, expandStatusUrls, graphServerUserName, graphServerPassword);
-    }
-    
     public byte[] GetTwitterSearchNetworkAsZippedGraphML2(string searchTerm, System.DateTime minimumStatusDateUtc, int maximumStatuses, bool expandStatusUrls, string graphServerUserName, string graphServerPassword)
     {
         return base.Channel.GetTwitterSearchNetworkAsZippedGraphML2(searchTerm, minimumStatusDateUtc, maximumStatuses, expandStatusUrls, graphServerUserName, graphServerPassword);
-    }
-    
-    public System.Threading.Tasks.Task<byte[]> GetTwitterSearchNetworkAsZippedGraphML2Async(string searchTerm, System.DateTime minimumStatusDateUtc, int maximumStatuses, bool expandStatusUrls, string graphServerUserName, string graphServerPassword)
-    {
-        return base.Channel.GetTwitterSearchNetworkAsZippedGraphML2Async(searchTerm, minimumStatusDateUtc, maximumStatuses, expandStatusUrls, graphServerUserName, graphServerPassword);
     }
     
     public string GetData(int value)
@@ -161,18 +139,8 @@ public partial class GraphServiceClient : System.ServiceModel.ClientBase<IGraphS
         return base.Channel.GetData(value);
     }
     
-    public System.Threading.Tasks.Task<string> GetDataAsync(int value)
-    {
-        return base.Channel.GetDataAsync(value);
-    }
-    
     public Smrf.GraphServer.WcfService.CompositeType GetDataUsingDataContract(Smrf.GraphServer.WcfService.CompositeType composite)
     {
         return base.Channel.GetDataUsingDataContract(composite);
-    }
-    
-    public System.Threading.Tasks.Task<Smrf.GraphServer.WcfService.CompositeType> GetDataUsingDataContractAsync(Smrf.GraphServer.WcfService.CompositeType composite)
-    {
-        return base.Channel.GetDataUsingDataContractAsync(composite);
     }
 }

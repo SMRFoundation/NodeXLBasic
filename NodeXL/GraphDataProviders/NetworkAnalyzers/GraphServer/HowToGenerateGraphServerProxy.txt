@@ -1,0 +1,24 @@
+
+To regenerate the GraphServer.cs proxy file, follow these steps:
+
+1. Open a Visual Studio command prompt window.
+
+2. At the command prompt, navigate to this
+   NodeXL\GraphDataProviders\NetworkAnalyzers\GraphServer folder.
+
+3. On the command line, enter this:
+
+    svcutil http://localhost/GraphService/GraphService.svc /synconly
+
+
+NOTE:
+
+The "/synconly" flag is critical.  If you leave it off, the proxy file will
+include asynchronous methods that use the System.Threading.Tasks.Task class.
+That isn't a problem on client computers that have .NET Framework 4.5, but for
+client computers that only have .NET Framework 4.0, attempting to import a
+network from the Graph Server will raise an InvalidDataContract exception that
+includes the text "Type 'System.Threading.Tasks.Task' ... cannot be
+serialized." 
+
+See http://forums.lhotka.net/forums/p/11585/53700.aspx for more information.
