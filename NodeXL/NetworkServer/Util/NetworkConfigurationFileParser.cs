@@ -271,8 +271,9 @@ public class NetworkConfigurationFileParser : Object
     /// equal to zero.
     /// </param>
     ///
-    /// <param name="maximumStatuses">
-    /// Where the maximum number of statuses to request gets stored.
+    /// <param name="maximumStatusesGoingBackward">
+    /// Where the maximum number of statuses to request gets stored.  These go
+    /// backward in time.
     /// </param>
     ///
     /// <param name="expandStatusUrls">
@@ -298,7 +299,7 @@ public class NetworkConfigurationFileParser : Object
     (
         out String searchTerm,
         out Int32 startDateInDaysBeforeToday,
-        out Int32 maximumStatuses,
+        out Int32 maximumStatusesGoingBackward,
         out Boolean expandStatusUrls,
         out String graphServerUserName,
         out String graphServerPassword,
@@ -329,18 +330,18 @@ public class NetworkConfigurationFileParser : Object
         if (startDateInDaysBeforeToday < 0)
         {
             throw new XmlException(
-                "The startDateInDaysBeforeToday value can't be less than 0."
+                "The StartDateInDaysBeforeToday value can't be less than 0."
                 );
         }
 
-        maximumStatuses = XmlUtil2.SelectRequiredSingleNodeAsInt32(
+        maximumStatusesGoingBackward = XmlUtil2.SelectRequiredSingleNodeAsInt32(
             oGraphServerTwitterSearchNetworkConfigurationNode,
-            "MaximumStatuses/text()", null);
+            "MaximumStatusesGoingBackward/text()", null);
 
-        if (maximumStatuses < 1)
+        if (maximumStatusesGoingBackward < 1)
         {
             throw new XmlException(
-                "The maximumStatuses value can't be less than 1."
+                "The MaximumStatusesGoingBackward value can't be less than 1."
                 );
         }
 

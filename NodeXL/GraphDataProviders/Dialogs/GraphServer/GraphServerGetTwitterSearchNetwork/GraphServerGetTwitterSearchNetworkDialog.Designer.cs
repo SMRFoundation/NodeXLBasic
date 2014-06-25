@@ -36,16 +36,16 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.flpUseMaximumStatuses = new System.Windows.Forms.FlowLayoutPanel();
-            this.nudMaximumStatuses = new System.Windows.Forms.NumericUpDown();
+            this.nudMaximumStatusesGoingBackward = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
-            this.flpUseMaximumStatusDateUtc = new System.Windows.Forms.FlowLayoutPanel();
-            this.dtpMaximumStatusDateUtc = new System.Windows.Forms.DateTimePicker();
+            this.flpUseDateRange = new System.Windows.Forms.FlowLayoutPanel();
+            this.dtpStatusDate2Utc = new System.Windows.Forms.DateTimePicker();
             this.label6 = new System.Windows.Forms.Label();
-            this.radUseMaximumStatusDateUtc = new System.Windows.Forms.RadioButton();
-            this.radUseMaximumStatuses = new System.Windows.Forms.RadioButton();
+            this.radUseDateRange = new System.Windows.Forms.RadioButton();
+            this.radUseMaximumStatusesGoingBackward = new System.Windows.Forms.RadioButton();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.label2 = new System.Windows.Forms.Label();
-            this.dtpMinimumStatusDateUtc = new System.Windows.Forms.DateTimePicker();
+            this.dtpStatusDate1Utc = new System.Windows.Forms.DateTimePicker();
             this.label3 = new System.Windows.Forms.Label();
             this.chkExpandStatusUrls = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -61,8 +61,8 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.groupBox2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.flpUseMaximumStatuses.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaximumStatuses)).BeginInit();
-            this.flpUseMaximumStatusDateUtc.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaximumStatusesGoingBackward)).BeginInit();
+            this.flpUseDateRange.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -70,7 +70,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(173, 375);
+            this.btnOK.Location = new System.Drawing.Point(234, 375);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
             this.btnOK.TabIndex = 1;
@@ -81,7 +81,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(259, 375);
+            this.btnCancel.Location = new System.Drawing.Point(320, 375);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
             this.btnCancel.TabIndex = 2;
@@ -97,7 +97,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.pnlUserInputs.Controls.Add(this.label1);
             this.pnlUserInputs.Location = new System.Drawing.Point(12, 12);
             this.pnlUserInputs.Name = "pnlUserInputs";
-            this.pnlUserInputs.Size = new System.Drawing.Size(339, 357);
+            this.pnlUserInputs.Size = new System.Drawing.Size(399, 357);
             this.pnlUserInputs.TabIndex = 0;
             // 
             // groupBox2
@@ -106,7 +106,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.groupBox2.Controls.Add(this.flowLayoutPanel1);
             this.groupBox2.Location = new System.Drawing.Point(0, 47);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(328, 117);
+            this.groupBox2.Size = new System.Drawing.Size(388, 117);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Tweet range";
@@ -114,46 +114,46 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             // panel1
             // 
             this.panel1.Controls.Add(this.flpUseMaximumStatuses);
-            this.panel1.Controls.Add(this.flpUseMaximumStatusDateUtc);
-            this.panel1.Controls.Add(this.radUseMaximumStatusDateUtc);
-            this.panel1.Controls.Add(this.radUseMaximumStatuses);
+            this.panel1.Controls.Add(this.flpUseDateRange);
+            this.panel1.Controls.Add(this.radUseDateRange);
+            this.panel1.Controls.Add(this.radUseMaximumStatusesGoingBackward);
             this.panel1.Location = new System.Drawing.Point(22, 49);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(305, 62);
+            this.panel1.Size = new System.Drawing.Size(365, 62);
             this.panel1.TabIndex = 1;
             // 
             // flpUseMaximumStatuses
             // 
-            this.flpUseMaximumStatuses.Controls.Add(this.nudMaximumStatuses);
+            this.flpUseMaximumStatuses.Controls.Add(this.nudMaximumStatusesGoingBackward);
             this.flpUseMaximumStatuses.Controls.Add(this.label7);
             this.flpUseMaximumStatuses.Location = new System.Drawing.Point(110, 29);
             this.flpUseMaximumStatuses.Name = "flpUseMaximumStatuses";
-            this.flpUseMaximumStatuses.Size = new System.Drawing.Size(192, 32);
+            this.flpUseMaximumStatuses.Size = new System.Drawing.Size(252, 32);
             this.flpUseMaximumStatuses.TabIndex = 3;
             // 
-            // nudMaximumStatuses
+            // nudMaximumStatusesGoingBackward
             // 
-            this.nudMaximumStatuses.Increment = new decimal(new int[] {
+            this.nudMaximumStatusesGoingBackward.Increment = new decimal(new int[] {
             100,
             0,
             0,
             0});
-            this.nudMaximumStatuses.Location = new System.Drawing.Point(3, 3);
-            this.nudMaximumStatuses.Maximum = new decimal(new int[] {
+            this.nudMaximumStatusesGoingBackward.Location = new System.Drawing.Point(3, 3);
+            this.nudMaximumStatusesGoingBackward.Maximum = new decimal(new int[] {
             15000,
             0,
             0,
             0});
-            this.nudMaximumStatuses.Minimum = new decimal(new int[] {
+            this.nudMaximumStatusesGoingBackward.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.nudMaximumStatuses.Name = "nudMaximumStatuses";
-            this.nudMaximumStatuses.Size = new System.Drawing.Size(74, 20);
-            this.nudMaximumStatuses.TabIndex = 0;
-            this.nudMaximumStatuses.ThousandsSeparator = true;
-            this.nudMaximumStatuses.Value = new decimal(new int[] {
+            this.nudMaximumStatusesGoingBackward.Name = "nudMaximumStatusesGoingBackward";
+            this.nudMaximumStatusesGoingBackward.Size = new System.Drawing.Size(74, 20);
+            this.nudMaximumStatusesGoingBackward.TabIndex = 0;
+            this.nudMaximumStatusesGoingBackward.ThousandsSeparator = true;
+            this.nudMaximumStatusesGoingBackward.Value = new decimal(new int[] {
             1,
             0,
             0,
@@ -165,26 +165,26 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.label7.Location = new System.Drawing.Point(83, 6);
             this.label7.Margin = new System.Windows.Forms.Padding(3, 6, 3, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(38, 13);
+            this.label7.Size = new System.Drawing.Size(153, 13);
             this.label7.TabIndex = 1;
-            this.label7.Text = "tweets";
+            this.label7.Text = "tweets, going backward in time";
             // 
-            // flpUseMaximumStatusDateUtc
+            // flpUseDateRange
             // 
-            this.flpUseMaximumStatusDateUtc.Controls.Add(this.dtpMaximumStatusDateUtc);
-            this.flpUseMaximumStatusDateUtc.Controls.Add(this.label6);
-            this.flpUseMaximumStatusDateUtc.Location = new System.Drawing.Point(110, 0);
-            this.flpUseMaximumStatusDateUtc.Name = "flpUseMaximumStatusDateUtc";
-            this.flpUseMaximumStatusDateUtc.Size = new System.Drawing.Size(192, 28);
-            this.flpUseMaximumStatusDateUtc.TabIndex = 1;
+            this.flpUseDateRange.Controls.Add(this.dtpStatusDate2Utc);
+            this.flpUseDateRange.Controls.Add(this.label6);
+            this.flpUseDateRange.Location = new System.Drawing.Point(110, 0);
+            this.flpUseDateRange.Name = "flpUseDateRange";
+            this.flpUseDateRange.Size = new System.Drawing.Size(252, 28);
+            this.flpUseDateRange.TabIndex = 1;
             // 
-            // dtpMaximumStatusDateUtc
+            // dtpStatusDate2Utc
             // 
-            this.dtpMaximumStatusDateUtc.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpMaximumStatusDateUtc.Location = new System.Drawing.Point(3, 3);
-            this.dtpMaximumStatusDateUtc.Name = "dtpMaximumStatusDateUtc";
-            this.dtpMaximumStatusDateUtc.Size = new System.Drawing.Size(108, 20);
-            this.dtpMaximumStatusDateUtc.TabIndex = 0;
+            this.dtpStatusDate2Utc.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpStatusDate2Utc.Location = new System.Drawing.Point(3, 3);
+            this.dtpStatusDate2Utc.Name = "dtpStatusDate2Utc";
+            this.dtpStatusDate2Utc.Size = new System.Drawing.Size(108, 20);
+            this.dtpStatusDate2Utc.TabIndex = 0;
             // 
             // label6
             // 
@@ -196,34 +196,34 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.label6.TabIndex = 1;
             this.label6.Text = "(UTC)";
             // 
-            // radUseMaximumStatusDateUtc
+            // radUseDateRange
             // 
-            this.radUseMaximumStatusDateUtc.AutoSize = true;
-            this.radUseMaximumStatusDateUtc.Location = new System.Drawing.Point(3, 4);
-            this.radUseMaximumStatusDateUtc.Name = "radUseMaximumStatusDateUtc";
-            this.radUseMaximumStatusDateUtc.Size = new System.Drawing.Size(64, 17);
-            this.radUseMaximumStatusDateUtc.TabIndex = 0;
-            this.radUseMaximumStatusDateUtc.TabStop = true;
-            this.radUseMaximumStatusDateUtc.Text = "&through:";
-            this.radUseMaximumStatusDateUtc.UseVisualStyleBackColor = true;
-            this.radUseMaximumStatusDateUtc.CheckedChanged += new System.EventHandler(this.OnEventThatRequiresControlEnabling);
+            this.radUseDateRange.AutoSize = true;
+            this.radUseDateRange.Location = new System.Drawing.Point(3, 4);
+            this.radUseDateRange.Name = "radUseDateRange";
+            this.radUseDateRange.Size = new System.Drawing.Size(64, 17);
+            this.radUseDateRange.TabIndex = 0;
+            this.radUseDateRange.TabStop = true;
+            this.radUseDateRange.Text = "&through:";
+            this.radUseDateRange.UseVisualStyleBackColor = true;
+            this.radUseDateRange.CheckedChanged += new System.EventHandler(this.OnEventThatRequiresControlEnabling);
             // 
-            // radUseMaximumStatuses
+            // radUseMaximumStatusesGoingBackward
             // 
-            this.radUseMaximumStatuses.AutoSize = true;
-            this.radUseMaximumStatuses.Location = new System.Drawing.Point(3, 34);
-            this.radUseMaximumStatuses.Name = "radUseMaximumStatuses";
-            this.radUseMaximumStatuses.Size = new System.Drawing.Size(104, 17);
-            this.radUseMaximumStatuses.TabIndex = 2;
-            this.radUseMaximumStatuses.TabStop = true;
-            this.radUseMaximumStatuses.Text = "to a &maximum of:";
-            this.radUseMaximumStatuses.UseVisualStyleBackColor = true;
-            this.radUseMaximumStatuses.CheckedChanged += new System.EventHandler(this.OnEventThatRequiresControlEnabling);
+            this.radUseMaximumStatusesGoingBackward.AutoSize = true;
+            this.radUseMaximumStatusesGoingBackward.Location = new System.Drawing.Point(3, 34);
+            this.radUseMaximumStatusesGoingBackward.Name = "radUseMaximumStatusesGoingBackward";
+            this.radUseMaximumStatusesGoingBackward.Size = new System.Drawing.Size(104, 17);
+            this.radUseMaximumStatusesGoingBackward.TabIndex = 2;
+            this.radUseMaximumStatusesGoingBackward.TabStop = true;
+            this.radUseMaximumStatusesGoingBackward.Text = "to a &maximum of:";
+            this.radUseMaximumStatusesGoingBackward.UseVisualStyleBackColor = true;
+            this.radUseMaximumStatusesGoingBackward.CheckedChanged += new System.EventHandler(this.OnEventThatRequiresControlEnabling);
             // 
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.Controls.Add(this.label2);
-            this.flowLayoutPanel1.Controls.Add(this.dtpMinimumStatusDateUtc);
+            this.flowLayoutPanel1.Controls.Add(this.dtpStatusDate1Utc);
             this.flowLayoutPanel1.Controls.Add(this.label3);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(10, 19);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
@@ -240,13 +240,13 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.label2.TabIndex = 0;
             this.label2.Text = "&From:";
             // 
-            // dtpMinimumStatusDateUtc
+            // dtpStatusDate1Utc
             // 
-            this.dtpMinimumStatusDateUtc.Format = System.Windows.Forms.DateTimePickerFormat.Short;
-            this.dtpMinimumStatusDateUtc.Location = new System.Drawing.Point(42, 3);
-            this.dtpMinimumStatusDateUtc.Name = "dtpMinimumStatusDateUtc";
-            this.dtpMinimumStatusDateUtc.Size = new System.Drawing.Size(108, 20);
-            this.dtpMinimumStatusDateUtc.TabIndex = 1;
+            this.dtpStatusDate1Utc.Format = System.Windows.Forms.DateTimePickerFormat.Short;
+            this.dtpStatusDate1Utc.Location = new System.Drawing.Point(42, 3);
+            this.dtpStatusDate1Utc.Name = "dtpStatusDate1Utc";
+            this.dtpStatusDate1Utc.Size = new System.Drawing.Size(108, 20);
+            this.dtpStatusDate1Utc.TabIndex = 1;
             // 
             // label3
             // 
@@ -276,7 +276,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Location = new System.Drawing.Point(0, 206);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(328, 121);
+            this.groupBox1.Size = new System.Drawing.Size(388, 121);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Your NodeXL Graph Server account";
@@ -339,7 +339,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.slStatusLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 410);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(355, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(415, 22);
             this.statusStrip1.SizingGrip = false;
             this.statusStrip1.TabIndex = 3;
             this.statusStrip1.Text = "statusStrip1";
@@ -347,7 +347,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             // slStatusLabel
             // 
             this.slStatusLabel.Name = "slStatusLabel";
-            this.slStatusLabel.Size = new System.Drawing.Size(340, 17);
+            this.slStatusLabel.Size = new System.Drawing.Size(400, 17);
             this.slStatusLabel.Spring = true;
             this.slStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -357,7 +357,7 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(355, 432);
+            this.ClientSize = new System.Drawing.Size(415, 432);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.pnlUserInputs);
             this.Controls.Add(this.btnCancel);
@@ -374,9 +374,9 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
             this.panel1.PerformLayout();
             this.flpUseMaximumStatuses.ResumeLayout(false);
             this.flpUseMaximumStatuses.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaximumStatuses)).EndInit();
-            this.flpUseMaximumStatusDateUtc.ResumeLayout(false);
-            this.flpUseMaximumStatusDateUtc.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaximumStatusesGoingBackward)).EndInit();
+            this.flpUseDateRange.ResumeLayout(false);
+            this.flpUseDateRange.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -397,21 +397,21 @@ namespace Smrf.NodeXL.GraphDataProviders.GraphServer
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel slStatusLabel;
-        private System.Windows.Forms.DateTimePicker dtpMinimumStatusDateUtc;
-        private System.Windows.Forms.DateTimePicker dtpMaximumStatusDateUtc;
+        private System.Windows.Forms.DateTimePicker dtpStatusDate1Utc;
+        private System.Windows.Forms.DateTimePicker dtpStatusDate2Utc;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TextBox txbGraphServerPassword;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txbGraphServerUserName;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.CheckBox chkExpandStatusUrls;
-        private System.Windows.Forms.RadioButton radUseMaximumStatuses;
-        private System.Windows.Forms.NumericUpDown nudMaximumStatuses;
-        private System.Windows.Forms.RadioButton radUseMaximumStatusDateUtc;
+        private System.Windows.Forms.RadioButton radUseMaximumStatusesGoingBackward;
+        private System.Windows.Forms.NumericUpDown nudMaximumStatusesGoingBackward;
+        private System.Windows.Forms.RadioButton radUseDateRange;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.FlowLayoutPanel flpUseMaximumStatuses;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.FlowLayoutPanel flpUseMaximumStatusDateUtc;
+        private System.Windows.Forms.FlowLayoutPanel flpUseDateRange;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Label label3;

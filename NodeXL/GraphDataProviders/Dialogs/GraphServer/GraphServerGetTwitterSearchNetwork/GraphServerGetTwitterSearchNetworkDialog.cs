@@ -40,10 +40,10 @@ public partial class GraphServerGetTwitterSearchNetworkDialog :
         InitializeComponent();
 
         // m_sSearchTerm
-        // m_oMinimumStatusDateUtc
-        // m_bUseMaximumStatusDateUtc
-        // m_oMaximumStatusDateUtc
-        // m_iMaximumStatuses
+        // m_bUseDateRange
+        // m_oStatusDate1Utc
+        // m_oStatusDate2Utc
+        // m_iMaximumStatusesGoingBackward
         // m_bExpandStatusUrls
         // m_sGraphServerUserName
         // m_sGraphServerPassword
@@ -139,15 +139,15 @@ public partial class GraphServerGetTwitterSearchNetworkDialog :
             return (false);
         }
 
-        m_oMinimumStatusDateUtc = dtpMinimumStatusDateUtc.Value;
-        m_bUseMaximumStatusDateUtc = radUseMaximumStatusDateUtc.Checked;
-        m_oMaximumStatusDateUtc = dtpMaximumStatusDateUtc.Value;
+        m_bUseDateRange = radUseDateRange.Checked;
+        m_oStatusDate1Utc = dtpStatusDate1Utc.Value;
+        m_oStatusDate2Utc = dtpStatusDate2Utc.Value;
 
-        if (m_bUseMaximumStatusDateUtc)
+        if (m_bUseDateRange)
         {
-            if (m_oMaximumStatusDateUtc < m_oMinimumStatusDateUtc)
+            if (m_oStatusDate2Utc < m_oStatusDate1Utc)
             {
-                OnInvalidDateTimePicker(dtpMaximumStatusDateUtc,
+                OnInvalidDateTimePicker(dtpStatusDate2Utc,
                     "The second date can't be earlier than the first date."
                     );
 
@@ -156,19 +156,21 @@ public partial class GraphServerGetTwitterSearchNetworkDialog :
         }
         else
         {
-            // Don't validate directly into m_iMaximumStatuses here.  If you
-            // blank out a NumericUpDown control, its value is Int32.MinValue,
-            // and we don't want that stored in m_iMaximumStatuses.
+            // Don't validate directly into m_iMaximumStatusesGoingBackward
+            // here.  If you blank out a NumericUpDown control, its value is
+            // Int32.MinValue, and we don't want that stored in
+            // m_iMaximumStatusesGoingBackward.
 
-            Int32 iMaximumStatuses;
+            Int32 iMaximumStatusesGoingBackward;
 
-            if ( !ValidateNumericUpDown(nudMaximumStatuses,
-                "a maximum number of tweets", out iMaximumStatuses) )
+            if ( !ValidateNumericUpDown(nudMaximumStatusesGoingBackward,
+                "a maximum number of tweets",
+                out iMaximumStatusesGoingBackward) )
             {
                 return (false);
             }
 
-            m_iMaximumStatuses = iMaximumStatuses;
+            m_iMaximumStatusesGoingBackward = iMaximumStatusesGoingBackward;
         }
 
         m_bExpandStatusUrls = chkExpandStatusUrls.Checked;
@@ -207,13 +209,13 @@ public partial class GraphServerGetTwitterSearchNetworkDialog :
     DoDataExchangeToControls()
     {
         txbSearchTerm.Text = m_sSearchTerm;
-        dtpMinimumStatusDateUtc.Value = m_oMinimumStatusDateUtc;
+        dtpStatusDate1Utc.Value = m_oStatusDate1Utc;
 
-        radUseMaximumStatusDateUtc.Checked = m_bUseMaximumStatusDateUtc;
-        radUseMaximumStatuses.Checked = !m_bUseMaximumStatusDateUtc;
+        radUseDateRange.Checked = m_bUseDateRange;
+        radUseMaximumStatusesGoingBackward.Checked = !m_bUseDateRange;
 
-        dtpMaximumStatusDateUtc.Value = m_oMaximumStatusDateUtc;
-        nudMaximumStatuses.Value = m_iMaximumStatuses;
+        dtpStatusDate2Utc.Value = m_oStatusDate2Utc;
+        nudMaximumStatusesGoingBackward.Value = m_iMaximumStatusesGoingBackward;
 
         chkExpandStatusUrls.Checked = m_bExpandStatusUrls;
         txbGraphServerUserName.Text = m_sGraphServerUserName;
@@ -249,12 +251,12 @@ public partial class GraphServerGetTwitterSearchNetworkDialog :
                 (GraphServerTwitterSearchNetworkAnalyzer)
                     m_oHttpNetworkAnalyzer;
 
-        if (m_bUseMaximumStatusDateUtc)
+        if (m_bUseDateRange)
         {
             oGraphServerTwitterSearchNetworkAnalyzer.GetNetworkAsync(
                 m_sSearchTerm,
-                m_oMinimumStatusDateUtc,
-                AddDayToMaximumStatusDateUtc(m_oMaximumStatusDateUtc),
+                m_oStatusDate1Utc,
+                AddDayToDate(m_oStatusDate2Utc),
                 m_bExpandStatusUrls,
                 m_sGraphServerUserName,
                 m_sGraphServerPassword
@@ -264,8 +266,8 @@ public partial class GraphServerGetTwitterSearchNetworkDialog :
         {
             oGraphServerTwitterSearchNetworkAnalyzer.GetNetworkAsync(
                 m_sSearchTerm,
-                m_oMinimumStatusDateUtc,
-                m_iMaximumStatuses,
+                AddDayToDate(m_oStatusDate1Utc),
+                m_iMaximumStatusesGoingBackward,
                 m_bExpandStatusUrls,
                 m_sGraphServerUserName,
                 m_sGraphServerPassword
@@ -286,9 +288,9 @@ public partial class GraphServerGetTwitterSearchNetworkDialog :
     {
         AssertValid();
 
-        Boolean bUseMaximumStatusDateUtc = radUseMaximumStatusDateUtc.Checked;
-        flpUseMaximumStatusDateUtc.Enabled = bUseMaximumStatusDateUtc;
-        flpUseMaximumStatuses.Enabled = !bUseMaximumStatusDateUtc;
+        Boolean bUseDateRange = radUseDateRange.Checked;
+        flpUseDateRange.Enabled = bUseDateRange;
+        flpUseMaximumStatuses.Enabled = !bUseDateRange;
 
         Boolean bIsBusy = m_oHttpNetworkAnalyzer.IsBusy;
 
@@ -318,19 +320,19 @@ public partial class GraphServerGetTwitterSearchNetworkDialog :
     }
 
     //*************************************************************************
-    //  Method: AddDayToMaximumStatusDateUtc()
+    //  Method: AddDayToDate()
     //
     /// <summary>
-    /// Adds one day minus one second to the maximum status date.
+    /// Adds one day minus one second to a date.
     /// </summary>
     ///
-    /// <param name="oMaximumStatusDateUtc">
-    /// Maximum status date, in UTC.  The time component must be zero.
+    /// <param name="oDate">
+    /// Date to add to.  The time component must be zero.
     /// </param>
     ///
     /// <returns>
-    /// A copy of <paramref name="oMaximumStatusDateUtc" /> with one day minus
-    /// one second added to it.
+    /// A copy of <paramref name="oDate" /> with one day minus one second added
+    /// to it.
     /// </returns>
     ///
     /// <remarks>
@@ -348,15 +350,15 @@ public partial class GraphServerGetTwitterSearchNetworkDialog :
     //*************************************************************************
 
     protected DateTime
-    AddDayToMaximumStatusDateUtc
+    AddDayToDate
     (
-        DateTime oMaximumStatusDateUtc
+        DateTime oDate
     )
     {
-        Debug.Assert(oMaximumStatusDateUtc.TimeOfDay == TimeSpan.Zero);
+        Debug.Assert(oDate.TimeOfDay == TimeSpan.Zero);
         AssertValid();
 
-        return ( oMaximumStatusDateUtc.AddDays(1).AddSeconds(-1) );
+        return ( oDate.AddDays(1).AddSeconds(-1) );
     }
 
     //*************************************************************************
@@ -433,10 +435,10 @@ public partial class GraphServerGetTwitterSearchNetworkDialog :
         base.AssertValid();
 
         Debug.Assert(m_sSearchTerm != null);
-        // m_oMinimumStatusDateUtc
-        // m_bUseMaximumStatusDateUtc
-        // m_oMaximumStatusDateUtc
-        // m_iMaximumStatuses
+        // m_bUseDateRange
+        // m_oStatusDate1Utc
+        // m_oStatusDate2Utc
+        // m_iMaximumStatusesGoingBackward
         // m_bExpandStatusUrls
         Debug.Assert(m_sGraphServerUserName != null);
         Debug.Assert(m_sGraphServerPassword != null);
@@ -456,23 +458,22 @@ public partial class GraphServerGetTwitterSearchNetworkDialog :
 
     protected static String m_sSearchTerm = "NodeXL";
 
-    /// Minimum status date, in UTC.
+    /// true to use a date range, false to use a maximum number of statuses
+    /// going backward in time.
 
-    protected static DateTime m_oMinimumStatusDateUtc =
-        DateTime.Now.Date.AddDays(-1);
+    protected static Boolean m_bUseDateRange = false;
 
-    /// true to use a maximum status date, false to use a maximum number of
-    /// statuses.
+    /// First status date, in UTC.
 
-    protected static Boolean m_bUseMaximumStatusDateUtc = false;
+    protected static DateTime m_oStatusDate1Utc = DateTime.Now.Date;
 
-    /// Maximum status date, in UTC.
+    /// Second status date, in UTC.
 
-    protected static DateTime m_oMaximumStatusDateUtc = DateTime.Now.Date;
+    protected static DateTime m_oStatusDate2Utc = DateTime.Now.Date;
 
-    /// Maximum number of statuses to get.
+    /// Maximum number of statuses to get, going backward in time.
 
-    protected static Int32 m_iMaximumStatuses = 1000;
+    protected static Int32 m_iMaximumStatusesGoingBackward = 1000;
 
     /// true to expand the URLs in each status.
 

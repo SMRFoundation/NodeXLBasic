@@ -14,7 +14,8 @@ example:
 
     * Get the network for people whose tweets matched the query "NodeXL"
     
-    * Start with tweets one week ago and get up to 5,000 tweets.
+    * Start with tweets that were tweeted one week ago and get up to 5,000
+      tweets, going backward in time.
 
     * Store the network as a GraphML file in the C:\NodeXLNetworks folder
 
@@ -73,11 +74,12 @@ The Configuration That Must be Edited
         ***********************************************************************
         Maximum Tweets
         
-        The maximum number of tweets to get.  Must be greater than zero.
+        The maximum number of tweets to get, going backward in time.  Must be
+        greater than zero.
         ***********************************************************************
         -->
 
-        <MaximumStatuses>5000</MaximumStatuses>
+        <MaximumStatusesGoingBackward>5000</MaximumStatusesGoingBackward>
 
 
         <!--

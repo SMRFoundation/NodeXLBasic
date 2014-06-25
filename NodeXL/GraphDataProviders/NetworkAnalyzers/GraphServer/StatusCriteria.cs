@@ -20,8 +20,7 @@ public class StatusCriteria : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-    /// cref="StatusCriteria" /> class with a search term, minimum status date
-    /// and maximum status date.
+    /// cref="StatusCriteria" /> class with a search term and a date range.
     /// </summary>
     ///
     /// <param name="searchTerm">
@@ -43,9 +42,9 @@ public class StatusCriteria : Object
         DateTime minimumStatusDateUtc,
         DateTime maximumStatusDateUtc
     )
-    : this(searchTerm, minimumStatusDateUtc)
+    : this(searchTerm, maximumStatusDateUtc)
     {
-        m_oMaximumStatusDateUtc = maximumStatusDateUtc;
+        m_oMinimumStatusDateUtc = minimumStatusDateUtc;
 
         AssertValid();
     }
@@ -55,32 +54,32 @@ public class StatusCriteria : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-    /// cref="StatusCriteria" /> class with a search term, minimum status date
-    /// and maximum number of statuses.
+    /// cref="StatusCriteria" /> class with a search term, maximum status date
+    /// and a maximum number of statuses going backward in time.
     /// </summary>
     ///
     /// <param name="searchTerm">
     /// The term to search for.
     /// </param>
     ///
-    /// <param name="minimumStatusDateUtc">
-    /// Minimum status date, in UTC.
+    /// <param name="maximumStatusDateUtc">
+    /// Maximum status date, in UTC.
     /// </param>
     ///
-    /// <param name="maximumStatuses">
-    /// Maximum number of statuses to get.
+    /// <param name="maximumStatusesGoingBackward">
+    /// Maximum number of statuses to get, going backward in time.
     /// </param>
     //*************************************************************************
 
     public StatusCriteria
     (
         String searchTerm,
-        DateTime minimumStatusDateUtc,
-        Int32 maximumStatuses
+        DateTime maximumStatusDateUtc,
+        Int32 maximumStatusesGoingBackward
     )
-    : this(searchTerm, minimumStatusDateUtc)
+    : this(searchTerm, maximumStatusDateUtc)
     {
-        m_iMaximumStatuses = maximumStatuses;
+        m_iMaximumStatusesGoingBackward = maximumStatusesGoingBackward;
 
         AssertValid();
     }
@@ -109,6 +108,30 @@ public class StatusCriteria : Object
     }
 
     //*************************************************************************
+    //  Property: HasDateRange
+    //
+    /// <summary>
+    /// Gets a flag specifying whether a status date range should be used.
+    /// </summary>
+    ///
+    /// <value>
+    /// true if a status date range should be used, false if a maximum status
+    /// date and a maximum number of statuses going backward should be used.
+    /// </value>
+    //*************************************************************************
+
+    public Boolean
+    HasDateRange
+    {
+        get
+        {
+            AssertValid();
+
+            return (m_oMinimumStatusDateUtc.HasValue);
+        }
+    }
+
+    //*************************************************************************
     //  Property: MinimumStatusDateUtc
     //
     /// <summary>
@@ -118,6 +141,10 @@ public class StatusCriteria : Object
     /// <value>
     /// The minimum status date, in UTC.
     /// </value>
+    ///
+    /// <remarks>
+    /// Use this property only if <see cref="HasDateRange" /> returns true.
+    /// </remarks>
     //*************************************************************************
 
     public DateTime
@@ -126,33 +153,9 @@ public class StatusCriteria : Object
         get
         {
             AssertValid();
+            Debug.Assert(m_oMinimumStatusDateUtc.HasValue);
 
-            return (m_oMinimumStatusDateUtc);
-        }
-    }
-
-    //*************************************************************************
-    //  Property: HasMaximumStatusDateUtc
-    //
-    /// <summary>
-    /// Gets a flag specifying whether a maximum status date should be
-    /// used.
-    /// </summary>
-    ///
-    /// <value>
-    /// true if a maximum status date should be used, false if a maximum number
-    /// of statuses should be used.
-    /// </value>
-    //*************************************************************************
-
-    public Boolean
-    HasMaximumStatusDateUtc
-    {
-        get
-        {
-            AssertValid();
-
-            return (m_oMaximumStatusDateUtc.HasValue);
+            return (m_oMinimumStatusDateUtc.Value);
         }
     }
 
@@ -166,11 +169,6 @@ public class StatusCriteria : Object
     /// <value>
     /// The maximum status date, in UTC.
     /// </value>
-    ///
-    /// <remarks>
-    /// Use this property only if <see cref="HasMaximumStatusDateUtc" />
-    /// returns true.
-    /// </remarks>
     //*************************************************************************
 
     public DateTime
@@ -179,38 +177,36 @@ public class StatusCriteria : Object
         get
         {
             AssertValid();
-            Debug.Assert(m_oMaximumStatusDateUtc.HasValue);
 
-            return (m_oMaximumStatusDateUtc.Value);
+            return (m_oMaximumStatusDateUtc);
         }
     }
 
     //*************************************************************************
-    //  Property: MaximumStatuses
+    //  Property: MaximumStatusesGoingBackward
     //
     /// <summary>
-    /// Gets the maximum number of statuses to get.
+    /// Gets the maximum number of statuses to get, going backward in time.
     /// </summary>
     ///
     /// <value>
-    /// The maximum number of statuses to get.
+    /// The maximum number of statuses to get, going backward in time.
     /// </value>
     ///
     /// <remarks>
-    /// Use this property only if <see cref="HasMaximumStatusDateUtc" />
-    /// returns false.
+    /// Use this property only if <see cref="HasDateRange" /> returns false.
     /// </remarks>
     //*************************************************************************
 
     public Int32
-    MaximumStatuses
+    MaximumStatusesGoingBackward
     {
         get
         {
             AssertValid();
-            Debug.Assert(m_iMaximumStatuses.HasValue);
+            Debug.Assert(m_iMaximumStatusesGoingBackward.HasValue);
 
-            return (m_iMaximumStatuses.Value);
+            return (m_iMaximumStatusesGoingBackward.Value);
         }
     }
 
@@ -219,7 +215,7 @@ public class StatusCriteria : Object
     //
     /// <summary>
     /// Initializes a new instance of the <see
-    /// cref="StatusCriteria" /> class with a search term and minimum status
+    /// cref="StatusCriteria" /> class with a search term and maximum status
     /// date.
     /// </summary>
     ///
@@ -227,19 +223,19 @@ public class StatusCriteria : Object
     /// The term to search for.
     /// </param>
     ///
-    /// <param name="minimumStatusDateUtc">
-    /// Minimum status date, in UTC.
+    /// <param name="maximumStatusDateUtc">
+    /// Maximum status date, in UTC.
     /// </param>
     //*************************************************************************
 
     private StatusCriteria
     (
         String searchTerm,
-        DateTime minimumStatusDateUtc
+        DateTime maximumStatusDateUtc
     )
     {
         m_sSearchTerm = searchTerm;
-        m_oMinimumStatusDateUtc = minimumStatusDateUtc;
+        m_oMaximumStatusDateUtc = maximumStatusDateUtc;
     }
 
 
@@ -258,17 +254,17 @@ public class StatusCriteria : Object
     {
         Debug.Assert( !String.IsNullOrEmpty(m_sSearchTerm) );
 
-        Debug.Assert(m_oMaximumStatusDateUtc.HasValue ==
-            !m_iMaximumStatuses.HasValue);
+        Debug.Assert(m_oMinimumStatusDateUtc.HasValue ==
+            !m_iMaximumStatusesGoingBackward.HasValue);
 
-        if (m_oMaximumStatusDateUtc.HasValue)
+        if (m_oMinimumStatusDateUtc.HasValue)
         {
             Debug.Assert(m_oMaximumStatusDateUtc >= m_oMinimumStatusDateUtc);
         }
 
-        if (m_iMaximumStatuses.HasValue)
+        if (m_iMaximumStatusesGoingBackward.HasValue)
         {
-            Debug.Assert(m_iMaximumStatuses > 0);
+            Debug.Assert(m_iMaximumStatusesGoingBackward > 0);
         }
     }
 
@@ -281,17 +277,17 @@ public class StatusCriteria : Object
 
     protected String m_sSearchTerm;
 
-    /// Minimum status date, in UTC.
+    /// Minimum status date, in UTC, or null.
 
-    protected DateTime m_oMinimumStatusDateUtc;
+    protected Nullable<DateTime> m_oMinimumStatusDateUtc;
 
-    /// Maximum status date, in UTC, or null.
+    /// Maximum status date, in UTC.
 
-    protected Nullable<DateTime> m_oMaximumStatusDateUtc;
+    protected DateTime m_oMaximumStatusDateUtc;
 
-    /// Maximum number of statuses to get, or null.
+    /// Maximum number of statuses to get going backward in time, or null.
 
-    protected Nullable<Int32> m_iMaximumStatuses;
+    protected Nullable<Int32> m_iMaximumStatusesGoingBackward;
 }
 
 }

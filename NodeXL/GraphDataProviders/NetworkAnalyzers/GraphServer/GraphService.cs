@@ -81,7 +81,7 @@ public interface IGraphService
     [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGraphService/GetTwitterSearchNetworkAsZippedGraphML2", ReplyAction="http://tempuri.org/IGraphService/GetTwitterSearchNetworkAsZippedGraphML2Response")]
     [System.ServiceModel.FaultContractAttribute(typeof(string), Action="http://tempuri.org/IGraphService/GetTwitterSearchNetworkAsZippedGraphML2StringFau" +
         "lt", Name="string", Namespace="http://schemas.microsoft.com/2003/10/Serialization/")]
-    byte[] GetTwitterSearchNetworkAsZippedGraphML2(string searchTerm, System.DateTime minimumStatusDateUtc, int maximumStatuses, bool expandStatusUrls, string graphServerUserName, string graphServerPassword);
+    byte[] GetTwitterSearchNetworkAsZippedGraphML2(string searchTerm, System.DateTime maximumStatusDateUtc, int maximumStatusesGoingBackward, bool expandStatusUrls, string graphServerUserName, string graphServerPassword);
     
     [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IGraphService/GetData", ReplyAction="http://tempuri.org/IGraphService/GetDataResponse")]
     string GetData(int value);
@@ -129,9 +129,9 @@ public partial class GraphServiceClient : System.ServiceModel.ClientBase<IGraphS
         return base.Channel.GetTwitterSearchNetworkAsZippedGraphML(searchTerm, minimumStatusDateUtc, maximumStatusDateUtc, expandStatusUrls, graphServerUserName, graphServerPassword);
     }
     
-    public byte[] GetTwitterSearchNetworkAsZippedGraphML2(string searchTerm, System.DateTime minimumStatusDateUtc, int maximumStatuses, bool expandStatusUrls, string graphServerUserName, string graphServerPassword)
+    public byte[] GetTwitterSearchNetworkAsZippedGraphML2(string searchTerm, System.DateTime maximumStatusDateUtc, int maximumStatusesGoingBackward, bool expandStatusUrls, string graphServerUserName, string graphServerPassword)
     {
-        return base.Channel.GetTwitterSearchNetworkAsZippedGraphML2(searchTerm, minimumStatusDateUtc, maximumStatuses, expandStatusUrls, graphServerUserName, graphServerPassword);
+        return base.Channel.GetTwitterSearchNetworkAsZippedGraphML2(searchTerm, maximumStatusDateUtc, maximumStatusesGoingBackward, expandStatusUrls, graphServerUserName, graphServerPassword);
     }
     
     public string GetData(int value)

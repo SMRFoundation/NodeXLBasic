@@ -1762,9 +1762,11 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
     //*************************************************************************
 
     /// Maximum number of friend or follower IDs to request for each user.
-    /// This limit is arbitrary and may need to be adjusted.
+    /// This limit is arbitrary, although (as of June 2014) it should be kept
+    /// below 5,000 to avoid having to get a second page of results from the
+    /// Twitter friends/ids API.
 
-    public const Int32 MaximumFriendsOrFollowers = 1000;
+    public const Int32 MaximumFriendsOrFollowers = 2000;
 
 
     //*************************************************************************

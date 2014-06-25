@@ -150,19 +150,22 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
     //
     /// <summary>
     /// Asynchronously gets a network created from a set of tweets specified by
-    /// a search term, a minimum date and a maximum number of tweets.
+    /// a search term, a maximum date and a maximum number of tweets going
+    /// backward.
     /// </summary>
     ///
     /// <param name="searchTerm">
     /// The term to search for.
     /// </param>
     ///
-    /// <param name="minimumStatusDateUtc">
-    /// Minimum status date, in UTC.
+    /// <param name="maximumStatusDateUtc">
+    /// Maximum status date, in UTC.  Note that is a DateTime and not just a
+    /// date, so if you want all statuses on 2014/04/01, for example, you have
+    /// to specify 2014/04/01 23:59:59.
     /// </param>
     ///
-    /// <param name="maximumStatuses">
-    /// Maximum number of statuses to get.
+    /// <param name="maximumStatusesGoingBackward">
+    /// Maximum number of statuses to get, going backward in time.
     /// </param>
     ///
     /// <param name="expandStatusUrls">
@@ -195,15 +198,15 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
     GetNetworkAsync
     (
         String searchTerm,
-        DateTime minimumStatusDateUtc,
-        Int32 maximumStatuses,
+        DateTime maximumStatusDateUtc,
+        Int32 maximumStatusesGoingBackward,
         Boolean expandStatusUrls,
         String graphServerUserName,
         String graphServerPassword
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(searchTerm) );
-        Debug.Assert(maximumStatuses > 0);
+        Debug.Assert(maximumStatusesGoingBackward > 0);
         Debug.Assert( !String.IsNullOrEmpty(graphServerUserName) );
         Debug.Assert( !String.IsNullOrEmpty(graphServerPassword) );
         AssertValid();
@@ -217,7 +220,7 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
         GetNetworkAsyncArgs oGetNetworkAsyncArgs = new GetNetworkAsyncArgs();
 
         oGetNetworkAsyncArgs.StatusCriteria = new StatusCriteria(
-            searchTerm, minimumStatusDateUtc, maximumStatuses);
+            searchTerm, maximumStatusDateUtc, maximumStatusesGoingBackward);
 
         oGetNetworkAsyncArgs.ExpandStatusUrls = expandStatusUrls;
         oGetNetworkAsyncArgs.GraphServerUserName = graphServerUserName;
@@ -237,12 +240,14 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
     /// The term to search for.
     /// </param>
     ///
-    /// <param name="minimumStatusDateUtc">
-    /// Minimum status date, in UTC.
+    /// <param name="maximumStatusDateUtc">
+    /// Maximum status date, in UTC.  Note that is a DateTime and not just a
+    /// date, so if you want all statuses on 2014/04/01, for example, you have
+    /// to specify 2014/04/01 23:59:59.
     /// </param>
     ///
-    /// <param name="maximumStatuses">
-    /// Maximum number of statuses to get.
+    /// <param name="maximumStatusesGoingBackward">
+    /// Maximum number of statuses to get, going backward in time.
     /// </param>
     ///
     /// <param name="expandStatusUrls">
@@ -266,21 +271,21 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
     GetNetwork
     (
         String searchTerm,
-        DateTime minimumStatusDateUtc,
-        Int32 maximumStatuses,
+        DateTime maximumStatusDateUtc,
+        Int32 maximumStatusesGoingBackward,
         Boolean expandStatusUrls,
         String graphServerUserName,
         String graphServerPassword
     )
     {
         Debug.Assert( !String.IsNullOrEmpty(searchTerm) );
-        Debug.Assert(maximumStatuses > 0);
+        Debug.Assert(maximumStatusesGoingBackward > 0);
         Debug.Assert( !String.IsNullOrEmpty(graphServerUserName) );
         Debug.Assert( !String.IsNullOrEmpty(graphServerPassword) );
         AssertValid();
 
         StatusCriteria oStatusCriteria = new StatusCriteria(
-            searchTerm, minimumStatusDateUtc, maximumStatuses);
+            searchTerm, maximumStatusDateUtc, maximumStatusesGoingBackward);
 
         return ( GetNetworkInternal(oStatusCriteria, expandStatusUrls,
             graphServerUserName, graphServerPassword) );
@@ -465,7 +470,7 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
         // There are two ways to get the network: With a maximum status date,
         // and with a maximum number of statuses.
 
-        if (oStatusCriteria.HasMaximumStatusDateUtc)
+        if (oStatusCriteria.HasDateRange)
         {
             abtZippedGraphML = oClient.GetTwitterSearchNetworkAsZippedGraphML(
                 oStatusCriteria.SearchTerm,
@@ -480,8 +485,8 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
         {
             abtZippedGraphML = oClient.GetTwitterSearchNetworkAsZippedGraphML2(
                 oStatusCriteria.SearchTerm,
-                oStatusCriteria.MinimumStatusDateUtc,
-                oStatusCriteria.MaximumStatuses,
+                oStatusCriteria.MaximumStatusDateUtc,
+                oStatusCriteria.MaximumStatusesGoingBackward,
                 bExpandStatusUrls,
                 sGraphServerUserName,
                 sGraphServerPassword
@@ -553,7 +558,7 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
 
         oNetworkDescriber.AddNetworkTime(NetworkSource);
 
-        if (oStatusCriteria.HasMaximumStatusDateUtc)
+        if (oStatusCriteria.HasDateRange)
         {
             oNetworkDescriber.AddSentenceNewParagraph(
 
@@ -571,12 +576,13 @@ public class GraphServerTwitterSearchNetworkAnalyzer : HttpNetworkAnalyzerBase
             oNetworkDescriber.AddSentenceNewParagraph(
 
                 "The requested start date was {0} and the maximum number of"
-                + " tweets was {1}."
+                + " tweets (going backward in time) was {1}."
                 ,
                 oNetworkDescriber.FormatEventTime(
-                    oStatusCriteria.MinimumStatusDateUtc),
+                    oStatusCriteria.MaximumStatusDateUtc),
 
-                oStatusCriteria.MaximumStatuses.ToString(Int32FormatString)
+                oStatusCriteria.MaximumStatusesGoingBackward.ToString(
+                    Int32FormatString)
                 );
         }
 

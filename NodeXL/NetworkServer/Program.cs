@@ -340,7 +340,7 @@ class Program
 
         String sSearchTerm = null;
         Int32 iStartDateInDaysBeforeToday = Int32.MinValue;
-        Int32 iMaximumStatuses = Int32.MinValue;
+        Int32 iMaximumStatusesGoingBackward = Int32.MinValue;
         Boolean bExpandStatusUrls = false;
         String sGraphServerUserName = null;
         String sGraphServerPassword = null;
@@ -351,7 +351,7 @@ class Program
             GetGraphServerTwitterSearchNetworkConfiguration(
                 out sSearchTerm,
                 out iStartDateInDaysBeforeToday,
-                out iMaximumStatuses,
+                out iMaximumStatusesGoingBackward,
                 out bExpandStatusUrls,
                 out sGraphServerUserName,
                 out sGraphServerPassword,
@@ -365,7 +365,7 @@ class Program
             OnNetworkConfigurationFileException(oXmlException);
         }
 
-        DateTime oMinimumStatusDateUtc = GetMinimumStatusDateUtc(
+        DateTime oMaximumStatusDateUtc = GetMaximumStatusDateUtc(
             oStartTime, iStartDateInDaysBeforeToday);
 
         GraphServerTwitterSearchNetworkAnalyzer
@@ -378,19 +378,20 @@ class Program
         Console.WriteLine(
             "Getting the Graph Server Twitter search network specified in"
             + " \"{0}\".  The search term is \"{1}\".  The start date is"
-            + " {2}, UTC.  The maximum number of tweets is {3}."
+            + " {2}, UTC.  The maximum number of tweets going backward is {3}."
             ,
             sNetworkConfigurationFilePath,
             sSearchTerm,
-            oMinimumStatusDateUtc,
-            iMaximumStatuses
+            oMaximumStatusDateUtc,
+            iMaximumStatusesGoingBackward
             );
 
         try
         {
             oXmlDocument = oGraphServerTwitterSearchNetworkAnalyzer.GetNetwork(
-                sSearchTerm, oMinimumStatusDateUtc, iMaximumStatuses,
-                bExpandStatusUrls, sGraphServerUserName, sGraphServerPassword);
+                sSearchTerm, oMaximumStatusDateUtc,
+                iMaximumStatusesGoingBackward, bExpandStatusUrls,
+                sGraphServerUserName, sGraphServerPassword);
         }
         catch (Exception oException)
         {
@@ -403,10 +404,10 @@ class Program
     }
 
     //*************************************************************************
-    //  Method: GetMinimumStatusDateUtc()
+    //  Method: GetMaximumStatusDateUtc()
     //
     /// <summary>
-    /// Gets the minimum status date.
+    /// Gets the maximum status date.
     /// </summary>
     ///
     /// <param name="oStartTime">
@@ -420,12 +421,12 @@ class Program
     /// </param>
     ///
     /// <returns>
-    /// The minimum status date, in UTC.
+    /// The maximum status date, in UTC.
     /// </returns>
     //*************************************************************************
 
     private static DateTime
-    GetMinimumStatusDateUtc
+    GetMaximumStatusDateUtc
     (
         DateTime oStartTime,
         Int32 iStartDateInDaysBeforeToday
@@ -437,7 +438,7 @@ class Program
 
         // Sample oStartTime.Date: 2014/06/10 12:00 AM
 
-        // Sample oMinimumStatusDateUtc: 2014/06/03 12:00 AM
+        // Sample returned value: 2014/06/03 12:00 AM
 
         return ( oStartTime.Date.AddDays(-iStartDateInDaysBeforeToday) );
     }
