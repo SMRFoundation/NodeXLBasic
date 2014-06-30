@@ -161,7 +161,7 @@ public abstract class FlickrNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
         return ( String.Format(
 
-            "http://api.flickr.com/services/rest/?method={0}&api_key={1}{2}"
+            "https://api.flickr.com/services/rest/?method={0}&api_key={1}{2}"
             ,
             sFlickrMethodName,
             HttpUtility.UrlEncode(sApiKey),
