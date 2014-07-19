@@ -50,6 +50,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnConvertNodeXLWorkbook = this.Factory.CreateRibbonButton();
             this.mnuGetThirdPartyGraphDataProviders = this.Factory.CreateRibbonMenu();
             this.btnGetExchangeGraphDataProvider = this.Factory.CreateRibbonButton();
+            this.btnGetMediaWikiGraphDataProvider = this.Factory.CreateRibbonButton();
             this.btnGetOnaSurveysGraphDataProvider = this.Factory.CreateRibbonButton();
             this.btnGetSocialNetworkGraphDataProvider = this.Factory.CreateRibbonButton();
             this.btnGetVosonGraphDataProvider = this.Factory.CreateRibbonButton();
@@ -170,7 +171,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnOpenSampleNodeXLWorkbook = this.Factory.CreateRibbonButton();
             this.btnAbout = this.Factory.CreateRibbonButton();
             this.btnCreateNodeXLWorkbook = this.Factory.CreateRibbonButton();
-            this.btnGetMediaWikiGraphDataProvider = this.Factory.CreateRibbonButton();
+            this.btnGetVKontakteGraphDataProvider = this.Factory.CreateRibbonButton();
             this.NodeXL.SuspendLayout();
             this.grpData.SuspendLayout();
             this.grpGraph.SuspendLayout();
@@ -346,6 +347,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.mnuGetThirdPartyGraphDataProviders.Items.Add(this.btnGetMediaWikiGraphDataProvider);
             this.mnuGetThirdPartyGraphDataProviders.Items.Add(this.btnGetOnaSurveysGraphDataProvider);
             this.mnuGetThirdPartyGraphDataProviders.Items.Add(this.btnGetSocialNetworkGraphDataProvider);
+            this.mnuGetThirdPartyGraphDataProviders.Items.Add(this.btnGetVKontakteGraphDataProvider);
             this.mnuGetThirdPartyGraphDataProviders.Items.Add(this.btnGetVosonGraphDataProvider);
             this.mnuGetThirdPartyGraphDataProviders.Label = "Get Third-Party Graph Data Importers";
             this.mnuGetThirdPartyGraphDataProviders.Name = "mnuGetThirdPartyGraphDataProviders";
@@ -363,6 +365,15 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnGetExchangeGraphDataProvider.ScreenTip = "Exchange Server Networks ";
             this.btnGetExchangeGraphDataProvider.ShowImage = true;
             this.btnGetExchangeGraphDataProvider.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStartProcess_Click);
+            // 
+            // btnGetMediaWikiGraphDataProvider
+            // 
+            this.btnGetMediaWikiGraphDataProvider.Label = "MediaWiki Networks";
+            this.btnGetMediaWikiGraphDataProvider.Name = "btnGetMediaWikiGraphDataProvider";
+            this.btnGetMediaWikiGraphDataProvider.OfficeImageId = "ViewOnlineConnection";
+            this.btnGetMediaWikiGraphDataProvider.ScreenTip = "MediaWiki Networks";
+            this.btnGetMediaWikiGraphDataProvider.ShowImage = true;
+            this.btnGetMediaWikiGraphDataProvider.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStartProcess_Click);
             // 
             // btnGetOnaSurveysGraphDataProvider
             // 
@@ -1610,7 +1621,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             // 
             this.separator2.Name = "separator2";
             // 
-            // 
             // btnOpenSampleNodeXLWorkbook
             // 
             this.btnOpenSampleNodeXLWorkbook.Label = "Sample Workbook";
@@ -1642,14 +1652,14 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnCreateNodeXLWorkbook.SuperTip = "Create a new NodeXL workbook.";
             this.btnCreateNodeXLWorkbook.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnCreateNodeXLWorkbook_Click);
             // 
-            // btnGetMediaWikiGraphDataProvider
+            // btnGetVKontakteGraphDataProvider
             // 
-            this.btnGetMediaWikiGraphDataProvider.Label = "MediaWiki Networks";
-            this.btnGetMediaWikiGraphDataProvider.Name = "btnGetMediaWikiGraphDataProvider";
-            this.btnGetMediaWikiGraphDataProvider.OfficeImageId = "ViewOnlineConnection";
-            this.btnGetMediaWikiGraphDataProvider.ScreenTip = "MediaWiki Networks";
-            this.btnGetMediaWikiGraphDataProvider.ShowImage = true;
-            this.btnGetMediaWikiGraphDataProvider.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStartProcess_Click);
+            this.btnGetVKontakteGraphDataProvider.Label = "vKontakte and Odnoklassniki Networks";
+            this.btnGetVKontakteGraphDataProvider.Name = "btnGetVKontakteGraphDataProvider";
+            this.btnGetVKontakteGraphDataProvider.OfficeImageId = "ViewOnlineConnection";
+            this.btnGetVKontakteGraphDataProvider.ScreenTip = "vKontakte and Odnoklassniki Networks";
+            this.btnGetVKontakteGraphDataProvider.ShowImage = true;
+            this.btnGetVKontakteGraphDataProvider.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStartProcess_Click);
             // 
             // Ribbon
             // 
@@ -1821,6 +1831,7 @@ namespace Smrf.NodeXL.ExcelTemplate
         internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator14;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnExportToEmail;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnGetMediaWikiGraphDataProvider;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnGetVKontakteGraphDataProvider;
     }
 
     partial class ThisRibbonCollection

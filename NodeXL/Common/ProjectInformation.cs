@@ -97,6 +97,11 @@ public static class ProjectInformation
     public const String SocialNetworkGraphDataProviderUrl =
         "http://socialnetimporter.codeplex.com/";
      
+    /// URL of the page for downloading the vKontakte graph data provider.
+
+    public const String VKontakteGraphDataProviderUrl =
+        "http://runetimporter.codeplex.com/";
+
     /// URL of the page for downloading the Voson graph data provider.
 
     public const String VosonGraphDataProviderUrl =

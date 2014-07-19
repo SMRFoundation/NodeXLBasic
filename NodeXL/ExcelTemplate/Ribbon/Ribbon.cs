@@ -75,6 +75,9 @@ public partial class Ribbon : RibbonBase
         btnGetSocialNetworkGraphDataProvider.Tag =
             ProjectInformation.SocialNetworkGraphDataProviderUrl;
 
+        btnGetVKontakteGraphDataProvider.Tag =
+            ProjectInformation.VKontakteGraphDataProviderUrl;
+
         btnGetVosonGraphDataProvider.Tag =
             ProjectInformation.VosonGraphDataProviderUrl;
 
