@@ -49,11 +49,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.sepGraphDataProvidersGoHere = this.Factory.CreateRibbonSeparator();
             this.btnConvertNodeXLWorkbook = this.Factory.CreateRibbonButton();
             this.mnuGetThirdPartyGraphDataProviders = this.Factory.CreateRibbonMenu();
-            this.btnGetExchangeGraphDataProvider = this.Factory.CreateRibbonButton();
-            this.btnGetMediaWikiGraphDataProvider = this.Factory.CreateRibbonButton();
-            this.btnGetOnaSurveysGraphDataProvider = this.Factory.CreateRibbonButton();
-            this.btnGetSocialNetworkGraphDataProvider = this.Factory.CreateRibbonButton();
-            this.btnGetVosonGraphDataProvider = this.Factory.CreateRibbonButton();
             this.separator14 = this.Factory.CreateRibbonSeparator();
             this.btnImportDataUserSettings = this.Factory.CreateRibbonButton();
             this.mnuExport = this.Factory.CreateRibbonMenu();
@@ -171,7 +166,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnOpenSampleNodeXLWorkbook = this.Factory.CreateRibbonButton();
             this.btnAbout = this.Factory.CreateRibbonButton();
             this.btnCreateNodeXLWorkbook = this.Factory.CreateRibbonButton();
-            this.btnGetVKontakteGraphDataProvider = this.Factory.CreateRibbonButton();
             this.NodeXL.SuspendLayout();
             this.grpData.SuspendLayout();
             this.grpGraph.SuspendLayout();
@@ -343,12 +337,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             // 
             // mnuGetThirdPartyGraphDataProviders
             // 
-            this.mnuGetThirdPartyGraphDataProviders.Items.Add(this.btnGetExchangeGraphDataProvider);
-            this.mnuGetThirdPartyGraphDataProviders.Items.Add(this.btnGetMediaWikiGraphDataProvider);
-            this.mnuGetThirdPartyGraphDataProviders.Items.Add(this.btnGetOnaSurveysGraphDataProvider);
-            this.mnuGetThirdPartyGraphDataProviders.Items.Add(this.btnGetSocialNetworkGraphDataProvider);
-            this.mnuGetThirdPartyGraphDataProviders.Items.Add(this.btnGetVKontakteGraphDataProvider);
-            this.mnuGetThirdPartyGraphDataProviders.Items.Add(this.btnGetVosonGraphDataProvider);
             this.mnuGetThirdPartyGraphDataProviders.Label = "Get Third-Party Graph Data Importers";
             this.mnuGetThirdPartyGraphDataProviders.Name = "mnuGetThirdPartyGraphDataProviders";
             this.mnuGetThirdPartyGraphDataProviders.OfficeImageId = "ViewOnlineConnection";
@@ -356,51 +344,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.mnuGetThirdPartyGraphDataProviders.ShowImage = true;
             this.mnuGetThirdPartyGraphDataProviders.SuperTip = "Get third-party plug-in software that will import graph data from other types of " +
     "networks.";
-            // 
-            // btnGetExchangeGraphDataProvider
-            // 
-            this.btnGetExchangeGraphDataProvider.Label = "Exchange Server Networks";
-            this.btnGetExchangeGraphDataProvider.Name = "btnGetExchangeGraphDataProvider";
-            this.btnGetExchangeGraphDataProvider.OfficeImageId = "ViewOnlineConnection";
-            this.btnGetExchangeGraphDataProvider.ScreenTip = "Exchange Server Networks ";
-            this.btnGetExchangeGraphDataProvider.ShowImage = true;
-            this.btnGetExchangeGraphDataProvider.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStartProcess_Click);
-            // 
-            // btnGetMediaWikiGraphDataProvider
-            // 
-            this.btnGetMediaWikiGraphDataProvider.Label = "MediaWiki Networks";
-            this.btnGetMediaWikiGraphDataProvider.Name = "btnGetMediaWikiGraphDataProvider";
-            this.btnGetMediaWikiGraphDataProvider.OfficeImageId = "ViewOnlineConnection";
-            this.btnGetMediaWikiGraphDataProvider.ScreenTip = "MediaWiki Networks";
-            this.btnGetMediaWikiGraphDataProvider.ShowImage = true;
-            this.btnGetMediaWikiGraphDataProvider.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStartProcess_Click);
-            // 
-            // btnGetOnaSurveysGraphDataProvider
-            // 
-            this.btnGetOnaSurveysGraphDataProvider.Label = "ONA Survey Networks";
-            this.btnGetOnaSurveysGraphDataProvider.Name = "btnGetOnaSurveysGraphDataProvider";
-            this.btnGetOnaSurveysGraphDataProvider.OfficeImageId = "ViewOnlineConnection";
-            this.btnGetOnaSurveysGraphDataProvider.ScreenTip = "ONA Survey Networks ";
-            this.btnGetOnaSurveysGraphDataProvider.ShowImage = true;
-            this.btnGetOnaSurveysGraphDataProvider.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStartProcess_Click);
-            // 
-            // btnGetSocialNetworkGraphDataProvider
-            // 
-            this.btnGetSocialNetworkGraphDataProvider.Label = "Social Networks";
-            this.btnGetSocialNetworkGraphDataProvider.Name = "btnGetSocialNetworkGraphDataProvider";
-            this.btnGetSocialNetworkGraphDataProvider.OfficeImageId = "ViewOnlineConnection";
-            this.btnGetSocialNetworkGraphDataProvider.ScreenTip = "Social Networks ";
-            this.btnGetSocialNetworkGraphDataProvider.ShowImage = true;
-            this.btnGetSocialNetworkGraphDataProvider.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStartProcess_Click);
-            // 
-            // btnGetVosonGraphDataProvider
-            // 
-            this.btnGetVosonGraphDataProvider.Label = "VOSON Hyperlink Networks";
-            this.btnGetVosonGraphDataProvider.Name = "btnGetVosonGraphDataProvider";
-            this.btnGetVosonGraphDataProvider.OfficeImageId = "ViewOnlineConnection";
-            this.btnGetVosonGraphDataProvider.ScreenTip = "VOSON Hyperlink Networks ";
-            this.btnGetVosonGraphDataProvider.ShowImage = true;
-            this.btnGetVosonGraphDataProvider.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStartProcess_Click);
             // 
             // separator14
             // 
@@ -1652,15 +1595,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnCreateNodeXLWorkbook.SuperTip = "Create a new NodeXL workbook.";
             this.btnCreateNodeXLWorkbook.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnCreateNodeXLWorkbook_Click);
             // 
-            // btnGetVKontakteGraphDataProvider
-            // 
-            this.btnGetVKontakteGraphDataProvider.Label = "vKontakte and Odnoklassniki Networks";
-            this.btnGetVKontakteGraphDataProvider.Name = "btnGetVKontakteGraphDataProvider";
-            this.btnGetVKontakteGraphDataProvider.OfficeImageId = "ViewOnlineConnection";
-            this.btnGetVKontakteGraphDataProvider.ScreenTip = "vKontakte and Odnoklassniki Networks";
-            this.btnGetVKontakteGraphDataProvider.ShowImage = true;
-            this.btnGetVKontakteGraphDataProvider.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStartProcess_Click);
-            // 
             // Ribbon
             // 
             this.Name = "Ribbon";
@@ -1820,18 +1754,12 @@ namespace Smrf.NodeXL.ExcelTemplate
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnCreateNodeXLWorkbook;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnGroupByMotif;
         internal Microsoft.Office.Tools.Ribbon.RibbonMenu mnuGetThirdPartyGraphDataProviders;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnGetExchangeGraphDataProvider;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnGetOnaSurveysGraphDataProvider;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnGetSocialNetworkGraphDataProvider;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnGetVosonGraphDataProvider;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnDonate;
         internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator13;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnShowGraphSummary;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportDataUserSettings;
         internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator14;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnExportToEmail;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnGetMediaWikiGraphDataProvider;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnGetVKontakteGraphDataProvider;
     }
 
     partial class ThisRibbonCollection

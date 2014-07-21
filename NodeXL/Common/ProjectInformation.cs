@@ -77,36 +77,6 @@ public static class ProjectInformation
     public const String NodeXLGraphGalleryCreateAccountUrl =
         "http://www.nodexlgraphgallery.org/Pages/CreateAccount.aspx";
 
-    /// URL of the page for downloading the Exchange graph data provider.
-
-    public const String ExchangeGraphDataProviderUrl =
-        "http://exchangespigot.codeplex.com/";
-     
-    /// URL of the page for downloading the MediaWiki graph data provider.
-
-    public const String MediaWikiGraphDataProviderUrl =
-        "http://wikiimporter.codeplex.com/";
-     
-    /// URL of the page for downloading the ONA Surveys graph data provider.
-
-    public const String OnaSurveysGraphDataProviderUrl =
-        "https://www.s2.onasurveys.com/help/nodexl.php";
-     
-    /// URL of the page for downloading the Social Network graph data provider.
-
-    public const String SocialNetworkGraphDataProviderUrl =
-        "http://socialnetimporter.codeplex.com/";
-     
-    /// URL of the page for downloading the vKontakte graph data provider.
-
-    public const String VKontakteGraphDataProviderUrl =
-        "http://runetimporter.codeplex.com/";
-
-    /// URL of the page for downloading the Voson graph data provider.
-
-    public const String VosonGraphDataProviderUrl =
-        "http://voson.anu.edu.au/node/13#VOSON-NodeXL";
-     
     /// URL of the WCF service for exporting graphs to the NodeXL Graph Gallery
     /// website.
 

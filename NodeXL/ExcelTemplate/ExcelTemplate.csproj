@@ -926,6 +926,8 @@
     <Compile Include="Util\TaskAutomation\AutomationTasks.cs" />
     <Compile Include="Util\TaskAutomation\TaskAutomator.cs" />
     <Compile Include="Util\TemporaryImages.cs" />
+    <Compile Include="Util\ThirdPartyGraphDataProviderInfo\ThirdPartyGraphDataProviderInfo.cs" />
+    <Compile Include="Util\ThirdPartyGraphDataProviderInfo\ThirdPartyGraphDataProvidersInfo.cs" />
     <Compile Include="Util\VertexAndRowID.cs" />
     <Compile Include="Util\VertexWorksheetPopulator.cs" />
     <Compile Include="Util\VisualAttributes.cs" />

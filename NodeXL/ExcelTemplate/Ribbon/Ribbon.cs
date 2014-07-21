@@ -63,23 +63,7 @@ public partial class Ribbon : RibbonBase
     {
         InitializeComponent();
 
-        btnGetExchangeGraphDataProvider.Tag =
-            ProjectInformation.ExchangeGraphDataProviderUrl;
-
-        btnGetMediaWikiGraphDataProvider.Tag =
-            ProjectInformation.MediaWikiGraphDataProviderUrl;
-
-        btnGetOnaSurveysGraphDataProvider.Tag =
-            ProjectInformation.OnaSurveysGraphDataProviderUrl;
-
-        btnGetSocialNetworkGraphDataProvider.Tag =
-            ProjectInformation.SocialNetworkGraphDataProviderUrl;
-
-        btnGetVKontakteGraphDataProvider.Tag =
-            ProjectInformation.VKontakteGraphDataProviderUrl;
-
-        btnGetVosonGraphDataProvider.Tag =
-            ProjectInformation.VosonGraphDataProviderUrl;
+        AddGetThirdPartyGraphDataProviderMenuItems();
 
         btnDonate.Tag = ProjectInformation.DonateUrl;
 
@@ -438,6 +422,44 @@ public partial class Ribbon : RibbonBase
                 : NoParamCommand.HideGraphAxes);
 
             AssertValid();
+        }
+    }
+
+    //*************************************************************************
+    //  Method: AddGetThirdPartyGraphDataProviderMenuItems()
+    //
+    /// <summary>
+    /// Adds menu items for getting third-party graph data providers.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    AddGetThirdPartyGraphDataProviderMenuItems()
+    {
+        IList<RibbonControl> oRibbonButtons =
+            this.mnuGetThirdPartyGraphDataProviders.Items;
+
+        foreach ( ThirdPartyGraphDataProviderInfo
+            oThirdPartyGraphDataProviderInfo in
+            ThirdPartyGraphDataProvidersInfo.GetAll() )
+        {
+            RibbonButton oRibbonButton = this.Factory.CreateRibbonButton();
+
+            oRibbonButton.Name = "btnGetThirdPartyGraphDataProvider"
+                + oRibbonButtons.Count;
+
+            oRibbonButton.Label = oRibbonButton.ScreenTip =
+				oThirdPartyGraphDataProviderInfo.Name;
+
+            // The URL stored in the Tag is used by btnStartProcess_Click().
+
+            oRibbonButton.Tag = oThirdPartyGraphDataProviderInfo.Url;
+            oRibbonButton.Click += this.btnStartProcess_Click;
+
+            oRibbonButton.OfficeImageId = "ViewOnlineConnection";
+            oRibbonButton.ShowImage = true;
+
+            oRibbonButtons.Add(oRibbonButton);
         }
     }
 
