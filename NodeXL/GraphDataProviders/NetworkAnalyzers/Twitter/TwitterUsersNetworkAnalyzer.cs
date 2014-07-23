@@ -1305,7 +1305,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
         // The JSON contains a "users" array for the users in the Twitter list.
 
         foreach ( Object oResult in EnumerateJsonValues(sUrl, "users",
-            Int32.MaxValue, false, oRequestStatistics) )
+            Int32.MaxValue, true, oRequestStatistics) )
         {
             yield return ( ( Dictionary<String, Object> )oResult );
         }

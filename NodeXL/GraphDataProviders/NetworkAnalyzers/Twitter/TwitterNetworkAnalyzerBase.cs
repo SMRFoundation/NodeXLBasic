@@ -126,14 +126,6 @@ public abstract class TwitterNetworkAnalyzerBase : HttpNetworkAnalyzerBase
 
                         break;
 
-                    case HttpStatusCode.NotFound:  // HTTP 404.
-
-                        sMessage =
-                            "There is no Twitter user with that username."
-                            ;
-
-                        break;
-
                     case HttpStatusCode.RequestTimeout:  // HTTP 408.
 
                         sMessage = TimeoutMessage;
