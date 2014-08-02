@@ -6,6 +6,7 @@ using System.Net;
 using System.Web.Script.Serialization;
 using System.IO;
 using System.Diagnostics;
+using Smrf.AppLib;
 
 namespace Smrf.SocialNetworkLib.Twitter
 {
@@ -115,9 +116,14 @@ public class TwitterUtil
 
         while (true)
         {
-            if (reportProgressHandler != null && iPage > 1)
+            if (iPage > 1)
             {
-                reportProgressHandler("Getting page " + iPage + ".");
+                HttpSocialNetworkUtil.ReportProgress(reportProgressHandler,
+
+                    "Getting page {0}."
+                    ,
+                    iPage
+                    );
             }
 
             Dictionary<String, Object> oResponseDictionary = null;
@@ -304,9 +310,14 @@ public class TwitterUtil
 
             iCalls++;
 
-            if (iCalls > 1 && reportProgressHandler != null)
+            if (iCalls > 1)
             {
-                reportProgressHandler("Getting page " + iCalls + ".");
+                HttpSocialNetworkUtil.ReportProgress(reportProgressHandler,
+
+                    "Getting page {0}."
+                    ,
+                    iCalls
+                    );
             }
 
             foreach ( Object oResult in EnumerateJsonValues(oUrl.ToString(),
@@ -408,9 +419,14 @@ public class TwitterUtil
 
         while (true)
         {
-            if (iPage > 1 && reportProgressHandler != null)
+            if (iPage > 1)
             {
-                reportProgressHandler("Getting page " + iPage + ".");
+                HttpSocialNetworkUtil.ReportProgress(reportProgressHandler,
+
+                    "Getting page {0}."
+                    ,
+                    iPage
+                    );
             }
 
             String sUrlWithCursor = AppendCursorToUrl(url, sCursor);
@@ -582,6 +598,8 @@ public class TwitterUtil
         AssertValid();
 
         Int32 iRateLimitPauses = 0;
+        Int32 iInvalidJsonRepeats = 0;
+        const Int32 MaximumInvalidJsonRepeats = 3;
 
         while (true)
         {
@@ -615,7 +633,21 @@ public class TwitterUtil
                         requestStatistics, m_UserAgent, m_TimeoutMs,
                         reportProgressHandler, checkCancellationPendingHandler);
 
-                return ( new StreamReader(oStream).ReadToEnd() );
+                return ( GetTwitterResponseAsString(oStream) );
+            }
+            catch (InvalidJsonException oInvalidJsonException)
+            {
+                iInvalidJsonRepeats++;
+
+                if (iInvalidJsonRepeats > MaximumInvalidJsonRepeats)
+                {
+                    throw oInvalidJsonException;
+                }
+
+                HttpSocialNetworkUtil.ReportProgress(reportProgressHandler,
+
+                    "Received invalid JSON from Twitter.  Trying again."
+                    );
             }
             catch (WebException oWebException)
             {
@@ -636,15 +668,12 @@ public class TwitterUtil
                 DateTime oWakeUpTime = DateTime.Now.AddMilliseconds(
                     iRateLimitPauseMs);
 
-                if (reportProgressHandler != null)
-                {
-                    reportProgressHandler( String.Format(
+                HttpSocialNetworkUtil.ReportProgress(reportProgressHandler,
 
                     "Reached Twitter rate limits.  Pausing until {0}."
                     ,
                     oWakeUpTime.ToLongTimeString()
-                    ) );
-                }
+                    );
 
                 // Don't pause in one large interval, which would prevent
                 // cancellation.
@@ -672,6 +701,46 @@ public class TwitterUtil
                 }
             }
         }
+    }
+
+    //*************************************************************************
+    //  Method: GetTwitterResponseAsString()
+    //
+    /// <summary>
+    /// Gets a response from a Twitter stream as a string.
+    /// </summary>
+    ///
+    /// <param name="oStream">
+    /// The stream to read.
+    /// </param>
+    ///
+    /// <returns>
+    /// The string returned by the Twitter server.
+    /// </returns>
+    //*************************************************************************
+
+    public String
+    GetTwitterResponseAsString
+    (
+        Stream oStream
+    )
+    {
+        Debug.Assert(oStream != null);
+        AssertValid();
+
+        String sResponse = new StreamReader(oStream).ReadToEnd();
+
+        if ( !TwitterJsonUtil.IsValidJson(sResponse) )
+        {
+            // Twitter occasionally sends a partial response with truncated
+            // JSON.  That would lead to an ArgumentException with the message
+            // "Unterminated string passed in" if parsing were attempted.
+
+            throw new InvalidJsonException(
+                "The text received from Twitter is not valid JSON.");
+        }
+
+        return (sResponse);
     }
 
     //*************************************************************************

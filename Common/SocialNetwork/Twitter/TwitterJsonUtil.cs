@@ -16,6 +16,42 @@ namespace Smrf.SocialNetworkLib.Twitter
 public static class TwitterJsonUtil
 {
     //*************************************************************************
+    //  Method: IsValidJson()
+    //
+    /// <summary>
+    /// Determines whether a string contains valid JSON.
+    /// </summary>
+    ///
+    /// <param name="stringToCheck">
+    /// The string to check.  Can be empty but not null.
+    /// </param>
+    ///
+    /// <returns>
+    /// true if string appears to contain valid JSON.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// The check is quick and dirty, not a thorough test.  It's meant to
+    /// quickly reject obviously bad JSON.
+    /// </remarks>
+    //*************************************************************************
+
+    public static Boolean
+    IsValidJson
+    (
+        String stringToCheck
+    )
+    {
+        Debug.Assert(stringToCheck != null);
+
+        return (
+            stringToCheck.EndsWith("]")
+            ||
+            stringToCheck.EndsWith("}")
+            );
+    }
+
+    //*************************************************************************
     //  Method: TryGetJsonValueFromDictionary()
     //
     /// <overloads>

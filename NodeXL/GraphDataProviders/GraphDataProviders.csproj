@@ -67,6 +67,9 @@
     <Compile Include="..\..\Common\GraphMLXmlDocument.cs">
       <Link>Util\GraphMLXmlDocument.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\InvalidJsonException.cs">
+      <Link>Util\InvalidJsonException.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\NodeXL\GraphML\NodeXLGraphMLUtil.cs">
       <Link>Util\NodeXL\GraphML\NodeXLGraphMLUtil.cs</Link>
     </Compile>

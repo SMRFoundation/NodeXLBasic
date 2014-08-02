@@ -470,6 +470,45 @@ public static class HttpSocialNetworkUtil
         return ( oHttpWebResponse.GetResponseStream() );
     }
 
+    //*************************************************************************
+    //  Method: ReportProgress()
+    //
+    /// <summary>
+    /// Reports progress while getting a network.
+    /// </summary>
+    ///
+    /// <param name="reportProgressHandler">
+    /// Method that will be called to report progress.  Can be null.
+    /// </param>
+    ///
+    /// <param name="progressFormat">
+    /// A composite format string.  Can be empty but not null.
+    /// </param>
+    ///
+    /// <param name="progressArguments">
+    /// An Object array containing zero or more objects to format. 
+    /// </param>
+    //*************************************************************************
+
+    public static void
+    ReportProgress
+    (
+        ReportProgressHandler reportProgressHandler,
+        String progressFormat,
+        params Object [] progressArguments
+    )
+    {
+        Debug.Assert(progressFormat != null);
+        Debug.Assert(progressArguments != null);
+
+        if (reportProgressHandler != null)
+        {
+            reportProgressHandler(
+                String.Format(progressFormat, progressArguments)
+                );
+        }
+    }
+
 
     //*************************************************************************
     //  Private constants
