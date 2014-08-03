@@ -489,7 +489,8 @@ public class GraphMLAttribute : Object
         Debug.Assert(sAttributeValue != null);
 
         // If you try to programmatically insert a value that starts with an
-        // equal sign into an Excel cell, you'll get this:
+        // equal sign into an Excel cell and the value is not a valid formula,
+        // you'll get this:
         //
         //   [COMException]: Exception from HRESULT: 0x800A03EC
         //
