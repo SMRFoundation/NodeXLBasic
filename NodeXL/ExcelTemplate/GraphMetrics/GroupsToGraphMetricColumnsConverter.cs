@@ -307,7 +307,7 @@ public static class GroupsToGraphMetricColumnsConverter
 
                 oVertexNamesForGroupVertexWorksheet.Add(
                     new GraphMetricValueOrdered(
-                        ExcelUtil.ForceCellText(oVertex.Name) ) );
+                        ExcelTextUtil.ForceCellText(oVertex.Name) ) );
 
                 iVertices++;
             }

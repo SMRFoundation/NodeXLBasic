@@ -268,7 +268,7 @@ public static class TwitterSearchNetworkWordMetricUtil : Object
                 break;
             }
 
-            String sWordOrWordPair = ExcelUtil.UnforceCellText(
+            String sWordOrWordPair = ExcelTextUtil.UnforceCellText(
                 (String)oWord1AsObject );
 
             if (word2Values != null)
@@ -282,11 +282,11 @@ public static class TwitterSearchNetworkWordMetricUtil : Object
 
                 sWordOrWordPair = FormatWordPair(
                     sWordOrWordPair,
-                    ExcelUtil.UnforceCellText( (String)oWord2AsObject ) );
+                    ExcelTextUtil.UnforceCellText( (String)oWord2AsObject ) );
             }
 
             topWordsOrWordPairs.Add( new GraphMetricValueOrdered(
-                ExcelUtil.ForceCellText(sWordOrWordPair) ) );
+                ExcelTextUtil.ForceCellText(sWordOrWordPair) ) );
 
             topCounts.Add( new GraphMetricValueOrdered(oCountAsObject) );
         }
@@ -336,7 +336,7 @@ public static class TwitterSearchNetworkWordMetricUtil : Object
 
                 (from oGroupMetricValueWithID in topWordsOrWordPairs
 
-                select ExcelUtil.UnforceCellText(
+                select ExcelTextUtil.UnforceCellText(
                     (String)oGroupMetricValueWithID.Value ) )
                 ,
                 maximumTopWordsOrWordPairs)

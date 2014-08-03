@@ -1346,7 +1346,7 @@ public class TwitterSearchNetworkTopItemsCalculator2 : TopItemsCalculatorBase2
                     new GraphMetricValueWithID(
                         GetGroupRowID(oGroupEdgeInfo),
 
-                        ExcelUtil.ForceCellText(
+                        ExcelTextUtil.ForceCellText(
                             TwitterSearchNetworkWordMetricUtil
                             .ConcatenateTopWordsOrWordPairs(
                                 oTopWordsOrWordPairs, bIsForWords,

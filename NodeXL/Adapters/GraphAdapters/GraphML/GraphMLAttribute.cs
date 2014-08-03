@@ -4,6 +4,7 @@ using System.Xml;
 using System.Globalization;
 using System.Diagnostics;
 using Smrf.XmlLib;
+using Smrf.AppLib;
 
 namespace Smrf.NodeXL.Adapters
 {
@@ -454,13 +455,56 @@ public class GraphMLAttribute : Object
             
             case AttributeType.String:
 
-                return (sAttributeValue);
+                return ( CheckForLeadingEqualSign(sAttributeValue) );
             
             default:
 
                 Debug.Assert(false);
                 return (null);
         }
+    }
+
+    //*************************************************************************
+    //  Method: CheckForLeadingEqualSign()
+    //
+    /// <summary>
+    /// Fixes an attribute value that might start with an equal sign.
+    /// </summary>
+    ///
+    /// <param name="sAttributeValue">
+    /// The value to fix.  Can't be null.
+    /// </param>
+    ///
+    /// <returns>
+    /// The attribute value, fixed if necessary.
+    /// </returns>
+    //*************************************************************************
+
+    protected String
+    CheckForLeadingEqualSign
+    (
+        String sAttributeValue
+    )
+    {
+        Debug.Assert(sAttributeValue != null);
+
+        // If you try to programmatically insert a value that starts with an
+        // equal sign into an Excel cell, you'll get this:
+        //
+        //   [COMException]: Exception from HRESULT: 0x800A03EC
+        //
+        // This can be fixed by inserting an apostrophe before the equal sign,
+        // which forces Excel to treat the value as text instead of a formula.
+        //
+        // Note: Don't use String.StartsWith() here.  That won't detect an
+        // equal sign at index position zero in right-to-left languages.
+
+        if (sAttributeValue.Length > 0 && sAttributeValue[0] == '=')
+        {
+            sAttributeValue = ExcelTextUtil.ForceCellText(sAttributeValue);
+        }
+
+        return (sAttributeValue);
     }
 
     //*************************************************************************

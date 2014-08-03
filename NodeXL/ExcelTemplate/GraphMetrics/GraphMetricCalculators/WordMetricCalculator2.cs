@@ -1143,7 +1143,7 @@ public class WordMetricCalculator2 : GraphMetricCalculatorBase2
         }
 
         oWordWordValues.Add( new GraphMetricValueOrdered(
-            ExcelUtil.ForceCellText(oCountedWord.Word) ) );
+            ExcelTextUtil.ForceCellText(oCountedWord.Word) ) );
 
         oWordCountValues.Add(
             new GraphMetricValueOrdered(oCountedWord.Count) );
@@ -1226,10 +1226,10 @@ public class WordMetricCalculator2 : GraphMetricCalculatorBase2
         }
 
         oWordPairWord1Values.Add( new GraphMetricValueOrdered(
-            ExcelUtil.ForceCellText(oCountedWordPair.Word1) ) );
+            ExcelTextUtil.ForceCellText(oCountedWordPair.Word1) ) );
 
         oWordPairWord2Values.Add( new GraphMetricValueOrdered(
-            ExcelUtil.ForceCellText(oCountedWordPair.Word2) ) );
+            ExcelTextUtil.ForceCellText(oCountedWordPair.Word2) ) );
 
         oWordPairCountValues.Add(
             new GraphMetricValueOrdered(oCountedWordPair.Count) );

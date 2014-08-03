@@ -176,19 +176,19 @@ public static class TwitterSearchNetworkVertexMetricUtil : Object
 
         topWordsInTweetByCountGraphMetricValues.Add(
             new GraphMetricValueWithID( vertexRowID,
-                ExcelUtil.ForceCellText(sTopWordsInTweetByCount) ) );
+                ExcelTextUtil.ForceCellText(sTopWordsInTweetByCount) ) );
 
         topWordsInTweetBySalienceGraphMetricValues.Add(
             new GraphMetricValueWithID( vertexRowID,
-                ExcelUtil.ForceCellText(sTopWordsInTweetBySalience) ) );
+                ExcelTextUtil.ForceCellText(sTopWordsInTweetBySalience) ) );
 
         topWordPairsInTweetByCountGraphMetricValues.Add(
             new GraphMetricValueWithID( vertexRowID,
-                ExcelUtil.ForceCellText(sTopWordPairsInTweetByCount) ) );
+                ExcelTextUtil.ForceCellText(sTopWordPairsInTweetByCount) ) );
 
         topWordPairsInTweetBySalienceGraphMetricValues.Add(
             new GraphMetricValueWithID( vertexRowID,
-                ExcelUtil.ForceCellText(sTopWordPairsInTweetBySalience) ) );
+                ExcelTextUtil.ForceCellText(sTopWordPairsInTweetBySalience) ) );
     }
 
     //*************************************************************************
