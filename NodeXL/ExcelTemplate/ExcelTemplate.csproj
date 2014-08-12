@@ -29,7 +29,7 @@
     <PublishUrl>E:\NodeXL\ExcelTemplate\Publish\</PublishUrl>
     <InstallUrl>http://www.nodexlgraphgallery.org/NodeXLSetup/</InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.1.332</ApplicationVersion>
+    <ApplicationVersion>1.0.1.333</ApplicationVersion>
     <AutoIncrementApplicationRevision>false</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>1</UpdateInterval>
