@@ -1,4 +1,16 @@
 
+August 2014 Update:
+
+The instructions below no longer work.  They stopped working when the NodeXL
+solution was converted from .NET Framework 3.5 to .NET Framework 4.0, at which
+point NDoc started rejecting the NodeXL assemblies and XML files.  As a result,
+there is currently no way to build a NodeXL API help file.  A commercial tool
+would probably be required for this.
+
+
+
+
+
 To Build the NodeXL API Help File
 ---------------------------------
 
