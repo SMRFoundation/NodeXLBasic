@@ -599,6 +599,7 @@ public class TwitterUtil
 
         Int32 iRateLimitPauses = 0;
         Int32 iInvalidJsonRepeats = 0;
+        Int32 iEOFOr0BytesReceivedRepeats = 0;
         const Int32 MaximumInvalidJsonRepeats = 3;
 
         while (true)
@@ -627,13 +628,34 @@ public class TwitterUtil
 
             try
             {
+                string sResponse = String.Empty;
+
                 oStream =
                     HttpSocialNetworkUtil.GetHttpWebResponseStreamWithRetries(
                         url, HttpStatusCodesToFailImmediately,
                         requestStatistics, m_UserAgent, m_TimeoutMs,
                         reportProgressHandler, checkCancellationPendingHandler);
 
-                return ( GetTwitterResponseAsString(oStream) );
+                //Check for EOF errors and retry
+                try
+                {
+                    sResponse = GetTwitterResponseAsString(oStream);
+                    return sResponse;
+                }
+                catch (IOException oEOFException)
+                {
+                    iEOFOr0BytesReceivedRepeats++;
+
+                    if (iEOFOr0BytesReceivedRepeats > MaximumInvalidJsonRepeats)
+                    {
+                        throw oEOFException;
+                    }
+
+                    HttpSocialNetworkUtil.ReportProgress(reportProgressHandler,
+
+                        "Received invalid EOF from Twitter.  Trying again."
+                        );
+                }                
             }
             catch (InvalidJsonException oInvalidJsonException)
             {

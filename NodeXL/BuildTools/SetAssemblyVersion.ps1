@@ -109,11 +109,11 @@ function Main()
     }
     
     [Int]$iRevision = $args[0]
-    [String]$sPathRoot = "E:\"
+    [String]$sPathRoot = "D:\Dropbox\NodeXL CodePlex\"
     
     ProcessAssemblyInfoFiles ($sPathRoot + "NodeXL") $iRevision
 
 	ProcessExcelTemplateCsprojFile $sPathRoot $iRevision
 }
 
-Main(334)
+Main(335)

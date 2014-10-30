@@ -473,11 +473,11 @@ public partial class GraphServerGetTwitterSearchNetworkDialog :
 
     /// Maximum number of statuses to get, going backward in time.
 
-    protected static Int32 m_iMaximumStatusesGoingBackward = 1000;
+    protected static Int32 m_iMaximumStatusesGoingBackward = 10000;
 
     /// true to expand the URLs in each status.
 
-    protected static Boolean m_bExpandStatusUrls = false;
+    protected static Boolean m_bExpandStatusUrls = true;
 
     /// User name for the account to use on the NodeXL Graph Server.
 

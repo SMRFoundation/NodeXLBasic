@@ -3870,7 +3870,8 @@ public partial class TaskPane : UserControl
 
         String sUrl = e.Url.ToString();
 
-        if (sUrl.IndexOf("SplashScreen.htm") == -1)
+        if (sUrl.IndexOf("SplashScreen.htm") == -1 &&
+            sUrl.IndexOf("SplashScreenOff.htm") == -1)
         {
             // By default, clicking an URL in the splash screen displayed in
             // the WebBrowser control uses Internet Explorer to open the URL.

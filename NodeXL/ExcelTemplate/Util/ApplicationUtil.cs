@@ -206,8 +206,8 @@ public static class ApplicationUtil
         String sSplashScreenSubfolderPath = Path.Combine(
             GetApplicationFolder(), SplashScreenSubfolder);
 
-        return ( Path.Combine(sSplashScreenSubfolderPath,
-            SplashScreenFileName) );
+        return (Path.Combine(sSplashScreenSubfolderPath,
+            IsOnline() ? SplashScreenFileNameOnline : SplashScreenFileNameOffline));
     }
 
     //*************************************************************************
@@ -438,6 +438,37 @@ public static class ApplicationUtil
         return (oUri.LocalPath);
     }
 
+    //*************************************************************************
+    //  Method: IsOnline
+    //
+    /// <summary>
+    /// Tells if ther is internet connection.
+    /// </summary>
+    ///
+    /// <returns>
+    /// true if there is an internet connection. false otherwise.
+    /// </returns>
+    //*************************************************************************
+
+    private static Boolean
+    IsOnline
+    (
+    )
+    {
+        try
+        {
+            var ping = new System.Net.NetworkInformation.Ping();
+
+            var result = ping.Send("www.google.com");
+
+            return (result.Status == System.Net.NetworkInformation.IPStatus.Success);
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
 
     //*************************************************************************
     //  Private members
@@ -459,9 +490,13 @@ public static class ApplicationUtil
     private const String SplashScreenSubfolder =
         "SplashScreen";
 
-    /// File name of the splash screen's HTML file.
+    /// File name of the splash screen's HTML file (when there is internet connection).
 
-    private const String SplashScreenFileName = "SplashScreen.htm";
+    private const String SplashScreenFileNameOnline = "SplashScreen.htm";
+
+    /// File name of the splash screen's HTML file (when there is no internet connection).
+
+    private const String SplashScreenFileNameOffline = "SplashScreenOff.htm";
 
     /// File name of the application's help file.
 
