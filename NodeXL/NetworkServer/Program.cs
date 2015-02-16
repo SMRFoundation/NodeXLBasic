@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Smrf.NodeXL.GraphDataProviders;
 using Smrf.NodeXL.GraphDataProviders.Twitter;
-using Smrf.NodeXL.GraphDataProviders.GraphServer;
+
 using Smrf.SocialNetworkLib;
 using Smrf.AppLib;
 
@@ -368,39 +368,39 @@ class Program
         DateTime oMaximumStatusDateUtc = GetMaximumStatusDateUtc(
             oStartTime, iStartDateInDaysBeforeToday);
 
-        GraphServerTwitterSearchNetworkAnalyzer
-            oGraphServerTwitterSearchNetworkAnalyzer =
-                new GraphServerTwitterSearchNetworkAnalyzer();
+        //GraphServerTwitterSearchNetworkAnalyzer
+        //    oGraphServerTwitterSearchNetworkAnalyzer =
+        //        new GraphServerTwitterSearchNetworkAnalyzer();
 
-        SubscribeToProgressChangedEvent(
-            oGraphServerTwitterSearchNetworkAnalyzer);
+        //SubscribeToProgressChangedEvent(
+        //    oGraphServerTwitterSearchNetworkAnalyzer);
 
-        Console.WriteLine(
-            "Getting the Graph Server Twitter search network specified in"
-            + " \"{0}\".  The search term is \"{1}\".  The start date is"
-            + " {2}, UTC.  The maximum number of tweets going backward is {3}."
-            ,
-            sNetworkConfigurationFilePath,
-            sSearchTerm,
-            oMaximumStatusDateUtc,
-            iMaximumStatusesGoingBackward
-            );
+        //Console.WriteLine(
+        //    "Getting the Graph Server Twitter search network specified in"
+        //    + " \"{0}\".  The search term is \"{1}\".  The start date is"
+        //    + " {2}, UTC.  The maximum number of tweets going backward is {3}."
+        //    ,
+        //    sNetworkConfigurationFilePath,
+        //    sSearchTerm,
+        //    oMaximumStatusDateUtc,
+        //    iMaximumStatusesGoingBackward
+        //    );
 
-        try
-        {
-            oXmlDocument = oGraphServerTwitterSearchNetworkAnalyzer.GetNetwork(
-                sSearchTerm, oMaximumStatusDateUtc,
-                iMaximumStatusesGoingBackward, bExpandStatusUrls,
-                sGraphServerUserName, sGraphServerPassword);
-        }
-        catch (Exception oException)
-        {
-            // Note that this call might exit the program.
+        //try
+        //{
+        //    oXmlDocument = oGraphServerTwitterSearchNetworkAnalyzer.GetNetwork(
+        //        sSearchTerm, oMaximumStatusDateUtc,
+        //        iMaximumStatusesGoingBackward, bExpandStatusUrls,
+        //        sGraphServerUserName, sGraphServerPassword);
+        //}
+        //catch (Exception oException)
+        //{
+        //    // Note that this call might exit the program.
 
-            oXmlDocument = OnGetNetworkException(oStartTime, oException,
-                sNetworkConfigurationFilePath, sNetworkFileFolderPath,
-                oGraphServerTwitterSearchNetworkAnalyzer);
-        }
+        //    oXmlDocument = OnGetNetworkException(oStartTime, oException,
+        //        sNetworkConfigurationFilePath, sNetworkFileFolderPath,
+        //        oGraphServerTwitterSearchNetworkAnalyzer);
+        //}
     }
 
     //*************************************************************************

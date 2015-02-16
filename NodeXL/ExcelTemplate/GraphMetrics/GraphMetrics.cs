@@ -111,6 +111,12 @@ GraphMetrics
 
     ReciprocatedVertexPairRatio = 8192,
 
+    /// <summary>
+    /// Create new edges by shared content similarity.
+    /// </summary>
+
+    EdgeCreation = 16384,
+
     // Important Note:
     //
     // If you add a new graph metric, you must add an array entry to
@@ -330,6 +336,11 @@ GraphMetricInformation
             new GraphMetricInformation(
                 GraphMetrics.Words,
                 "Words and word pairs",
+                true),
+
+            new GraphMetricInformation(
+                GraphMetrics.EdgeCreation,
+                "Edge creation by shared content similarity",
                 true),
 
             new GraphMetricInformation(

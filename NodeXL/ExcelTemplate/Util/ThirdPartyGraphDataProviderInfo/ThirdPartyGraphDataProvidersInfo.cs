@@ -34,6 +34,11 @@ public static class ThirdPartyGraphDataProvidersInfo : Object
         List<ThirdPartyGraphDataProviderInfo> oAll =
             new List<ThirdPartyGraphDataProviderInfo>();
 
+        oAll.Add(new ThirdPartyGraphDataProviderInfo(
+            "Connected Action NodeXL Graph Server",
+            "https://graphserverimporter.codeplex.com/"
+            ));
+
         oAll.Add( new ThirdPartyGraphDataProviderInfo(
             "Exchange Server Networks",
             "http://exchangespigot.codeplex.com/"

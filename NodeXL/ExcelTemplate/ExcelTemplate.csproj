@@ -14,8 +14,8 @@
     <OfficeApplication>Excel</OfficeApplication>
     <ProjectGuid>{33AB75F0-43C2-4B1D-A0FC-2E682BC65386}</ProjectGuid>
     <SolutionID>aa51c0f3-62b4-4782-83a8-a15dcdd17698</SolutionID>
-    <ManifestCertificateThumbprint>C791C78C562D29FD0391C7AF6C4A38E19A650F4E</ManifestCertificateThumbprint>
-    <ManifestKeyFile>ExcelTemplate_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestCertificateThumbprint>F41A6BF5D86832F049CDB31EBA26A8DC15B0462E</ManifestCertificateThumbprint>
+    <ManifestKeyFile>AuthenticodeCertificate-2014-01-05.pfx</ManifestKeyFile>
     <SignManifests>true</SignManifests>
     <IsWebBootstrapper>True</IsWebBootstrapper>
     <FileUpgradeFlags>
@@ -26,10 +26,10 @@
     <VSTO_TrustAssembliesLocation>true</VSTO_TrustAssembliesLocation>
     <TargetFrameworkProfile />
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <PublishUrl>E:\NodeXL\ExcelTemplate\Publish\</PublishUrl>
+    <PublishUrl>D:\Dropbox\NodeXL CodePlex\NodeXL\ExcelTemplate\Publish\</PublishUrl>
     <InstallUrl>http://www.nodexlgraphgallery.org/NodeXLSetup/</InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.1.335</ApplicationVersion>
+    <ApplicationVersion>1.0.1.336</ApplicationVersion>
     <AutoIncrementApplicationRevision>false</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>1</UpdateInterval>
@@ -424,6 +424,12 @@
       <DependentUpon>EdgeAttributesDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\EdgeAttributes\EditedEdgeAttributes.cs" />
+    <Compile Include="Dialogs\EdgeCreationUserSettings\EdgeCreationUserSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\EdgeCreationUserSettings\EdgeCreationUserSettingsDialog.Designer.cs">
+      <DependentUpon>EdgeCreationUserSettingsDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\EdgeWidth\EdgeWidthDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -658,6 +664,7 @@
     <Compile Include="GraphMetrics\GraphMetricCalculators\ClusteringCoefficientCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\Cluster\ClusterCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\ConnectedComponentCalculator2.cs" />
+    <Compile Include="GraphMetrics\GraphMetricCalculators\EdgeCreationCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\EdgeReciprocationCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\EigenvectorCentralityCalculator2.cs" />
     <Compile Include="GraphMetrics\GraphMetricCalculators\GraphMetricCalculatorBase2.cs" />
@@ -716,6 +723,9 @@
       <DependentUpon>CreateSubgraphImagesDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\EdgeCreationUserSettings\EdgeCreationUserSettingsDialog.resx">
+      <DependentUpon>EdgeCreationUserSettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\GeneralUserSettings\GeneralUserSettingsDialog.resx">
       <DependentUpon>GeneralUserSettingsDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -766,6 +776,7 @@
       <Link>NodeXLExcelTemplate.chm</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="AuthenticodeCertificate-2014-01-05.pfx" />
     <None Include="ExcelTemplate_TemporaryKey.pfx" />
     <None Include="NodeXLGraph.xltx" />
     <None Include="Properties\Settings.settings">
@@ -847,6 +858,7 @@
     <Compile Include="UserSettings\ClusterUserSettings.cs" />
     <Compile Include="UserSettings\ColumnGroupUserSettings.cs" />
     <Compile Include="UserSettings\DynamicFiltersUserSettings.cs" />
+    <Compile Include="UserSettings\EdgeCreationUserSettings.cs" />
     <Compile Include="UserSettings\ExportToEmailUserSettings.cs">
     </Compile>
     <Compile Include="UserSettings\ExportToNodeXLGraphGalleryUserSettings.cs">

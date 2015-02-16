@@ -256,6 +256,31 @@ public partial class GraphMetricsDialog : ExcelTemplateForm
     }
 
     //*************************************************************************
+    //  Method: EditEdgeCreationUserSettings()
+    //
+    /// <summary>
+    /// Opens a dialog for editing Edge Creation user settings.
+    /// </summary>
+    //*************************************************************************
+
+    protected void
+    EditEdgeCreationUserSettings()
+    {
+        AssertValid();
+
+        EdgeCreationUserSettings oEdgeCreationUserSettings =
+            m_oGraphMetricUserSettings.EdgeCreationUserSettings;
+
+        if ((new EdgeCreationUserSettingsDialog(
+            oEdgeCreationUserSettings, m_oWorkbook)).ShowDialog() ==
+            DialogResult.OK)
+        {
+            m_oGraphMetricUserSettings.EdgeCreationUserSettings =
+                oEdgeCreationUserSettings;
+        }
+    }
+
+    //*************************************************************************
     //  Method: EditTopNByMetricUserSettings()
     //
     /// <summary>
@@ -469,6 +494,11 @@ public partial class GraphMetricsDialog : ExcelTemplateForm
                 case GraphMetrics.Words:
 
                     EditWordMetricUserSettings();
+                    break;
+
+                case GraphMetrics.EdgeCreation:
+
+                    EditEdgeCreationUserSettings();
                     break;
 
                 case GraphMetrics.TopNBy:

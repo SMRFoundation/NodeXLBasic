@@ -8,7 +8,7 @@ using Microsoft.NodeXL.ExcelTemplatePlugIns;
 using Smrf.NodeXL.GraphDataProviders.Twitter;
 using Smrf.NodeXL.GraphDataProviders.Flickr;
 using Smrf.NodeXL.GraphDataProviders.YouTube;
-using Smrf.NodeXL.GraphDataProviders.GraphServer;
+
 
 namespace Smrf.NodeXL.TestGraphDataProviders
 {
@@ -57,7 +57,7 @@ public partial class MainForm : Form
 
     private void btnGraphServerTwitterSearch_Click(object sender, EventArgs e)
     {
-        GetGraphData( new GraphServerTwitterSearchNetworkGraphDataProvider() );
+        //GetGraphData( new GraphServerTwitterSearchNetworkGraphDataProvider() );
     }
 
     private void GetGraphData(IGraphDataProvider2 oGraphDataProvider)

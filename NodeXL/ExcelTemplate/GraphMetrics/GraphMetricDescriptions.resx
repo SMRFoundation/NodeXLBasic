@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BrandesFastCentralities" xml:space="preserve">
     <value>&lt;p&gt;
@@ -477,6 +477,29 @@ From the article:
 
 &lt;p&gt;
 Self-loops, which would render the clustering coefficients invalid, are skipped.
+&lt;/p&gt;</value>
+  </data>
+  <data name="EdgeCreation" xml:space="preserve">
+    <value>&lt;p&gt;
+&lt;span class="spnOptions"&gt;This metric has options.&lt;/span&gt;  Click the Options button to specify them.
+&lt;/p&gt;
+	
+&lt;p&gt;
+You can have NodeXL create an edge based on the similarity of the content used by two vertices. Select a column of space or comma delimited words from the Vertices worksheet, and set the threshold of similarity required to create a new edge. NodeXL will calculate the level of similarity between each pair of vertices based on the following algorithm:
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;b&gt;Similarity (%) = number of shared words / MAX [ number of words in each column]
+&lt;/b&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+If the similarity is equal or greater than the threshold, NodeXL will append a new edge to the Edges worksheet that connects the two vertices. The new edge will have the following attributes:
+&lt;ul&gt;
+&lt;li&gt;Relationship: Shared Content: [ColumnName]&lt;/li&gt;
+&lt;li&gt;Edge Weight: Similarity&lt;/li&gt;
+&lt;li&gt;Shared Content: Words shared between the two vertices&lt;/li&gt;
+&lt;/ul&gt;
 &lt;/p&gt;</value>
   </data>
 </root>

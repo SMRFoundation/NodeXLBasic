@@ -128,13 +128,15 @@ public class GraphMetricCalculationManager : Object
                 new EdgeReciprocationCalculator2(),
                 new GroupMetricCalculator2(),
                 new IntergroupEdgeCalculator2(),
-                new OverallMetricCalculator2(),
+                //new OverallMetricCalculator2(),
                 new WordMetricCalculator2(),
 
                 new TwitterSearchNetworkTopItemsCalculator2(
                     ( new PerWorkbookSettings(workbook) ).GraphHistory),
 
                 new ReciprocatedVertexPairRatioCalculator2(),
+                new EdgeCreationCalculator2(workbook),
+                new OverallMetricCalculator2(),
                 };
 
         this.CalculateGraphMetricsAsync(graph, workbook,

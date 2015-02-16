@@ -172,12 +172,6 @@
     <Compile Include="Dialogs\GraphDataProviderDialogBase.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Dialogs\GraphServer\GraphServerGetTwitterSearchNetwork\GraphServerGetTwitterSearchNetworkDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\GraphServer\GraphServerGetTwitterSearchNetwork\GraphServerGetTwitterSearchNetworkDialog.designer.cs">
-      <DependentUpon>GraphServerGetTwitterSearchNetworkDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="Dialogs\PartialNetwork\PartialNetworkDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -224,7 +218,6 @@
     <Compile Include="GraphDataProviders\Flickr\FlickrRelatedTagNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\Flickr\FlickrUserNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\GraphDataProviderBase.cs" />
-    <Compile Include="GraphDataProviders\GraphServer\GraphServerTwitterSearchNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\Twitter\TwitterSearchNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\Twitter\TwitterUsersNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\YouTube\YouTubeUserNetworkGraphDataProvider.cs" />
@@ -235,9 +228,6 @@
     <Compile Include="NetworkAnalyzers\Flickr\FlickrNetworkAnalyzerBase.cs" />
     <Compile Include="NetworkAnalyzers\Flickr\FlickrRelatedTagNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\Flickr\FlickrUserNetworkAnalyzer.cs" />
-    <Compile Include="NetworkAnalyzers\GraphServer\GraphServerTwitterSearchNetworkAnalyzer.cs" />
-    <Compile Include="NetworkAnalyzers\GraphServer\GraphService.cs" />
-    <Compile Include="NetworkAnalyzers\GraphServer\StatusCriteria.cs" />
     <Compile Include="NetworkAnalyzers\HttpNetworkAnalyzerBase.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\Authorization\TwitterAccessToken.cs" />
     <Compile Include="NetworkAnalyzers\Twitter\Authorization\TwitterAuthorizationStatus.cs" />
@@ -273,9 +263,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\Flickr\FlickrGetUserNetwork\FlickrGetUserNetworkDialog.resx">
       <DependentUpon>FlickrGetUserNetworkDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Dialogs\GraphServer\GraphServerGetTwitterSearchNetwork\GraphServerGetTwitterSearchNetworkDialog.resx">
-      <DependentUpon>GraphServerGetTwitterSearchNetworkDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\PartialNetwork\PartialNetworkDialog.resx">
       <DependentUpon>PartialNetworkDialog.cs</DependentUpon>

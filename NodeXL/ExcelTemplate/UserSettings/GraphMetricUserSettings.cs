@@ -103,6 +103,40 @@ public class GraphMetricUserSettings : NodeXLApplicationSettingsBase
     }
 
     //*************************************************************************
+    //  Property: EdgeCreationUserSettings
+    //
+    /// <summary>
+    /// Gets or sets user settings for creating edges based on shared content similarity.
+    /// </summary>
+    ///
+    /// <value>
+    /// A <see cref="Smrf.NodeXL.ExcelTemplate.EdgeCreationUserSettings" />
+    /// object.
+    /// </value>
+    //*************************************************************************
+
+    [UserScopedSettingAttribute()]
+    [DefaultSettingValueAttribute("")]
+
+    public EdgeCreationUserSettings
+    EdgeCreationUserSettings
+    {
+        get
+        {
+            AssertValid();
+
+            return (EdgeCreationUserSettings)this[EdgeCreationUserSettingsKey];
+        }
+
+        set
+        {
+            this[EdgeCreationUserSettingsKey] = value;
+
+            AssertValid();
+        }
+    }
+
+    //*************************************************************************
     //  Property: TopNByMetricsToCalculate
     //
     /// <summary>
@@ -200,6 +234,11 @@ public class GraphMetricUserSettings : NodeXLApplicationSettingsBase
 
     protected const String WordMetricUserSettingsKey =
         "WordMetricUserSettings";
+
+    /// Name of the settings key for the EdgeCreationUserSettings property.
+
+    protected const String EdgeCreationUserSettingsKey =
+        "EdgeCreationUserSettings";
 
     /// Name of the settings key for the TopNByMetricsToCalculate property.
 

@@ -264,6 +264,14 @@ public static class EdgeTableColumnNames
     public const String IsReciprocated = "Reciprocated?";
 
     /// <summary>
+    /// Name of the optional table column containing the "Relationship" of two vertices.  
+    /// This gets added to the table on demand by <see
+    /// cref="EdgeCreationCalculator2" />.
+    /// </summary>
+
+    public const String Relationship = "Relatioship";
+
+    /// <summary>
     /// Name of the optional table column containing the edge weight.  This
     /// gets added to the table on demand by various classes.
     /// </summary>
@@ -277,6 +285,15 @@ public static class EdgeTableColumnNames
     /// </summary>
 
     public const String EdgeCrossings = "Edge Crossing Readability";
+
+    /// <summary>
+    /// Name of the optional table column containing the shared contents from 
+    /// the two vertices.  
+    /// This gets added to the table on demand by <see
+    /// cref="EdgeCreationCalculator2" />.
+    /// </summary>.
+
+    public const String SharedContent = "Shared Content";
 
     // IMPORTANT NOTES:
     //

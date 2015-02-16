@@ -500,11 +500,11 @@ public partial class TwitterGetSearchNetworkDialog :
 
     /// Maximum number of tweets to request.
 
-    protected static Int32 m_iMaximumStatuses = 100;
+    protected static Int32 m_iMaximumStatuses = 18000;
 
     /// true to expand the URLs in each status.
 
-    protected static Boolean m_bExpandStatusUrls = false;
+    protected static Boolean m_bExpandStatusUrls = true;
 }
 
 }
