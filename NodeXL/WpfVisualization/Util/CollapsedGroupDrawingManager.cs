@@ -1474,7 +1474,7 @@ public class CollapsedGroupDrawingManager : VisualizationBase
 
     /// Radius of a fan motif's fan.
 
-    protected Double FanMotifRadius = 60.0;
+    protected Double FanMotifRadius = 20.0;
 
     /// Minimum angle of a fan motif's fan, in radians.
 
@@ -1486,11 +1486,11 @@ public class CollapsedGroupDrawingManager : VisualizationBase
 
     /// Minimum radius of a D-connector motif's span, in WPF units.
 
-    protected Double MinimumDConnectorRadius = 30.0;
+    protected Double MinimumDConnectorRadius = 10.0;
 
     /// Maximum radius of a D-connector motif's span, in WPF units.
 
-    protected Double MaximumDConnectorRadius = 60.0;
+    protected Double MaximumDConnectorRadius = 20.0;
 
     /// Minimum radius of a clique motif's rounded X, in WPF units.
     /// Scaling by Math.Sqrt(2) used to ensure the clique diagonal radius is
@@ -1499,7 +1499,7 @@ public class CollapsedGroupDrawingManager : VisualizationBase
     /// curves. To make areas equal multiply radius by approximately 
     /// 0.6296404 instead.
 
-    protected Double MinimumCliqueRadius = 30.0 / Math.Sqrt(2);
+    protected Double MinimumCliqueRadius = 10.0 / Math.Sqrt(2);
 
     /// Maximum radius of a clique motif's rounded X, in WPF units.
     /// Scaling by Math.Sqrt(2) used to ensure the clique diagonal radius is
@@ -1508,7 +1508,7 @@ public class CollapsedGroupDrawingManager : VisualizationBase
     /// curves. To make areas equal multiply radius by approximately 
     /// 0.6296404 instead.
     
-    protected Double MaximumCliqueRadius = 60.0 / Math.Sqrt(2);
+    protected Double MaximumCliqueRadius = 20.0 / Math.Sqrt(2);
 
 
     //*************************************************************************
