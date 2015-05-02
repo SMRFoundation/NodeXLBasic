@@ -43,6 +43,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.nudEdgeLimit = new System.Windows.Forms.NumericUpDown();
             this.lblEdgeLimitUnit = new System.Windows.Forms.Label();
             this.lblEdgeLimitAnnot = new System.Windows.Forms.Label();
+            this.chkLimitToIsolate = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudThreshold)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudEdgeLimit)).BeginInit();
             this.SuspendLayout();
@@ -189,6 +190,16 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.lblEdgeLimitAnnot.TabIndex = 0;
             this.lblEdgeLimitAnnot.Text = "(Note, it is possible that we will create fewer than this number)";
             // 
+            // chkLimitToIsolate
+            // 
+            this.chkLimitToIsolate.AutoSize = true;
+            this.chkLimitToIsolate.Location = new System.Drawing.Point(29, 301);
+            this.chkLimitToIsolate.Name = "chkLimitToIsolate";
+            this.chkLimitToIsolate.Size = new System.Drawing.Size(259, 29);
+            this.chkLimitToIsolate.TabIndex = 13;
+            this.chkLimitToIsolate.Text = "Limit to isolated vertex";
+            this.chkLimitToIsolate.UseVisualStyleBackColor = true;
+            // 
             // EdgeCreationUserSettingsDialog
             // 
             this.AcceptButton = this.btnOK;
@@ -196,6 +207,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(1047, 394);
+            this.Controls.Add(this.chkLimitToIsolate);
             this.Controls.Add(this.lblEdgeLimitAnnot);
             this.Controls.Add(this.lblEdgeLimitUnit);
             this.Controls.Add(this.nudEdgeLimit);
@@ -237,5 +249,6 @@ namespace Smrf.NodeXL.ExcelTemplate
         private System.Windows.Forms.NumericUpDown nudEdgeLimit;
         private System.Windows.Forms.Label lblEdgeLimitUnit;
         private System.Windows.Forms.Label lblEdgeLimitAnnot;
+        private System.Windows.Forms.CheckBox chkLimitToIsolate;
     }
 }

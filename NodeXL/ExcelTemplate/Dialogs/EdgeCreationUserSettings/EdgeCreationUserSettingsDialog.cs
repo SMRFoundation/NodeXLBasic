@@ -125,16 +125,16 @@ public partial class EdgeCreationUserSettingsDialog : ExcelTemplateForm
             m_oEdgeCreationUserSettings.TextColumnName = sTextColumnName;
             m_oEdgeCreationUserSettings.Threshold = Convert.ToInt32(nudThreshold.Value);
             m_oEdgeCreationUserSettings.EdgeLimit = Convert.ToInt32(nudEdgeLimit.Value);
-
+            m_oEdgeCreationUserSettings.LimitToIsolate = chkLimitToIsolate.Checked;
             
         }
         else
         {
             sTextColumnName = m_oEdgeCreationUserSettings.TextColumnName;
-            //txtThreshold.Text = m_oEdgeCreationUserSettings.Threshold.ToString();
+            
             nudThreshold.Value = m_oEdgeCreationUserSettings.Threshold;
             nudEdgeLimit.Value = m_oEdgeCreationUserSettings.EdgeLimit;
-
+            chkLimitToIsolate.Checked = m_oEdgeCreationUserSettings.LimitToIsolate;
           
         }
 

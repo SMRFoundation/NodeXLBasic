@@ -34,11 +34,13 @@ public class ThirdPartyGraphDataProviderInfo : Object
     public ThirdPartyGraphDataProviderInfo
     (
         String name,
-        String url
+        String url,
+        String description
     )
     {
         m_sName = name;
         m_sUrl = url;
+        m_sDescription = description;
 
         AssertValid();
     }
@@ -89,6 +91,26 @@ public class ThirdPartyGraphDataProviderInfo : Object
         }
     }
 
+    //*************************************************************************
+    //  Property: Description
+    //
+    /// <summary>
+    /// Gets the graph data provider's description.
+    /// </summary>
+    ///
+    /// <value>
+    /// The graph data provider's description.
+    /// </value>
+    //*************************************************************************
+
+    public String
+    Description
+    {
+        get
+        {
+            return (m_sDescription);
+        }
+    }
 
     //*************************************************************************
     //  Method: AssertValid()
@@ -119,6 +141,10 @@ public class ThirdPartyGraphDataProviderInfo : Object
     /// The URL from which the graph data provider can be obtained.
 
     protected String m_sUrl;
+
+    /// The graph data provider's description.
+
+    protected String m_sDescription;
 }
 
 }

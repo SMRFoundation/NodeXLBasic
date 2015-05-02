@@ -145,6 +145,41 @@ namespace Smrf.NodeXL.ExcelTemplate
             }
         }
 
+        //*************************************************************************
+        //  Property: LimitToIsolate
+        //
+        /// <summary>
+        /// Gets or sets a flag indicating whether only create edges 
+        /// for isolated vertex.
+        /// </summary>
+        ///
+        /// <value>
+        /// true if only create edges for isolated vertex, 
+        /// false if create edges for all vertex.  
+        /// The default value is false.
+        /// </value>
+        //*************************************************************************
+
+        [UserScopedSettingAttribute()]
+        [DefaultSettingValueAttribute("false")]
+
+        public Boolean
+        LimitToIsolate
+        {
+            get
+            {
+                AssertValid();
+
+                return ((Boolean)this[LimitToIsolateKey]);
+            }
+
+            set
+            {
+                this[LimitToIsolateKey] = value;
+
+                AssertValid();
+            }
+        }
 
         //*************************************************************************
         //  Method: AssertValid()
@@ -189,6 +224,11 @@ namespace Smrf.NodeXL.ExcelTemplate
 
         public const String EdgeLimitKey =
             "EdgeLimit";
+
+        /// Name of the settings key for the LimitToIsolate property.
+
+        public const String LimitToIsolateKey =
+            "LimitToIsolate";
 
        
 
@@ -301,6 +341,9 @@ public class EdgeCreationUserSettingsTypeConverter :
         oDictionary.Add(EdgeCreationUserSettings.EdgeLimitKey,
             oEdgeCreationUserSettings.EdgeLimit);
 
+        oDictionary.Add(EdgeCreationUserSettings.LimitToIsolateKey,
+            oEdgeCreationUserSettings.LimitToIsolate);
+
         return (oDictionary.ToString());
     }
 
@@ -348,7 +391,7 @@ public class EdgeCreationUserSettingsTypeConverter :
         EdgeCreationUserSettings oEdgeCreationUserSettings =
             new EdgeCreationUserSettings();
 
-        //Boolean bValue;
+        Boolean bValue;
         String sValue;
         Int32 iValueThreshold;
         Int32 iValueEdgeLimit;
@@ -371,7 +414,11 @@ public class EdgeCreationUserSettingsTypeConverter :
             oEdgeCreationUserSettings.EdgeLimit = iValueEdgeLimit;
         }
 
-
+        if (oDictionary.TryGetValue(
+            EdgeCreationUserSettings.LimitToIsolateKey, out bValue))
+        {
+            oEdgeCreationUserSettings.LimitToIsolate = bValue;
+        }
 
         return (oEdgeCreationUserSettings);
     }

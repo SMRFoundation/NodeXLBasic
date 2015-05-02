@@ -664,7 +664,7 @@ public partial class TwitterGetUsersNetworkDialog
 
     /// true to expand the URLs in the statuses.
 
-    protected static Boolean m_bExpandStatusUrls = false;
+    protected static Boolean m_bExpandStatusUrls = true;
 }
 
 }

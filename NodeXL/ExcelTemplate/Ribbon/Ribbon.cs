@@ -451,6 +451,8 @@ public partial class Ribbon : RibbonBase
             oRibbonButton.Label = oRibbonButton.ScreenTip =
 				oThirdPartyGraphDataProviderInfo.Name;
 
+            oRibbonButton.SuperTip = oThirdPartyGraphDataProviderInfo.Description;
+
             // The URL stored in the Tag is used by btnStartProcess_Click().
 
             oRibbonButton.Tag = oThirdPartyGraphDataProviderInfo.Url;

@@ -171,6 +171,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             double dThreshold = oEdgeCreationUserSettings.Threshold / 100.000;
             int iEdgeLimit = oEdgeCreationUserSettings.EdgeLimit;
             string sTextColumnName = oEdgeCreationUserSettings.TextColumnName;
+            Boolean bLimitToIsolate = oEdgeCreationUserSettings.LimitToIsolate;
 
             //Declare pair of Vertices 
             IVertexCollection cFirstVertexCollection = graph.Vertices;
@@ -189,7 +190,7 @@ namespace Smrf.NodeXL.ExcelTemplate
             
 
             //Need to Remove Edges with Relationship = Shared Content: sTextColumnName
-            //first, or codes will create duplicate edges if users run this metric more than once
+            //first, so this won't create duplicate edges if users run this metric more than once
             ICollection<String> valuesToRemove = new String[]{"Shared Content: "+sTextColumnName};
             
             if (ExcelTableUtil.TryGetTable(oWorkbook,
@@ -212,11 +213,14 @@ namespace Smrf.NodeXL.ExcelTemplate
 
             //Compare each pair of vertices, calculate similarity, and create new edges
             foreach (IVertex oFirstVertex in cFirstVertexCollection)
-            {               
-                foreach (IVertex oSecondVertex in cSecondVertexCollection)
+            {
+                if(TryCreateEdges(oFirstVertex,bLimitToIsolate))
                 {
-                    String sFirstVertexName = oFirstVertex.Name;
-                    String sSecondVertexName=oSecondVertex.Name;
+
+                    foreach (IVertex oSecondVertex in cSecondVertexCollection)
+                    {
+                        String sFirstVertexName = oFirstVertex.Name;
+                        String sSecondVertexName=oSecondVertex.Name;
                    
                         if(sFirstVertexName!=sSecondVertexName)
                         {
@@ -266,10 +270,63 @@ namespace Smrf.NodeXL.ExcelTemplate
                                 }
                             }
                         }                    
+                    }//end foreach
+
                 }
+                 
             }
             
             return (true);
+        }
+
+        //*************************************************************************
+        //  Method: TryCreateEdges()
+        //
+        /// <summary>
+        /// Check if the program should create new edges for the vertex.
+        /// 
+        /// If Limit to Isolate is NOT chekced, return true.
+        /// 
+        /// If Limit to Isolate is checked, check if the vertex 
+        /// has only one edge and the edge is a self-loop edge; if yes, return true.
+        /// 
+        /// Else, return false.
+        /// 
+        /// </summary>
+        /// <param name="oVertex"></param>
+        /// <param name="bLimitToIsolate"></param>
+        /// <returns></returns>
+        //*************************************************************************
+        protected Boolean
+        TryCreateEdges
+        (
+            IVertex oVertex,
+            Boolean bLimitToIsolate
+        )
+        {
+            if (!bLimitToIsolate)
+            {
+                return true;
+            }
+            else {
+                IEdge[] edgeCollection = oVertex.IncidentEdges.ToArray();
+                //ICollection<IEdge> edgeCollection = oVertex.IncidentEdges;
+                if (edgeCollection.Length==1)
+                {
+                    if (edgeCollection[0].IsSelfLoop)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }   
+            }                     
         }
 
         //*************************************************************************

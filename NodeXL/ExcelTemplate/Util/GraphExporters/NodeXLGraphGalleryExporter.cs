@@ -252,13 +252,13 @@ public class NodeXLGraphGalleryExporter : Object
     //     maxArrayLength
     //     maxStringContentLength
 
-    protected const Int32 MaximumBytes = 50000000;
+    protected const Int32 MaximumBytes = 150000000;
 
     /// Number of minutes to wait while sending a graph.  If it takes longer
     /// than this to send the graph, a TimeoutException is thrown on the client
     /// end.
 
-    protected const Int32 SendTimeoutMinutes = 20;
+    protected const Int32 SendTimeoutMinutes = 30;
 
 
     //*************************************************************************

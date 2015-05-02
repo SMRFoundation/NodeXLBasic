@@ -500,6 +500,10 @@ If the similarity is equal or greater than the threshold, NodeXL will append a n
 &lt;li&gt;Edge Weight: Similarity&lt;/li&gt;
 &lt;li&gt;Shared Content: Words shared between the two vertices&lt;/li&gt;
 &lt;/ul&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+You can choose to only create new edges for isolated vertex (i.e. vertex with only one edge, and the edge is a self-loop edge) by checking the "Limit to isolated vertex" option. 
 &lt;/p&gt;</value>
   </data>
 </root>
