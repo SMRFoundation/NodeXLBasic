@@ -147,6 +147,8 @@ public class NodeXLGraphGalleryExporter : Object
         oClient.Endpoint.Binding.SendTimeout =
             new TimeSpan(0, SendTimeoutMinutes, 0);
 
+        
+
         try
         {
             oClient.AddGraph4(title, author, password, description,
@@ -205,6 +207,7 @@ public class NodeXLGraphGalleryExporter : Object
         oBasicHttpBinding.MaxBufferSize = MaximumBytes;
         oBasicHttpBinding.MaxReceivedMessageSize = MaximumBytes;
         oBasicHttpBinding.TransferMode = TransferMode.Buffered;
+        
 
         XmlDictionaryReaderQuotas oReaderQuotas =
             new XmlDictionaryReaderQuotas();
@@ -258,7 +261,7 @@ public class NodeXLGraphGalleryExporter : Object
     /// than this to send the graph, a TimeoutException is thrown on the client
     /// end.
 
-    protected const Int32 SendTimeoutMinutes = 30;
+    protected const Int32 SendTimeoutMinutes = 120;
 
 
     //*************************************************************************

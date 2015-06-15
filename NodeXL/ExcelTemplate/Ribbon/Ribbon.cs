@@ -67,6 +67,8 @@ public partial class Ribbon : RibbonBase
 
         btnDonate.Tag = ProjectInformation.DonateUrl;
 
+        btnDonateMain.Tag = ProjectInformation.DonateUrl;
+
         // Populate the rddLayout RibbonDropDown.
 
         m_oLayoutManagerForRibbonDropDown =

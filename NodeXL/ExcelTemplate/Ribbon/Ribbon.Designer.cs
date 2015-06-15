@@ -166,6 +166,8 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnOpenSampleNodeXLWorkbook = this.Factory.CreateRibbonButton();
             this.btnAbout = this.Factory.CreateRibbonButton();
             this.btnCreateNodeXLWorkbook = this.Factory.CreateRibbonButton();
+            this.mnuAbout = this.Factory.CreateRibbonMenu();
+            this.btnDonateMain = this.Factory.CreateRibbonButton();
             this.NodeXL.SuspendLayout();
             this.grpData.SuspendLayout();
             this.grpGraph.SuspendLayout();
@@ -1470,8 +1472,8 @@ namespace Smrf.NodeXL.ExcelTemplate
             // 
             this.grpHelp.Items.Add(this.btnHelp);
             this.grpHelp.Items.Add(this.mnuOnline);
-            this.grpHelp.Items.Add(this.btnOpenSampleNodeXLWorkbook);
-            this.grpHelp.Items.Add(this.btnAbout);
+            this.grpHelp.Items.Add(this.btnDonateMain);
+            this.grpHelp.Items.Add(this.mnuAbout);
             this.grpHelp.Label = "Help";
             this.grpHelp.Name = "grpHelp";
             // 
@@ -1594,6 +1596,25 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnCreateNodeXLWorkbook.ShowImage = true;
             this.btnCreateNodeXLWorkbook.SuperTip = "Create a new NodeXL workbook.";
             this.btnCreateNodeXLWorkbook.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnCreateNodeXLWorkbook_Click);
+            // 
+            // mnuAbout
+            // 
+            this.mnuAbout.Items.Add(this.btnOpenSampleNodeXLWorkbook);
+            this.mnuAbout.Items.Add(this.btnAbout);
+            this.mnuAbout.Label = "About";
+            this.mnuAbout.Name = "mnuAbout";
+            this.mnuAbout.OfficeImageId = "Info";
+            this.mnuAbout.ShowImage = true;
+            // 
+            // btnDonateMain
+            // 
+            this.btnDonateMain.Label = "Donate";
+            this.btnDonateMain.Name = "btnDonateMain";
+            this.btnDonateMain.OfficeImageId = "AccountingFormat";
+            this.btnDonateMain.ScreenTip = "Donate";
+            this.btnDonateMain.ShowImage = true;
+            this.btnDonateMain.SuperTip = "Donate to the Social Media Research Foundation\'s NodeXL development fund. ";
+            this.btnDonateMain.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStartProcess_Click);
             // 
             // Ribbon
             // 
@@ -1760,6 +1781,8 @@ namespace Smrf.NodeXL.ExcelTemplate
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnImportDataUserSettings;
         internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator14;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnExportToEmail;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnDonateMain;
+        internal Microsoft.Office.Tools.Ribbon.RibbonMenu mnuAbout;
     }
 
     partial class ThisRibbonCollection

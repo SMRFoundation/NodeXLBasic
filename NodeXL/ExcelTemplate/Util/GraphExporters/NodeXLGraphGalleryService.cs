@@ -94,4 +94,6 @@ public partial class NodeXLGraphGalleryServiceClient : System.ServiceModel.Clien
     {
         return base.Channel.GetTestString(numberToIncludeInString);
     }
+
+
 }

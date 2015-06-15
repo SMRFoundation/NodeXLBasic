@@ -2671,6 +2671,9 @@ public partial class ThisWorkbook
         System.EventArgs e
     )
     {
+        SplashScreen.SplashScreen splashScreen = new SplashScreen.SplashScreen();
+        splashScreen.ShowDialog();
+
         ApplicationUtil.OnWorkbookStartup(this.Application);
 
         m_bTaskPaneCreated = false;
@@ -2733,6 +2736,8 @@ public partial class ThisWorkbook
         ShowAndHideColumnGroups();
 
         AssertValid();
+
+        
     }
 
     //*************************************************************************

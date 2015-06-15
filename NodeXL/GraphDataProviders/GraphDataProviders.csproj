@@ -40,6 +40,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FacebookAPI">
+      <HintPath>..\..\..\FacebookAPI\facebook\bin\Debug\FacebookAPI.dll</HintPath>
+    </Reference>
     <Reference Include="Ionic.Zip.Reduced, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Common\Assemblies\Ionic.Zip.Reduced.dll</HintPath>
@@ -124,6 +127,20 @@
     <Compile Include="..\..\Common\UrlUtil.cs">
       <Link>Util\UrlUtil.cs</Link>
     </Compile>
+    <Compile Include="Controls\Facebook\ProgressIndicator.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Facebook\ProgressIndicator.Designer.cs">
+      <DependentUpon>ProgressIndicator.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Facebook\RotationType.cs" />
+    <Compile Include="Controls\Facebook\SearchResultsComboBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Facebook\SearchResultsComboBox.Designer.cs">
+      <DependentUpon>SearchResultsComboBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Facebook\TextDisplayModes.cs" />
     <Compile Include="Controls\FlickrApiKey\FlickrApiKeyControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -153,6 +170,39 @@
     </Compile>
     <Compile Include="Controls\TwitterRateLimits\TwitterRateLimitsControl.Designer.cs">
       <DependentUpon>TwitterRateLimitsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Facebook\FacebookDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\Facebook\FacebookDialog.Designer.cs">
+      <DependentUpon>FacebookDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Facebook\FacebookFanPageDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\Facebook\FacebookFanPageDialog.Designer.cs">
+      <DependentUpon>FacebookFanPageDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Facebook\FacebookGraphDataProviderDialogBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\Facebook\FacebookGroupDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\Facebook\FacebookGroupDialog.Designer.cs">
+      <DependentUpon>FacebookGroupDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Facebook\FacebookLoginDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\Facebook\FacebookLoginDialog.Designer.cs">
+      <DependentUpon>FacebookLoginDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Facebook\FacebookNewsFeedDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\Facebook\FacebookNewsFeedDialog.Designer.cs">
+      <DependentUpon>FacebookNewsFeedDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\Flickr\FlickrGetRelatedTagNetwork\FlickrGetRelatedTagNetworkDialog.cs">
       <SubType>Form</SubType>
@@ -215,6 +265,9 @@
     <Compile Include="Dialogs\YouTube\YouTubeGraphDataProviderDialogBase.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="GraphDataProviders\Facebook\FacebookFanPageGraphDataProvider.cs" />
+    <Compile Include="GraphDataProviders\Facebook\FacebookGraphDataProvider.cs" />
+    <Compile Include="GraphDataProviders\Facebook\FacebookGroupGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\Flickr\FlickrRelatedTagNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\Flickr\FlickrUserNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\GraphDataProviderBase.cs" />
@@ -222,8 +275,17 @@
     <Compile Include="GraphDataProviders\Twitter\TwitterUsersNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\YouTube\YouTubeUserNetworkGraphDataProvider.cs" />
     <Compile Include="GraphDataProviders\YouTube\YouTubeVideoNetworkGraphDataProvider.cs" />
+    <Compile Include="Model\FacebookFanPageGroupModelBase.cs" />
+    <Compile Include="Model\FacebookFanPageModel.cs" />
+    <Compile Include="Model\FacebookGroupModel.cs" />
+    <Compile Include="Model\FacebookModelBase.cs" />
+    <Compile Include="Model\FacebookUserModel.cs" />
     <Compile Include="NetworkAnalyzers\Exceptions\CancellationPendingException.cs" />
     <Compile Include="NetworkAnalyzers\Exceptions\PartialNetworkException.cs" />
+    <Compile Include="NetworkAnalyzers\Facebook\FacebookFanPageNetworkAnalyzer.cs" />
+    <Compile Include="NetworkAnalyzers\Facebook\FacebookGroupNetworkAnalyzer.cs" />
+    <Compile Include="NetworkAnalyzers\Facebook\FacebookNetworkAnalyzerBase.cs" />
+    <Compile Include="NetworkAnalyzers\Facebook\FacebookUserNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\Flickr\FlickrException.cs" />
     <Compile Include="NetworkAnalyzers\Flickr\FlickrNetworkAnalyzerBase.cs" />
     <Compile Include="NetworkAnalyzers\Flickr\FlickrRelatedTagNetworkAnalyzer.cs" />
@@ -238,11 +300,43 @@
     <Compile Include="NetworkAnalyzers\YouTube\YouTubeNetworkAnalyzerBase.cs" />
     <Compile Include="NetworkAnalyzers\YouTube\YouTubeUserNetworkAnalyzer.cs" />
     <Compile Include="NetworkAnalyzers\YouTube\YouTubeVideoNetworkAnalyzer.cs" />
+    <Compile Include="NetworkCreators\FacebookFanPageGroupNetworkCreatorBase.cs" />
+    <Compile Include="NetworkCreators\FacebookFanPageNetworkCreator.cs" />
+    <Compile Include="NetworkCreators\FacebookGroupNetworkCreator.cs" />
+    <Compile Include="NetworkCreators\FacebookNetworkCreatorBase.cs" />
+    <Compile Include="NetworkCreators\FacebookUserNetworkCreator.cs" />
+    <Compile Include="NetworkDownloaders\FacebookFanPageNetworkDownloader.cs" />
+    <Compile Include="NetworkDownloaders\FacebookGroupNetworkDownloader.cs" />
+    <Compile Include="NetworkDownloaders\FacebookNetworkDownloaderBase.cs" />
+    <Compile Include="NetworkDownloaders\FacebookUserNetworkDownloader.cs" />
+    <Compile Include="NetworkLoaders\FacebookFanPageNetworkLoader.cs" />
+    <Compile Include="NetworkLoaders\FacebookGroupNetworkLoader.cs" />
+    <Compile Include="NetworkLoaders\FacebookNetworkLoaderBase.cs" />
+    <Compile Include="NetworkLoaders\FacebookUserNetworkLoader.cs" />
+    <Compile Include="Network\Edge.cs" />
+    <Compile Include="Network\EdgeCollection.cs" />
+    <Compile Include="Network\EdgeDirection.cs" />
+    <Compile Include="Network\EdgeType.cs" />
+    <Compile Include="Network\Vertex.cs" />
+    <Compile Include="Network\VertexCollection.cs" />
+    <Compile Include="Network\VertexType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\NetworkDescriber.cs" />
     <Compile Include="Util\SnaTitleCreator.cs" />
+    <Compile Include="Util\SocialNetwork\Facebook\AttributesDictionary.cs" />
+    <Compile Include="Util\SocialNetwork\Facebook\AttributeUtils.cs" />
+    <Compile Include="Util\SocialNetwork\Facebook\DateUtil.cs" />
+    <Compile Include="Util\SocialNetwork\Facebook\EdgeUtils.cs" />
+    <Compile Include="Util\SocialNetwork\Facebook\RelationshipNaming.cs" />
+    <Compile Include="Util\SocialNetwork\Facebook\UserAttributes.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\Facebook\ProgressIndicator.resx">
+      <DependentUpon>ProgressIndicator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Facebook\SearchResultsComboBox.resx">
+      <DependentUpon>SearchResultsComboBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\FlickrApiKey\FlickrApiKeyControl.resx">
       <DependentUpon>FlickrApiKeyControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -257,6 +351,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\TwitterRateLimits\TwitterRateLimitsControl.resx">
       <DependentUpon>TwitterRateLimitsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\Facebook\FacebookDialog.resx">
+      <DependentUpon>FacebookDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\Facebook\FacebookFanPageDialog.resx">
+      <DependentUpon>FacebookFanPageDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\Facebook\FacebookGroupDialog.resx">
+      <DependentUpon>FacebookGroupDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\Facebook\FacebookLoginDialog.resx">
+      <DependentUpon>FacebookLoginDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\Facebook\FacebookNewsFeedDialog.resx">
+      <DependentUpon>FacebookNewsFeedDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\Flickr\FlickrGetRelatedTagNetwork\FlickrGetRelatedTagNetworkDialog.resx">
       <DependentUpon>FlickrGetRelatedTagNetworkDialog.cs</DependentUpon>
