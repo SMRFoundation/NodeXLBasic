@@ -251,6 +251,14 @@ public class GraphMLGraphAdapter : GraphAdapterBase, IGraphAdapter
             "suggestedFileNameNoExtension",
             ReservedMetadataKeys.SuggestedFileNameNoExtension);
 
+        ParseGraphAttribute(oGraph, oGraphXmlNode,
+            "source",
+            ReservedMetadataKeys.GraphSource);
+
+        ParseGraphAttribute(oGraph, oGraphXmlNode,
+            "term",
+            ReservedMetadataKeys.GraphTerm);
+
         SaveGraphMLAttributeNames(oGraph, oGraphMLAttributeDictionary);
 
         return (oGraph);

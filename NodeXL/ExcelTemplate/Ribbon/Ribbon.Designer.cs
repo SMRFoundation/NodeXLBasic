@@ -30,11 +30,20 @@ namespace Smrf.NodeXL.ExcelTemplate
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Ribbon));
             Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl1 = this.Factory.CreateRibbonDropDownItem();
             Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl2 = this.Factory.CreateRibbonDropDownItem();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Ribbon));
             this.NodeXL = this.Factory.CreateRibbonTab();
             this.grpData = this.Factory.CreateRibbonGroup();
+            this.grpGraph = this.Factory.CreateRibbonGroup();
+            this.rddGraphDirectedness = this.Factory.CreateRibbonDropDown();
+            this.rddLayout = this.Factory.CreateRibbonDropDown();
+            this.grpVisualAttributes = this.Factory.CreateRibbonGroup();
+            this.grpAnalysis = this.Factory.CreateRibbonGroup();
+            this.grpOptions = this.Factory.CreateRibbonGroup();
+            this.grpShowHide = this.Factory.CreateRibbonGroup();
+            this.grpHelp = this.Factory.CreateRibbonGroup();
+            this.btnCreateNodeXLWorkbook = this.Factory.CreateRibbonButton();
             this.mnuImport = this.Factory.CreateRibbonMenu();
             this.btnImportFromUcinetFile = this.Factory.CreateRibbonButton();
             this.btnImportFromGraphMLFile = this.Factory.CreateRibbonButton();
@@ -61,18 +70,16 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.separator19 = this.Factory.CreateRibbonSeparator();
             this.btnExportToNodeXLGraphGallery = this.Factory.CreateRibbonButton();
             this.btnExportToEmail = this.Factory.CreateRibbonButton();
+            this.separator10 = this.Factory.CreateRibbonSeparator();
+            this.btnExportDataUserSettings = this.Factory.CreateRibbonButton();
             this.mniPrepareData = this.Factory.CreateRibbonMenu();
             this.btnMergeDuplicateEdges = this.Factory.CreateRibbonButton();
             this.btnPopulateVertexWorksheet = this.Factory.CreateRibbonButton();
-            this.grpGraph = this.Factory.CreateRibbonGroup();
             this.btnReadWorkbook = this.Factory.CreateRibbonButton();
             this.btnShowGraphSummary = this.Factory.CreateRibbonButton();
             this.btnAutomateTasks = this.Factory.CreateRibbonButton();
-            this.rddGraphDirectedness = this.Factory.CreateRibbonDropDown();
-            this.rddLayout = this.Factory.CreateRibbonDropDown();
             this.btnEditLayoutUserSettings = this.Factory.CreateRibbonButton();
             this.btnShowReadabilityMetrics = this.Factory.CreateRibbonButton();
-            this.grpVisualAttributes = this.Factory.CreateRibbonGroup();
             this.btnAutoFillWorkbook = this.Factory.CreateRibbonButton();
             this.btnSetColor = this.Factory.CreateRibbonButton();
             this.btnSetAlpha = this.Factory.CreateRibbonButton();
@@ -102,7 +109,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetVertexShapeImage = this.Factory.CreateRibbonButton();
             this.btnSetVertexRadius = this.Factory.CreateRibbonButton();
             this.btnSetEdgeWidth = this.Factory.CreateRibbonButton();
-            this.grpAnalysis = this.Factory.CreateRibbonGroup();
             this.btnShowDynamicFilters = this.Factory.CreateRibbonButton();
             this.sbGraphMetrics = this.Factory.CreateRibbonSplitButton();
             this.btnShowGraphMetrics = this.Factory.CreateRibbonButton();
@@ -127,12 +133,10 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnRemoveSelectedGroups = this.Factory.CreateRibbonButton();
             this.btnRemoveAllGroups = this.Factory.CreateRibbonButton();
             this.btnGroupUserSettings = this.Factory.CreateRibbonButton();
-            this.grpOptions = this.Factory.CreateRibbonGroup();
             this.btnUseCurrentOptionsForNew = this.Factory.CreateRibbonButton();
             this.btnImportOptions = this.Factory.CreateRibbonButton();
             this.btnExportOptions = this.Factory.CreateRibbonButton();
             this.btnResetCurrentOptions = this.Factory.CreateRibbonButton();
-            this.grpShowHide = this.Factory.CreateRibbonGroup();
             this.mnuShowColumnGroups = this.Factory.CreateRibbonMenu();
             this.chkShowVisualAttributeColumnGroups = this.Factory.CreateRibbonCheckBox();
             this.chkShowLabelColumnGroups = this.Factory.CreateRibbonCheckBox();
@@ -153,7 +157,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnShowAllGraphElements = this.Factory.CreateRibbonButton();
             this.btnHideAllGraphElements = this.Factory.CreateRibbonButton();
             this.btnEnableAllNotifications = this.Factory.CreateRibbonButton();
-            this.grpHelp = this.Factory.CreateRibbonGroup();
             this.btnHelp = this.Factory.CreateRibbonButton();
             this.mnuOnline = this.Factory.CreateRibbonMenu();
             this.btnOpenHomePage = this.Factory.CreateRibbonButton();
@@ -163,11 +166,10 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnRegisterUser = this.Factory.CreateRibbonButton();
             this.btnDonate = this.Factory.CreateRibbonButton();
             this.separator2 = this.Factory.CreateRibbonSeparator();
+            this.btnDonateMain = this.Factory.CreateRibbonButton();
+            this.mnuAbout = this.Factory.CreateRibbonMenu();
             this.btnOpenSampleNodeXLWorkbook = this.Factory.CreateRibbonButton();
             this.btnAbout = this.Factory.CreateRibbonButton();
-            this.btnCreateNodeXLWorkbook = this.Factory.CreateRibbonButton();
-            this.mnuAbout = this.Factory.CreateRibbonMenu();
-            this.btnDonateMain = this.Factory.CreateRibbonButton();
             this.NodeXL.SuspendLayout();
             this.grpData.SuspendLayout();
             this.grpGraph.SuspendLayout();
@@ -196,6 +198,106 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.grpData.Items.Add(this.mniPrepareData);
             this.grpData.Label = "Data";
             this.grpData.Name = "grpData";
+            // 
+            // grpGraph
+            // 
+            this.grpGraph.Items.Add(this.btnReadWorkbook);
+            this.grpGraph.Items.Add(this.btnShowGraphSummary);
+            this.grpGraph.Items.Add(this.btnAutomateTasks);
+            this.grpGraph.Items.Add(this.rddGraphDirectedness);
+            this.grpGraph.Items.Add(this.rddLayout);
+            this.grpGraph.Label = "Graph";
+            this.grpGraph.Name = "grpGraph";
+            // 
+            // rddGraphDirectedness
+            // 
+            this.rddGraphDirectedness.Enabled = false;
+            ribbonDropDownItemImpl1.Label = "Directed";
+            ribbonDropDownItemImpl1.OfficeImageId = "ShapeStraightConnectorArrow";
+            ribbonDropDownItemImpl1.ScreenTip = "Edges start at Vertex 1 and end at Vertex 2.";
+            ribbonDropDownItemImpl1.Tag = Smrf.NodeXL.Core.GraphDirectedness.Directed;
+            ribbonDropDownItemImpl2.Label = "Undirected";
+            ribbonDropDownItemImpl2.OfficeImageId = "ShapeStraightConnector";
+            ribbonDropDownItemImpl2.ScreenTip = "Edges do not have a start or end.  Vertex 1 and Vertex 2 are interchangable.";
+            ribbonDropDownItemImpl2.Tag = Smrf.NodeXL.Core.GraphDirectedness.Undirected;
+            this.rddGraphDirectedness.Items.Add(ribbonDropDownItemImpl1);
+            this.rddGraphDirectedness.Items.Add(ribbonDropDownItemImpl2);
+            this.rddGraphDirectedness.Label = "Type:";
+            this.rddGraphDirectedness.Name = "rddGraphDirectedness";
+            this.rddGraphDirectedness.OfficeImageId = "DiagramReverseClassic";
+            this.rddGraphDirectedness.ScreenTip = "Graph Type";
+            this.rddGraphDirectedness.ShowImage = true;
+            this.rddGraphDirectedness.SuperTip = resources.GetString("rddGraphDirectedness.SuperTip");
+            this.rddGraphDirectedness.SelectionChanged += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.rddGraphDirectedness_SelectionChanged);
+            // 
+            // rddLayout
+            // 
+            this.rddLayout.Buttons.Add(this.btnEditLayoutUserSettings);
+            this.rddLayout.Buttons.Add(this.btnShowReadabilityMetrics);
+            this.rddLayout.Image = ((System.Drawing.Image)(resources.GetObject("rddLayout.Image")));
+            this.rddLayout.Label = "Layout:";
+            this.rddLayout.Name = "rddLayout";
+            this.rddLayout.ScreenTip = "Layout";
+            this.rddLayout.ShowImage = true;
+            this.rddLayout.SuperTip = "Select the algorithm used to lay out the graph.";
+            this.rddLayout.ButtonClick += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.rddLayout_ButtonClick);
+            // 
+            // grpVisualAttributes
+            // 
+            this.grpVisualAttributes.Items.Add(this.btnAutoFillWorkbook);
+            this.grpVisualAttributes.Items.Add(this.btnSetColor);
+            this.grpVisualAttributes.Items.Add(this.btnSetAlpha);
+            this.grpVisualAttributes.Items.Add(this.mnuSetVisibility);
+            this.grpVisualAttributes.Items.Add(this.mnuSetVertexShape);
+            this.grpVisualAttributes.Items.Add(this.btnSetVertexRadius);
+            this.grpVisualAttributes.Items.Add(this.btnSetEdgeWidth);
+            this.grpVisualAttributes.Label = "Visual Properties";
+            this.grpVisualAttributes.Name = "grpVisualAttributes";
+            // 
+            // grpAnalysis
+            // 
+            this.grpAnalysis.Items.Add(this.btnShowDynamicFilters);
+            this.grpAnalysis.Items.Add(this.sbGraphMetrics);
+            this.grpAnalysis.Items.Add(this.sbCreateSubgraphImages);
+            this.grpAnalysis.Items.Add(this.mnuGroups);
+            this.grpAnalysis.Label = "Analysis";
+            this.grpAnalysis.Name = "grpAnalysis";
+            // 
+            // grpOptions
+            // 
+            this.grpOptions.Items.Add(this.btnUseCurrentOptionsForNew);
+            this.grpOptions.Items.Add(this.btnImportOptions);
+            this.grpOptions.Items.Add(this.btnExportOptions);
+            this.grpOptions.Items.Add(this.btnResetCurrentOptions);
+            this.grpOptions.Label = "Options";
+            this.grpOptions.Name = "grpOptions";
+            // 
+            // grpShowHide
+            // 
+            this.grpShowHide.Items.Add(this.mnuShowColumnGroups);
+            this.grpShowHide.Items.Add(this.mnuShowGraphElements);
+            this.grpShowHide.Items.Add(this.btnEnableAllNotifications);
+            this.grpShowHide.Label = "Show/Hide";
+            this.grpShowHide.Name = "grpShowHide";
+            // 
+            // grpHelp
+            // 
+            this.grpHelp.Items.Add(this.btnHelp);
+            this.grpHelp.Items.Add(this.mnuOnline);
+            this.grpHelp.Items.Add(this.btnDonateMain);
+            this.grpHelp.Items.Add(this.mnuAbout);
+            this.grpHelp.Label = "Help";
+            this.grpHelp.Name = "grpHelp";
+            // 
+            // btnCreateNodeXLWorkbook
+            // 
+            this.btnCreateNodeXLWorkbook.Label = "New NodeXL Workbook";
+            this.btnCreateNodeXLWorkbook.Name = "btnCreateNodeXLWorkbook";
+            this.btnCreateNodeXLWorkbook.OfficeImageId = "FileNew";
+            this.btnCreateNodeXLWorkbook.ScreenTip = "New NodeXL Workbook ";
+            this.btnCreateNodeXLWorkbook.ShowImage = true;
+            this.btnCreateNodeXLWorkbook.SuperTip = "Create a new NodeXL workbook.";
+            this.btnCreateNodeXLWorkbook.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnCreateNodeXLWorkbook_Click);
             // 
             // mnuImport
             // 
@@ -373,6 +475,8 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.mnuExport.Items.Add(this.separator19);
             this.mnuExport.Items.Add(this.btnExportToNodeXLGraphGallery);
             this.mnuExport.Items.Add(this.btnExportToEmail);
+            this.mnuExport.Items.Add(this.separator10);
+            this.mnuExport.Items.Add(this.btnExportDataUserSettings);
             this.mnuExport.Label = "Export";
             this.mnuExport.Name = "mnuExport";
             this.mnuExport.OfficeImageId = "ExportSavedExports";
@@ -468,6 +572,20 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnExportToEmail.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.ExportToEmail;
             this.btnExportToEmail.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
+            // separator10
+            // 
+            this.separator10.Name = "separator10";
+            // 
+            // btnExportDataUserSettings
+            // 
+            this.btnExportDataUserSettings.Label = "Export Options...";
+            this.btnExportDataUserSettings.Name = "btnExportDataUserSettings";
+            this.btnExportDataUserSettings.ScreenTip = "Export Options";
+            this.btnExportDataUserSettings.ShowImage = true;
+            this.btnExportDataUserSettings.SuperTip = "Specify options for how data is exported from the workbook.";
+            this.btnExportDataUserSettings.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.EditExportDataUserSettings;
+            this.btnExportDataUserSettings.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
+            // 
             // mniPrepareData
             // 
             this.mniPrepareData.Items.Add(this.btnMergeDuplicateEdges);
@@ -498,16 +616,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnPopulateVertexWorksheet.ShowImage = true;
             this.btnPopulateVertexWorksheet.SuperTip = resources.GetString("btnPopulateVertexWorksheet.SuperTip");
             this.btnPopulateVertexWorksheet.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnPopulateVertexWorksheet_Click);
-            // 
-            // grpGraph
-            // 
-            this.grpGraph.Items.Add(this.btnReadWorkbook);
-            this.grpGraph.Items.Add(this.btnShowGraphSummary);
-            this.grpGraph.Items.Add(this.btnAutomateTasks);
-            this.grpGraph.Items.Add(this.rddGraphDirectedness);
-            this.grpGraph.Items.Add(this.rddLayout);
-            this.grpGraph.Label = "Graph";
-            this.grpGraph.Name = "grpGraph";
             // 
             // btnReadWorkbook
             // 
@@ -543,39 +651,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnAutomateTasks.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.AutomateTasks;
             this.btnAutomateTasks.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
-            // rddGraphDirectedness
-            // 
-            this.rddGraphDirectedness.Enabled = false;
-            ribbonDropDownItemImpl1.Label = "Directed";
-            ribbonDropDownItemImpl1.OfficeImageId = "ShapeStraightConnectorArrow";
-            ribbonDropDownItemImpl1.ScreenTip = "Edges start at Vertex 1 and end at Vertex 2.";
-            ribbonDropDownItemImpl1.Tag = Smrf.NodeXL.Core.GraphDirectedness.Directed;
-            ribbonDropDownItemImpl2.Label = "Undirected";
-            ribbonDropDownItemImpl2.OfficeImageId = "ShapeStraightConnector";
-            ribbonDropDownItemImpl2.ScreenTip = "Edges do not have a start or end.  Vertex 1 and Vertex 2 are interchangable.";
-            ribbonDropDownItemImpl2.Tag = Smrf.NodeXL.Core.GraphDirectedness.Undirected;
-            this.rddGraphDirectedness.Items.Add(ribbonDropDownItemImpl1);
-            this.rddGraphDirectedness.Items.Add(ribbonDropDownItemImpl2);
-            this.rddGraphDirectedness.Label = "Type:";
-            this.rddGraphDirectedness.Name = "rddGraphDirectedness";
-            this.rddGraphDirectedness.OfficeImageId = "DiagramReverseClassic";
-            this.rddGraphDirectedness.ScreenTip = "Graph Type";
-            this.rddGraphDirectedness.ShowImage = true;
-            this.rddGraphDirectedness.SuperTip = resources.GetString("rddGraphDirectedness.SuperTip");
-            this.rddGraphDirectedness.SelectionChanged += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.rddGraphDirectedness_SelectionChanged);
-            // 
-            // rddLayout
-            // 
-            this.rddLayout.Buttons.Add(this.btnEditLayoutUserSettings);
-            this.rddLayout.Buttons.Add(this.btnShowReadabilityMetrics);
-            this.rddLayout.Image = ((System.Drawing.Image)(resources.GetObject("rddLayout.Image")));
-            this.rddLayout.Label = "Layout:";
-            this.rddLayout.Name = "rddLayout";
-            this.rddLayout.ScreenTip = "Layout";
-            this.rddLayout.ShowImage = true;
-            this.rddLayout.SuperTip = "Select the algorithm used to lay out the graph.";
-            this.rddLayout.ButtonClick += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.rddLayout_ButtonClick);
-            // 
             // btnEditLayoutUserSettings
             // 
             this.btnEditLayoutUserSettings.Label = "Layout Options...";
@@ -590,18 +665,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnShowReadabilityMetrics.ScreenTip = "Readability Metrics ";
             this.btnShowReadabilityMetrics.SuperTip = "Calculate selected readability metrics and insert the results into the workbook.";
             this.btnShowReadabilityMetrics.Visible = false;
-            // 
-            // grpVisualAttributes
-            // 
-            this.grpVisualAttributes.Items.Add(this.btnAutoFillWorkbook);
-            this.grpVisualAttributes.Items.Add(this.btnSetColor);
-            this.grpVisualAttributes.Items.Add(this.btnSetAlpha);
-            this.grpVisualAttributes.Items.Add(this.mnuSetVisibility);
-            this.grpVisualAttributes.Items.Add(this.mnuSetVertexShape);
-            this.grpVisualAttributes.Items.Add(this.btnSetVertexRadius);
-            this.grpVisualAttributes.Items.Add(this.btnSetEdgeWidth);
-            this.grpVisualAttributes.Label = "Visual Properties";
-            this.grpVisualAttributes.Name = "grpVisualAttributes";
             // 
             // btnAutoFillWorkbook
             // 
@@ -926,15 +989,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnSetEdgeWidth.Tag = Smrf.NodeXL.ExcelTemplate.VisualAttributes.EdgeWidth;
             this.btnSetEdgeWidth.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetVisualAttribute_Click);
             // 
-            // grpAnalysis
-            // 
-            this.grpAnalysis.Items.Add(this.btnShowDynamicFilters);
-            this.grpAnalysis.Items.Add(this.sbGraphMetrics);
-            this.grpAnalysis.Items.Add(this.sbCreateSubgraphImages);
-            this.grpAnalysis.Items.Add(this.mnuGroups);
-            this.grpAnalysis.Label = "Analysis";
-            this.grpAnalysis.Name = "grpAnalysis";
-            // 
             // btnShowDynamicFilters
             // 
             this.btnShowDynamicFilters.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
@@ -1212,15 +1266,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnGroupUserSettings.Tag = Smrf.NodeXL.ExcelTemplate.NoParamCommand.EditGroupUserSettings;
             this.btnGroupUserSettings.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnRunNoParamCommand_Click);
             // 
-            // grpOptions
-            // 
-            this.grpOptions.Items.Add(this.btnUseCurrentOptionsForNew);
-            this.grpOptions.Items.Add(this.btnImportOptions);
-            this.grpOptions.Items.Add(this.btnExportOptions);
-            this.grpOptions.Items.Add(this.btnResetCurrentOptions);
-            this.grpOptions.Label = "Options";
-            this.grpOptions.Name = "grpOptions";
-            // 
             // btnUseCurrentOptionsForNew
             // 
             this.btnUseCurrentOptionsForNew.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
@@ -1262,14 +1307,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnResetCurrentOptions.ShowImage = true;
             this.btnResetCurrentOptions.SuperTip = "Reset this workbook\'s options to the options used for new NodeXL workbooks.";
             this.btnResetCurrentOptions.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnResetCurrentOptions_Click);
-            // 
-            // grpShowHide
-            // 
-            this.grpShowHide.Items.Add(this.mnuShowColumnGroups);
-            this.grpShowHide.Items.Add(this.mnuShowGraphElements);
-            this.grpShowHide.Items.Add(this.btnEnableAllNotifications);
-            this.grpShowHide.Label = "Show/Hide";
-            this.grpShowHide.Name = "grpShowHide";
             // 
             // mnuShowColumnGroups
             // 
@@ -1468,15 +1505,6 @@ namespace Smrf.NodeXL.ExcelTemplate
     "gain\" in a message box.";
             this.btnEnableAllNotifications.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnEnableAllNotifications_Click);
             // 
-            // grpHelp
-            // 
-            this.grpHelp.Items.Add(this.btnHelp);
-            this.grpHelp.Items.Add(this.mnuOnline);
-            this.grpHelp.Items.Add(this.btnDonateMain);
-            this.grpHelp.Items.Add(this.mnuAbout);
-            this.grpHelp.Label = "Help";
-            this.grpHelp.Name = "grpHelp";
-            // 
             // btnHelp
             // 
             this.btnHelp.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
@@ -1566,6 +1594,25 @@ namespace Smrf.NodeXL.ExcelTemplate
             // 
             this.separator2.Name = "separator2";
             // 
+            // btnDonateMain
+            // 
+            this.btnDonateMain.Label = "Donate";
+            this.btnDonateMain.Name = "btnDonateMain";
+            this.btnDonateMain.OfficeImageId = "AccountingFormat";
+            this.btnDonateMain.ScreenTip = "Donate";
+            this.btnDonateMain.ShowImage = true;
+            this.btnDonateMain.SuperTip = "Donate to the Social Media Research Foundation\'s NodeXL development fund. ";
+            this.btnDonateMain.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStartProcess_Click);
+            // 
+            // mnuAbout
+            // 
+            this.mnuAbout.Items.Add(this.btnOpenSampleNodeXLWorkbook);
+            this.mnuAbout.Items.Add(this.btnAbout);
+            this.mnuAbout.Label = "About";
+            this.mnuAbout.Name = "mnuAbout";
+            this.mnuAbout.OfficeImageId = "Info";
+            this.mnuAbout.ShowImage = true;
+            // 
             // btnOpenSampleNodeXLWorkbook
             // 
             this.btnOpenSampleNodeXLWorkbook.Label = "Sample Workbook";
@@ -1586,35 +1633,6 @@ namespace Smrf.NodeXL.ExcelTemplate
             this.btnAbout.ShowImage = true;
             this.btnAbout.SuperTip = "View information about NodeXL.";
             this.btnAbout.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnAbout_Click);
-            // 
-            // btnCreateNodeXLWorkbook
-            // 
-            this.btnCreateNodeXLWorkbook.Label = "New NodeXL Workbook";
-            this.btnCreateNodeXLWorkbook.Name = "btnCreateNodeXLWorkbook";
-            this.btnCreateNodeXLWorkbook.OfficeImageId = "FileNew";
-            this.btnCreateNodeXLWorkbook.ScreenTip = "New NodeXL Workbook ";
-            this.btnCreateNodeXLWorkbook.ShowImage = true;
-            this.btnCreateNodeXLWorkbook.SuperTip = "Create a new NodeXL workbook.";
-            this.btnCreateNodeXLWorkbook.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnCreateNodeXLWorkbook_Click);
-            // 
-            // mnuAbout
-            // 
-            this.mnuAbout.Items.Add(this.btnOpenSampleNodeXLWorkbook);
-            this.mnuAbout.Items.Add(this.btnAbout);
-            this.mnuAbout.Label = "About";
-            this.mnuAbout.Name = "mnuAbout";
-            this.mnuAbout.OfficeImageId = "Info";
-            this.mnuAbout.ShowImage = true;
-            // 
-            // btnDonateMain
-            // 
-            this.btnDonateMain.Label = "Donate";
-            this.btnDonateMain.Name = "btnDonateMain";
-            this.btnDonateMain.OfficeImageId = "AccountingFormat";
-            this.btnDonateMain.ScreenTip = "Donate";
-            this.btnDonateMain.ShowImage = true;
-            this.btnDonateMain.SuperTip = "Donate to the Social Media Research Foundation\'s NodeXL development fund. ";
-            this.btnDonateMain.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnStartProcess_Click);
             // 
             // Ribbon
             // 
@@ -1783,6 +1801,8 @@ namespace Smrf.NodeXL.ExcelTemplate
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnExportToEmail;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnDonateMain;
         internal Microsoft.Office.Tools.Ribbon.RibbonMenu mnuAbout;
+        internal Microsoft.Office.Tools.Ribbon.RibbonSeparator separator10;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton btnExportDataUserSettings;
     }
 
     partial class ThisRibbonCollection

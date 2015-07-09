@@ -255,6 +255,12 @@ NoParamCommand
     EditImportDataUserSettings,
 
     /// <summary>
+    /// Let the user edit the export data user settings.
+    /// </summary>
+
+    EditExportDataUserSettings,
+
+    /// <summary>
     /// Import edges from another open workbook (to be specified by the user)
     /// that contains a graph represented as an adjacency matrix.
     /// </summary>

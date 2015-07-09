@@ -847,6 +847,8 @@ public abstract class HttpNetworkAnalyzerBase : Object
     (
         XmlDocument oGraphMLXmlDocument,
         RequestStatistics oRequestStatistics,
+        String sGraphSource,
+        String sGraphTerm,
         String sNetworkDescription,
         String sNetworkTitle,
         String sPartialFileName
@@ -854,6 +856,8 @@ public abstract class HttpNetworkAnalyzerBase : Object
     {
         Debug.Assert(oGraphMLXmlDocument != null);
         Debug.Assert(oRequestStatistics != null);
+        Debug.Assert(!String.IsNullOrEmpty(sGraphSource));
+        Debug.Assert(!String.IsNullOrEmpty(sGraphTerm));
         Debug.Assert( !String.IsNullOrEmpty(sNetworkDescription) );
         Debug.Assert( !String.IsNullOrEmpty(sNetworkTitle) );
         Debug.Assert( !String.IsNullOrEmpty(sPartialFileName) );
@@ -865,6 +869,12 @@ public abstract class HttpNetworkAnalyzerBase : Object
             GraphMLXmlDocument.CreateXmlNamespaceManager(
                 oGraphMLXmlDocument, "g")
             );
+
+        XmlUtil2.SetAttributes(oGraphXmlNode,
+            "source", sGraphSource);
+
+        XmlUtil2.SetAttributes(oGraphXmlNode,
+            "term", sGraphTerm);
 
         XmlUtil2.SetAttributes(oGraphXmlNode,
             "description", sNetworkDescription);

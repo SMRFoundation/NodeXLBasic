@@ -206,6 +206,7 @@ public class YouTubeVideoNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         String sNetworkTitle = "YouTube Video " + sSearchTerm;
 
         OnNetworkObtained(oGraphMLXmlDocument, oRequestStatistics, 
+            "YouTubeVideo", sSearchTerm,
             GetNetworkDescription(sSearchTerm, eWhatToInclude, iMaximumVideos),
             sNetworkTitle, sNetworkTitle
             );

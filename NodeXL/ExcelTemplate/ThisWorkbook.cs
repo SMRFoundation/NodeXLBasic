@@ -218,6 +218,14 @@ public partial class ThisWorkbook
                     typeof( String[] ) ),
 
                 (String)oGraph.GetValue(
+                    ReservedMetadataKeys.GraphSource,
+                    typeof(String)),
+
+                (String)oGraph.GetValue(
+                    ReservedMetadataKeys.GraphTerm,
+                    typeof(String)),
+
+                (String)oGraph.GetValue(
                     ReservedMetadataKeys.GraphDescription,
                     typeof(String) ),
 
@@ -994,6 +1002,33 @@ public partial class ThisWorkbook
     }
 
     //*************************************************************************
+    //  Method: EditExportDataUserSettings()
+    //
+    /// <summary>
+    /// Lets the user edit the export data user settings.
+    /// </summary>
+    //*************************************************************************
+
+    private void
+    EditExportDataUserSettings()
+    {
+        Debug.Assert(this.ExcelApplicationIsReady(false));
+        AssertValid();
+
+        ExportDataUserSettings oExportDataUserSettings =
+            new ExportDataUserSettings();
+
+        
+
+        if ((new ExportDataUserSettingsDialog(
+            oExportDataUserSettings, this)).ShowDialog()
+            == DialogResult.OK)
+        {
+            oExportDataUserSettings.Save();            
+        }
+    }
+
+    //*************************************************************************
     //  Method: ImportFromMatrixWorkbook()
     //
     /// <summary>
@@ -1075,6 +1110,14 @@ public partial class ThisWorkbook
                 ( String[] )oGraph.GetRequiredValue(
                     ReservedMetadataKeys.AllVertexMetadataKeys,
                     typeof( String[] ) ),
+
+                (String)oGraph.GetValue(
+                    ReservedMetadataKeys.GraphSource,
+                    typeof(String)),
+
+                (String)oGraph.GetValue(
+                    ReservedMetadataKeys.GraphTerm,
+                    typeof(String)),
 
                 GraphImporter.GetImportedFileDescription("open workbook",
                     oImportFromWorkbookDialog.SourceWorkbookName),
@@ -1545,6 +1588,9 @@ public partial class ThisWorkbook
 
         if (oAnalyzeEmailNetworkDialog.ShowDialog() == DialogResult.OK)
         {
+            GraphImporter.UpdateGraphHistorySourceTerm(this.InnerObject,
+                "EmailNetwork", "", new PerWorkbookSettings(this.InnerObject));
+
             GraphImporter.UpdateGraphHistoryAfterImport(this.InnerObject,
                 "The graph was obtained by analyzing an email network.",
                 null, null
@@ -1658,6 +1704,14 @@ public partial class ThisWorkbook
                 ( String[] )oGraph.GetRequiredValue(
                     ReservedMetadataKeys.AllVertexMetadataKeys,
                     typeof( String[] ) ),
+
+                (String)oGraph.GetValue(
+                    ReservedMetadataKeys.GraphSource,
+                    typeof(String)),
+
+                (String)oGraph.GetValue(
+                    ReservedMetadataKeys.GraphTerm,
+                    typeof(String)),
 
                 GraphImporter.GetImportedGraphMLFileDescription(
                     oDialog.FileName, oGraph),
@@ -1854,6 +1908,14 @@ public partial class ThisWorkbook
 
         ImportGraph(oGraph,
             new String[] {EdgeTableColumnNames.EdgeWeight}, null,
+
+            (String)oGraph.GetValue(
+                    ReservedMetadataKeys.GraphSource,
+                    typeof(String)),
+
+            (String)oGraph.GetValue(
+                    ReservedMetadataKeys.GraphTerm,
+                    typeof(String)),
             sImportDescription, sSuggestedTitle,
             sSuggestedFileNameNoExtension);
     }
@@ -1900,6 +1962,8 @@ public partial class ThisWorkbook
         IGraph oGraph,
         String [] oEdgeAttributes,
         String [] oVertexAttributes,
+        String sGraphSource,
+        String sGraphTerm,
         String sImportDescription,
         String sSuggestedTitle,
         String sSuggestedFileNameNoExtension
@@ -1966,6 +2030,9 @@ public partial class ThisWorkbook
                 Debug.Assert(false);
                 break;
         }
+
+        GraphImporter.UpdateGraphHistorySourceTerm(this.InnerObject, sGraphSource, sGraphTerm,
+                                                    new PerWorkbookSettings(this.InnerObject));
 
         GraphImporter.UpdateGraphHistoryAfterImport(this.InnerObject,
             sImportDescription, sSuggestedTitle,
@@ -2967,6 +3034,11 @@ public partial class ThisWorkbook
                 case NoParamCommand.EditImportDataUserSettings:
 
                     EditImportDataUserSettings();
+                    break;
+
+                case NoParamCommand.EditExportDataUserSettings:
+
+                    EditExportDataUserSettings();
                     break;
 
                 case NoParamCommand.ImportFromMatrixWorkbook:

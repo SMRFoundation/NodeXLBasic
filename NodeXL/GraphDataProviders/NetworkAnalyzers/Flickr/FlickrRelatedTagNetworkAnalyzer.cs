@@ -217,6 +217,7 @@ public class FlickrRelatedTagNetworkAnalyzer : FlickrNetworkAnalyzerBase
         String sNetworkTitle = "Flickr Tag " + sTag;
 
         OnNetworkObtained(oGraphMLXmlDocument, oRequestStatistics,
+            "FlickrTag", sTag,
             GetNetworkDescription(sTag, eWhatToInclude, eNetworkLevel),
             sNetworkTitle, sNetworkTitle
             );

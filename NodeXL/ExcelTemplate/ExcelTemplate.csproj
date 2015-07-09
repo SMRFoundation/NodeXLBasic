@@ -29,7 +29,7 @@
     <PublishUrl>D:\Dropbox\NodeXL CodePlex\NodeXL\ExcelTemplate\Publish\</PublishUrl>
     <InstallUrl>http://www.nodexlgraphgallery.org/NodeXLSetup/</InstallUrl>
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.1.338</ApplicationVersion>
+    <ApplicationVersion>1.0.1.339</ApplicationVersion>
     <AutoIncrementApplicationRevision>false</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>1</UpdateInterval>
@@ -246,6 +246,15 @@
       <Link>Util\Excel\ExcelWorkbookListBox.cs</Link>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="..\..\Common\GraphDescription\FacebookGraphDescription.cs">
+      <Link>Util\GraphDescription\FacebookGraphDescription.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\GraphDescription\GraphDescriptionDocument.cs">
+      <Link>Util\GraphDescription\GraphDescriptionDocument.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\GraphDescription\TwitterGraphDescription.cs">
+      <Link>Util\GraphDescription\TwitterGraphDescription.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\GraphicsUtil.cs">
       <Link>Util\GraphicsUtil.cs</Link>
     </Compile>
@@ -438,6 +447,12 @@
     </Compile>
     <Compile Include="Dialogs\ExcelTemplateForm.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ExportDataUserSettings\ExportDataUserSettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\ExportDataUserSettings\ExportDataUserSettingsDialog.Designer.cs">
+      <DependentUpon>ExportDataUserSettingsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Dialogs\ExportToEmail\ExportToEmailDialog.cs">
       <SubType>Form</SubType>
@@ -698,6 +713,7 @@
     <Compile Include="GraphMetrics\GraphMetricReaders\TopMetricsReaderBase.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GraphMetrics\GraphMetricReaders\TopMetricsWithCountReader.cs" />
     <Compile Include="GraphMetrics\GraphMetricReaders\TopNByMetricsReader.cs" />
     <Compile Include="GraphMetrics\GraphMetricReaders\TwitterSearchNetworkTopItemsReader.cs" />
     <Compile Include="GraphMetrics\GraphMetrics.cs" />
@@ -710,7 +726,18 @@
     <Compile Include="GraphMetrics\IGraphMetricCalculator2.cs" />
     <Compile Include="GraphMetrics\ReadabilityMetrics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Content Include="SplashScreen\SplashScreenOff.htm" />
+    <Content Include="SplashScreen\InitialSplashScreen.htm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SplashScreen\Sample_Network.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SplashScreen\SMRFoundation_2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SplashScreen\SplashScreenOff.htm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Dialogs\About\AboutDialog.resx">
       <DependentUpon>AboutDialog.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -725,6 +752,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\EdgeCreationUserSettings\EdgeCreationUserSettingsDialog.resx">
       <DependentUpon>EdgeCreationUserSettingsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\ExportDataUserSettings\ExportDataUserSettingsDialog.resx">
+      <DependentUpon>ExportDataUserSettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\GeneralUserSettings\GeneralUserSettingsDialog.resx">
       <DependentUpon>GeneralUserSettingsDialog.cs</DependentUpon>
@@ -868,6 +898,7 @@
     <Compile Include="UserSettings\ColumnGroupUserSettings.cs" />
     <Compile Include="UserSettings\DynamicFiltersUserSettings.cs" />
     <Compile Include="UserSettings\EdgeCreationUserSettings.cs" />
+    <Compile Include="UserSettings\ExportDataUserSettings.cs" />
     <Compile Include="UserSettings\ExportToEmailUserSettings.cs">
     </Compile>
     <Compile Include="UserSettings\ExportToNodeXLGraphGalleryUserSettings.cs">
@@ -929,6 +960,8 @@
     <Compile Include="Util\GraphML\GraphMLFilesImporter.cs" />
     <Compile Include="Util\GraphML\GraphMLToNodeXLWorkbookConverter.cs" />
     <Compile Include="Util\GraphSummarizer.cs" />
+    <Compile Include="Util\GraphSummarizer2.cs" />
+    <Compile Include="Util\GraphSummarizer\TwitterGraphSummarizer.cs" />
     <Compile Include="Util\GraphTitleCreator.cs" />
     <Compile Include="Util\Groups\ExcelTemplateGroupInfo.cs" />
     <Compile Include="Util\Groups\ExcelTemplateGroupUtil.cs" />
@@ -1287,7 +1320,9 @@
     <Content Include="SplashScreen\NodeXLLogo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="SplashScreen\SMRFoundation.png" />
+    <Content Include="SplashScreen\SMRFoundation.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="SplashScreen\SplashScreen.htm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -234,7 +234,7 @@ public class YouTubeUserNetworkAnalyzer : YouTubeNetworkAnalyzerBase
         String sNetworkTitle = "YouTube User " + sUserNameToAnalyze;
 
         OnNetworkObtained(oGraphMLXmlDocument, oRequestStatistics, 
-
+            "YouTubeUser", sUserNameToAnalyze,
             GetNetworkDescription(sUserNameToAnalyze, eWhatToInclude,
                 eNetworkLevel, iMaximumPeoplePerRequest),
 

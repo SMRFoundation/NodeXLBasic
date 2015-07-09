@@ -323,7 +323,7 @@ public class TwitterUsersNetworkAnalyzer : TwitterNetworkAnalyzerBase
             "Twitter Users " + (bUseListName ? sListName : "Usernames");
 
         OnNetworkObtained(oGraphMLXmlDocument, oRequestStatistics, 
-
+            "TwitterUsers", String.Join(",", oScreenNames),
             GetNetworkDescription(bUseListName, sListName, oScreenNames,
                 eNetworkType, bLimitToSpecifiedUsers, bExpandStatusUrls),
 

@@ -300,6 +300,98 @@ public static class GraphImporter : Object
     }
 
     //*************************************************************************
+    //  Method: GetImportedGraphMLFileSource()
+    //
+    /// <summary>
+    /// Gets a string that describes the source of the graph.
+    /// </summary>    
+    ///
+    /// <param name="graph">
+    /// Graph into which the GraphML file was imported.
+    /// </param>
+    ///
+    /// <returns>
+    /// The source of the graph.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// The returned string can be used as the graphSource argument to
+    /// <see cref="UpdateGraphHistorySourceTerm" />, for example.
+    /// </remarks>
+    //*************************************************************************
+
+    public static String
+    GetImportedGraphMLFileSoure
+    (        
+        IGraph graph
+    )
+    {        
+        Debug.Assert(graph != null);
+
+        // If the graph already has a source, use it.
+        //
+        // This can occur, for example, if the GraphML was imported from a file
+        // created by the NetworkServer command line program, which stores the
+        // source in the GraphML.
+
+        String sImportedGraphMLFileSource = (String)graph.GetValue(
+            ReservedMetadataKeys.GraphSource, typeof(String));
+
+        if (String.IsNullOrEmpty(sImportedGraphMLFileSource))
+        {
+            sImportedGraphMLFileSource = String.Empty;
+        }
+
+        return (sImportedGraphMLFileSource);
+    }
+
+    //*************************************************************************
+    //  Method: GetImportedGraphMLFileTerm()
+    //
+    /// <summary>
+    /// Gets a string that describes the term that this graph represents.
+    /// </summary>    
+    ///
+    /// <param name="graph">
+    /// Graph into which the GraphML file was imported.
+    /// </param>
+    ///
+    /// <returns>
+    /// The term of the graph.
+    /// </returns>
+    ///
+    /// <remarks>
+    /// The returned string can be used as the graphTerm argument to
+    /// <see cref="UpdateGraphHistorySourceTerm" />, for example.
+    /// </remarks>
+    //*************************************************************************
+
+    public static String
+    GetImportedGraphMLFileTerm
+    (
+        IGraph graph
+    )
+    {
+        Debug.Assert(graph != null);
+
+        // If the graph already has a source, use it.
+        //
+        // This can occur, for example, if the GraphML was imported from a file
+        // created by the NetworkServer command line program, which stores the
+        // source in the GraphML.
+
+        String sImportedGraphMLFileTerm = (String)graph.GetValue(
+            ReservedMetadataKeys.GraphTerm, typeof(String));
+
+        if (String.IsNullOrEmpty(sImportedGraphMLFileTerm))
+        {
+            sImportedGraphMLFileTerm = String.Empty;
+        }
+
+        return (sImportedGraphMLFileTerm);
+    }
+
+    //*************************************************************************
     //  Method: UpdateGraphHistoryAfterImport()
     //
     /// <summary>
@@ -329,7 +421,7 @@ public static class GraphImporter : Object
     public static void
     UpdateGraphHistoryAfterImport
     (
-        Microsoft.Office.Interop.Excel.Workbook destinationNodeXLWorkbook,
+        Microsoft.Office.Interop.Excel.Workbook destinationNodeXLWorkbook,        
         String importDescription,
         String suggestedTitle,
         String suggestedFileNameNoExtension
@@ -401,6 +493,51 @@ public static class GraphImporter : Object
         perWorkbookSettings.SetGraphHistoryValue(
             GraphHistoryKeys.ImportSuggestedFileNameNoExtension,
             suggestedFileNameNoExtension ?? String.Empty);
+    }
+
+    //*************************************************************************
+    //  Method: UpdateGraphHistorySourceTerm()
+    //
+    /// <summary>
+    /// Updates the graph's history with details about the graph source and term.
+    /// </summary>
+    ///
+    /// <param name="destinationNodeXLWorkbook">
+    /// NodeXL workbook the edges and vertices were imported to.
+    /// </param>
+    ///
+    /// <param name="graphSource">
+    /// The source of the graph.
+    /// </param>
+    ///
+    /// <param name="graphTerm">
+    /// The term of the graph.
+    /// </param>
+    ///
+    /// <param name="perWorkbookSettings">
+    /// The per-workbook settings that contain the graph history.
+    /// </param>
+    //*************************************************************************
+
+    public static void
+    UpdateGraphHistorySourceTerm
+    (
+        Microsoft.Office.Interop.Excel.Workbook destinationNodeXLWorkbook,
+        String graphSource,
+        String graphTerm,        
+        PerWorkbookSettings perWorkbookSettings
+    )
+    {
+        Debug.Assert(destinationNodeXLWorkbook != null);
+        Debug.Assert(perWorkbookSettings != null);
+
+        perWorkbookSettings.SetGraphHistoryValue(
+            GraphHistoryKeys.GraphSource,
+            graphSource ?? String.Empty);
+
+        perWorkbookSettings.SetGraphHistoryValue(
+            GraphHistoryKeys.GraphTerm,
+            graphTerm ?? String.Empty);
     }
 
     //*************************************************************************

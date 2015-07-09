@@ -211,6 +211,38 @@ public static class ApplicationUtil
     }
 
     //*************************************************************************
+    //  Method: GetInitialSplashScreenPath()
+    //
+    /// <summary>
+    /// Gets the full path to the HTML file for the application's initial splash
+    /// screen.
+    /// </summary>
+    ///
+    /// <returns>
+    /// The full path to the HTML file.  Sample:
+    /// "C:\Program Files\...\NodeXL Excel Template\SplashScreen\
+    /// SplashScreen.htm".
+    /// </returns>
+    //*************************************************************************
+
+    public static Uri
+    GetInitialSplashScreenPath()
+    {
+        if (IsOnline())
+        {
+            return (new Uri(InitialSplashScreenFileNameOnline));
+        }
+        else
+        {
+            String sSplashScreenSubfolderPath = Path.Combine(
+                GetApplicationFolder(), SplashScreenSubfolder);
+
+            return (new Uri(Path.Combine(sSplashScreenSubfolderPath,
+                InitialSplashScreenFileNameOffline)));
+        }
+    }
+
+    //*************************************************************************
     //  Method: OnWorkbookStartup()
     //
     /// <summary>
@@ -497,6 +529,14 @@ public static class ApplicationUtil
     /// File name of the splash screen's HTML file (when there is no internet connection).
 
     private const String SplashScreenFileNameOffline = "SplashScreenOff.htm";
+
+    /// File name of the initial splash screen's HTML file (when there is no internet connection).
+
+    private const String InitialSplashScreenFileNameOffline = "InitialSplashScreen.htm";
+
+    /// URL of the initial splash screen's HTML file (when there is internet connection).
+
+    private const String InitialSplashScreenFileNameOnline = "https://www.nodexlgraphgallery.org/Pages/SplashScreen.htm";
 
     /// File name of the application's help file.
 

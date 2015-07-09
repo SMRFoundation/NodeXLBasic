@@ -29,7 +29,7 @@ namespace Smrf.NodeXL.ExcelTemplate
 /// </remarks>
 //*****************************************************************************
 
-public class TwitterSearchNetworkTopItemsReader : TopMetricsReaderBase
+public class TwitterSearchNetworkTopItemsReader : TopMetricsWithCountReader
 {
     //*************************************************************************
     //  Constructor: TwitterSearchNetworkTopItemsReader()

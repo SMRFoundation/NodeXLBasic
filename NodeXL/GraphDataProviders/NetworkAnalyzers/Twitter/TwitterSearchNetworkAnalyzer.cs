@@ -248,7 +248,7 @@ public class TwitterSearchNetworkAnalyzer : TwitterNetworkAnalyzerBase
         }
 
         OnNetworkObtained(oGraphMLXmlDocument, oRequestStatistics, 
-
+            "TwitterSearch", sSearchTerm,
             GetNetworkDescription(sSearchTerm, eWhatToInclude,
                 iMaximumStatuses, oGraphMLXmlDocument),
 

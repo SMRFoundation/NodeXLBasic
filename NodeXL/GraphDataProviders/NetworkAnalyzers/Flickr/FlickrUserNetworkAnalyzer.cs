@@ -252,7 +252,7 @@ public class FlickrUserNetworkAnalyzer : FlickrNetworkAnalyzerBase
         String sNetworkTitle = "Flickr User " + sScreenName;
 
         OnNetworkObtained(oGraphMLXmlDocument, oRequestStatistics,
-
+            "FlickrUser", sScreenName,
             GetNetworkDescription(sScreenName, eWhatToInclude, eNetworkLevel,
                 iMaximumPerRequest),
 

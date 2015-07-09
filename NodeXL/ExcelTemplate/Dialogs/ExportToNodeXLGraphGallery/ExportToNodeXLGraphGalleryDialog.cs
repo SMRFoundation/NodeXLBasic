@@ -9,6 +9,9 @@ using Smrf.AppLib;
 using Smrf.NodeXL.Algorithms;
 using Smrf.NodeXL.Common;
 using Smrf.NodeXL.Visualization.Wpf;
+using Smrf.XmlLib;
+using System.IO;
+using System.Xml;
 
 namespace Smrf.NodeXL.ExcelTemplate
 {
@@ -324,8 +327,14 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
 
         // Order of precedence: graph summary, empty string.
 
-        if ( !GraphSummarizer.TrySummarizeGraph(
-            m_oWorkbook, out sDefaultDescription) )
+        //if ( !GraphSummarizer.TrySummarizeGraph(
+        //    m_oWorkbook, out sDefaultDescription) )
+        //{
+        //    sDefaultDescription = String.Empty;
+        //}
+        
+        if (!GraphSummarizer2.TrySummarizeGraph(
+            m_oWorkbook, out sDefaultDescription, out m_sXmlGraphSummary))
         {
             sDefaultDescription = String.Empty;
         }
@@ -408,7 +417,7 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
                     m_oWorkbook, m_oNodeXLControl,
 
                     txbTitle.Text,
-                    txbDescription.Text,
+                    m_sXmlGraphSummary,
 
                     m_oExportToNodeXLGraphGalleryUserSettings.
                         SpaceDelimitedTags,
@@ -515,6 +524,8 @@ public partial class ExportToNodeXLGraphGalleryDialog : ExcelTemplateForm
 
     protected ExportToNodeXLGraphGalleryDialogUserSettings
         m_oExportToNodeXLGraphGalleryDialogUserSettings;
+
+    protected String m_sXmlGraphSummary;
 }
 
 

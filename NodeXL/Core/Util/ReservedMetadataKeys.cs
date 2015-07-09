@@ -1099,6 +1099,29 @@ public static class ReservedMetadataKeys : Object
     public static readonly String SuggestedFileNameNoExtension =
         FirstChar + "SuggestedFileNameNoExtension";
 
+    /// <summary>
+    /// Key added to a graph to describe the source of the graph.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// GraphMLGraphAdapter.LoadGraph() adds this key to the graph if there is
+    /// a source for the graph in the GraphML it loads.
+    /// </remarks>
+
+    public static readonly String GraphSource =
+        FirstChar + "GraphSource";
+
+    /// <summary>
+    /// Key added to a graph to describe what the graph is about.
+    /// </summary>
+    ///
+    /// <remarks>
+    /// GraphMLGraphAdapter.LoadGraph() adds this key to the graph if there is
+    /// a term for the graph in the GraphML it loads.
+    /// </remarks>
+
+    public static readonly String GraphTerm =
+        FirstChar + "GraphTerm";
 
     //*************************************************************************
     //  Keys used by DraggedVertices

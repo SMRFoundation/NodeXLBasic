@@ -237,12 +237,13 @@ namespace Smrf.NodeXL.ExcelTemplate
             // 
             this.txbDescription.AcceptsReturn = true;
             this.txbDescription.Location = new System.Drawing.Point(170, 65);
-            this.txbDescription.MaxLength = 80000;
+            this.txbDescription.MaxLength = 0;
             this.txbDescription.Multiline = true;
             this.txbDescription.Name = "txbDescription";
             this.txbDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txbDescription.Size = new System.Drawing.Size(395, 72);
             this.txbDescription.TabIndex = 3;
+            this.txbDescription.WordWrap = false;
             // 
             // lblDescription
             // 

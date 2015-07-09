@@ -125,6 +125,18 @@ public class GraphHistory : PersistableStringDictionary
 public static class GraphHistoryKeys
 {
     /// <summary>
+    /// The source of the graph.
+    /// </summary>
+
+    public const String GraphSource = "GraphSource";
+
+    /// <summary>
+    /// The term of the graph.
+    /// </summary>
+
+    public const String GraphTerm = "GraphTerm";
+
+    /// <summary>
     /// A detailed description of how the graph was imported into the workbook.
     /// </summary>
 
