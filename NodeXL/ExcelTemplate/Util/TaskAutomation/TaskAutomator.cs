@@ -1070,7 +1070,7 @@ public static class TaskAutomator : Object
                 oWorkbook,
                 oNodeXLControl,
                 GraphTitleCreator.CreateGraphTitle(oWorkbook),
-                GraphSummarizer.SummarizeGraph(oWorkbook),
+                GraphSummarizer2.SummarizeGraph(oWorkbook),
                 oExportToNodeXLGraphGalleryUserSettings.SpaceDelimitedTags,
                 sAuthor,
                 sPassword,
