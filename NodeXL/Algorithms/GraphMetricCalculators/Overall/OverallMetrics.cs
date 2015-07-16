@@ -835,4 +835,94 @@ public static class OverallMetricNames
         "NodeXL Version";
 }
 
+//*****************************************************************************
+//  Class: OverallMetricTooltips
+//
+/// <summary>
+/// Provides tooltips to use for overall metrics.
+/// </summary>
+///
+/// <remarks>
+/// All overall metric tooltips are available as public constants.
+/// </remarks>
+//*****************************************************************************
+
+public static class OverallMetricTooltips
+{
+    ///
+    public const String Directedness = "Directedness of the graph.";
+    ///
+    public const String UniqueEdges = "An edge is a connection between two vertices." +
+                                      "\r\n\r\nThe \"unique\" edges is the number of connections " +
+                                      "where multiple connections between A and B are counted only once.";
+    ///
+    public const String EdgesWithDuplicates = "An edge is a connection between two vertices.\r\n\r\n" +
+                                                "The \"duplicate\" edges count is the total number of " +
+                                                "multiple connections between two vertices.";
+    ///
+    public const String SelfLoops = "An edge that starts and ends in the same vertex is a self loop.";
+    ///
+    public const String TotalEdges = "An edge is a connection between two vertices.\r\n\r\n" +
+                                     "The \"total\" edges count is the total number of connections " +
+                                     "where multiple connections between A and B are all counted.";
+    ///
+    public const String Vertices = "A vertex is an element of a network.\r\n\r\n" +
+                                   "The vertices count is the number of people or things in the network.";
+    ///
+    public const String GraphDensity = "Density is the measure of the number edges among a group " +
+                                       "of vertices over the total possible number if everyone was " +
+                                       "connected to everyone.\r\n\r\nA high graph density means " +
+                                       "that most people are connected to many others. A low graph " +
+                                       "density means that most people are not connected to many others.";
+    ///
+    public const String Modularity = "Modularity is a measure of the fitness of the groups that are " +
+                                     "created in a clustered network.\r\n\r\n" +
+                                     "A group is a set of vertices.\r\n" +
+                                     "Many group cluster algorithms are intended to find sets of " +
+                                     "vertices that are strongly connected and relatively separate " +
+                                     "from other strongly connected groups.\r\n\r\n" +
+                                     "Modularity is the measure of the number of edges that leave " +
+                                     "a group to connect to vertices in a different group.\r\n" +
+                                     "If modularity is high, the clusters or groups created may be " +
+                                     "of low quality.  If modularity is low, the groups are well defined.";
+    ///
+    public const String ConnectedComponents = "A group of vertices that are all connected is a component.\r\n\r\n" +
+                                              "This is the number of separate sets of connected vertices.";
+    ///
+    public const String SingleVertexConnectedComponents =
+        "A vertex that has zero connections is \"isolated\" or an \"island\".\r\n\r\n" +
+        "This is the count of vertices that have zero connections.";
+    ///
+    public const String MaximumConnectedComponentVertices =
+        "A connected component is composed of a number of vertices.\r\n\r\n" +
+        "This is the count of vertices in the largest connected component.";
+    ///
+    public const String MaximumConnectedComponentEdges =
+        "A connected component is composed of a number of edges.\r\n\r\n" +
+        "This is the count of total edges in the largest connected component.";
+    ///
+    public const String MaximumGeodesicDistance =
+        "A geodesic is a chain or path composed of edges that link two vertices, " +
+        "potentially through intermediate vertices.\r\n\r\n" +
+        "A \"shortest path\" is the minimum number of connections needed to link two vertices.\r\n\r\n" +
+        "The \"longest\" \"shortest path\" is the \"maximum geodesic distance\".";
+    ///
+    public const String AverageGeodesicDistance =
+        "A geodesic is a chain or path composed of edges that link two vertices, " +
+        "potentially through intermediate vertices.\r\n\r\n" +
+        "The average length of these paths is the \"average geodesic distance\".";
+    ///
+    public const String ReciprocatedVertexPairRatio =
+        "When two vertices both link to each other their connection is \"reciprocated\".\r\n\r\n" +
+        "This is the percentage of vertices that have a reciprocal relationship.";
+    ///
+    public const String ReciprocatedEdgeRatio =
+        "When an edge from A to B is joined by another edge from B to A " +
+        "then their connection is \"reciprocated\".\r\n\r\n" +
+        "This is the percentage of edges that have a reciprocal relationship.";
+    ///
+    public const String NodeXLVersion =
+        "NodeXL updates frequently and the current version number is provided " +
+        "to enable troubleshooting and to ensure older datasets are properly understood.";
+}
 }
