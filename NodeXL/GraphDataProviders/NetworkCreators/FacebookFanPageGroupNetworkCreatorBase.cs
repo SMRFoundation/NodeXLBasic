@@ -77,36 +77,37 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
         {
             Dictionary<string, List<Dictionary<string, object>>> statusUpdates = new Dictionary<string, List<Dictionary<string, object>>>();
             Dictionary<string, List<Dictionary<string, object>>> wallPosts = new Dictionary<string, List<Dictionary<string, object>>>();
-            
-            //Only commenters vertices will be added
-            if (Model.Comment)
-            {
-                CreateCommentVertices(ref oVertices);
-                if (Model.RelationshipCommentAuthor)
-                {
-                    CreateCommentCommentVertices(ref oVertices);
-                }
-            }
-            //Only likers vertices will be added
-            if (Model.Like)
-            {
-                CreateLikeVertices(ref oVertices);
-                if (Model.RelationshipCommentAuthor)
-                {
-                    CreateCommentLikeVertices(ref oVertices);
-                }
-            }
 
+            if (Model.User) { 
+                //Only commenters vertices will be added
+                if (Model.Comment)
+                {
+                    CreateCommentVertices(ref oVertices);
+                    if (Model.RelationshipCommentAuthor)
+                    {
+                        CreateCommentCommentVertices(ref oVertices);
+                    }
+                }
+                //Only likers vertices will be added
+                if (Model.Like)
+                {
+                    CreateLikeVertices(ref oVertices);
+                    if (Model.RelationshipCommentAuthor)
+                    {
+                        CreateCommentLikeVertices(ref oVertices);
+                    }
+                }
+
+                //Add post author vertices if any related network is selected
+                if (Model.RelationshipPostAuthor)
+                {
+                    CreatePostAuthorVertices(ref oVertices);
+                }
+            }
             //Add post vertices if any related network is selected
-            if (Model.Post)
+            else if (Model.Post)
             {
                 CreatePostVertices(ref oVertices);
-            }
-
-            //Add post author vertices if any related network is selected
-            if (Model.RelationshipPostAuthor || Model.Post)
-            {
-                CreatePostAuthorVertices(ref oVertices);
             }
         }
 
@@ -447,12 +448,12 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
         )
         {
             //Check if there is any edge selected
-            if (Model.UserRelationshipSamePost ||
-                Model.PostSameRelationship ||
-                Model.RelationshipPostAuthor ||
-                Model.ConsecutiveRelationship ||
-                Model.RelationshipCommentAuthor)
-            {
+            //if (Model.UserRelationshipSamePost ||
+            //    Model.PostSameRelationship ||
+            //    Model.RelationshipPostAuthor ||
+            //    Model.ConsecutiveRelationship ||
+            //    Model.RelationshipCommentAuthor)
+            //{
                 //Create selected edges
                 if (Model.UserRelationshipSamePost)
                 {
@@ -479,16 +480,16 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
                     CreateRelationshipCommentAuthorEdges(ref oEdges, ref oVertices);
                 }
 
-                if (Model.Post)
-                {
-                    CreateUserCreatedPostEdges(ref oEdges, ref oVertices);
+                //if (Model.Post)
+                //{
+                //    CreateUserCreatedPostEdges(ref oEdges, ref oVertices);
 
-                    //if (!Model.PostSameRelationship)
-                    //{
-                    //    CreateAuthorPostEdges(ref oEdges, ref oVertices);
-                    //}
-                }
-            }
+                //    //if (!Model.PostSameRelationship)
+                //    //{
+                //    //    CreateAuthorPostEdges(ref oEdges, ref oVertices);
+                //    //}
+                //}
+            //}
         }
 
         private void
@@ -588,20 +589,33 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
                     for (int j = i + 1; j < m_oCommentsByPost.Count(); j++)
                     {
                         var oIntersectedComments = m_oCommentsByPost.ElementAt(i).Value.Intersect(
-                                                    m_oCommentsByPost.ElementAt(j).Value);
+                                                    m_oCommentsByPost.ElementAt(j).Value,
+                                                    new CommentsEqualityComparer());
                         if (oIntersectedComments != null &&
                             oIntersectedComments.Count() > 0)
                         {
-                            Edge oEdge = new Edge(oVertices[m_oCommentsByPost.ElementAt(i).Key],
-                                                  oVertices[m_oCommentsByPost.ElementAt(j).Key],
-                                                  EdgeType.FanPageNetworkPostSameCommenter);
-                            AddFanPagePostHaveSameCommenterEdgeAttributes(oEdge, "Same Commenter", "");
-                            oEdges.Add(oEdge);
+                            foreach (var oIntersectedComment in oIntersectedComments)
+                            {
+                                String oPost1IntersectedComments;
+                                String oPost2IntersectedComments;
+                                GetIntersectedComments(m_oCommentsByPost.ElementAt(i).Value,
+                                                        m_oCommentsByPost.ElementAt(j).Value,
+                                                        oIntersectedComments.Select(x => x.Dictionary["from"].Dictionary["id"].String).ToList(),
+                                                        out oPost1IntersectedComments,
+                                                        out oPost2IntersectedComments);
+                                Edge oEdge = new Edge(oVertices[m_oCommentsByPost.ElementAt(i).Key],
+                                                      oVertices[m_oCommentsByPost.ElementAt(j).Key],
+                                                      EdgeType.FanPageNetworkPostSameCommenter);
+                                AddFanPagePostHaveSameCommenterEdgeAttributes(oEdge, "Same Commenter", "",
+                                    oPost1IntersectedComments,
+                                    oPost2IntersectedComments);
+                                oEdges.Add(oEdge);
+                            }
                         }
                     }
                 }
             }
-
+            
             if (Model.Like)
             {
                 for (int i = 0; i < m_oLikesByPost.Count() - 1; i++)
@@ -609,15 +623,20 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
                     for (int j = i + 1; j < m_oLikesByPost.Count(); j++)
                     {
                         var oIntersectedLikes = m_oLikesByPost.ElementAt(i).Value.Intersect(
-                                                    m_oLikesByPost.ElementAt(j).Value);
+                                                    m_oLikesByPost.ElementAt(j).Value,
+                                                    new LikesEqualityComparer());
                         if (oIntersectedLikes != null &&
                             oIntersectedLikes.Count() > 0)
                         {
-                            Edge oEdge = new Edge(oVertices[m_oLikesByPost.ElementAt(i).Key],
-                                                  oVertices[m_oLikesByPost.ElementAt(j).Key],
-                                                  EdgeType.FanPageNetworkPostSameLiker);
-                            AddFanPagePostHaveSameLikerEdgeAttributes(oEdge, "Same Liker", "");
-                            oEdges.Add(oEdge);
+                            foreach (JSONObject oIntersectedLike in oIntersectedLikes)
+                            {
+                                Edge oEdge = new Edge(oVertices[m_oLikesByPost.ElementAt(i).Key],
+                                                      oVertices[m_oLikesByPost.ElementAt(j).Key],
+                                                      EdgeType.FanPageNetworkPostSameLiker);
+                                AddFanPagePostHaveSameLikerEdgeAttributes(oEdge, "Same Liker", "",
+                                    oIntersectedLike.Dictionary["name"].String);
+                                oEdges.Add(oEdge);
+                            }
                         }
                     }
                 }
@@ -695,16 +714,13 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
                 {
                     for (int i = 0; i < oItem.Value.Count - 1; i++)
                     {
-                        for (int j = i + 1; j < oItem.Value.Count; j++)
-                        {
-                            Edge oEdge = new Edge(oVertices[oItem.Value[j].Dictionary["from"].Dictionary["id"].String],
-                                                  oVertices[oItem.Value[i].Dictionary["from"].Dictionary["id"].String],
-                                                  EdgeType.FanPageNetworkConsecutiveCommenter);
-                            AddFanPageConsecutiveCommenterEdgeAttributes(oEdge, "Consecutive Commenters",
-                                                                        GetPostContent(oItem.Key),
-                                                                        CreatePostLink(oItem.Key));
-                            oEdges.Add(oEdge);
-                        }
+                        Edge oEdge = new Edge(oVertices[oItem.Value[i+1].Dictionary["from"].Dictionary["id"].String],
+                                                oVertices[oItem.Value[i].Dictionary["from"].Dictionary["id"].String],
+                                                EdgeType.FanPageNetworkConsecutiveCommenter);
+                        AddFanPageConsecutiveCommenterEdgeAttributes(oEdge, "Consecutive Commenters",
+                                                                    GetPostContent(oItem.Key),
+                                                                    CreatePostLink(oItem.Key));
+                        oEdges.Add(oEdge);
                     }
                 }
             }
@@ -852,9 +868,9 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
         )
         {
             oEdge.Attributes["relationship"] = sRelationship;
-            oEdge.Attributes["edge_comment"] = String.Format("{0}:\n{1}\n\n{2}:\n{3}",
-                                                            oEdge.Vertex1.Name, sVertex1Comment,
-                                                            oEdge.Vertex2.Name, sVertex2Comment);
+            oEdge.Attributes["edge_comment"] = String.Format("{0}\n{1}",
+                                                            sVertex1Comment,
+                                                            sVertex2Comment);
             oEdge.Attributes["post_content"] = sPost;
             oEdge.Attributes["post_url"] = sLink;
         }
@@ -878,23 +894,29 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
         (
             Edge oEdge,
             string sRelationship,
-            string sLink
+            string sLink,
+            String sLiker
         )
         {
             oEdge.Attributes["relationship"] = sRelationship;
             oEdge.Attributes["post_url"] = sLink;
+            oEdge.Attributes["post_liker"] = sLiker;
         }
 
         private void
         AddFanPagePostHaveSameCommenterEdgeAttributes
         (
             Edge oEdge,
-            string sRelationship,
-            string sLink
+            String sRelationship,
+            String sLink,
+            String sPost1Comments,
+            String sPost2Comments
         )
         {
             oEdge.Attributes["relationship"] = sRelationship;
             oEdge.Attributes["post_url"] = sLink;
+            oEdge.Attributes["post1_comments"] = sPost1Comments;
+            oEdge.Attributes["post2_comments"] = sPost2Comments;   
         }
 
         private void
@@ -1381,9 +1403,81 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
             return iComments;
         }
 
+        private void
+        GetIntersectedComments
+        (
+            List<JSONObject> oPost1Comments,
+            List<JSONObject> oPost2Comments,
+            List<String> oIntersectedCommenters,
+            out String oPost1IntersectedComments,
+            out String oPost2IntersectedComments
+        )
+        {
+            oPost1IntersectedComments = "";
+            oPost2IntersectedComments = "";
+
+            foreach(String sIntersectedCommenter in oIntersectedCommenters)
+            {
+                foreach (JSONObject oPost1Comment in oPost1Comments
+                        .Where(x=>x.Dictionary["from"].Dictionary["id"].String
+                        .Equals(sIntersectedCommenter)))
+                {
+                    oPost1IntersectedComments+=oPost1Comment.Dictionary["from"].Dictionary["name"]
+                        .String+":"+oPost1Comment.Dictionary["message"].String;
+                }
+
+                foreach (JSONObject oPost2Comment in oPost2Comments
+                        .Where(x => x.Dictionary["from"].Dictionary["id"].String
+                        .Equals(sIntersectedCommenter)))
+                {
+                    oPost2IntersectedComments += oPost2Comment.Dictionary["from"].Dictionary["name"]
+                        .String + ":" + oPost2Comment.Dictionary["message"].String;
+                }
+            }
+        }
+
         protected FacebookFanPageGroupModelBase Model
         {
             get { return (FacebookFanPageGroupModelBase)m_oModel; }
+        }
+
+        private class LikesEqualityComparer : IEqualityComparer<JSONObject>
+        {
+            public bool Equals(JSONObject item1, JSONObject item2)
+            {
+                if (item1 == null && item2 == null)
+                    return true;
+                else if ((item1 != null && item2 == null) ||
+                        (item1 == null && item2 != null))
+                    return false;
+
+                return item1.Dictionary["id"].String.Equals(item2.Dictionary["id"].String);
+            }
+
+            public int GetHashCode(JSONObject item)
+            {
+                return item.Dictionary["id"].String.GetHashCode();
+            }
+        }
+
+        private class CommentsEqualityComparer : IEqualityComparer<JSONObject>
+        {
+            public bool Equals(JSONObject item1, JSONObject item2)
+            {
+                if (item1 == null && item2 == null)
+                    return true;
+                else if ((item1 != null && item2 == null) ||
+                        (item1 == null && item2 != null))
+                    return false;
+
+                return (item1.Dictionary["from"].Dictionary["id"].String.Equals(
+                       item2.Dictionary["from"].Dictionary["id"].String));
+            }
+
+            public int GetHashCode(JSONObject item)
+            {
+                return item.Dictionary["from"].Dictionary["id"].String.GetHashCode();
+            }
         }
 
     }

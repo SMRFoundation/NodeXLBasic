@@ -125,7 +125,7 @@ public class NodeXLGraphGalleryExporter : Object
         AssertValid();
 
         Byte [] abtFullSizeImage, abtThumbnail, abtWorkbookContents,
-            abtGraphML;
+            abtGraphML, abtBrandImage;
 
         String sWorkbookSettings;
 
@@ -136,7 +136,8 @@ public class NodeXLGraphGalleryExporter : Object
         GraphExporterUtil.GetDataToExport(workbook, nodeXLControl,
             exportWorkbookAndSettings, exportGraphML, "GraphML.xml",
             useFixedAspectRatio, out abtFullSizeImage, out abtThumbnail,
-            out abtWorkbookContents, out sWorkbookSettings, out abtGraphML);
+            out abtWorkbookContents, out sWorkbookSettings, out abtGraphML,
+            out abtBrandImage);
 
         NodeXLGraphGalleryServiceClient oClient =
             new NodeXLGraphGalleryServiceClient(GetWcfServiceBinding(),
@@ -147,13 +148,12 @@ public class NodeXLGraphGalleryExporter : Object
         oClient.Endpoint.Binding.SendTimeout =
             new TimeSpan(0, SendTimeoutMinutes, 0);
 
-        
-
         try
         {
-            oClient.AddGraph4(title, author, password, description,
+            oClient.AddGraph5(title, author, password, description,
                 spaceDelimitedTags, abtFullSizeImage, abtThumbnail,
-                abtWorkbookContents, sWorkbookSettings, abtGraphML);
+                abtWorkbookContents, sWorkbookSettings, abtGraphML,
+                abtBrandImage);
         }
         catch (ProtocolException oProtocolException)
         {
@@ -207,7 +207,6 @@ public class NodeXLGraphGalleryExporter : Object
         oBasicHttpBinding.MaxBufferSize = MaximumBytes;
         oBasicHttpBinding.MaxReceivedMessageSize = MaximumBytes;
         oBasicHttpBinding.TransferMode = TransferMode.Buffered;
-        
 
         XmlDictionaryReaderQuotas oReaderQuotas =
             new XmlDictionaryReaderQuotas();
@@ -255,13 +254,13 @@ public class NodeXLGraphGalleryExporter : Object
     //     maxArrayLength
     //     maxStringContentLength
 
-    protected const Int32 MaximumBytes = 150000000;
+    protected const Int32 MaximumBytes = 100000000;
 
     /// Number of minutes to wait while sending a graph.  If it takes longer
     /// than this to send the graph, a TimeoutException is thrown on the client
     /// end.
 
-    protected const Int32 SendTimeoutMinutes = 120;
+    protected const Int32 SendTimeoutMinutes = 20;
 
 
     //*************************************************************************

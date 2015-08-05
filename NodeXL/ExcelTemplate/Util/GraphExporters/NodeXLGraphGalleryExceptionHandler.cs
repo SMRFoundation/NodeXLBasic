@@ -86,6 +86,10 @@ public static class NodeXLGraphGalleryExceptionHandler : Object
                 "The NodeXL Graph Gallery couldn't be reached.  "
                 + TryAgainMessage;
         }
+        else if (exception is System.IO.FileNotFoundException)
+        {
+            message = String.Format("Author logo file {0} not found!", exception.Message);
+        }
         else
         {
             message = null;

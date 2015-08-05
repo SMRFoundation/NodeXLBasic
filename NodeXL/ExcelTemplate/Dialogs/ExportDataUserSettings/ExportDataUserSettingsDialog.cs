@@ -6,6 +6,7 @@ using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
@@ -35,9 +36,40 @@ namespace Smrf.NodeXL.ExcelTemplate
                 new ExportDataUserSettingsDialogUserSettings(this);
 
             InitializeComponent();
+
+            SetHelpText();
+
             DoDataExchange(false);
 
             AssertValid();
+        }
+
+        //*************************************************************************
+        //  Method: SetHelpText()
+        //
+        /// <summary>
+        /// Sets the text in the dialog's HelpLinkLabels.
+        /// </summary>
+        //*************************************************************************
+
+        protected void
+        SetHelpText()
+        {
+            // The text for the HelpLinkLabels is set programmatically instead of
+            // via the designer because one of them uses String.Format().
+
+            hllAbout.Tag =
+
+                "Customize the way NodeXL creates reports by providing links, "
+                +"labels and logos.\r\n\r\n"
+                +"The hashtag and URL you provide will be used in \"Smart Tweets\"."
+                +"\r\n\r\n"+
+                "The author logo and link you provide will be displayed in the top of "
+                +"the NodeXL report.\r\n\r\n"
+                +"The action label and link you provide will be displayed after every "
+                +"item in the NodeXL report."
+                ;
+
         }
 
         //*************************************************************************
@@ -71,6 +103,18 @@ namespace Smrf.NodeXL.ExcelTemplate
 
                 m_oExportDataUserSettings.URL =
                     this.txbURL.Text;
+
+                m_oExportDataUserSettings.BrandLogo =
+                    this.txtBrandLogo.Text;
+
+                m_oExportDataUserSettings.BrandURL =
+                    this.txtBrandURL.Text;
+
+                m_oExportDataUserSettings.ActionLabel =
+                    this.txtActionLabel.Text;
+
+                m_oExportDataUserSettings.ActionURL =
+                    this.txtActionURL.Text;
             }
             else
             {
@@ -79,6 +123,18 @@ namespace Smrf.NodeXL.ExcelTemplate
 
                 this.txbURL.Text =
                     m_oExportDataUserSettings.URL;
+
+                this.txtBrandLogo.Text =
+                    m_oExportDataUserSettings.BrandLogo;
+
+                this.txtBrandURL.Text =
+                    m_oExportDataUserSettings.BrandURL;
+
+                this.txtActionLabel.Text =
+                    m_oExportDataUserSettings.ActionLabel;
+
+                this.txtActionURL.Text =
+                    m_oExportDataUserSettings.ActionURL;
             }
 
             return (true);
@@ -114,6 +170,37 @@ namespace Smrf.NodeXL.ExcelTemplate
                 DialogResult = DialogResult.OK;
                 this.Close();
             }
+        }
+
+        private void btnBrandLogo_Click(object sender, EventArgs e)
+        {
+            if (ofdBrandLogo.ShowDialog() == System.Windows.Forms.DialogResult.OK) { 
+                if (IsFileValid(ofdBrandLogo.FileName))
+                {
+                    txtBrandLogo.Text = ofdBrandLogo.FileName;
+                }
+                else
+                {
+                    MessageBox.Show("The image you selected does not meet the requirements!\r\n" +
+                                    "Maximum image size: 1MB\r\n" +
+                                    "Maximum resolution: (900, 200)",
+                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+
+        }
+
+        private Boolean
+        IsFileValid
+        (
+            String fileName
+        )
+        {
+            FileInfo fileInfo = new FileInfo(fileName);
+            Bitmap bitmap = new Bitmap(fileName);
+
+            return (fileInfo.Length <= 1000000 && (
+                    bitmap.Width <= 900 && bitmap.Height <= 200));
         }
 
         //*************************************************************************
@@ -152,7 +239,7 @@ namespace Smrf.NodeXL.ExcelTemplate
         /// User settings for this dialog.
 
         protected ExportDataUserSettingsDialogUserSettings
-            m_oExportDataUserSettingsDialogUserSettings;
+            m_oExportDataUserSettingsDialogUserSettings;        
     }
 
     //*****************************************************************************

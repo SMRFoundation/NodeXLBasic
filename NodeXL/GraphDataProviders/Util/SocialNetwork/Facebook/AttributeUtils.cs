@@ -232,6 +232,7 @@ namespace Smrf.AppLib
             new Attribute("Type", "e_type"), //Filled on edge creation
             new Attribute("Relationship","relationship"),
             new Attribute("Post URL","post_url"),
+            new Attribute("Liker","post_liker"),
         };
 
         public static List<Attribute> FanPagePostHaveSameCommenter = new List<Attribute>()
@@ -239,13 +240,15 @@ namespace Smrf.AppLib
             new Attribute("Type", "e_type"), //Filled on edge creation
             new Attribute("Relationship","relationship"),
             new Attribute("Post URL","post_url"),
+            new Attribute("Post1 Comments","post1_comments"),
+            new Attribute("Post2 Comments","post2_comments"),
         };
 
         public static List<Attribute> FanPagePostHaveSameSharer = new List<Attribute>()
         {            
             new Attribute("Type", "e_type"), //Filled on edge creation
             new Attribute("Relationship","relationship"),
-            new Attribute("Post URL","post_url"),
+            new Attribute("Post URL","post_url"),            
         };
 
         public static List<Attribute> FanPageLikerPostAuthor = new List<Attribute>()

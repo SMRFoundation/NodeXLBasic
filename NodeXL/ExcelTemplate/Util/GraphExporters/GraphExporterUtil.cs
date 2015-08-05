@@ -87,6 +87,11 @@ public static class GraphExporterUtil
     /// name="exportWorkbookAndSettings" /> is true.
     /// </param>
     ///
+    /// <param name="brandImage">
+    /// Where the user-specified brand image gets stored,
+    /// as an array of bytes.
+    /// </param>
+    /// 
     /// <param name="graphMLZipped">
     /// Where the GraphML gets stored if <paramref name="exportGraphML" /> is
     /// true, as an array of zipped bytes.
@@ -106,7 +111,8 @@ public static class GraphExporterUtil
         out Byte [] thumbnail,
         out Byte [] workbookContents,
         out String workbookSettings,
-        out Byte [] graphMLZipped
+        out Byte [] graphMLZipped,
+        out Byte [] brandImage
     )
     {
         Debug.Assert(workbook != null);
@@ -137,6 +143,18 @@ public static class GraphExporterUtil
         else
         {
             graphMLZipped = null;
+        }
+
+        ExportDataUserSettings exportDataUserSettings = new ExportDataUserSettings();
+
+        if (!String.IsNullOrEmpty(exportDataUserSettings.BrandLogo))
+        {
+            Image brandLogo = Image.FromFile(exportDataUserSettings.BrandLogo);
+            brandImage = ImageToBytes(brandLogo);
+        }
+        else
+        {
+            brandImage = null;
         }
     }
 

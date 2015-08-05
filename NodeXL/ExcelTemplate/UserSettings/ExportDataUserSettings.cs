@@ -101,6 +101,142 @@ namespace Smrf.NodeXL.ExcelTemplate
         }
 
         //*************************************************************************
+        //  Property: BrandLogo
+        //
+        /// <summary>
+        /// Gets or sets the user's BrandLogo file path to be included
+        /// in GraphDescriptionDocument.
+        /// </summary>
+        ///
+        /// <value>
+        /// The user's brand logo file path.
+        /// </value>
+        //*************************************************************************
+
+        [UserScopedSettingAttribute()]
+        [DefaultSettingValueAttribute("")]
+
+        public String
+        BrandLogo
+        {
+            get
+            {
+                AssertValid();
+
+                return ((String)this[BrandLogoKey]);
+            }
+
+            set
+            {
+                this[BrandLogoKey] = value;
+
+                AssertValid();
+            }
+        }
+
+        //*************************************************************************
+        //  Property: BrandURL
+        //
+        /// <summary>
+        /// Gets or sets the user's Brand URL to be included in 
+        /// GraphDescriptionDocument.
+        /// </summary>
+        ///
+        /// <value>
+        /// The user's brand URL.
+        /// </value>
+        //*************************************************************************
+
+        [UserScopedSettingAttribute()]
+        [DefaultSettingValueAttribute("")]
+
+        public String
+        BrandURL
+        {
+            get
+            {
+                AssertValid();
+
+                return ((String)this[BrandURLKey]);
+            }
+
+            set
+            {
+                this[BrandURLKey] = value;
+
+                AssertValid();
+            }
+        }
+
+        //*************************************************************************
+        //  Property: ActionLabel
+        //
+        /// <summary>
+        /// Gets or sets the user's action label be included in 
+        /// every section in GraphDescriptionDocument.
+        /// </summary>
+        ///
+        /// <value>
+        /// The user's action label.
+        /// </value>
+        //*************************************************************************
+
+        [UserScopedSettingAttribute()]
+        [DefaultSettingValueAttribute("")]
+
+        public String
+        ActionLabel
+        {
+            get
+            {
+                AssertValid();
+
+                return ((String)this[ActionLabelKey]);
+            }
+
+            set
+            {
+                this[ActionLabelKey] = value;
+
+                AssertValid();
+            }
+        }
+
+        //*************************************************************************
+        //  Property: ActionURL
+        //
+        /// <summary>
+        /// Gets or sets the user's action URL to be included in 
+        /// every section in GraphDescriptionDocument.
+        /// </summary>
+        ///
+        /// <value>
+        /// The user's action URL.
+        /// </value>
+        //*************************************************************************
+
+        [UserScopedSettingAttribute()]
+        [DefaultSettingValueAttribute("")]
+
+        public String
+        ActionURL
+        {
+            get
+            {
+                AssertValid();
+
+                return ((String)this[ActionURLKey]);
+            }
+
+            set
+            {
+                this[ActionURLKey] = value;
+
+                AssertValid();
+            }
+        }
+
+        //*************************************************************************
         //  Method: AssertValid()
         //
         /// <summary>
@@ -132,6 +268,26 @@ namespace Smrf.NodeXL.ExcelTemplate
 
         protected const String URLKey =
             "URL";
+
+        /// Name of the settings key for the BrandLogo property.
+
+        protected const String BrandLogoKey =
+            "BrandLogo";
+
+        /// Name of the settings key for the BrandURL property.
+
+        protected const String BrandURLKey =
+            "BrandURL";
+
+        /// Name of the settings key for the ActionLabel property.
+
+        protected const String ActionLabelKey =
+            "ActionLabel";
+
+        /// Name of the settings key for the ActionURL property.
+
+        protected const String ActionURLKey =
+            "ActionURL";
 
         //*************************************************************************
         //  Protected fields

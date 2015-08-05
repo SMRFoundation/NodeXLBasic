@@ -29,9 +29,10 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FacebookGroupDialog));
-            this.toolTip1 = new System.Windows.Forms.ToolTip();
-            this.toolTip2 = new System.Windows.Forms.ToolTip();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTip2 = new System.Windows.Forms.ToolTip(this.components);
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.bgLoadResults = new System.ComponentModel.BackgroundWorker();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -51,9 +52,9 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
             this.nudFromPost = new System.Windows.Forms.NumericUpDown();
             this.chkStatusUpdates = new System.Windows.Forms.CheckBox();
             this.gbVertices = new System.Windows.Forms.GroupBox();
+            this.rbPost = new System.Windows.Forms.RadioButton();
+            this.rbUser = new System.Windows.Forms.RadioButton();
             this.chkVertices = new System.Windows.Forms.CheckBox();
-            this.chkPost = new System.Windows.Forms.CheckBox();
-            this.chkUser = new System.Windows.Forms.CheckBox();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.grpAttributes = new System.Windows.Forms.GroupBox();
             this.chkSelectAll = new System.Windows.Forms.CheckBox();
@@ -137,7 +138,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
             // 
             this.pnResults.Controls.Add(this.piLoading);
             this.pnResults.Controls.Add(this.flpResults);
-            this.pnResults.Location = new System.Drawing.Point(79, 133);
+            this.pnResults.Location = new System.Drawing.Point(79, 130);
             this.pnResults.Name = "pnResults";
             this.pnResults.Size = new System.Drawing.Size(429, 293);
             this.pnResults.TabIndex = 18;
@@ -340,14 +341,38 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
             // 
             // gbVertices
             // 
+            this.gbVertices.Controls.Add(this.rbPost);
+            this.gbVertices.Controls.Add(this.rbUser);
             this.gbVertices.Controls.Add(this.chkVertices);
-            this.gbVertices.Controls.Add(this.chkPost);
-            this.gbVertices.Controls.Add(this.chkUser);
             this.gbVertices.Location = new System.Drawing.Point(14, 26);
             this.gbVertices.Name = "gbVertices";
             this.gbVertices.Size = new System.Drawing.Size(338, 46);
             this.gbVertices.TabIndex = 13;
             this.gbVertices.TabStop = false;
+            // 
+            // rbPost
+            // 
+            this.rbPost.AutoSize = true;
+            this.rbPost.Location = new System.Drawing.Point(222, 19);
+            this.rbPost.Name = "rbPost";
+            this.rbPost.Size = new System.Drawing.Size(46, 17);
+            this.rbPost.TabIndex = 25;
+            this.rbPost.Text = "Post";
+            this.rbPost.UseVisualStyleBackColor = true;
+            this.rbPost.CheckedChanged += new System.EventHandler(this.VerticesRelationship_CheckedChanged);
+            // 
+            // rbUser
+            // 
+            this.rbUser.AutoSize = true;
+            this.rbUser.Checked = true;
+            this.rbUser.Location = new System.Drawing.Point(31, 19);
+            this.rbUser.Name = "rbUser";
+            this.rbUser.Size = new System.Drawing.Size(47, 17);
+            this.rbUser.TabIndex = 24;
+            this.rbUser.TabStop = true;
+            this.rbUser.Text = "User";
+            this.rbUser.UseVisualStyleBackColor = true;
+            this.rbUser.CheckedChanged += new System.EventHandler(this.VerticesRelationship_CheckedChanged);
             // 
             // chkVertices
             // 
@@ -359,28 +384,6 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
             this.chkVertices.Text = "Vertices";
             this.chkVertices.UseVisualStyleBackColor = true;
             this.chkVertices.CheckedChanged += new System.EventHandler(this.chkVertices_CheckedChanged);
-            // 
-            // chkPost
-            // 
-            this.chkPost.AutoSize = true;
-            this.chkPost.Location = new System.Drawing.Point(222, 19);
-            this.chkPost.Name = "chkPost";
-            this.chkPost.Size = new System.Drawing.Size(47, 17);
-            this.chkPost.TabIndex = 1;
-            this.chkPost.Text = "Post";
-            this.chkPost.UseVisualStyleBackColor = true;
-            this.chkPost.CheckedChanged += new System.EventHandler(this.VerticesRelationship_CheckedChanged);
-            // 
-            // chkUser
-            // 
-            this.chkUser.AutoSize = true;
-            this.chkUser.Location = new System.Drawing.Point(31, 20);
-            this.chkUser.Name = "chkUser";
-            this.chkUser.Size = new System.Drawing.Size(48, 17);
-            this.chkUser.TabIndex = 0;
-            this.chkUser.Text = "User";
-            this.chkUser.UseVisualStyleBackColor = true;
-            this.chkUser.CheckedChanged += new System.EventHandler(this.VerticesRelationship_CheckedChanged);
             // 
             // linkLabel1
             // 
@@ -761,8 +764,6 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
         private System.Windows.Forms.CheckBox chkComment;
         private System.Windows.Forms.CheckBox chkLike;
         private System.Windows.Forms.GroupBox gbVertices;
-        private System.Windows.Forms.CheckBox chkPost;
-        private System.Windows.Forms.CheckBox chkUser;
         private System.Windows.Forms.GroupBox gbEdge;
         private System.Windows.Forms.CheckBox chkConsecutiveRelationship;
         private System.Windows.Forms.CheckBox chkRelationshipPostAuthor;
@@ -786,5 +787,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
         private System.Windows.Forms.CheckBox chkRelationshipCommentAuthor;
         private System.Windows.Forms.GroupBox gbNetwork;
         private System.Windows.Forms.CheckBox chkNetwork;
+        private System.Windows.Forms.RadioButton rbPost;
+        private System.Windows.Forms.RadioButton rbUser;
     }
 }

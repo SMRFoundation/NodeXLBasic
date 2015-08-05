@@ -434,7 +434,7 @@ public class EmailExporter : Object
             sSuggestedFileNameNoExtension + "-GraphML";
 
         Byte [] abtFullSizeImage, abtThumbnail, abtWorkbookContents,
-            abtGraphMLZipped;
+            abtGraphMLZipped, abtBrandImage;
 
         String sWorkbookSettings;
 
@@ -443,7 +443,7 @@ public class EmailExporter : Object
             Path.ChangeExtension(sGraphMLFileNameNoExtension, "xml"),
             bUseFixedAspectRatio, out abtFullSizeImage, out abtThumbnail,
             out abtWorkbookContents, out sWorkbookSettings,
-            out abtGraphMLZipped);
+            out abtGraphMLZipped, out abtBrandImage);
 
         AddAttachments(oMailMessage, sSuggestedFileNameNoExtension,
             sGraphMLFileNameNoExtension, abtFullSizeImage, abtWorkbookContents,

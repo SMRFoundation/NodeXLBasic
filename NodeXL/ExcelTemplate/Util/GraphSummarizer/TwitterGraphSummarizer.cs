@@ -24,6 +24,7 @@ namespace Smrf.NodeXL.ExcelTemplate
         {
             this._workbook = workbook;
             this._perWorkbookSettings = perWorkbookSettings;
+            this._exportDataUSerSettings = new ExportDataUserSettings();
 
             _twitterGraphDescription = new TwitterGraphDescription(graphSource, graphTerm);
         }
@@ -77,12 +78,38 @@ namespace Smrf.NodeXL.ExcelTemplate
         {
             XmlNode oSections = this._twitterGraphDescription.AppendSectionsXmlNode();
 
+            //Add Brand section
+            AddBrand(oSections);
             //Add Overall Metrics section
             AddOverallMetrics(oSections);
             //Add TopNByMetrics
             AddTopNByMetrics(oSections);
             //Add Top Metrics
             AddTopMetrics(oSections);            
+        }
+
+        private void
+        AddBrand
+        (
+            XmlNode oSections
+        )
+        {
+            if (!String.IsNullOrEmpty(this._exportDataUSerSettings.BrandLogo) &&
+                !String.IsNullOrEmpty(this._exportDataUSerSettings.BrandURL))
+            {
+                XmlNode oSection = this._twitterGraphDescription.AppendSectionXmlNode(oSections, "Brand", "Brand");
+                //This element will only contain the brand logo (no text)
+                XmlNode oElement = this._twitterGraphDescription.AppendValueElementXmlNode(oSection, "");
+                XmlNode oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
+                //The iamge URL will be generated on graph gallery
+                this._twitterGraphDescription.AppendActionXmlNode(oActions, "image", "");
+                //The URL the image will point to 
+                this._twitterGraphDescription.AppendActionXmlNode(oActions, "imageHref",
+                    this._exportDataUSerSettings.BrandURL);
+
+            }
+
+
         }
 
         private void
@@ -97,7 +124,7 @@ namespace Smrf.NodeXL.ExcelTemplate
 
             if ((new OverallMetricsReader()).TryReadMetrics(
                 this._workbook, out oOverallMetrics))
-            {
+            {                
                 XmlNode oElement, oActions;
 
                 oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
@@ -112,101 +139,101 @@ namespace Smrf.NodeXL.ExcelTemplate
                 this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
                     OverallMetricTooltips.UniqueEdges);
 
-                oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
-                     OverallMetricNames.EdgesWithDuplicates, oOverallMetrics.EdgesWithDuplicates.ToString());
-                oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
-                this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
-                    OverallMetricTooltips.EdgesWithDuplicates);
+               oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
+                    OverallMetricNames.EdgesWithDuplicates, oOverallMetrics.EdgesWithDuplicates.ToString());
+               oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
+               this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
+                   OverallMetricTooltips.EdgesWithDuplicates);
 
-                oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
-                     OverallMetricNames.TotalEdges, oOverallMetrics.TotalEdges.ToString());
-                oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
-                this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
-                    OverallMetricTooltips.TotalEdges);
+               oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
+                    OverallMetricNames.TotalEdges, oOverallMetrics.TotalEdges.ToString());
+               oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
+               this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
+                   OverallMetricTooltips.TotalEdges);
 
-                oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
-                     OverallMetricNames.SelfLoops, oOverallMetrics.SelfLoops.ToString());
-                oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
-                this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
-                    OverallMetricTooltips.SelfLoops);
+               oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
+                    OverallMetricNames.SelfLoops, oOverallMetrics.SelfLoops.ToString());
+               oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
+               this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
+                   OverallMetricTooltips.SelfLoops);
 
-                oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
-                     OverallMetricNames.ReciprocatedVertexPairRatio,
-                     NullableToOverallMetricValue<Double>(oOverallMetrics.ReciprocatedVertexPairRatio)
-                     );
-                oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
-                this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
-                    OverallMetricTooltips.ReciprocatedVertexPairRatio);
+               oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
+                    OverallMetricNames.ReciprocatedVertexPairRatio,
+                    NullableToOverallMetricValue<Double>(oOverallMetrics.ReciprocatedVertexPairRatio)
+                    );
+               oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
+               this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
+                   OverallMetricTooltips.ReciprocatedVertexPairRatio);
 
-                oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
-                     OverallMetricNames.ReciprocatedEdgeRatio,
-                     NullableToOverallMetricValue<Double>(oOverallMetrics.ReciprocatedEdgeRatio)
-                     );
-                oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
-                this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
-                    OverallMetricTooltips.ReciprocatedEdgeRatio);
+               oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
+                    OverallMetricNames.ReciprocatedEdgeRatio,
+                    NullableToOverallMetricValue<Double>(oOverallMetrics.ReciprocatedEdgeRatio)
+                    );
+               oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
+               this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
+                   OverallMetricTooltips.ReciprocatedEdgeRatio);
 
-                oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
-                     OverallMetricNames.ConnectedComponents, oOverallMetrics.ConnectedComponents.ToString());
-                oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
-                this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
-                    OverallMetricTooltips.ConnectedComponents);
+               oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
+                    OverallMetricNames.ConnectedComponents, oOverallMetrics.ConnectedComponents.ToString());
+               oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
+               this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
+                   OverallMetricTooltips.ConnectedComponents);
 
-                oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
-                     OverallMetricNames.SingleVertexConnectedComponents, oOverallMetrics.SingleVertexConnectedComponents.ToString());
-                oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
-                this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
-                    OverallMetricTooltips.SingleVertexConnectedComponents);
+               oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
+                    OverallMetricNames.SingleVertexConnectedComponents, oOverallMetrics.SingleVertexConnectedComponents.ToString());
+               oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
+               this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
+                   OverallMetricTooltips.SingleVertexConnectedComponents);
 
-                oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
-                     OverallMetricNames.MaximumConnectedComponentVertices, oOverallMetrics.MaximumConnectedComponentVertices.ToString());
-                oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
-                this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
-                    OverallMetricTooltips.MaximumConnectedComponentVertices);
+               oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
+                    OverallMetricNames.MaximumConnectedComponentVertices, oOverallMetrics.MaximumConnectedComponentVertices.ToString());
+               oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
+               this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
+                   OverallMetricTooltips.MaximumConnectedComponentVertices);
 
-                oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
-                     OverallMetricNames.MaximumConnectedComponentEdges, oOverallMetrics.MaximumConnectedComponentEdges.ToString());
-                oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
-                this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
-                    OverallMetricTooltips.MaximumConnectedComponentEdges);
+               oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
+                    OverallMetricNames.MaximumConnectedComponentEdges, oOverallMetrics.MaximumConnectedComponentEdges.ToString());
+               oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
+               this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
+                   OverallMetricTooltips.MaximumConnectedComponentEdges);
 
-                oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
-                     OverallMetricNames.MaximumGeodesicDistance,
-                     NullableToOverallMetricValue<Int32>(oOverallMetrics.MaximumGeodesicDistance)
-                     );
-                oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
-                this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
-                    OverallMetricTooltips.MaximumGeodesicDistance);
+               oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
+                    OverallMetricNames.MaximumGeodesicDistance,
+                    NullableToOverallMetricValue<Int32>(oOverallMetrics.MaximumGeodesicDistance)
+                    );
+               oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
+               this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
+                   OverallMetricTooltips.MaximumGeodesicDistance);
 
-                oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
-                     OverallMetricNames.AverageGeodesicDistance,
-                     NullableToOverallMetricValue<Double>(oOverallMetrics.AverageGeodesicDistance)
-                     );
-                oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
-                this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
-                    OverallMetricTooltips.AverageGeodesicDistance);
+               oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
+                    OverallMetricNames.AverageGeodesicDistance,
+                    NullableToOverallMetricValue<Double>(oOverallMetrics.AverageGeodesicDistance)
+                    );
+               oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
+               this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
+                   OverallMetricTooltips.AverageGeodesicDistance);
 
-                oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
-                     OverallMetricNames.GraphDensity,
-                     NullableToOverallMetricValue<Double>(oOverallMetrics.GraphDensity)
-                     );
-                oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
-                this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
-                    OverallMetricTooltips.GraphDensity);
+               oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
+                    OverallMetricNames.GraphDensity,
+                    NullableToOverallMetricValue<Double>(oOverallMetrics.GraphDensity)
+                    );
+               oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
+               this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
+                   OverallMetricTooltips.GraphDensity);
 
-                oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
-                     OverallMetricNames.Modularity,
-                     NullableToOverallMetricValue<Double>(oOverallMetrics.Modularity)
-                     );
-                oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
-                this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
-                    OverallMetricTooltips.Modularity);
+               oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
+                    OverallMetricNames.Modularity,
+                    NullableToOverallMetricValue<Double>(oOverallMetrics.Modularity)
+                    );
+               oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
+               this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
+                   OverallMetricTooltips.Modularity);
 
-                oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
-                     OverallMetricNames.NodeXLVersion, AssemblyUtil2.GetFileVersion());
-                oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
-                this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
-                    OverallMetricTooltips.NodeXLVersion);
+               oElement = this._twitterGraphDescription.AppendKeyValueElementXmlNode(oSection,
+                    OverallMetricNames.NodeXLVersion, AssemblyUtil2.GetFileVersion());
+               oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
+               this._twitterGraphDescription.AppendActionXmlNode(oActions, "tooltip",
+                   OverallMetricTooltips.NodeXLVersion);
             }
         }
 
@@ -237,6 +264,7 @@ namespace Smrf.NodeXL.ExcelTemplate
                     this._twitterGraphDescription.AppendActionXmlNode(oActions, "tweet", BuildTweetUrl(oVertexData[sItem], sItem));
                     this._twitterGraphDescription.AppendActionXmlNode(oActions, "follow", BuildFollowUrl(sItem));
                     this._twitterGraphDescription.AppendActionXmlNode(oActions, "profile", BuildProfileUrl(sItem));
+                    AddActionLabelAndURL(oActions);
                 }
                 else
                 {
@@ -261,7 +289,16 @@ namespace Smrf.NodeXL.ExcelTemplate
             for(Int32 i=0;i<oItems.Length;i++){
                 if(oItems[i].StartsWith("Top ")){
                     //It is a new section
-                    AddTopMetricSection(oSections, oItems, i);
+                    if (oItems[i].Contains("Replied-To") ||
+                        oItems[i].Contains("Mentioned") ||
+                        oItems[i].Contains("Tweeters"))
+                    {
+                        AddUserSections(oSections, oItems, i);
+                    }
+                    else
+                    {
+                        AddTopMetricSection(oSections, oItems, i);
+                    }
                 }
             }
         }
@@ -299,7 +336,7 @@ namespace Smrf.NodeXL.ExcelTemplate
         {
             if (sectionHeader.Contains(" URLs "))
             {
-                this._twitterGraphDescription.AppendActionXmlNode(actions, "hyperlink", item);
+                this._twitterGraphDescription.AppendActionXmlNode(actions, "hyperlink", item);                
             }
             else if (sectionHeader.Contains(" Domains "))
             {
@@ -330,8 +367,48 @@ namespace Smrf.NodeXL.ExcelTemplate
             {
                 this._twitterGraphDescription.AppendActionXmlNode(actions, "search", _followURL + item);
             }
+            AddActionLabelAndURL(actions);
         }
         
+
+        private void
+        AddUserSections
+        (
+            XmlNode sections,
+            String[] items,
+            Int32 sectionIndex
+        )
+        {
+            String sectionValue = items[sectionIndex].Replace(" ", "");
+            XmlNode oSection = this._twitterGraphDescription.AppendSectionXmlNode(sections,
+                                         sectionValue, items[sectionIndex]);
+
+            List<String> oTopRepliedTo = new List<String>();
+
+            for (Int32 i = sectionIndex + 1; i < items.Length && !items[i].StartsWith("Top "); i++)
+            {
+                //Split item
+                String[] parts = items[i].Split('\t');
+                oTopRepliedTo.Add(parts[1]);
+            }
+
+            Dictionary<String, Dictionary<String, String>> oVertexData = GetDataFromVertexName(oTopRepliedTo.ToArray());
+
+            foreach (String sItem in oTopRepliedTo)
+            {
+                if (oVertexData.ContainsKey(sItem)) 
+                { 
+                    XmlNode oElement = this._twitterGraphDescription.AppendValueElementXmlNode(oSection, sItem);
+                    XmlNode oActions = this._twitterGraphDescription.AppendActionsXmlNode(oElement);
+                    this._twitterGraphDescription.AppendActionXmlNode(oActions, "image", oVertexData[sItem][_imageUriKey]);
+                    this._twitterGraphDescription.AppendActionXmlNode(oActions, "tweet", BuildTweetUrl(oVertexData[sItem], sItem));
+                    this._twitterGraphDescription.AppendActionXmlNode(oActions, "follow", BuildFollowUrl(sItem));
+                    this._twitterGraphDescription.AppendActionXmlNode(oActions, "profile", BuildProfileUrl(sItem));
+                    AddActionLabelAndURL(oActions);
+                }
+            }
+
+        }
 
         private Dictionary<String, Dictionary<String, String>>
         GetDataFromVertexName
@@ -464,11 +541,8 @@ namespace Smrf.NodeXL.ExcelTemplate
                 url += " " + userData[_topWordsKey];
             }
 
-            ExportDataUserSettings oExportDataUserSettings =
-                new ExportDataUserSettings();
-
-            url += " " + oExportDataUserSettings.Hashtag;
-            url += " " + oExportDataUserSettings.URL;
+            url += " " + this._exportDataUSerSettings.Hashtag;
+            url += " " + this._exportDataUSerSettings.URL;
 
             return (url);
         }
@@ -489,6 +563,22 @@ namespace Smrf.NodeXL.ExcelTemplate
         )
         {
             return (String.Format("{0}{1}", _followURL, userName));
+        }
+
+        private void
+        AddActionLabelAndURL
+        (
+            XmlNode oActions
+        )
+        {
+            if(!String.IsNullOrEmpty(this._exportDataUSerSettings.ActionLabel) &&
+                !String.IsNullOrEmpty(this._exportDataUSerSettings.ActionURL))
+            {
+                this._twitterGraphDescription.AppendActionXmlNode(oActions, "actionLabel",
+                    this._exportDataUSerSettings.ActionLabel);
+                this._twitterGraphDescription.AppendActionXmlNode(oActions, "actionURL",
+                    this._exportDataUSerSettings.ActionURL);
+            }
         }
 
         //*************************************************************************
@@ -529,6 +619,7 @@ namespace Smrf.NodeXL.ExcelTemplate
         private Microsoft.Office.Interop.Excel.Workbook _workbook;
         private PerWorkbookSettings _perWorkbookSettings;
         private TwitterGraphDescription _twitterGraphDescription;
+        private ExportDataUserSettings _exportDataUSerSettings;
 
         private static readonly String _followURL = "https://twitter.com/";
 

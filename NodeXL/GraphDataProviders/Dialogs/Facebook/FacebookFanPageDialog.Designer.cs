@@ -29,12 +29,13 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FacebookFanPageDialog));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.toolTip1 = new System.Windows.Forms.ToolTip();
-            this.toolTip2 = new System.Windows.Forms.ToolTip();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.toolTip2 = new System.Windows.Forms.ToolTip(this.components);
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.bgLoadResults = new System.ComponentModel.BackgroundWorker();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -86,8 +87,8 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
             this.chkLike = new System.Windows.Forms.CheckBox();
             this.gbVertices = new System.Windows.Forms.GroupBox();
             this.chkVertices = new System.Windows.Forms.CheckBox();
-            this.chkPost = new System.Windows.Forms.CheckBox();
-            this.chkUser = new System.Windows.Forms.CheckBox();
+            this.rbPost = new System.Windows.Forms.RadioButton();
+            this.rbUser = new System.Windows.Forms.RadioButton();
             this.pnResults.SuspendLayout();
             this.gbOptions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nuToPost)).BeginInit();
@@ -401,37 +402,37 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
             // 
             this.dgAttributes.AllowUserToAddRows = false;
             this.dgAttributes.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgAttributes.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgAttributes.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             this.dgAttributes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgAttributes.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.attributeColumn,
             this.includeColumn,
             this.attributeValueColumn});
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgAttributes.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgAttributes.DefaultCellStyle = dataGridViewCellStyle8;
             this.dgAttributes.Location = new System.Drawing.Point(9, 17);
             this.dgAttributes.Name = "dgAttributes";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgAttributes.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgAttributes.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
             this.dgAttributes.RowHeadersVisible = false;
             this.dgAttributes.RowTemplate.Height = 24;
             this.dgAttributes.Size = new System.Drawing.Size(308, 392);
@@ -692,9 +693,9 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
             // 
             // gbVertices
             // 
+            this.gbVertices.Controls.Add(this.rbUser);
+            this.gbVertices.Controls.Add(this.rbPost);
             this.gbVertices.Controls.Add(this.chkVertices);
-            this.gbVertices.Controls.Add(this.chkPost);
-            this.gbVertices.Controls.Add(this.chkUser);
             this.gbVertices.Location = new System.Drawing.Point(6, 30);
             this.gbVertices.Name = "gbVertices";
             this.gbVertices.Size = new System.Drawing.Size(348, 52);
@@ -712,27 +713,29 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
             this.chkVertices.UseVisualStyleBackColor = true;
             this.chkVertices.CheckedChanged += new System.EventHandler(this.chkVertices_CheckedChanged);
             // 
-            // chkPost
+            // rbPost
             // 
-            this.chkPost.AutoSize = true;
-            this.chkPost.Location = new System.Drawing.Point(222, 20);
-            this.chkPost.Name = "chkPost";
-            this.chkPost.Size = new System.Drawing.Size(47, 17);
-            this.chkPost.TabIndex = 1;
-            this.chkPost.Text = "Post";
-            this.chkPost.UseVisualStyleBackColor = true;
-            this.chkPost.CheckedChanged += new System.EventHandler(this.VerticesRelationship_CheckedChanged);
+            this.rbPost.AutoSize = true;
+            this.rbPost.Location = new System.Drawing.Point(222, 21);
+            this.rbPost.Name = "rbPost";
+            this.rbPost.Size = new System.Drawing.Size(46, 17);
+            this.rbPost.TabIndex = 22;
+            this.rbPost.Text = "Post";
+            this.rbPost.UseVisualStyleBackColor = true;
+            this.rbPost.CheckedChanged += new System.EventHandler(this.VerticesRelationship_CheckedChanged);
             // 
-            // chkUser
+            // rbUser
             // 
-            this.chkUser.AutoSize = true;
-            this.chkUser.Location = new System.Drawing.Point(31, 21);
-            this.chkUser.Name = "chkUser";
-            this.chkUser.Size = new System.Drawing.Size(48, 17);
-            this.chkUser.TabIndex = 0;
-            this.chkUser.Text = "User";
-            this.chkUser.UseVisualStyleBackColor = true;
-            this.chkUser.CheckedChanged += new System.EventHandler(this.VerticesRelationship_CheckedChanged);
+            this.rbUser.AutoSize = true;
+            this.rbUser.Checked = true;
+            this.rbUser.Location = new System.Drawing.Point(31, 21);
+            this.rbUser.Name = "rbUser";
+            this.rbUser.Size = new System.Drawing.Size(47, 17);
+            this.rbUser.TabIndex = 23;
+            this.rbUser.TabStop = true;
+            this.rbUser.Text = "User";
+            this.rbUser.UseVisualStyleBackColor = true;
+            this.rbUser.CheckedChanged += new System.EventHandler(this.VerticesRelationship_CheckedChanged);
             // 
             // FacebookFanPageDialog
             // 
@@ -840,7 +843,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
         private System.Windows.Forms.CheckBox chkLike;
         private System.Windows.Forms.GroupBox gbVertices;
         private System.Windows.Forms.CheckBox chkVertices;
-        private System.Windows.Forms.CheckBox chkPost;
-        private System.Windows.Forms.CheckBox chkUser;
+        private System.Windows.Forms.RadioButton rbUser;
+        private System.Windows.Forms.RadioButton rbPost;
     }
 }

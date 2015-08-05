@@ -137,8 +137,8 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
 
                 oModel.FanPageID = txtPageUsernameID.Text;
                 oModel.Attributes = attributes;
-                oModel.User = chkUser.Checked;
-                oModel.Post = chkPost.Checked;
+                oModel.User = rbUser.Checked;
+                oModel.Post = rbPost.Checked;
                 oModel.Like = chkLike.Checked;
                 oModel.Comment = chkComment.Checked;
                 oModel.Share = chkShare.Checked;
@@ -203,8 +203,8 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
         {
             AssertValid();
 
-            //this.ShowInformation("That tag has no related tags.");
-            //txbTag.Focus();
+            this.ShowInformation("The network is empty.");
+            txtPageUsernameID.Focus();
         }
 
         //*************************************************************************
@@ -588,14 +588,14 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
 
         private void SetEdgesEnabled()
         {
-            bool bUserAndRelationship = chkUser.Checked && (chkLike.Checked || chkComment.Checked || chkShare.Checked);
-            bool bPostAndRelationship = chkPost.Checked && (chkLike.Checked || chkComment.Checked || chkShare.Checked);
+            bool bUserAndRelationship = rbUser.Checked && (chkLike.Checked || chkComment.Checked || chkShare.Checked);
+            bool bPostAndRelationship = rbPost.Checked && (chkLike.Checked || chkComment.Checked || chkShare.Checked);
 
             chkUserRelationshipSamePost.Checked = chkUserRelationshipSamePost.Enabled = bUserAndRelationship;
             chkPostSameRelationship.Checked = chkPostSameRelationship.Enabled = bPostAndRelationship;
             chkRelationshipPostAuthor.Checked = chkRelationshipPostAuthor.Enabled = bUserAndRelationship;
-            chkConsecutiveRelationship.Checked = chkConsecutiveRelationship.Enabled = chkUser.Checked && chkComment.Checked;
-            chkUserRelationshipCommentAuthor.Checked = chkUserRelationshipCommentAuthor.Enabled = chkUser.Checked && chkComment.Checked;
+            chkConsecutiveRelationship.Checked = chkConsecutiveRelationship.Enabled = rbUser.Checked && chkComment.Checked;
+            chkUserRelationshipCommentAuthor.Checked = chkUserRelationshipCommentAuthor.Enabled = rbUser.Checked && chkComment.Checked;
         }
 
         private List<RelationshipNaming> GetRelationshipNamings()
@@ -708,7 +708,7 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
 
         private void chkVertices_CheckedChanged(object sender, EventArgs e)
         {
-            chkUser.Checked = chkPost.Checked = chkVertices.Checked;
+            //chkUser.Checked = chkPost.Checked = chkVertices.Checked;
         }
 
         private void chkRelationship_CheckedChanged(object sender, EventArgs e)
@@ -734,7 +734,5 @@ namespace Smrf.NodeXL.GraphDataProviders.Facebook
             chkRelationship.Checked = chkNetwork.Checked;
             chkEdges.Checked = chkNetwork.Checked;
         }
-        
-       
     }
 }
