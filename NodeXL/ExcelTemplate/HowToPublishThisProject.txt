@@ -1,4 +1,0 @@
-
-Instructions for publishing the NodeXLExcelTemplate project via ClickOnce are
-provided in a separate NodeXL maintenance document.
-
