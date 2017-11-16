@@ -68,8 +68,8 @@ namespace Smrf.SocialNetworkLib.Twitter
         public const string ACCESS_TOKEN =
             TwitterApiUrls.OAuth + "access_token";
 
-        private string _consumerKey = "I7Q4S6FR3YvhX0yO8A39xx";
-        private string _consumerSecret = "mjyp331jwIC3dRPoG7m98QgB95FvHPUVs1mwZe5ZSu";
+        private string _consumerKey = "";
+        private string _consumerSecret = "";
         private string _token = "";
         private string _tokenSecret = "";
         private string _verifier = "";
