@@ -1,0 +1,42 @@
+If you would like to cite NodeXL in academic publications, please use some variation of the following as appropriate:
+
+Smith, M., Milic-Frayling, N., Shneiderman, B., Mendes Rodrigues, E., Leskovec, J., Dunne, C., (2010). NodeXL: a free and open network overview, discovery and exploration add-in for Excel 2007/2010, http://nodexl.codeplex.com/ from the Social Media Research Foundation, http://www.smrfoundation.org
+
+# NodeXL Publications
+----
+**[Analyzing (Social Media) Networks with NodeXL](NodeXL Publications_Smith09AnalyzingNetworkData.pdf)**
+Smith, M., Shneiderman, B., Milic-Frayling, N., Rodrigues, E.M., Barash, V., Dunne, C., Capone, T., Perer, A. & Gleave, E. (2009), _["Analyzing (Social Media) Networks with NodeXL"](NodeXL Publications_Smith09AnalyzingNetworkData.pdf)_, In C&T '09: Proceedings of the Fourth International Conference on Communities and Technologies. Springer.
+
+**Abstract**: In this paper we present NodeXL, an extendible toolkit for network data analysis and visualization, implemented as an add-in to the Microsoft Excel 2007 spreadsheet software. We demonstrate NodeXL features through analysis of a data sample drawn from an enterprise intranet social network, discussion, and wiki. Through a sequence of steps we show how NodeXL leverages and extends the broadly used spreadsheet paradigm to support common operations in network analysis. This ranges from data import to computation of network statistics and refinement of network visualization through a selection of ready-to-use sorting, filtering, and clustering functions.
+----
+**[ First Steps to Netviz Nirvana](NodeXL Publications_2009 - Social Computing - First Steps to Netviz Nirvana.pdf)**
+Bonsignore, E.M., Dunne, C., Rotman, D., Smith, M., Capone, T., Hansen, D.L. & Shneiderman, B. (2009), ["First steps to NetViz Nirvana: evaluating social network analysis with NodeXL"](NodeXL Publications_2009 - Social Computing - First Steps to Netviz Nirvana.pdf), In SIN '09: Proc. international symposium on Social Intelligence and Networking. IEEE Computer Society Press.
+
+**Abstract**: Social Network Analysis (SNA) has evolved as a popular, standard method for modeling meaningful, often hidden structural relationships in communities. Existing SNA tools often involve extensive pre-processing or intensive programming skills that can challenge practitioners and students alike. NodeXL, an open-source template for Microsoft Excel, integrates a library of common network metrics and graph layout algorithms within the familiar spreadsheet format, offering a potentially low-barrier to-entry framework for teaching and learning SNA. We present the preliminary findings of 2 user studies of 21 graduate students who engaged in SNA using NodeXL. The majority of students, while information professionals, had little technical background or experience with SNA techniques. Six of the participants had more technical backgrounds and were chosen specifically for their experience with graph drawing and information visualization. Our primary objectives were (1) to evaluate NodeXL as an SNA tool for a broad base of users and (2) to explore methods for teaching SNA. Our complementary dual case-study format demonstrates the usability of NodeXL for a diverse set of users, and significantly, the power of a tightly integrated metrics/visualization tool to spark insight and facilitate sensemaking for students of SNA.
+----
+**[Do You Know the Way to SNA?](NodeXL Publications_2009 - UMD - TechReport - Do you know the way to SNA.pdf)**
+Hansen, D., Rotman, D., Bonsignore, E., Milic-Frayling, N., Rodrigues, E., Smith, M., Shneiderman, B. (2009), [Do You Know the Way to SNA?: A Process Model for Analyzing and Visualizing Social Media Data](NodeXL Publications_2009 - UMD - TechReport - Do you know the way to SNA.pdf), In University of Maryland Tech Report: HCIL-2009-17
+
+**Abstract**: Voluminous online activity data from users of social media can shed light on individual behavior, social relationships, and community efficacy. However, tools and processes to analyze this data are just beginning to evolve. We studied 15 graduate students who were taught to use NodeXL to analyze social media data sets. Based on these observations, we present a process model of social network analysis (SNA) and visualization, then use it to identify stages where intervention from peers, experts, and computational aids are most useful. We offer implications for designers of SNA tools, educators, and community & organizational analysts. 
+----
+**[Analyzing Enterprise Social Media Networks](NodeXL Publications_2009-Social-Computing-Analyzing-Social-Media-Networks-Smith-Hansen-Gleave.pdf)**
+Smith, M., Hansen, D., Gleave, E. (2009) [Analyzing Enterprise Social Media Networks](NodeXL Publications_2009-Social-Computing-Analyzing-Social-Media-Networks-Smith-Hansen-Gleave.pdf) in SCA'09 Proc. International Symposium on Social Computing Applications. IEEE Computer Society Press.
+
+**Abstract**: Broadening adoption of social media applications within the enterprise offers a new and valuable data source for insight into the social structure of organizations. Social media applications generate networks when employees use features to create "friends" or "contact" networks, reply to messages from other users, edit the same documents as others, or mention the same or similar topics. The resulting networks can be analyzed to reveal basic insights into an organization's structure and dynamics. The creation and analysis of sample social media network datasets is described to illustrate types of enterprise networks and considerations for their analysis.
+----
+**[Whither the Experts](NodeXL Publications_2009 - Social Computing - Whither the Experts.pdf)**
+Welser, H. Gleave, E., Smith, M., Barash, V.,  Meckes, J. (2009) [“Whither the Experts? Social affordances and the cultivation of experts in community Q&A systems”](NodeXL Publications_2009 - Social Computing - Whither the Experts.pdf), in SIN '09: Proc. International symposium on Social Intelligence and Networking. IEEE Computer Society Press.
+
+**Abstract**: Community based Question and Answer systems have been promoted as web 2.0 solutions to the problem of finding expert knowledge. This promise depends on systems’ capacity to attract and sustain experts capable of offering high quality, factual answers. Content analysis of dedicated contributors’ messages in the Live QnA system found: (1) few contributors who focused on providing technical answers (2) a preponderance of attention paid to opinion and discussion, especially in non-technical threads. This paucity of experts raises an important general question: how do the social affordances of a site alter the ecology of roles found there? Using insights from recent research in online community, we generate a series of expectations about how social affordances are likely to alter the role ecology of online systems.
+----
+
+**Tweet the Debates: Understanding Community Annotation of Uncollected Sources**
+[http://research.yahoo.com/files/wsm01a-shamma.pdf](http://research.yahoo.com/files/wsm01a-shamma.pdf) 
+Shamma, D.A.; Kennedy, L.; Churchill, E.F.
+ACM Multimedia, ACM, Beijing, China (2009)
+URL: [http://www.acmmm09.org/](http://www.acmmm09.org/)
+Keywords: Twitter; Debates; TV; community; multimedia; social; centrality; network
+
+**Abstract**: We investigate the practice of sharing short messages (microblogging) around live media events. Our focus is on Twitter and its usage during the 2008 Presidential Debates. We find that analysis of Twitter usage patterns around this media event can yield significant insights into the semantic structure and content of the media object. Specifically, we find that the level of Twitter activity serves as a predictor of changes in topics in the media event. Further we find that conversational cues can identify the key players in the media object and that the content of the Twitter posts can somewhat reflect the topics of discussion in the media object, but are mostly evaluative, in that they express the poster’s reaction to the media. The key contribution of this work is an analysis of the practice of microblogging live events and the core metrics that can leveraged to evaluate and analyze this activity. Finally, we offer suggestions on how our model of segmentation and node identification could apply towards any live, real-time arbitrary event.
+
+Download: [http://research.yahoo.com/files/wsm01a-shamma.pdf](http://research.yahoo.com/files/wsm01a-shamma.pdf)
