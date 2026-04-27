@@ -51,3 +51,25 @@ See `VideoObjectRecognition\README.md` for the full reference and log format.
 When a new zip is published on this branch, delete the old
 `VideoObjectRecognition\` folder (or just its `.venv\`) under the Dropbox path
 and re-extract.
+
+## Troubleshooting
+
+**The Command Prompt window flashes and closes immediately.**
+The current `run.bat` pauses on errors so you can read them — if you have an
+older zip, replace it. To diagnose without re-extracting, open a Command
+Prompt manually (`Win+R` → `cmd`), `cd` into the `VideoObjectRecognition`
+folder, and run `run.bat`. The window will stay open so any error is visible.
+
+**`'python' is not recognized as an internal or external command`.**
+Python isn't on `PATH`. Install Python 3.10+ from
+<https://www.python.org/downloads/> and during install tick
+*"Add python.exe to PATH"*.
+
+**`Could not open camera index 0`.**
+No webcam is attached, another app (Teams, Zoom, OBS) is holding it, or it's
+on a different index. Try `run.bat --camera 1` (or 2).
+
+**`pip install` fails with SSL/proxy errors.**
+You're behind a corporate proxy. Set `HTTPS_PROXY` in the same Command
+Prompt before running `run.bat`, e.g.
+`set HTTPS_PROXY=http://proxy.example.com:8080`.
