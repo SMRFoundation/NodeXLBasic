@@ -21,6 +21,17 @@ pip install -r requirements.txt
 
 ## Run
 
+On Windows, the easiest path is the included batch script — it creates the
+virtual environment and installs dependencies on first run, then launches
+the app:
+
+```
+run.bat
+run.bat --camera 1 --log my-events.log
+```
+
+Or run directly:
+
 ```
 python video_object_recognition.py --camera 0 --log events.log
 ```
