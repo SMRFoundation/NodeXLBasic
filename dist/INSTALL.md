@@ -29,7 +29,12 @@ After extracting, that folder should contain `run.bat`, `video_object_recognitio
    run.bat
    ```
 
-   The first run creates `.venv\`, installs dependencies (`opencv-python`, `ultralytics`, `numpy`), and downloads the YOLOv8n weights (~6 MB) into Ultralytics' cache. Subsequent runs just launch.
+   The first run creates a virtual environment at
+   `%LOCALAPPDATA%\NodeXL-VideoObjectRecognition\venv\` (deliberately *outside*
+   Dropbox to avoid sync conflicts during install — see Troubleshooting),
+   installs dependencies (`opencv-python`, `ultralytics`, `numpy`), and
+   downloads the YOLOv8n weights (~6 MB) into Ultralytics' cache. Subsequent
+   runs just launch.
 
 6. A window titled **NodeXL Video Object Recognition** appears with the live webcam feed and bounding-box overlays. Press **q** to stop. `events.log` is written next to `run.bat`.
 
@@ -49,8 +54,10 @@ See `VideoObjectRecognition\README.md` for the full reference and log format.
 ## Updating
 
 When a new zip is published on this branch, delete the old
-`VideoObjectRecognition\` folder (or just its `.venv\`) under the Dropbox path
-and re-extract.
+`VideoObjectRecognition\` folder under the Dropbox path and re-extract. The
+virtual environment in `%LOCALAPPDATA%\NodeXL-VideoObjectRecognition\venv\`
+is reused, so updates are quick. To force a fresh install of dependencies,
+delete that `venv\` folder.
 
 ## Troubleshooting
 
@@ -73,3 +80,22 @@ on a different index. Try `run.bat --camera 1` (or 2).
 You're behind a corporate proxy. Set `HTTPS_PROXY` in the same Command
 Prompt before running `run.bat`, e.g.
 `set HTTPS_PROXY=http://proxy.example.com:8080`.
+
+**`WinError 32 — The process cannot access the file because it is being used
+by another process` during `pip install`.**
+Some other process is locking files inside the venv mid-install. The most
+common cause is a cloud sync agent (Dropbox, OneDrive, iCloud) when the venv
+sits inside a synced folder. The current `run.bat` puts the venv at
+`%LOCALAPPDATA%\NodeXL-VideoObjectRecognition\venv\` to avoid this. If you
+were on an older `run.bat` that put `.venv\` next to `run.bat` inside
+Dropbox:
+
+1. Pause Dropbox syncing (system tray → Dropbox icon → Pause).
+2. Delete the `.venv\` folder under
+   `C:\Users\smith\Dropbox\_NodeXL\Claude test applications\VideoObjectRecognition\`.
+3. Replace `run.bat` with the latest version (or re-extract the new zip).
+4. Resume Dropbox.
+5. Re-run `run.bat`.
+
+If anti-virus is the locker (less common), temporarily exclude the
+`%LOCALAPPDATA%\NodeXL-VideoObjectRecognition\` folder.
