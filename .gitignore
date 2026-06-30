@@ -1,0 +1,11 @@
+# --- AI coding-assistant extensions: machine-local / generated caches ---
+
+# CodeGraph: the .codegraph/ directory self-manages a nested .gitignore that
+# keeps only the marker file and ignores the local SQLite DB, sockets, logs.
+# Nothing extra needed here — listed for visibility.
+
+# graphify: regenerable AST / stat caches (rebuilt by `graphify update .`)
+graphify-out/cache/
+graphify-out/.graphify_root
+
+# claude-mem stores its data outside the repo in ~/.claude-mem (nothing to ignore here)

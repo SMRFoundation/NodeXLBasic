@@ -1,0 +1,527 @@
+{
+  ".claude/settings.json": {
+    "mtime": 1782815146.4020967,
+    "ast_hash": "9982b325ac0a2013152b7d33a686e14e",
+    "semantic_hash": ""
+  },
+  ".mcp.json": {
+    "mtime": 1782815146.3980968,
+    "ast_hash": "f99d3636940c5c5943660b46e32da027",
+    "semantic_hash": ""
+  },
+  "BuildProcessTemplates/DefaultTemplate.11.1.xaml": {
+    "mtime": 1782814984.2621005,
+    "ast_hash": "adb97b988dfcb930c5df1d07c69f01e7",
+    "semantic_hash": ""
+  },
+  "BuildProcessTemplates/DefaultTemplate.xaml": {
+    "mtime": 1782814984.2660275,
+    "ast_hash": "fb2e1efc9d073d9b0181e44eade2b40b",
+    "semantic_hash": ""
+  },
+  "BuildProcessTemplates/LabDefaultTemplate.11.xaml": {
+    "mtime": 1782814984.2660275,
+    "ast_hash": "f216a928144402ef9a0b2fe0e0c890e3",
+    "semantic_hash": ""
+  },
+  "BuildProcessTemplates/UpgradeTemplate.xaml": {
+    "mtime": 1782814984.2660275,
+    "ast_hash": "aa77b456af9615ff14d9679497cc0794",
+    "semantic_hash": ""
+  },
+  "Common/SocialNetwork/Twitter/Authorization/oAuth.cs": {
+    "mtime": 1782814984.267998,
+    "ast_hash": "8dd9623fc878ecc68be5bc1a45d976dc",
+    "semantic_hash": ""
+  },
+  "Common/SocialNetwork/Twitter/Authorization/oAuthTwitter.cs": {
+    "mtime": 1782814984.2688217,
+    "ast_hash": "94fd4044cce338f300edd87fb697ba02",
+    "semantic_hash": ""
+  },
+  ".claude/CLAUDE.md": {
+    "mtime": 1782815146.4020967,
+    "ast_hash": "38113126063a656220119cdfee72a16c",
+    "semantic_hash": ""
+  },
+  "docs/About NodeXL Plug-Ins.md": {
+    "mtime": 1782814984.2698817,
+    "ast_hash": "a42f62df3351968e003849ebd95d57e1",
+    "semantic_hash": ""
+  },
+  "docs/CompleteReleaseHistory.md": {
+    "mtime": 1782814984.271083,
+    "ast_hash": "442a9d5dc278a84bc5aec037a5c095c7",
+    "semantic_hash": ""
+  },
+  "docs/CompleteReleaseHistoryPage2.md": {
+    "mtime": 1782814984.271083,
+    "ast_hash": "b460e1a07bee7e6d8774982940be6d38",
+    "semantic_hash": ""
+  },
+  "docs/Documentation.html": {
+    "mtime": 1782814984.271083,
+    "ast_hash": "056ba6d531ccb4f6e190ecbd097cee89",
+    "semantic_hash": ""
+  },
+  "docs/Home.html": {
+    "mtime": 1782814984.271083,
+    "ast_hash": "424fc08f3de342f1dc8c8e6f57b1ab11",
+    "semantic_hash": ""
+  },
+  "docs/HomeStaging.html": {
+    "mtime": 1782814984.271083,
+    "ast_hash": "db5c7b360960c5c3145abc84ef9d239a",
+    "semantic_hash": ""
+  },
+  "docs/NodeXL Data Analysis Guide.md": {
+    "mtime": 1782814984.3381004,
+    "ast_hash": "558f078e0cbfa57506279af53b6e2fc5",
+    "semantic_hash": ""
+  },
+  "docs/NodeXL Links.md": {
+    "mtime": 1782814984.3381004,
+    "ast_hash": "6404d27f7852d8b3254c842d30933ca3",
+    "semantic_hash": ""
+  },
+  "docs/NodeXL Publications.md": {
+    "mtime": 1782814984.3381004,
+    "ast_hash": "15e9b393287463a42b7364c28ff843d1",
+    "semantic_hash": ""
+  },
+  "docs/NodeXL Redesign.md": {
+    "mtime": 1782814984.3821006,
+    "ast_hash": "126323b46e926aaa9f219eddd24113b5",
+    "semantic_hash": ""
+  },
+  "docs/NodeXL SNA Teaching Resources_ How to learn about collections of connections.html": {
+    "mtime": 1782814984.3821006,
+    "ast_hash": "035f525da84d26e7f283c9c48442a668",
+    "semantic_hash": ""
+  },
+  "docs/NodeXL Teaching Resources.html": {
+    "mtime": 1782814984.3861005,
+    "ast_hash": "7eac172ceacb2388978da3836277ec5a",
+    "semantic_hash": ""
+  },
+  "docs/NodeXL Publications_2009 - Social Computing - First Steps to Netviz Nirvana.pdf": {
+    "mtime": 1782814984.3581004,
+    "ast_hash": "e5578f5892dbe7421cdfb48ba91473fb",
+    "semantic_hash": ""
+  },
+  "docs/NodeXL Publications_2009 - Social Computing - Whither the Experts.pdf": {
+    "mtime": 1782814984.3581004,
+    "ast_hash": "39c53648f98c5ee3fccbdfd4767a4c49",
+    "semantic_hash": ""
+  },
+  "docs/NodeXL Publications_2009 - UMD - TechReport - Do you know the way to SNA.pdf": {
+    "mtime": 1782814984.3661005,
+    "ast_hash": "70ac8c64402de2e12d5a8412418db071",
+    "semantic_hash": ""
+  },
+  "docs/NodeXL Publications_2009-Social-Computing-Analyzing-Social-Media-Networks-Smith-Hansen-Gleave.pdf": {
+    "mtime": 1782814984.3701005,
+    "ast_hash": "58944ed922c281dc7dbcae3ad1c233bf",
+    "semantic_hash": ""
+  },
+  "docs/NodeXL Publications_Smith09AnalyzingNetworkData.pdf": {
+    "mtime": 1782814984.3821006,
+    "ast_hash": "a09c566833209f118b50349ec51dc97f",
+    "semantic_hash": ""
+  },
+  "NodeXL/GraphDataProviders/Images/TwitterUsersNetworkType/BasicPlusAllFollows.png": {
+    "mtime": 1782814984.2698817,
+    "ast_hash": "277e4a1fa6053e909dda537be4c69fd3",
+    "semantic_hash": ""
+  },
+  "docs/Home_1-0-1-200.png": {
+    "mtime": 1782814984.271083,
+    "ast_hash": "f163bd84ddd9d8cdadf7dbf9e73ccf20",
+    "semantic_hash": ""
+  },
+  "docs/Home_1-0-1-201.png": {
+    "mtime": 1782814984.271083,
+    "ast_hash": "314e2d4a2e58ae3561828a2c036a3b17",
+    "semantic_hash": ""
+  },
+  "docs/Home_1-0-1-202.png": {
+    "mtime": 1782814984.271083,
+    "ast_hash": "452198237b73885fcd4d92012b407670",
+    "semantic_hash": ""
+  },
+  "docs/Home_1-0-1-209.png": {
+    "mtime": 1782814984.2741005,
+    "ast_hash": "d2adaf55134b1ce0be0d227dd884feae",
+    "semantic_hash": ""
+  },
+  "docs/Home_1-0-1-210.png": {
+    "mtime": 1782814984.2741005,
+    "ast_hash": "104807a5504ac500bfa7e87aa18b8dc0",
+    "semantic_hash": ""
+  },
+  "docs/Home_1-0-1-215.png": {
+    "mtime": 1782814984.2741005,
+    "ast_hash": "01977f27feb4e3e75ff551e04b859488",
+    "semantic_hash": ""
+  },
+  "docs/Home_1-0-1-218.png": {
+    "mtime": 1782814984.2741005,
+    "ast_hash": "740e1b6e592098646e688ae6a4464e83",
+    "semantic_hash": ""
+  },
+  "docs/Home_1-0-1-219.png": {
+    "mtime": 1782814984.2741005,
+    "ast_hash": "10e145a011a0e9d6c7e1d5928bc4c482",
+    "semantic_hash": ""
+  },
+  "docs/Home_1-0-1-224.png": {
+    "mtime": 1782814984.2741005,
+    "ast_hash": "f133b6e8a199f284d33809f9d5f478ee",
+    "semantic_hash": ""
+  },
+  "docs/Home_1-0-1-226.png": {
+    "mtime": 1782814984.2741005,
+    "ast_hash": "db061a8aa3b36f0f7dc2f9d7f59cf7e4",
+    "semantic_hash": ""
+  },
+  "docs/Home_1-0-1-229.png": {
+    "mtime": 1782814984.2741005,
+    "ast_hash": "ff1c7350c9e2e6278dc25069bf7f8ec9",
+    "semantic_hash": ""
+  },
+  "docs/Home_1-0-1-245.png": {
+    "mtime": 1782814984.2741005,
+    "ast_hash": "e489a63f1bd1c930f027edf531683640",
+    "semantic_hash": ""
+  },
+  "docs/Home_1-0-1-251.png": {
+    "mtime": 1782814984.2741005,
+    "ast_hash": "12afab29a107ee20052a9a8340992e29",
+    "semantic_hash": ""
+  },
+  "docs/Home_2009 - October - NodeXL Team Pics.png": {
+    "mtime": 1782814984.2901006,
+    "ast_hash": "560d30739a7f1af7ee9f4130570ff30e",
+    "semantic_hash": ""
+  },
+  "docs/Home_2010 - April - NodeXL Team.png": {
+    "mtime": 1782814984.2901006,
+    "ast_hash": "f2ff8f933d7dfb35823ab043ff6e802a",
+    "semantic_hash": ""
+  },
+  "docs/Home_2010 - April 28 - NodeXL Team 650.png": {
+    "mtime": 1782814984.2941005,
+    "ast_hash": "a687641755270d4ef5462b6152aeafce",
+    "semantic_hash": ""
+  },
+  "docs/Home_2010 - May - NodeXL Team Large.png": {
+    "mtime": 1782814984.2981005,
+    "ast_hash": "b1ec0b240a440877b1f160b2ffe23cf2",
+    "semantic_hash": ""
+  },
+  "docs/Home_2010 - May - NodeXL Team Small.png": {
+    "mtime": 1782814984.2981005,
+    "ast_hash": "f6b7d10f4c524a4c00c205e2a15ff7ee",
+    "semantic_hash": ""
+  },
+  "docs/Home_2010 - September - 5 - NodeXL - Twitter - GOP.png": {
+    "mtime": 1782814984.3021004,
+    "ast_hash": "899706bc6de61152d08b81b135b82cfb",
+    "semantic_hash": ""
+  },
+  "docs/Home_20100905-NodeXL-Twitter-GOP-500px.jpg": {
+    "mtime": 1782814984.3021004,
+    "ast_hash": "a21e3899096ca3b9edef99aef30f4768",
+    "semantic_hash": ""
+  },
+  "docs/Home_20110414-SMRF-Logo.png": {
+    "mtime": 1782814984.3021004,
+    "ast_hash": "8a40d552d6b87cefe81c2cf46b5e5644",
+    "semantic_hash": ""
+  },
+  "docs/Home_20110614-Social-Media-Research-Foundation-Logo-512x249.png": {
+    "mtime": 1782814984.3021004,
+    "ast_hash": "c50db10e7ddfdc3a90c5ca75b6d1ba7d",
+    "semantic_hash": ""
+  },
+  "docs/Home_2017-NodeXL and SMRF Logo.jpg": {
+    "mtime": 1782814984.3061006,
+    "ast_hash": "ff5c69a93b7cba1ae99657c7e8f7b513",
+    "semantic_hash": ""
+  },
+  "docs/Home_CirclesWithForceDirectedBoxes.png": {
+    "mtime": 1782814984.3061006,
+    "ast_hash": "21c63c5372355b1fc1b8f35ecb1ee4f4",
+    "semantic_hash": ""
+  },
+  "docs/Home_DateTimeRangeTrackBar.png": {
+    "mtime": 1782814984.3061006,
+    "ast_hash": "e94154348d1827e6392674c1c9bd5b8d",
+    "semantic_hash": ""
+  },
+  "docs/Home_Donate to SMRF Badge  White.jpg": {
+    "mtime": 1782814984.3061006,
+    "ast_hash": "96ca386e3228336f089c3b11b0364139",
+    "semantic_hash": ""
+  },
+  "docs/Home_DropShadow2.png": {
+    "mtime": 1782814984.3061006,
+    "ast_hash": "aed923b3629850b9a9e6dc77e639ec77",
+    "semantic_hash": ""
+  },
+  "docs/Home_DropShadowMultipleSizes.png": {
+    "mtime": 1782814984.3061006,
+    "ast_hash": "742da71eee550eed8c2b806df009ab7a",
+    "semantic_hash": ""
+  },
+  "docs/Home_ExcelWindow.png": {
+    "mtime": 1782814984.3061006,
+    "ast_hash": "491ee4802885bb4ff390940189181b96",
+    "semantic_hash": ""
+  },
+  "docs/Home_GraphGallery01.gif": {
+    "mtime": 1782814984.3061006,
+    "ast_hash": "8bdb869c6fa3d8deec076e89e04b1201",
+    "semantic_hash": ""
+  },
+  "docs/Home_GraphGallery02.gif": {
+    "mtime": 1782814984.3101006,
+    "ast_hash": "7e227d222db296a96c8c2068eb9199fb",
+    "semantic_hash": ""
+  },
+  "docs/Home_GraphGallery03.jpg": {
+    "mtime": 1782814984.3101006,
+    "ast_hash": "6f8c87c3c613380bb1247caf4693b1b6",
+    "semantic_hash": ""
+  },
+  "docs/Home_GraphGallery04.gif": {
+    "mtime": 1782814984.3101006,
+    "ast_hash": "8dcfa239383109f562907b8f6ba600d5",
+    "semantic_hash": ""
+  },
+  "docs/Home_GraphGallery05.jpg": {
+    "mtime": 1782814984.3101006,
+    "ast_hash": "87010c9529ead23604173b66c212b1be",
+    "semantic_hash": ""
+  },
+  "docs/Home_GraphGallery06.gif": {
+    "mtime": 1782814984.3101006,
+    "ast_hash": "71c9d9b95f281640bd390415342c65e9",
+    "semantic_hash": ""
+  },
+  "docs/Home_GraphGallery07.gif": {
+    "mtime": 1782814984.3101006,
+    "ast_hash": "41273e5686c4ba56ae5ef6e8772d682e",
+    "semantic_hash": ""
+  },
+  "docs/Home_GraphGallery08.gif": {
+    "mtime": 1782814984.3101006,
+    "ast_hash": "c996a0f374a91ffb1d7c29d6c30b7f0d",
+    "semantic_hash": ""
+  },
+  "docs/Home_GridsWithForceDirectedBoxes.png": {
+    "mtime": 1782814984.3101006,
+    "ast_hash": "882de2f362f2d18e24f2a4816ad1a3f9",
+    "semantic_hash": ""
+  },
+  "docs/Home_GroupLabels.png": {
+    "mtime": 1782814984.3141005,
+    "ast_hash": "240ae38cad8fb959eff7caf2882d93a5",
+    "semantic_hash": ""
+  },
+  "docs/Home_GroupLayout.jpg": {
+    "mtime": 1782814984.3141005,
+    "ast_hash": "dc23fa129825be445f7abf4c2818d1d9",
+    "semantic_hash": ""
+  },
+  "docs/Home_IntroTutorial-Layout-v2_GraphImage-2.png": {
+    "mtime": 1782814984.3141005,
+    "ast_hash": "588500fae671032945b5681517d7c31d",
+    "semantic_hash": ""
+  },
+  "docs/Home_IntroTutorial-Layout-v2_GraphImage.png": {
+    "mtime": 1782814984.3141005,
+    "ast_hash": "98979e25c0a3ba100a5e763b150d9a3e",
+    "semantic_hash": ""
+  },
+  "docs/Home_Jbaines-2014-05-27.png": {
+    "mtime": 1782814984.3181005,
+    "ast_hash": "4e2b3146fcde1e5d28dc2d2d30c22c7b",
+    "semantic_hash": ""
+  },
+  "docs/Home_MarcSmith-2014-01-23.png": {
+    "mtime": 1782814984.3181005,
+    "ast_hash": "c982a24f5dd13c0a4e835e42a1b27936",
+    "semantic_hash": ""
+  },
+  "docs/Home_MarcSmith-2014-04-19.png": {
+    "mtime": 1782814984.3181005,
+    "ast_hash": "86ec09d2a3080b05ffddfb19dca24394",
+    "semantic_hash": ""
+  },
+  "docs/Home_MarcSmith-2014-05-10.png": {
+    "mtime": 1782814984.3181005,
+    "ast_hash": "5b3e75caa99c1cc12fc2ee7deb7d4ee4",
+    "semantic_hash": ""
+  },
+  "docs/Home_MarcSmith-2014-07-02.png": {
+    "mtime": 1782814984.3181005,
+    "ast_hash": "ae52bbbee7d038e4a9df78387bc92a82",
+    "semantic_hash": ""
+  },
+  "docs/Home_Modularity3.png": {
+    "mtime": 1782814984.3181005,
+    "ast_hash": "06c68632174b0c68e5417a7a0f723a9e",
+    "semantic_hash": ""
+  },
+  "docs/Home_Motifs.png": {
+    "mtime": 1782814984.3181005,
+    "ast_hash": "b1d5bc2a48510f1d710030e424e125b5",
+    "semantic_hash": ""
+  },
+  "docs/Home_Niko-2014-06-29.png": {
+    "mtime": 1782814984.3221004,
+    "ast_hash": "ef2e9fbc22c7a8e24f9a8a0562ab6596",
+    "semantic_hash": ""
+  },
+  "docs/Home_NoAttributes.png": {
+    "mtime": 1782814984.3221004,
+    "ast_hash": "1a32660105a71594932ecaf0df04875f",
+    "semantic_hash": ""
+  },
+  "docs/Home_NodeXLGraphGallery.png": {
+    "mtime": 1782814984.3221004,
+    "ast_hash": "1bcc74bdeba1784409dce345277e5410",
+    "semantic_hash": ""
+  },
+  "docs/Home_NodeXLGraphGallery2.png": {
+    "mtime": 1782814984.3221004,
+    "ast_hash": "b31d3e41f5a08da05b918f6e9ab4f2f9",
+    "semantic_hash": ""
+  },
+  "docs/Home_NodeXLGraphGallery3.png": {
+    "mtime": 1782814984.3221004,
+    "ast_hash": "07cc14b71cb15f07271043fe34fd4330",
+    "semantic_hash": ""
+  },
+  "docs/Home_NodeXLGraphGallery4.png": {
+    "mtime": 1782814984.3261006,
+    "ast_hash": "8e1ce75488c66045e6f64368b19bb35a",
+    "semantic_hash": ""
+  },
+  "docs/Home_NodeXLGraphGallery5.png": {
+    "mtime": 1782814984.3261006,
+    "ast_hash": "74e0903945c88866734ff6af3fa24bc2",
+    "semantic_hash": ""
+  },
+  "docs/Home_NodeXLGraphGallery6.png": {
+    "mtime": 1782814984.3261006,
+    "ast_hash": "007d181c92b6da84116eb11dcfd4c461",
+    "semantic_hash": ""
+  },
+  "docs/Home_NodeXLGraphGallery7.png": {
+    "mtime": 1782814984.3261006,
+    "ast_hash": "2a0d0dce79832276e6b85eafb30bd344",
+    "semantic_hash": ""
+  },
+  "docs/Home_NodeXLTeam-2011-11-25.png": {
+    "mtime": 1782814984.3261006,
+    "ast_hash": "d1e333060c32799d34c54b0e8139c67e",
+    "semantic_hash": ""
+  },
+  "docs/Home_PiperDavis-2014-05-27.png": {
+    "mtime": 1782814984.3261006,
+    "ast_hash": "467375dd20b6abf1c9fd841eca459805",
+    "semantic_hash": ""
+  },
+  "docs/Home_PiperDavis-2014-06-14.png": {
+    "mtime": 1782814984.3301005,
+    "ast_hash": "5d11d4256e7301abf607802a338177b1",
+    "semantic_hash": ""
+  },
+  "docs/Home_RangeTrackBar.png": {
+    "mtime": 1782814984.3301005,
+    "ast_hash": "fee76bd58077e4072c01590ff0d9a1ea",
+    "semantic_hash": ""
+  },
+  "docs/Home_Shj-2014-03-22.png": {
+    "mtime": 1782814984.3301005,
+    "ast_hash": "fc7c2abadb6d3a356e83efb2c8672fc9",
+    "semantic_hash": ""
+  },
+  "docs/Home_Shj-2014-06-04.png": {
+    "mtime": 1782814984.3301005,
+    "ast_hash": "f5f9a65e5d5a6921d875f87574a570b0",
+    "semantic_hash": ""
+  },
+  "docs/Home_Shj-2014-06-14.png": {
+    "mtime": 1782814984.3301005,
+    "ast_hash": "8bfed85a71a5858416e1d4ea562605b1",
+    "semantic_hash": ""
+  },
+  "docs/Home_Shj-2014-06-23.png": {
+    "mtime": 1782814984.3301005,
+    "ast_hash": "715e6e6a1c8efe1a82b407b1599736c4",
+    "semantic_hash": ""
+  },
+  "docs/Home_Shj-2014-06-26.png": {
+    "mtime": 1782814984.3341005,
+    "ast_hash": "97f1d3f8c0e1db13d1001419d88dcf7d",
+    "semantic_hash": ""
+  },
+  "docs/Home_Shj-2014-07-02.png": {
+    "mtime": 1782814984.3341005,
+    "ast_hash": "0affcdd84e6a7a0a703190aad93b8465",
+    "semantic_hash": ""
+  },
+  "docs/Home_Shj-2014-09-04.png": {
+    "mtime": 1782814984.3341005,
+    "ast_hash": "183a9c9ccad47bada47e5927db6a213d",
+    "semantic_hash": ""
+  },
+  "docs/Home_ShjBlueBoxes.png": {
+    "mtime": 1782814984.3341005,
+    "ast_hash": "5ef2aac0d075153812f2ff7ec23cf5e5",
+    "semantic_hash": ""
+  },
+  "docs/Home_ShjCircles.png": {
+    "mtime": 1782814984.3341005,
+    "ast_hash": "8bf5c4d18c54d815116a8dd9951b56fc",
+    "semantic_hash": ""
+  },
+  "docs/Home_ShjMotifs.png": {
+    "mtime": 1782814984.3341005,
+    "ast_hash": "6ff37e6aa23899d2608a03bb4605af8c",
+    "semantic_hash": ""
+  },
+  "docs/Home_ShjSineWaves.png": {
+    "mtime": 1782814984.3341005,
+    "ast_hash": "a8b5a26f5c58938b098a7a8dbd2243a0",
+    "semantic_hash": ""
+  },
+  "docs/Home_ShjStripes.png": {
+    "mtime": 1782814984.3381004,
+    "ast_hash": "a737123af653ddde20de33e412fede3c",
+    "semantic_hash": ""
+  },
+  "docs/Home_Sht-2014-05-10.png": {
+    "mtime": 1782814984.3381004,
+    "ast_hash": "b69748e4620151c09cc73f61267aeb61",
+    "semantic_hash": ""
+  },
+  "docs/Home_Smrf.png": {
+    "mtime": 1782814984.3381004,
+    "ast_hash": "224bfc8cad1afeada71a314e0f4219af",
+    "semantic_hash": ""
+  },
+  "docs/Home_Team.jpg": {
+    "mtime": 1782814984.3381004,
+    "ast_hash": "d3dcd88b0b0abb31d6f864378ba2e265",
+    "semantic_hash": ""
+  },
+  "docs/Home_WithAttributes.png": {
+    "mtime": 1782814984.3381004,
+    "ast_hash": "ac50f49dc19f8933b94b34fde6ac89fb",
+    "semantic_hash": ""
+  }
+}
