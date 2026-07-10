@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Latent — an embedding & RAG concept game</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">◈</span>
+      <div>
+        <h1>Latent</h1>
+        <p class="tag">learn embeddings &amp; RAG by playing in vector space</p>
+      </div>
+    </div>
+    <nav class="modes" id="modeTabs">
+      <button data-mode="learn" class="active">Solo · Probe &amp; Bridge</button>
+      <button data-mode="duel">1v1 · Encirclement</button>
+      <button data-mode="team">Teams · Structures</button>
+    </nav>
+    <button id="helpBtn" class="ghost-btn" title="What is this teaching?">?</button>
+  </header>
+
+  <main class="stage">
+    <section class="board-wrap">
+      <svg id="board" aria-label="2-D projection of the embedding space"></svg>
+      <div id="tooltip" class="tooltip"></div>
+      <div class="board-toggles">
+        <label><input type="checkbox" id="tglGhost" /> show all embeddings</label>
+        <label><input type="checkbox" id="tglRoadmap" checked /> show bridge roadmap</label>
+      </div>
+      <div class="axis-note">board = PCA projection of a 16-D embedding · axes are the top 2 principal components</div>
+    </section>
+
+    <aside class="panel">
+      <div id="modeStatus" class="mode-status"></div>
+
+      <div id="regionPicker" class="region-picker"></div>
+
+      <div class="input-row">
+        <input id="wordInput" list="vocab" autocomplete="off" spellcheck="false"
+               placeholder="type a word…" />
+        <datalist id="vocab"></datalist>
+        <button id="probeBtn" class="secondary">Probe</button>
+        <button id="submitBtn" class="primary">Play</button>
+      </div>
+      <div id="feedback" class="feedback"></div>
+
+      <div id="scoreboard" class="scoreboard"></div>
+
+      <div class="legend">
+        <div class="legend-title">concept regions</div>
+        <div id="legendItems" class="legend-items"></div>
+      </div>
+
+      <div class="log-box">
+        <div class="legend-title">move log</div>
+        <ul id="log"></ul>
+      </div>
+    </aside>
+  </main>
+
+  <!-- teaching modal -->
+  <div id="helpModal" class="modal hidden">
+    <div class="modal-card">
+      <button class="modal-close" id="helpClose">×</button>
+      <h2>What you're actually looking at</h2>
+      <p>Every word here is a <b>vector</b> — a list of 16 numbers describing how
+        <i>aquatic</i>, <i>technological</i>, <i>emotional</i>, <i>cosmic</i>… it is.
+        That is an <b>embedding</b>: meaning turned into geometry.</p>
+      <ul>
+        <li><b>Similarity is distance.</b> Words that mean similar things point the
+          same way (high <i>cosine similarity</i>). Hover any dot to see its top axes.</li>
+        <li><b>Retrieval = nearest neighbours.</b> A RAG system embeds your question,
+          then grabs the closest chunks. That's exactly what <b>Probe</b> does.</li>
+        <li><b>The board is a projection.</b> You can't see 16 dimensions, so we run
+          <b>PCA</b> to flatten it to 2-D — the same trick used to visualize real embeddings.</li>
+        <li><b>A “tile” is a region, not a square.</b> Each shaded blob is a cluster of
+          related meaning. A <b>bridge word</b> lives between two regions because it
+          scores high on both — that's how RAG stitches distant context together.</li>
+      </ul>
+      <h3>The three ways to play</h3>
+      <p><b>Solo · Probe &amp; Bridge</b> — connect all eight regions into one graph by
+        finding words that straddle two of them. Fewer guesses &amp; stronger bridges = better score.</p>
+      <p><b>1v1 · Encirclement</b> — Go, played on the concept graph. <i>Claim</i> a region by
+        naming a word that lands inside it; build <i>bridges</i> (walls) between regions you own;
+        <i>surround</i> an opponent group on every side to capture it.</p>
+      <p><b>Teams · Structures</b> — several players per side take turns building one linked
+        conceptual structure, scored by the largest connected territory that encircles the other team.</p>
+      <p class="fine">Deployment note: this prototype runs entirely in your browser. See
+        <code>README.md</code> for the single-user → 1v1 → real-time-teams server architecture.</p>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/viz.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
